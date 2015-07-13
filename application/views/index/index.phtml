@@ -1,0 +1,12 @@
+{%extends file="common/page.phtml"%}
+{%block name="script"%}
+<script>
+    require(['home/index'], function (main) {
+        main.init();
+    }); 
+</script>
+{%/block%}
+
+{%block name="content"%}
+首页
+{%/block%}

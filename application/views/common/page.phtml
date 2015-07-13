@@ -1,0 +1,21 @@
+{%if $smarty.const.MODULE eq 'Index'%}
+	{%include file='common/header.phtml'%}
+{%else%}
+	{%include file='../../../views/common/header.phtml'%}
+{%/if%}
+{%block name="link"%}{%/block%}
+</head>
+<body class="page">
+
+    <div id="main-wraper">
+        {%block name="content"%}{%/block%}
+    </div>
+
+    {%block name="script"%}{%/block%}
+
+    {%if $smarty.const.MODULE eq 'Index'%}
+		{%include file='common/footer.phtml'%}
+	{%else%}
+		{%include file='../../../views/common/footer.phtml'%}
+	{%/if%}
+    

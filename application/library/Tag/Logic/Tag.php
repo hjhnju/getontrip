@@ -1,0 +1,38 @@
+<?php
+class Tag_Logic_Tag{
+    public function __construct(){
+        
+    }
+    
+    /**
+     * 获取标签信息列表
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function getTagList($page, $pageSize){
+        $listTag = new Tag_List_Tag();
+        $listTag->setPage($page);
+        $listTag->setPagesize($pageSize);
+        return $listTag->toArray();
+    }
+    
+    /**
+     * 获取热门标签列表
+     * @param integer $size
+     * @return array
+     */
+    public function getHotTags($size){
+        $redis    = Base_Redis::getInstance();
+        $arrCount = array();
+        $listTag  = new Tag_List_Tag();
+        $listTag->setPagesize(PHP_INT_MAX);
+        $arrTag = $listTag->toArray();
+        foreach ($arrTag as $val){
+            $arrCount[] = $redis->sCard(Tag_Keys::getSightName($val['id']));
+        }
+        array_multisort($arrCount, SORT_DESC , $arrTag['list']);
+        $arrRet = array_slice($arrTag['list'],0,$size);
+        return $arrRet;
+    }
+}

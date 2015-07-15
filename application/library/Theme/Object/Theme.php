@@ -1,0 +1,112 @@
+<?php
+/**
+ * 主题信息表
+ * @author huwei
+ */
+class Theme_Object_Theme extends Base_Object {
+    /**
+     * 数据表名
+     * @var string
+     */
+    protected $table = 'theme';
+
+    /**
+     * 主键
+     * @var string
+     */
+    protected $prikey = 'id';
+
+    /**
+     * 类名
+     * @var string
+     */
+    const CLASSNAME = 'Theme_Object_Theme';
+
+    /**
+     * 对象包含的所有字段
+     * @var array
+     */
+    protected $fields = array('id', 'name', 'title', 'image', 'content', 'author', 'create_time', 'update_time');
+
+    /**
+     * 字段与属性隐射关系
+     * @var array
+     */
+    public $properties = array(
+        'id'          => 'id',
+        'name'        => 'name',
+        'title'       => 'title',
+        'image'       => 'image',
+        'content'     => 'content',
+        'author'      => 'author',
+        'create_time' => 'createTime',
+        'update_time' => 'updateTime',
+    );
+
+    /**
+     * 整数类型的字段
+     * @var array
+     */
+    protected $intProps = array(
+        'id'          => 1,
+        'create_time' => 1,
+        'update_time' => 1,
+    );
+
+    /**
+     * @param array $data
+     * @return Theme_Object_Theme
+     */
+    public static function init($data) {
+        return parent::initObject(self::CLASSNAME, $data);
+    }
+
+    /**
+     * 主题id
+     * @var integer
+     */
+    public $id;
+
+    /**
+     * 主题名称
+     * @var string
+     */
+    public $name;
+
+    /**
+     * 主题副标题
+     * @var string
+     */
+    public $title;
+
+    /**
+     * 主题背景图片
+     * @var string
+     */
+    public $image;
+
+    /**
+     * 主题内容
+     * @var string
+     */
+    public $content;
+
+    /**
+     * 主题作者
+     * @var string
+     */
+    public $author;
+
+    /**
+     * 创建时间
+     * @var integer
+     */
+    public $createTime;
+
+    /**
+     * 更新时间
+     * @var integer
+     */
+    public $updateTime;
+
+}

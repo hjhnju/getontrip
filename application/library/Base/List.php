@@ -10,7 +10,7 @@ class Base_List {
      * 数据库名
      * @var string
      */
-    protected $dbname = 'carlovers';
+    protected $dbname = 'getontrip';
     
     /**
      * 数据表名

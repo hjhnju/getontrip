@@ -35,9 +35,9 @@ class City_Api{
     public static function getCityById($cityId){
         $objCity = new City_Object_City();
         $objCity->fetch(array('id' => $cityId));
-        $ret = $objCity->toArray();
-        $city = City_Api::getCityById($ret['pid']);
-        $ret['pidname'] = $city['name'];
+        $ret = $objCity->toArray();               
+        $objCity->fetch(array('id' => $ret['pid']));
+        $ret['pidname'] = $objCity->name;
         return $ret;
     }
     

@@ -3,21 +3,60 @@ class Sight_Logic_Sight{
     
     protected $modelGis;
     
+    protected $logicTopic;
+    
     public function __construct(){
-        $this->modelGis = new GisModel();
+        $this->modelSight = new SightModel();
+        $this->logicTopic = new Topic_Logic_Topic();
     }
     
     /**
-     * 根据景点ID获取景点及话题信息
-     * @param unknown $sightId
-     * @return multitype:
+     * 根据景点ID获取景点及话题信息，支持带标签筛选
+     * @param integer $sightId
+     * @param integer $page
+     * @param integer $pageSize
+     * @param string $strTags
+     * @return array
      */
-    public function getSightFullInfo($sightId){
-        $arrRet = $this->modelGis->getSightById($sightId);
-        if(!empty($arrRet)){
-            $redis = Base_Redis::getInstance();
-            $redis->hGet('','');
+    public function getSightDetail($sightId,$page,$pageSize,$strTags=''){
+        $arrRet   = $this->modelSight->getSightById($sightId);
+        $arrTopic =  $this->logicTopic->getHotTopic($sightId,PHP_INT_MAX);
+        if(!empty($strTags)){
+            $redis = new Base_Redis();
+            $arrTags = explode(",",$strTags);
+            foreach ($arrTags as $tag){
+                $temp = $redis->sMembers(Tag_Keys::getTagTopic($tag));
+                $arrTopicInc = array_merge($arrTopicInc,$temp);
+            }       
+            $arrTopicInc = array_unique($arrTopicInc);
+            foreach ($arrTopic as $key => $value){
+                if(!in_array($value['id'],$arrTopicInc)){
+                    unset($arrTopic[$key]);
+                }
+            }
         }
-        return array();
+        $arrRet->topic = array_slice($arrTopic,($page-1)*$pageSize,$page*$pageSize);
+        return $arrRet;
+    }
+    
+    /**
+     * 获取景点列表
+     * @param integer $page
+     * @param integer $pageSize
+     * @param integer $cityId
+     * @return array
+     */
+    public function getSightList($page,$pageSize,$cityId){
+        $arrRet = array();
+        if(empty($sight)){
+            $arrSight = $this->modelSight->getSightList($page,$pageSize);
+        }else{
+            $arrSight = $this->modelSight->getSightByCity($page,$pageSize,$cityId);
+        }
+        foreach ($arrSight as $index => $val){
+            $arrRet[$index]['id']   = $val['id'];
+            $arrRet[$index]['name'] = $val['name'];
+        }
+        return $arrRet;
     }
 }

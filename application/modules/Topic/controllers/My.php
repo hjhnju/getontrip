@@ -1,7 +1,7 @@
 <?php
 /**
  */
-class DetailController extends Base_Controller_Api {
+class MyController extends Base_Controller_Api {
     
     const PAGESIZE = 6;
     
@@ -11,18 +11,17 @@ class DetailController extends Base_Controller_Api {
     }
     
     /**
-     * 景点详情接口
+     * 我的话题信息接口
      */
     public function indexAction() {
         //$page       = $_POST['page'];
         //$pageSize   = $_POST['pageSize'];
-        //$sight      = $_POST['sight'];
+        //$deviceId      = $_POST['id'];
         $page = 1;
         $pageSize = 10;
-        $sight = 1;
-        $logic      = new Sight_Logic_Sight();
-        $ret        = $logic->getSightDetail($sight,$page,$pageSize);
+        $deviceId = 1;
+        $logic      = new Topic_Logic_Topic();
+        $ret        = $logic->getUserTopic($deviceId, $page, $pageSize);
         $this->ajax($ret);
-    }
-    
+    }    
 }

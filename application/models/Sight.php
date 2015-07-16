@@ -33,8 +33,9 @@ class SightModel extends PgBaseModel
      * @param integer $cityId
      * @return boolean|multitype:
      */
-    public function getSightByCity($cityId){
-        $sql = "SELECT * FROM sight WHERE city_id = $cityId";
+    public function getSightByCity($page,$pageSize,$cityId){
+        $from = ($page-1)*$pageSize;
+        $sql = "SELECT * FROM sight WHERE city_id = $cityId  LIMIT $pageSize OFFSET $from";
         try {
             $sth = $this->db->prepare($sql);
             $sth->execute();
@@ -50,8 +51,9 @@ class SightModel extends PgBaseModel
      * 获取取景列表
      * @return boolean|mixed
      */
-    public function getSightList(){
-        $sql = "SELECT * FROM sight";
+    public function getSightList($page,$pageSize){
+        $from = ($page-1)*$pageSize;
+        $sql = "SELECT * FROM sight LIMIT $pageSize OFFSET $from";
         try {
             $sth = $this->db->prepare($sql);
             $sth->execute();
@@ -108,5 +110,22 @@ class SightModel extends PgBaseModel
         $sth = $this->db->prepare($_sql);
         $ret = $sth->execute()->rowCount();
         return $ret;  
+    }
+    
+    /**
+     * 删除景点信息
+     * @param integer $id
+     * @return boolean
+     */
+    public function delSight($id){
+        $sql = "DELETE FROM sight WHERE id = $id";
+        try {
+            $sth = $this->db->prepare($sql);
+            $ret = $sth->execute();
+        } catch (Exception $ex) {
+            Base_Log::error($ex->getMessage());
+            return false;
+        }
+        return $ret;
     }
 }

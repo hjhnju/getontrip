@@ -44,4 +44,27 @@ class Tag_Api{
         $objTag->name = $name;
         return $objTag->save();
     }
+    
+    /**
+     * 接口4：Tag_Api::delTag($id)
+     * 标签删除接口
+     * @param integer $id
+     * @return boolean
+     */
+    public static function delTag($id){
+        $objTag = new Tag_Object_Tag();
+        $objTag->fetch(array('id' => $id));
+        $objTag->remove();
+        
+        $listTopictag = new Topictag_List_Topictag();
+        $listTopictag->setFilter(array('tag_id' => $id));
+        $listTopictag->setPagesize(PHP_INT_MAX);
+        $arrList = $listTopictag->toArray();
+        foreach ($arrList as $val){
+            $objTag = new Topictag_Object_Topictag();
+            $objTag->fetch(array('id'=>$val['id']));
+            $objTag->remove();
+        }
+        return true;
+    }
 }

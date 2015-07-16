@@ -1,7 +1,7 @@
 <?php
 /**
  */
-class DetailController extends Base_Controller_Api {
+class ListController extends Base_Controller_Api {
     
     const PAGESIZE = 6;
     
@@ -11,17 +11,21 @@ class DetailController extends Base_Controller_Api {
     }
     
     /**
-     * 景点详情接口
+     * 接口1：获取景点列表 /sight/list
+     * @param integer $page
+     * @param integer $pageSize
+     * @param integer $cityId
+     * @return array
      */
     public function indexAction() {
         //$page       = $_POST['page'];
         //$pageSize   = $_POST['pageSize'];
-        //$sight      = $_POST['sight'];
+        //$cityId      = isset($_POST['cityId'])?$_POST['cityId']:'';
         $page = 1;
         $pageSize = 10;
-        $sight = 1;
+        $cityId = 1;
         $logic      = new Sight_Logic_Sight();
-        $ret        = $logic->getSightDetail($sight,$page,$pageSize);
+        $ret        = $logic->getSightList($page,$pageSize,$cityId);
         $this->ajax($ret);
     }
     

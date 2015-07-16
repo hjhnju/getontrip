@@ -11,17 +11,17 @@ class DetailController extends Base_Controller_Api {
     }
     
     /**
-     * 景点详情接口
+     * 话题详情接口
      */
     public function indexAction() {
         //$page       = $_POST['page'];
         //$pageSize   = $_POST['pageSize'];
-        //$sight      = $_POST['sight'];
+        //$sight      = $_POST['topic'];
         $page = 1;
         $pageSize = 10;
-        $sight = 1;
-        $logic      = new Sight_Logic_Sight();
-        $ret        = $logic->getSightDetail($sight,$page,$pageSize);
+        $topic = 1;
+        $logic      = new Topic_Logic_Topic();
+        $ret        = $logic->getTopicDetail($topic,$page,$pageSize);
         $this->ajax($ret);
     }
     

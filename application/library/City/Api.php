@@ -23,7 +23,7 @@ class City_Api{
             $city = City_Api::getCityById($val['pid']);
             $arrCity['list'][$key]['pidname'] = $city['name'];
         }
-        return $arrCity['list'];
+        return $arrCity;
     }
     
     /**
@@ -95,6 +95,6 @@ class City_Api{
             $city = City_Api::getCityById($val['pid']);
             $arrCity['list'][$key]['pidname'] = $city['name'];
         }
-        return $arrCity['list'];
+        return $arrCity;
     }
 }

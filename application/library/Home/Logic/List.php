@@ -1,9 +1,15 @@
 <?php
+/**
+ * 首页接口数据逻辑层
+ * @author huwei
+ *
+ */
 class Home_Logic_List{
     
-    private $_model;
+    protected $_model;
     
     protected $_logicTopic;
+    
     protected $_logicSight;
     
     const ORDER_HOT = 1;
@@ -19,7 +25,7 @@ class Home_Logic_List{
     }
     
     /**
-     * 根据给定点，找附近的点并拼装话题信息
+     * 根据给定点，找附近的景点并拼装话题信息
      * @param double $x
      * @param double $y
      * @param integer $page
@@ -29,13 +35,17 @@ class Home_Logic_List{
     public function getNearSight($x,$y,$page,$pageSize){
         $arr   = array();
         $total = 0;
+        //找出所有由近到远的景点
         $ret = $this->_model->getNearSight(array(
             'x'=>$x,
             'y'=>$y,            
-        ));        
+        ));    
+        //从景点中找出包含了所要求的话题范围的景点    
         foreach ($ret as $val){
             $num = $this->_logicTopic->getHotTopicNum($val['id']);
-            $num = 0;
+            if(empty($num)){
+                continue;
+            }
             $total += $num;
             if($pageSize <= 0){
                 break;
@@ -47,6 +57,7 @@ class Home_Logic_List{
                 $pageSize -= $num; 
             }
         }
+        //通过这些景点，取出其它的如话题、答案等信息
         foreach ($arr as $index => $val){
             $arr[$index]['topic'] = $this->_logicTopic->getHotTopic($val['id']);
         }        
@@ -64,11 +75,11 @@ class Home_Logic_List{
      * @param integer $sight
      * @param string $strTags
      */
-    public function getFilterSight($x,$y,$page,$pageSize,$order,$city,$sight,$strTags){
-        if(-1 !== $sight){
-            $ret = $this->_logicSight->getSightDetail($sight,$page,$pageSize,$strTags);
+    public function getFilterSight($x,$y,$page,$pageSize,$order,$sight,$strTags){
+        $arr   = array();
+        if(!empty($sight)){
+            $arr = $this->_logicSight->getSightDetail($sight,$page,$pageSize,$strTags);
         }else{
-            $arr   = array();
             $total = 0;
             $ret = $this->_model->getNearSight(array(
                 'x'=>$x,
@@ -88,18 +99,16 @@ class Home_Logic_List{
                     $pageSize -= $num; 
                 }
             }
-            if($order == self::ORDER_HOT){
-                foreach ($arr as $index => $val){
-                    $arr[$index]['topic'] = $this->_logicTopic->getHotTopic($val['id'],self::PAGE_SIZE,$strTags);
-                } 
-            }else{
+            if($order == self::ORDER_NEW){
                 foreach ($arr as $index => $val){
                     $arr[$index]['topic'] = $this->_logicTopic->getNewTopic($val['id'],self::PAGE_SIZE,$strTags);
                 }
+            }else{                
+                foreach ($arr as $index => $val){
+                    $arr[$index]['topic'] = $this->_logicTopic->getHotTopic($val['id'],self::PAGE_SIZE,$strTags);
+                }
             }
-                   
-            return $arr; 
-            }
-        return $ret;
+        }
+        return $arr;
     }
 }

@@ -26,7 +26,7 @@ class Answers_Object_Answers extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'topic_id', 'content', 'user_id', 'from', 'status', 'create_time', 'update_time');
+    protected $fields = array('id', 'topic_id', 'content', 'user_id', 'from', 'status', 'anonymous', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -39,6 +39,7 @@ class Answers_Object_Answers extends Base_Object {
         'user_id'     => 'userId',
         'from'        => 'from',
         'status'      => 'status',
+        'anonymous'   => 'anonymous',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
     );
@@ -52,6 +53,7 @@ class Answers_Object_Answers extends Base_Object {
         'topic_id'    => 1,
         'user_id'     => 1,
         'status'      => 1,
+        'anonymous'   => 1,
         'create_time' => 1,
         'update_time' => 1,
     );
@@ -99,6 +101,12 @@ class Answers_Object_Answers extends Base_Object {
      * @var integer
      */
     public $status;
+
+    /**
+     * 是否匿名:0匿名
+     * @var integer
+     */
+    public $anonymous;
 
     /**
      * 创建时间

@@ -1,9 +1,9 @@
 <?php
 class Sight_Keys {
 
-    const REDIS_SIGHT_INFO_KEY   = 'sightid_%s';
+    const REDIS_SIGHT_INFO_KEY   = 'sightid_%d';
     
-    const REDIS_SIGHT_TOPIC_KEY  = 'sight_topic_%s';
+    const REDIS_SIGHT_TOPIC_KEY  = 'sight_topic_%d';
     
     const REDIS_SIGHT_NAME_KEY   = 'name';
     

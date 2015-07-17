@@ -29,6 +29,25 @@ class Praise_Logic_Praise{
         return $ret1&&$ret2;
     }
     
+    /**
+     * 判断是否点赞过
+     * @param integer $type
+     * @param integer $device_id
+     * @param integer $obj_id
+     * @return boolean true:已经点过赞
+     */
+    public function checkPraise($device_id, $obj_id,$type=1){
+        $obj = new Praise_Object_Praise();
+        $obj->fetch(array(
+            'type' => $type,
+            'obj_id' => $obj_id,
+            'user_id' => $this->logicUser->getUserId($device_id),
+        ));
+        if(empty($obj->id)){
+            return false;
+        }
+        return true;
+    }
     
     /**
      * 根据type获取点赞的人数

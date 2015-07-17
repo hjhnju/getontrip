@@ -97,4 +97,68 @@ class City_Api{
         }
         return $arrCity;
     }
+    
+    /**
+     * 接口6：City_Api::getProvinceList($page,$pageSize)
+     * 获取省的信息列表
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public static function getProvinceList($page,$pageSize){
+        $listCity = new City_List_City();        
+        $listCity->setFilter(array('provinceid' => 0));
+        $listCity->setPage($page);
+        $listCity->setPagesize($pageSize);
+        $arrCity = $listCity->toArray();
+        foreach ($arrCity['list'] as $key => $val){
+            $city = City_Api::getCityById($val['pid']);
+            $arrCity['list'][$key]['pidname'] = $city['name'];
+        }
+        return $arrCity;
+    }
+    
+    /**
+     * 接口7：City_Api::queryCityPrefix($str,$page,$pageSize)
+     * 城市名前缀模糊查询
+     * @param string $str
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public static function queryCityPrefix($str,$page,$pageSize){
+        $listCity = new City_List_City();
+        $strFileter = "`cityid` = 0 and `provinceid` != 0 and name like '".$str."%'";
+        $listCity->setFilterString("$strFileter");
+        $listCity->setPage($page);
+        $listCity->setPagesize($pageSize);
+        $arrCity = $listCity->toArray();
+        foreach ($arrCity['list'] as $key => $val){
+            $city = City_Api::getCityById($val['pid']);
+            $arrCity['list'][$key]['pidname'] = $city['name'];
+        }
+        return $arrCity;
+    }
+    
+    /**
+     * 接口8：City_Api::queryProvincePrefix($str,$page,$pageSize)
+     * 省份名前缀模糊查询
+     * @param string $str
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public static function queryProvincePrefix($str,$page,$pageSize){
+        $listCity = new City_List_City();
+        $strFileter = "`provinceid` = 0 and name like '".$str."%'";
+        $listCity->setFilterString("$strFileter");
+        $listCity->setPage($page);
+        $listCity->setPagesize($pageSize);
+        $arrCity = $listCity->toArray();
+        foreach ($arrCity['list'] as $key => $val){
+            $city = City_Api::getCityById($val['pid']);
+            $arrCity['list'][$key]['pidname'] = $city['name'];
+        }
+        return $arrCity;
+    }
 }

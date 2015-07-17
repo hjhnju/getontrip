@@ -2,14 +2,22 @@
 class Sight_Api{
     
     /**
-     * 接口1：Sight_Api::getSightList()
+     * 接口1：Sight_Api::getSightList($page,$pageSize)
      * 获取景点列表
+     * @param integer $page
+     * @param integer $pageSize
      * @return array
      */
-    public static function getSightList(){
+    public static function getSightList($page,$pageSize){
         $model = new SightModel();
-        $arr = $model->getSightList();
-        return $arr;
+        $arr = $model->getSightList($page,$pageSize);
+        $num = $model->getSightNum();
+        $arrRet['page']     = $page;
+        $arrRet['pagesize'] = $pageSize;
+        $arrRet['pageall']  = ceil($num/$pageSize);
+        $arrRet['total']    = $num;
+        $arrRet['list']     = $arr;
+        return $arrRet;
     }
     
     /**
@@ -25,15 +33,23 @@ class Sight_Api{
     }
     
     /**
-     * 接口3：Sight_Api::getSightByCity($cityId)
+     * 接口3：Sight_Api::getSightByCity($cityId,$page,$pageSize)
      * 根据城市ID获取景点详情
      * @param integer $cityId
+     * @param integer $page
+     * @param integer $pageSize
      * @return array
      */
-    public static function getSightByCity($cityId){
+    public static function getSightByCity($cityId,$page,$pageSize){
         $model = new SightModel();
-        $arr = $model->getSightByCity($cityId);
-        return $arr;
+        $arr = $model->getSightByCity($page,$pageSize,$cityId);
+        $num = $model->getSightNum($cityId);
+        $arrRet['page']     = $page;
+        $arrRet['pagesize'] = $pageSize;
+        $arrRet['pageall']  = ceil($num/$pageSize);
+        $arrRet['total']    = $num;
+        $arrRet['list']     = $arr;
+        return $arrRet;
     }
     
     /**

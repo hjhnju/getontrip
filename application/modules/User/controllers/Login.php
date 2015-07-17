@@ -16,37 +16,6 @@ class LoginController extends Base_Controller_Page{
      * 状态返回0表示登录成功
      */    
     public function indexAction(){
-        $logic   = new User_Logic_Login();
-        $userid = $logic->checkLogin();
-        if($userid){
-            $this->redirect('/account/overview');
-        }
-
-        //移动端跳转
-        $isMobile = Base_Util_Mobile::isMobile();
-        if($isMobile){
-            return $this->redirect('/m/login');
-        }
-
-        $u = isset($_REQUEST['u'])?trim($_REQUEST['u']):null;
-        if(!empty($u)){
-            $strRedirect = $u;
-        }else{
-            $strRedirect = $logic->loginRedirect($_SERVER['HTTP_REFERER']);
-        }        
-        Yaf_Session::getInstance()->set(User_Keys::LOGIN_REFER,$strRedirect);
-        $intFails = Yaf_Session::getInstance()->get(User_Keys::getFailTimesKey());
-        if($intFails >= 3) {
-            $this->getView()->assign('url',$this->webroot . '/user/imagecode/getimage?type=login');
-        }
-    }
-  
-    /**
-     * 第三方登录跳转中间页
-     * @param string $type, qq|weibo|weixin
-     * 点击qq,weibo icon
-     */
-    public function authAction(){
         $strType = strtolower(trim($_REQUEST['type']));
 
         //设置登陆类型qq|weibo|weixin
@@ -58,7 +27,7 @@ class LoginController extends Base_Controller_Page{
         Base_Log::debug(array('authtype' => $strType));
         $this->redirect($url);
     }
-
+  
     /**
      * /user/login/third
      * 作为redirect_uri，第三方回调

@@ -18,7 +18,7 @@ class Tag_Logic_Tag{
     }
     
     /**
-     * 获取热门标签列表
+     * 获取热门标签列表，根据话题所有的标签数量排序作为热度
      * @param integer $size
      * @return array
      */
@@ -28,8 +28,8 @@ class Tag_Logic_Tag{
         $listTag  = new Tag_List_Tag();
         $listTag->setPagesize(PHP_INT_MAX);
         $arrTag = $listTag->toArray();
-        foreach ($arrTag as $val){
-            $arrCount[] = $redis->sCard(Tag_Keys::getSightName($val['id']));
+        foreach ($arrTag['list'] as $val){
+            $arrCount[] = $redis->sCard(Tag_Keys::getTagTopic($val['id']));
         }
         array_multisort($arrCount, SORT_DESC , $arrTag['list']);
         $arrRet = array_slice($arrTag['list'],0,$size);

@@ -1,9 +1,11 @@
 <?php
 class Sight_Logic_Sight{
     
-    protected $modelGis;
+    protected $modelSight;
     
     protected $logicTopic;
+    
+    const DEFAULT_HOT_PERIOD = "1 year ago";
     
     public function __construct(){
         $this->modelSight = new SightModel();
@@ -11,7 +13,7 @@ class Sight_Logic_Sight{
     }
     
     /**
-     * 根据景点ID获取景点及话题信息，支持带标签筛选
+     * 根据景点ID获取景点及话题信息，支持带标签筛选及热度的时间范围设置
      * @param integer $sightId
      * @param integer $page
      * @param integer $pageSize
@@ -20,12 +22,12 @@ class Sight_Logic_Sight{
      */
     public function getSightDetail($sightId,$page,$pageSize,$strTags=''){
         $arrRet   = $this->modelSight->getSightById($sightId);
-        $arrTopic =  $this->logicTopic->getHotTopic($sightId,PHP_INT_MAX);
+        $arrTopic =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,PHP_INT_MAX);
         if(!empty($strTags)){
             $redis = new Base_Redis();
             $arrTags = explode(",",$strTags);
             foreach ($arrTags as $tag){
-                $temp = $redis->sMembers(Tag_Keys::getTagTopic($tag));
+                $temp        = $redis->sMembers(Tag_Keys::getTagTopic($tag));
                 $arrTopicInc = array_merge($arrTopicInc,$temp);
             }       
             $arrTopicInc = array_unique($arrTopicInc);
@@ -48,7 +50,7 @@ class Sight_Logic_Sight{
      */
     public function getSightList($page,$pageSize,$cityId){
         $arrRet = array();
-        if(empty($sight)){
+        if(empty($cityId)){
             $arrSight = $this->modelSight->getSightList($page,$pageSize);
         }else{
             $arrSight = $this->modelSight->getSightByCity($page,$pageSize,$cityId);

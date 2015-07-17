@@ -1,5 +1,8 @@
 <?php
 /**
+ * 标签信息接口
+ * @author huwei
+ *
  */
 class ListController extends Base_Controller_Page {
     
@@ -14,11 +17,15 @@ class ListController extends Base_Controller_Page {
     }
     
     /**
-     * 获取标签信息
+     * 接口1：/tag/list
+     * 获取所有标签信息
+     * @param integer page
+     * @param integer pageSize
+     * @return json
      */
     public function indexAction(){
         $page     = isset($_POST['page'])?intval($_POST['page']):1;
-        $pageSize = isset($_POST['pagesize'])?intval($_POST['pagesize']):self::PAGE_SIZE;
+        $pageSize = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGE_SIZE;
         $ret = $this->logic->getTagList($page, $pageSize);
         if($ret){
             return $this->ajax($ret);
@@ -27,9 +34,14 @@ class ListController extends Base_Controller_Page {
     }  
     
     /**
+     * 接口2：/tag/list/hot
      * 获取热门标签接口
+     * @param integer size，热门标签TOP 几
+     * @return json
      */
     public function hotAction(){
-        $size = isset($_POST['size'])?intval($_POST['size']):self::PAGE_SIZE;
+        $size     = isset($_POST['size'])?intval($_POST['size']):self::PAGE_SIZE;
+        $ret = $this->logic->getHotTags($size);
+        return $this->ajax($ret);
     }
 }

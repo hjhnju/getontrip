@@ -26,7 +26,7 @@ class Theme_Object_Theme extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'title', 'image', 'content', 'author', 'create_time', 'update_time');
+    protected $fields = array('id', 'name', 'title', 'image', 'content', 'author', 'status', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -39,6 +39,7 @@ class Theme_Object_Theme extends Base_Object {
         'image'       => 'image',
         'content'     => 'content',
         'author'      => 'author',
+        'status'      => 'status',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
     );
@@ -49,6 +50,7 @@ class Theme_Object_Theme extends Base_Object {
      */
     protected $intProps = array(
         'id'          => 1,
+        'status'      => 1,
         'create_time' => 1,
         'update_time' => 1,
     );
@@ -96,6 +98,12 @@ class Theme_Object_Theme extends Base_Object {
      * @var string
      */
     public $author;
+
+    /**
+     * 主题状态
+     * @var integer
+     */
+    public $status;
 
     /**
      * 创建时间

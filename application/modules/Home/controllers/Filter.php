@@ -1,5 +1,8 @@
 <?php
 /**
+ * 首页筛选排序后数据接口
+ * @author huwei
+ *
  */
 class FilterController extends Base_Controller_Api {
     
@@ -11,48 +14,34 @@ class FilterController extends Base_Controller_Api {
     }
     
     /**
+     * 接口1：/home/filter
      * 通过条件过滤的数据获取接口
+     * @param integer city，城市ID,没有可以不传
+     * @param integer sight，景点ID，没有可以不传
+     * @param integer order，顺序,1:人气，2：最近更新，默认可以不传
+     * @param integer page，页码
+     * @param integer pageSize，页面大小
+     * @param string  tags，用逗号分割的标签ID字符串
+     * @return json 
      */
     public function indexAction() {
-        //$x         = $_POST['x'];
-        //$y         = $_POST['y'];
-        //$page      = $_POST['page'];
-        $pageSize  = isset($_POST['size'])?$_POST['size']:self::PAGESIZE;
-        $x = 100;
-        $y = 100;
-        $page = 1;
-        $order     = isset($_POST['order'])?intval($_POST['order']):-1;
-        $city      = isset($_POST['city'])?intval($_POST['city']):-1;
-        $sight     = isset($_POST['sight'])?intval($_POST['sight']):-1;
-        $strTags   = isset($_POST['tags'])?trim($_POST['tags']):'';                   
-        $logic     = new Home_Logic_List();
-        $ret       = $logic->getFilterSight($x,$y,$page,$pageSize,$order,$city,$sight,$strTags);
-        $this->ajax($ret);
-    }     
-    
-    /**
-     * 切换城市后获取首页数据
-     */
-    public function cityAction() {
-        //$cityId  = $_POST['id'];
-        //$x       = $_POST['x'];
-        //$y       = $_POST['y'];
-        //$page    = $_POST['page'];
-        $pageSize  = isset($_POST['size'])?$_POST['size']:self::PAGESIZE;
-        $x = 100;
-        $y = 100;
-        $page = 1;
-        $order     = isset($_POST['order'])?intval($_POST['order']):-1;
-        $cityId    = isset($_POST['city'])?intval($_POST['city']):-1;
-        $sight     = isset($_POST['sight'])?intval($_POST['sight']):-1;
+        $page      = isset($_POST['page'])?intval($_POST['page']):1;
+        $pageSize  = isset($_POST['pageSize'])?$_POST['pageSize']:self::PAGESIZE;
+        $order     = isset($_POST['order'])?intval($_POST['order']):'';
+        $city      = isset($_POST['city'])?intval($_POST['city']):'';
+        $sight     = isset($_POST['sight'])?intval($_POST['sight']):'';
         $strTags   = isset($_POST['tags'])?trim($_POST['tags']):''; 
-        $logicCity = new City_Logic_City();
-        $arr = $logicCity->getCityLoc($cityId);
-        if(empty($arr)){
-           return $this->ajaxError(); 
+        if(empty($city)){
+            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $logic = new Home_Logic_List();
-        $ret = $logic->getFilterSight($x,$y,$page,$pageSize,$order,$city,$sight,$strTags);
-        $this->ajax($ret);
-    }
+        $logicCity  = new City_Logic_City();
+        $arr        = $logicCity->getCityLoc($city);
+        if(isset($arr['x'])){            
+            $logic  = new Home_Logic_List();
+            $ret    = $logic->getFilterSight($arr['x'],$arr['y'],$page,$pageSize,$order,$sight,$strTags);
+            return $this->ajax($ret);
+        }else{
+            return $this->ajaxError();
+        }
+    }     
 }

@@ -1,21 +1,26 @@
 <?php
 class Topic_Logic_Topic{
     
+    protected $sightId = '';
+    protected $size    = 0;
+    protected $strTags = '';
+    protected $strDate = "1 month ago";
+    
     public function __construct(){
         
     }
     
     /**
-     * 获取最热门的话题，带标签过滤，并加上答案等信息:热度=话题收藏数+答案数+答案点赞数
+     * 获取最热门的话题，带景点ID、时间范围、大小、标签过滤，并加上答案等信息:热度=话题收藏数+答案数+答案点赞数
      * @param integer $sightId
      * @param integer $size
      * @return array
      */
-    public function getHotTopic($sightId,$size=2,$strTags=''){
+    public function getHotTopic($sightId,$period='1 month ago',$size=2,$strTags=''){
         $arrHotDegree     = array();
         $arrTopics        = array();
         $collectTopicNum  = 0;
-        $upAnswerNum      = 0;
+        $visitTopicNum    = 0;
         $answerNum        = 0;
         $collectAnswerNum = 0;
         
@@ -28,7 +33,9 @@ class Topic_Logic_Topic{
         }
         
         $listTopic = new Topic_List_Topic();
-        $listTopic->setFilter(array('sight_id' => $sightId));
+        if(!empty($sightId)){
+            $listTopic->setFilter(array('sight_id' => $sightId));
+        }
         $listTopic->setPagesize(PHP_INT_MAX);
         $ret = $listTopic->toArray();
         foreach($ret['list'] as $key => $val){
@@ -40,11 +47,11 @@ class Topic_Logic_Topic{
             $logicCollect      = new Collect_Logic_Collect();
             $collectTopicNum   = $logicCollect->getLateCollectNum(Collect_Keys::TOPIC, $val['id']); //话题收藏数
             $listAnswer        = new Answers_List_Answers();
-            $time   = strtotime("-1 month");
+            $time   = strtotime($period);
             $filter = "`topic_id` = ".$val['id']." and `update_time` > $time";
             $listAnswer->setFilterString($filter);
             $arrAnswer = $listAnswer->toArray();
-            $answerNum    = count($arrAnswer['list']);  //答案数                       
+            $answerNum    = $arrAnswer['total'];  //答案数                       
             $logicPraise  = new Praise_Logic_Praise();
             foreach ($arrAnswer['list'] as $data){
                 //答案点赞数
@@ -64,9 +71,10 @@ class Topic_Logic_Topic{
                 $listAnswer->setOrder("create_time desc");
                 $listAnswer->setPagesize(1);
                 $arrAnswer = $listAnswer->toArray();
-                $ret['list'][$key]['addinfo'] = $arrAnswer['list'][0];
+                $ret['list'][$key]['addinfo'] = $arrAnswer['list'];
             }            
-            $ret['list'][$key]['upNum']   = $upAnswerNum;
+            $visitTopicNum = $redis->hGet(Topic_Keys::REDIS_TOPIC_VISIT_KEY,$val['id']);
+            $ret['list'][$key]['visit']   = empty($visitTopicNum)?0:$visitTopicNum;
             $ret['list'][$key]['collect'] = $collectTopicNum;
         }        
         array_multisort($arrHotDegree, SORT_DESC , $ret['list']);
@@ -75,12 +83,12 @@ class Topic_Logic_Topic{
     }
     
     /**
-     * 获取最新的话题，带标签过滤，并加上答案等信息:话题的更新时间取话题时间与答案时间中的最新者
+     * 获取最新的话题，带景点、时间范围、大小、标签过滤，并加上答案等信息:话题的更新时间取话题时间与答案时间中的最新者
      * @param integer $sightId
      * @param integer $size
      * @return array
      */
-    public function getNewTopic($sightId,$size=2,$strTags=''){
+    public function getNewTopic($sightId,$period='1 month ago',$size=2,$strTags=''){
         $arrHotDegree     = array();
         $arrTopics        = array();
         $collectTopicNum  = 0;
@@ -95,9 +103,10 @@ class Topic_Logic_Topic{
         }
         
         $listTopic = new Topic_List_Topic();
-        $time      = strtotime("-1 month");
-        //$listTopic->setFilter(array('sight_id' => $sightId));
-        $listTopic->setFilterString("`sight_id`=$sightId and `update_time` > $time");
+        $time      = strtotime($period);
+        if(!empty($sightId)){
+            $listTopic->setFilterString("`sight_id`=$sightId and `update_time` > $time");
+        }
         $listTopic->setOrder("update_time desc");
         $listTopic->setPagesize($size);
         $ret = $listTopic->toArray();
@@ -118,10 +127,10 @@ class Topic_Logic_Topic{
                 $listAnswer->setOrder("create_time desc");
                 $listAnswer->setPagesize(1);
                 $arrAnswer = $listAnswer->toArray();
-                $ret['list'][$key]['addinfo'] = $arrAnswer['list'][0];
+                $ret['list'][$key]['addinfo'] = $arrAnswer['list'];
             }            
             $visitTopicNum = $redis->hGet(Topic_Keys::REDIS_TOPIC_VISIT_KEY,$val['id']);
-            $ret['list'][$key]['visit']   = $visitTopicNum;
+            $ret['list'][$key]['visit']   = empty($visitTopicNum)?0:$visitTopicNum;
             $ret['list'][$key]['collect'] = $collectTopicNum;
         }        
         return $ret;
@@ -135,11 +144,10 @@ class Topic_Logic_Topic{
      */
     public function getHotTopicNum($sightId){
         $redis = Base_Redis::getInstance();
-        $count = 0;
         $end = time();
         $start = strtotime("-1 month");
         $ret = $redis->zRangeByScore(Sight_Keys::getSightTopicName($sightId),$start,$end);
-        return count($count);
+        return count($ret);
     }
     
     /**
@@ -156,7 +164,16 @@ class Topic_Logic_Topic{
         $listAnswers->setPage($page);
         $listAnswers->setPagesize($pageSize);
         $arrAnswers = $listAnswers->toArray();
-        $arrRet['answers'] = $arrAnswers['list'];
+        $arrRet['answers'] = $arrAnswers;
+        
+        //添加redis中话题访问次数统计
+        $redis = Base_Redis::getInstance();
+        $visitTopicNum = $redis->hGet(Topic_Keys::REDIS_TOPIC_VISIT_KEY,$topicId);
+        if(empty($visitTopicNum)){
+            $redis->hSet(Topic_Keys::REDIS_TOPIC_VISIT_KEY,$topicId,1);
+        }else{
+            $redis->hSet(Topic_Keys::REDIS_TOPIC_VISIT_KEY,$topicId,$visitTopicNum+1);
+        }
         return $arrRet;
     }    
     

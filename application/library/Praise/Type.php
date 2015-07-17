@@ -6,7 +6,7 @@
  */
 class Praise_Type extends Base_Type {
     /**
-     * 1 收藏话题
+     * 1 答案点赞
      * @var integer
      */
     const ANSWER = 1;    

@@ -1,10 +1,7 @@
 <?php
 /**
- * 我的话题
- * @author xingjiaodai-ux
- *
  */
-class MyController extends Base_Controller_Api {
+class ListController extends Base_Controller_Api {
     
     const PAGESIZE = 6;
     
@@ -14,17 +11,18 @@ class MyController extends Base_Controller_Api {
     }
     
     /**
-     * 我的话题信息接口
+     * 推荐发现列表页
      */
     public function indexAction() {
         //$page       = $_POST['page'];
         //$pageSize   = $_POST['pageSize'];
-        //$deviceId      = $_POST['id'];
+        //$sight      = $_POST['topic'];
         $page = 1;
         $pageSize = 10;
-        $deviceId = 1;
         $logic      = new Topic_Logic_Topic();
-        $ret        = $logic->getUserTopic($deviceId, $page, $pageSize);
+        $ret        = $logic->getHotTopic(0,'7 day ago',$page*$pageSize);
+        $ret        = array_slice($ret,($page-1)*$pageSize,$pageSize);
         $this->ajax($ret);
-    }    
+    }
+    
 }

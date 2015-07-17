@@ -1,5 +1,8 @@
 <?php
 /**
+ * 景点列表接口
+ * @author xingjiaodai-ux
+ *
  */
 class ListController extends Base_Controller_Api {
     
@@ -25,7 +28,12 @@ class ListController extends Base_Controller_Api {
         $pageSize = 10;
         $cityId = 1;
         $logic      = new Sight_Logic_Sight();
-        $ret        = $logic->getSightList($page,$pageSize,$cityId);
+        if(!empty($cityId)){
+            $ret  =  Sight_Api::getSightList($page,$pageSize);
+        }else{
+            $ret  =  Sight_Api::getSightByCity($cityId,$page,$pageSize);
+        }
+        
         $this->ajax($ret);
     }
     

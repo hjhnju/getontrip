@@ -23,6 +23,5 @@ class DetailController extends Base_Controller_Api {
         $logic      = new Topic_Logic_Topic();
         $ret        = $logic->getTopicDetail($topic,$page,$pageSize);
         $this->ajax($ret);
-    }
-    
+    }   
 }

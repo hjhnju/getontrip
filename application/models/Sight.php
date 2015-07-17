@@ -128,4 +128,25 @@ class SightModel extends PgBaseModel
         }
         return $ret;
     }
+    
+    /**
+     * 获取所有景点数
+     * @return integer
+     */
+    public function getSightNum($cityId=''){
+        if(empty($cityId)){
+            $sql = "SELECT count(*) FROM sight";
+        }else{
+            $sql = "SELECT count(*) FROM sight WHERE city_id = $cityId";
+        }
+        try {
+            $sth = $this->db->prepare($sql);
+            $sth->execute();
+            $ret = $sth->fetchColumn();
+        } catch (Exception $ex) {
+            Base_Log::error($ex->getMessage());
+            return 0;
+        }
+        return $ret;
+    }
 }

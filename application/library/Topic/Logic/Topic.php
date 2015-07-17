@@ -18,31 +18,30 @@ class Topic_Logic_Topic{
      */
     public function getHotTopic($sightId,$period='1 month ago',$size=2,$strTags=''){
         $arrHotDegree     = array();
-        $arrTopics        = array();
+        $arrTags          = array();
         $collectTopicNum  = 0;
         $visitTopicNum    = 0;
         $answerNum        = 0;
         $collectAnswerNum = 0;
         
         $redis = Base_Redis::getInstance();
-        if(!empty($strTags)){
-            $arrTags = explode(",",$strTags);
-            foreach ($arrTags as $tag){
-                $arrTopics = array_merge($arrTopics,$redis->sGetMembers(Tag_Keys::getTagTopic($tag)));
-            }
-        }
         
         $listTopic = new Topic_List_Topic();
         if(!empty($sightId)){
             $listTopic->setFilter(array('sight_id' => $sightId));
         }
+        $listTopic->setFields(array('id','title','content','desc','image'));
         $listTopic->setPagesize(PHP_INT_MAX);
         $ret = $listTopic->toArray();
         foreach($ret['list'] as $key => $val){
-            if((!empty($arrTopics)) && (!in_array($val['id'],$arrTopics))){
-                unset($ret['list'][$key]);
-                continue;
-            }            
+            if(!empty($strTags)){
+                $arrTags = explode(",",$strTags);
+                $arrHasTags = $redis->sGetMembers(Topic_Keys::getTopicTagKey($val['id']));
+                $temp = array_diff($arrHasTags,$arrTags);
+                if(count($arrHasTags) == count($temp)){
+                    continue;
+                }
+            }              
             
             $logicCollect      = new Collect_Logic_Collect();
             $collectTopicNum   = $logicCollect->getLateCollectNum(Collect_Keys::TOPIC, $val['id']); //话题收藏数
@@ -68,6 +67,7 @@ class Topic_Logic_Topic{
             }else{
                 $listAnswer = new Answers_List_Answers();
                 $listAnswer->setFilter(array('topic_id' => $val['id']));
+                $listAnswer->setFields(array('id','from','content'));
                 $listAnswer->setOrder("create_time desc");
                 $listAnswer->setPagesize(1);
                 $arrAnswer = $listAnswer->toArray();
@@ -88,33 +88,34 @@ class Topic_Logic_Topic{
      * @param integer $size
      * @return array
      */
-    public function getNewTopic($sightId,$period='1 month ago',$size=2,$strTags=''){
+    public function getNewTopic($sightId,$period='1 month ago',$page,$pageSize,$strTags=''){
         $arrHotDegree     = array();
-        $arrTopics        = array();
+        $arrTags          = array();
         $collectTopicNum  = 0;
         $visitTopicNum    = 0;
         
         $redis = Base_Redis::getInstance();
-        if(!empty($strTags)){
-            $arrTags = explode(",",$strTags);
-            foreach ($arrTags as $tag){
-                $arrTopics = array_merge($arrTopics,$redis->sGetMembers(Tag_Keys::getTagTopic($tag)));
-            }
-        }
         
         $listTopic = new Topic_List_Topic();
         $time      = strtotime($period);
         if(!empty($sightId)){
             $listTopic->setFilterString("`sight_id`=$sightId and `update_time` > $time");
         }
+        $listTopic->setFields(array('id','title','content','desc','image'));
         $listTopic->setOrder("update_time desc");
-        $listTopic->setPagesize($size);
+        $listTopic->setPage($page);
+        $listTopic->setPagesize($pageSize);
         $ret = $listTopic->toArray();
         foreach($ret['list'] as $key => $val){
-            if((!empty($arrTopics)) && (!in_array($val['id'],$arrTopics))){
-                unset($ret['list'][$key]);
-                continue;
-            }                        
+            if(!empty($strTags)){
+                $arrTags = explode(",",$strTags);
+                $arrHasTags = $redis->sGetMembers(Topic_Keys::getTopicTagKey($val['id']));
+                $temp = array_diff($arrHasTags,$arrTags);
+                if(count($arrHasTags) == count($temp)){
+                    continue;
+                }
+            }            
+                         
             $logicCollect      = new Collect_Logic_Collect();
             $collectTopicNum   = $logicCollect->getLateCollectNum(Collect_Keys::TOPIC, $val['id']); //话题收藏数
             
@@ -124,6 +125,7 @@ class Topic_Logic_Topic{
             }else{
                 $listAnswer        = new Answers_List_Answers();
                 $listAnswer->setFilter(array('topic_id' => $val['id']));
+                $listAnswer->setFields(array('id','from','content'));
                 $listAnswer->setOrder("create_time desc");
                 $listAnswer->setPagesize(1);
                 $arrAnswer = $listAnswer->toArray();

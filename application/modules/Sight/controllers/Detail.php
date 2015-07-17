@@ -22,14 +22,15 @@ class DetailController extends Base_Controller_Api {
      * @return json
      */
     public function indexAction() {
-        //$page       = $_POST['page'];
-        //$pageSize   = $_POST['pageSize'];
-        //$sightId    = $_POST['sightId'];
+        $page       = isset($_POST['page'])?intval($_POST['page']):1;
+        $pageSize   = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGESIZE;
+        $sightId    = isset($_POST['sightId'])?intval($_POST['sightId']):'';
+        $strTags    = isset($_POST['tags'])?trim($_POST['tags']):'';
         $page = 1;
         $pageSize = 10;
         $sightId = 1;
         $logic      = new Sight_Logic_Sight();
-        $ret        = $logic->getSightDetail($sightId,$page,$pageSize);
+        $ret        = $logic->getSightDetail($sightId,$page,$pageSize,$strTags);
         $this->ajax($ret);
     }
     

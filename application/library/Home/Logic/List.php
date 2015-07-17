@@ -78,7 +78,7 @@ class Home_Logic_List{
     public function getFilterSight($x,$y,$page,$pageSize,$order,$sight,$strTags){
         $arr   = array();
         if(!empty($sight)){
-            $arr = $this->_logicSight->getSightDetail($sight,$page,$pageSize,$strTags);
+            $arr = $this->_logicSight->getSightDetail($sight,$page,$pageSize,$order,$strTags);           
         }else{
             $total = 0;
             $ret = $this->_model->getNearSight(array(
@@ -101,7 +101,7 @@ class Home_Logic_List{
             }
             if($order == self::ORDER_NEW){
                 foreach ($arr as $index => $val){
-                    $arr[$index]['topic'] = $this->_logicTopic->getNewTopic($val['id'],self::PAGE_SIZE,$strTags);
+                    $arr[$index]['topic'] = $this->_logicTopic->getNewTopic($val['id'],1,self::PAGE_SIZE,$strTags);
                 }
             }else{                
                 foreach ($arr as $index => $val){

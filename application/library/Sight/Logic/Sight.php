@@ -7,6 +7,10 @@ class Sight_Logic_Sight{
     
     const DEFAULT_HOT_PERIOD = "1 year ago";
     
+    const ORDER_HOT = 1;
+    
+    const ORDER_NEW = 2;
+    
     public function __construct(){
         $this->modelSight = new SightModel();
         $this->logicTopic = new Topic_Logic_Topic();
@@ -20,24 +24,24 @@ class Sight_Logic_Sight{
      * @param string $strTags
      * @return array
      */
-    public function getSightDetail($sightId,$page,$pageSize,$strTags=''){
-        $arrRet   = $this->modelSight->getSightById($sightId);
-        $arrTopic =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,PHP_INT_MAX);
-        if(!empty($strTags)){
-            $redis = new Base_Redis();
-            $arrTags = explode(",",$strTags);
-            foreach ($arrTags as $tag){
-                $temp        = $redis->sMembers(Tag_Keys::getTagTopic($tag));
-                $arrTopicInc = array_merge($arrTopicInc,$temp);
-            }       
-            $arrTopicInc = array_unique($arrTopicInc);
-            foreach ($arrTopic as $key => $value){
-                if(!in_array($value['id'],$arrTopicInc)){
-                    unset($arrTopic[$key]);
-                }
-            }
+    public function getSightDetail($sightId,$page,$pageSize,$order,$strTags=''){
+        $arrRet  = array();
+        $redis   = Base_Redis::getInstance();
+        if(self::ORDER_NEW == $order){
+            $arrRet =  $this->logicTopic->getNewTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
         }
-        $arrRet->topic = array_slice($arrTopic,($page-1)*$pageSize,$page*$pageSize);
+        $arrTopic =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,PHP_INT_MAX,$strTags);
+        $arrRet = array_slice($arrTopic,($page-1)*$pageSize,$page*$pageSize);
+        
+        foreach ($arrRet as $key => $val){
+            $arrTags = array();
+            $arrTemp = $redis->sGetMembers(Topic_Keys::getTopicTagKey($val['id']));
+            foreach ($arrTemp as $id){
+                $arrTags[] = $redis->hGet(Tag_Keys::getTagInfoKey(),$id);
+            }
+            $arrRet[$key]['tags'] = $arrTags;
+            unset($arrRet[$key]['visit']);
+        }   
         return $arrRet;
     }
     

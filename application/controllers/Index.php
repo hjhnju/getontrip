@@ -9,6 +9,5 @@ class IndexController extends Base_Controller_Page {
         parent::init();
     }
     public function indexAction() {
-        
     }
 }

@@ -93,15 +93,20 @@ class Topic_Logic_Topic{
         $arrTags          = array();
         $collectTopicNum  = 0;
         $visitTopicNum    = 0;
+        $strFileter       = 'true';
         
         $redis = Base_Redis::getInstance();
         
         $listTopic = new Topic_List_Topic();
-        $time      = strtotime($period);
         if(!empty($sightId)){
-            $listTopic->setFilterString("`sight_id`=$sightId and `update_time` > $time");
+            $strFileter = "`sight_id`=$sightId";           
+        }
+        if(!empty($period)){
+            $time      = strtotime($period);
+            $strFileter .= " and `update_time` > $time";
         }
         $listTopic->setFields(array('id','title','content','desc','image'));
+        $listTopic->setFilterString($strFileter);
         $listTopic->setOrder("update_time desc");
         $listTopic->setPage($page);
         $listTopic->setPagesize($pageSize);
@@ -144,10 +149,13 @@ class Topic_Logic_Topic{
      * @param integer $sightId
      * @return integer
      */
-    public function getHotTopicNum($sightId){
+    public function getHotTopicNum($sightId,$during){
         $redis = Base_Redis::getInstance();
+        $start = 0;
         $end = time();
-        $start = strtotime("-1 month");
+        if(!empty($during)){
+            $start = strtotime($during);
+        }
         $ret = $redis->zRangeByScore(Sight_Keys::getSightTopicName($sightId),$start,$end);
         return count($ret);
     }

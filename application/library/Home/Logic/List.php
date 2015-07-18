@@ -42,7 +42,7 @@ class Home_Logic_List{
         ));    
         //从景点中找出包含了所要求的话题范围的景点    
         foreach ($ret as $val){
-            $num = $this->_logicTopic->getHotTopicNum($val['id']);
+            $num = $this->_logicTopic->getHotTopicNum($val['id'],"1 month ago");
             if(empty($num)){
                 continue;
             }
@@ -57,9 +57,13 @@ class Home_Logic_List{
                 $pageSize -= $num; 
             }
         }
-        //通过这些景点，取出其它的如话题、答案等信息
+        //通过这些景点，取出其它的如城市、话题、答案等信息
         foreach ($arr as $index => $val){
+            $objCity = new City_Object_City();
+            $objCity->fetch(array('id' => $val['city_id']));
+            $arr[$index]['city']  = $objCity->name;
             $arr[$index]['topic'] = $this->_logicTopic->getHotTopic($val['id']);
+            unset($arr[$index]['city_id']);
         }        
         return $arr; 
     }

@@ -88,4 +88,21 @@ class Topic_Api{
         $objTopic->status = $status;
         return $objTopic->save();
     }
+    
+
+    /**
+     * 接口6：Topic_Api::search($query,$page,$pageSize)
+     * 对话题中的标题内容进行模糊查询
+     * @param string $query
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function search($query,$page,$pageSize){
+        $listTopic = new Topic_List_Topic();
+        $listTopic->setFilterString("`title` like '%".$query."%'");
+        $listTopic->setPage($page);
+        $listTopic->setPagesize($pageSize);
+        return $listTopic->toArray();
+    }
 }

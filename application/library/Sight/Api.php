@@ -88,4 +88,18 @@ class Sight_Api{
         $ret = $model->delSight($id);
         return $ret;
     }
+    
+    /**
+     * 接口7：Topic_Api::search($query,$page,$pageSize)
+     * 对话题中的标题内容进行模糊查询
+     * @param string $query
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function search($query,$page,$pageSize){
+        $model = new SightModel();
+        $ret = $model->search($query, $page, $pageSize);
+        return $ret;
+    }
 }

@@ -80,6 +80,14 @@ class SightModel extends PgBaseModel
                 $_addValues[] = $_value;
             }
         }
+        if(!in_array('create_time',$_addFields)){
+            $_addFields[] = 'create_time';
+            $_addValues[] = time();
+        }
+        if(!in_array('update_time',$_addFields)){
+            $_addFields[] = 'update_time';
+            $_addValues[] = time();
+        }
         $_addFields = implode(',', $_addFields);
         $_addValues = implode("','", $_addValues);
         $_sql = "INSERT INTO sight ($_addFields) VALUES ('$_addValues')";

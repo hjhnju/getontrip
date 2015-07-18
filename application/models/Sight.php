@@ -4,6 +4,8 @@ class SightModel extends PgBaseModel
 {
 
     private $table = 'sight';
+    
+    private $_fileds = array('id','name','describe','level','city_id','x','y','image','create_time','update_time');
 
     public function __construct(){
         parent::__construct();
@@ -73,15 +75,17 @@ class SightModel extends PgBaseModel
         $_addFields = array();
         $_addValues = array();
         foreach ($_addData as $_key => $_value) {
-            $_addFields[] = $_key;
-            $_addValues[] = $_value;
+            if(in_array($_key,$this->_fileds)){
+                $_addFields[] = $_key;
+                $_addValues[] = $_value;
+            }
         }
         $_addFields = implode(',', $_addFields);
         $_addValues = implode("','", $_addValues);
         $_sql = "INSERT INTO sight ($_addFields) VALUES ('$_addValues')";
         try {
             $sth = $this->db->prepare($_sql);
-            $ret = $sth->execute()->rowCount();
+            $ret = $sth->execute();
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return false;
@@ -146,6 +150,27 @@ class SightModel extends PgBaseModel
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return 0;
+        }
+        return $ret;
+    }
+    
+    /**
+     * 根据关键词模糊查询景点名
+     * @param string $query
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function search($query,$page,$pageSize){
+        $offset = ($page-1)*$pageSize;
+        $sql = "SELECT * FROM sight where name like '%".$query."%' limit $pageSize offset $offset";
+        try {
+            $sth = $this->db->prepare($sql);
+            $sth->execute();
+            $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $ex) {
+            Base_Log::error($ex->getMessage());
+            return false;
         }
         return $ret;
     }

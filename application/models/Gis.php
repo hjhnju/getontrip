@@ -16,7 +16,7 @@ class GisModel extends PgBaseModel
     public function getNearSight($loc){
         $x = $loc['x'];
         $y = $loc['y'];
-        $sql = "SELECT id, name, image, describe, earth_distance(ll_to_earth(sight.x, sight.y),ll_to_earth($x,$y))" .
+        $sql = "SELECT id, city_id, name, image, describe, earth_distance(ll_to_earth(sight.x, sight.y),ll_to_earth($x,$y))" .
          " AS dis FROM sight ORDER BY dis ASC";
         try {
             $sth = $this->db->prepare($sql);

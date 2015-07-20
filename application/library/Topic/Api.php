@@ -59,7 +59,7 @@ class Topic_Api{
      * 接口3：Topic_Api::editTopic($topicId,$arrInfo)
      * 话题编辑接口
      * @param integer $topicId
-     * @param array $arrInfo,话题信息，注意标签是个数组,eg:array("content"=>"xxx",'tags'=>array(1,2));
+     * @param array $arrInfo,话题信息，注意标签、景点是数组,eg:array("content"=>"xxx",'tags'=>array(1,2),'sights'=>array(1));
      * @return boolean
      */
     public static function editTopic($topicId,$arrInfo){
@@ -96,13 +96,37 @@ class Topic_Api{
                 }
             }
         }
+        
+        if(isset($arrInfo['sights'])){
+            $listSightTopic = new Sight_List_Topic();
+            $listSightTopic->setFilter(array('topic_id' => $topicId));
+            $listSightTopic->setPagesize(PHP_INT_MAX);
+            $arrList = $listSightTopic->toArray();
+            foreach($arrList['list'] as $key => $val){
+                $objSightTopic = new Sight_Object_Topic();
+                $objSightTopic->fetch(array('id' => $val['id']));
+                if(!in_array($objSightTopic->sightId,$arrInfo['sights'])){
+                    $objSightTopic->remove();
+                }
+            }
+        
+            foreach($arrInfo['sights'] as $sight){
+                $objSightTopic = new Sight_Object_Topic();
+                $objSightTopic->fetch(array('topic_id' => $topicId,'sight_id' =>$sight));
+                if(empty($objSightTopic->id)){
+                    $objSightTopic->sightId = $sight;
+                    $objSightTopic->topicId = $topicId;
+                    $objSightTopic->save();
+                }
+            }
+        }
         return $ret;
     }
     
     /**
      * 接口4：Topic_Api::addTopic($arrInfo,$arrTags)
      * 添加话题接口
-     * @param array $arrInfo,话题信息,eg:array('name'=>xxx,'tags'=>array(1,2))
+     * @param array $arrInfo,话题信息，注意标签及景点是数组,eg:array('name'=>xxx,'tags'=>array(1,2))
      * @return boolean
      */
     public static function addTopic($arrInfo){
@@ -120,6 +144,16 @@ class Topic_Api{
                 $objTopictag->save();
     
                 $redis->sAdd(Topic_Keys::getTopicTagKey($objTopic->id),$val);
+            }
+        }
+        if(isset($arrInfo['sights'])){
+            foreach($arrInfo['sights'] as $val){
+                $objSightTopic = new Sight_Object_Topic();
+                $objSightTopic->topicId = $objTopic->id;
+                $objSightTopic->sightId = $val;
+                $objSightTopic->save();
+        
+                $redis->zAdd(Sight_Keys::getSightTopicName($val),time(),$objTopic->id);
             }
         }
         return $ret;

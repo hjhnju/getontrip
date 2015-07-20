@@ -1,0 +1,80 @@
+
+#myPageTop { 
+    background: #FFF;
+    margin: 10px auto;
+    padding: 0 0 10px 10px;
+  /*   border: 1px solid #ccc; */
+}
+
+#myPageTop table {
+    border-spacing: 0;
+    width: 100%;
+}
+#myPageTop td {
+  text-align: left;
+  width: 50%;
+  height: 30px;
+  line-height: 30px;
+  padding: 0;
+}
+#myPageTop .tr-radio label {
+  margin: 0 20px 0 0;
+}
+#myPageTop .tr-radio input {
+  margin: 0 3px;
+  vertical-align: -3px;
+}
+#myPageTop .tr-text input {
+  margin: 0 10px 0 0;
+  height: 24px;
+  padding: 0 4px;
+  width: 280px;
+  line-height: 1.5;
+  line-height: 24px\0;
+}
+#myPageTop .btn-search,#myPageTop .btn-submit {
+  background: #0075C2;
+  display: inline-block;
+  height: 28px;
+  line-height: 28px;
+  padding: 0 20px;
+  text-decoration: none;
+  color: #fff;
+}
+#myPageTop a.picker-copy {
+  font-size: 15px;
+}
+#hr {
+  height: 2px;
+  background: #0075C2;
+}
+#myPage {
+  position: relative;
+  background-color: #FFF;
+  text-align: left; 
+}
+#map {
+  height: 450px;
+}
+.amap-container {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: #F7F9FB;
+  -ms-touch-action: none;
+}
+#divCoordinate {
+  position: absolute;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 10px;
+  border: 1px solid #999;
+  background: #FFF;
+  z-index: 99;
+}
+.message {
+  font-size: 12px;
+  color: blue;
+  margin-right: 20px;
+  float: right;
+}

@@ -90,8 +90,8 @@ class Sight_Api{
     }
     
     /**
-     * 接口7：Topic_Api::search($query,$page,$pageSize)
-     * 对话题中的标题内容进行模糊查询
+     * 接口7：Sight_Api::search($query,$page,$pageSize)
+     * 对景点中的标题内容进行模糊查询
      * @param string $query
      * @param integer $page
      * @param integer $pageSize
@@ -100,6 +100,20 @@ class Sight_Api{
     public function search($query,$page,$pageSize){
         $model = new SightModel();
         $ret = $model->search($query, $page, $pageSize);
+        return $ret;
+    }
+    
+    /**
+     * 接口：8 Sight_Api::querySights($arrInfo,$page,$pageSize)
+     * 根据条件数组筛选景点
+     * @param array $arrInfo，条件数组，如:array('id'=1);
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function querySights($arrInfo,$page,$pageSize){
+        $model = new SightModel();
+        $ret   = $model->query($arrInfo,$page,$pageSize);
         return $ret;
     }
 }

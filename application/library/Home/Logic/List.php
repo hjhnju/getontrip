@@ -63,7 +63,6 @@ class Home_Logic_List{
             $objCity->fetch(array('id' => $val['city_id']));
             $arr[$index]['city']  = $objCity->name;
             $arr[$index]['topic'] = $this->_logicTopic->getHotTopic($val['id']);
-            unset($arr[$index]['city_id']);
         }        
         return $arr; 
     }

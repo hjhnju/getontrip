@@ -19,6 +19,7 @@ class Topic_Logic_Topic{
     public function getHotTopic($sightId,$period='1 month ago',$size=2,$strTags=''){
         $arrHotDegree     = array();
         $arrTags          = array();
+        $arrTet           = array();
         $collectTopicNum  = 0;
         $visitTopicNum    = 0;
         $answerNum        = 0;
@@ -26,14 +27,16 @@ class Topic_Logic_Topic{
         
         $redis = Base_Redis::getInstance();
         
-        $listTopic = new Topic_List_Topic();
-        if(!empty($sightId)){
-            $listTopic->setFilter(array('sight_id' => $sightId));
+
+        if(!empty($sightId)){        
+            $ret = $redis->zRange(Sight_Keys::getSightTopicName($sightId),0,-1);
+        }else{
+            $arrKeys = $redis->keys(Sight_Keys::getSightTopicName("*"));
+            foreach ($arrKeys as $key){
+                $ret = array_merge($ret,$redis->zRange($key,0,-1));
+            }            
         }
-        $listTopic->setFields(array('id','title','content','desc','image'));
-        $listTopic->setPagesize(PHP_INT_MAX);
-        $ret = $listTopic->toArray();
-        foreach($ret['list'] as $key => $val){
+        foreach($ret as $key => $val){
             if(!empty($strTags)){
                 $arrTags = explode(",",$strTags);
                 $arrHasTags = $redis->sGetMembers(Topic_Keys::getTopicTagKey($val['id']));
@@ -43,6 +46,10 @@ class Topic_Logic_Topic{
                 }
             }              
             
+            $objTopic = new Topic_Object_Topic();
+            $objTopic->fetch(array('id' => $val));
+            $arrRet[] = $objTopic->toArray();
+                       
             $logicCollect      = new Collect_Logic_Collect();
             $collectTopicNum   = $logicCollect->getLateCollectNum(Collect_Keys::TOPIC, $val['id']); //话题收藏数
             $listAnswer        = new Answers_List_Answers();
@@ -63,7 +70,7 @@ class Topic_Logic_Topic{
             
             //有描述用描述，没描述用答案
             if(isset($val['desc']) &&(!empty($val['desc']))){
-                $ret['list'][$key]['addinfo'] = $val['desc'];
+                $arrRet[$key]['addinfo'] = $val['desc'];
             }else{
                 $listAnswer = new Answers_List_Answers();
                 $listAnswer->setFilter(array('topic_id' => $val['id']));
@@ -71,15 +78,14 @@ class Topic_Logic_Topic{
                 $listAnswer->setOrder("create_time desc");
                 $listAnswer->setPagesize(1);
                 $arrAnswer = $listAnswer->toArray();
-                $ret['list'][$key]['addinfo'] = $arrAnswer['list'];
+                $arrRet[$key]['addinfo'] = $arrAnswer['list'];
             }            
             $visitTopicNum = $redis->hGet(Topic_Keys::REDIS_TOPIC_VISIT_KEY,$val['id']);
-            $ret['list'][$key]['visit']   = empty($visitTopicNum)?0:$visitTopicNum;
-            $ret['list'][$key]['collect'] = $collectTopicNum;
+            $arrRet[$key]['visit']   = empty($visitTopicNum)?0:$visitTopicNum;
+            $arrRet[$key]['collect'] = $collectTopicNum;
         }        
-        array_multisort($arrHotDegree, SORT_DESC , $ret['list']);
-        $arrRet = array_slice($ret['list'],0,$size);
-        return $arrRet;
+        array_multisort($arrHotDegree, SORT_DESC , $arrRet);
+        return array_slice($arrRet,0,$size);
     }
     
     /**
@@ -98,12 +104,15 @@ class Topic_Logic_Topic{
         $redis = Base_Redis::getInstance();
         
         $listTopic = new Topic_List_Topic();
+        
         if(!empty($sightId)){
-            $strFileter = "`sight_id`=$sightId";           
+            $ret = $redis->zRange(Sight_Keys::getSightTopicName($sightId),0,-1);
+            $strTopicIds = implode(",",$ret);
+            $strFileter = "`id` in($strTopicIds)";           
         }
         if(!empty($period)){
             $time      = strtotime($period);
-            $strFileter .= " and `update_time` > $time";
+            $strFileter .= " AND `update_time` > $time";
         }
         $listTopic->setFields(array('id','title','content','desc','image'));
         $listTopic->setFilterString($strFileter);

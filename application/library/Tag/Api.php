@@ -56,12 +56,12 @@ class Tag_Api{
         $objTag->fetch(array('id' => $id));
         $objTag->remove();
         
-        $listTopictag = new TopicTag_List_Topictag();
+        $listTopictag = new Topic_List_Tag();
         $listTopictag->setFilter(array('tag_id' => $id));
         $listTopictag->setPagesize(PHP_INT_MAX);
         $arrList = $listTopictag->toArray();
         foreach ($arrList['list'] as $val){
-            $objTag = new TopicTag_Object_Topictag();
+            $objTag = new Topic_Object_Tag();
             $objTag->fetch(array('id'=>$val['id']));
             $objTag->remove();
         }

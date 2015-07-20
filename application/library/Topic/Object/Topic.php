@@ -26,7 +26,7 @@ class Topic_Object_Topic extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'sight_id', 'title', 'content', 'desc', 'image', 'user_id', 'status', 'x', 'y', 'create_time', 'update_time');
+    protected $fields = array('id', 'title', 'content', 'desc', 'image', 'user_id', 'status', 'x', 'y', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -34,7 +34,6 @@ class Topic_Object_Topic extends Base_Object {
      */
     public $properties = array(
         'id'          => 'id',
-        'sight_id'    => 'sightId',
         'title'       => 'title',
         'content'     => 'content',
         'desc'        => 'desc',
@@ -53,7 +52,6 @@ class Topic_Object_Topic extends Base_Object {
      */
     protected $intProps = array(
         'id'          => 1,
-        'sight_id'    => 1,
         'status'      => 1,
         'create_time' => 1,
         'update_time' => 1,
@@ -72,12 +70,6 @@ class Topic_Object_Topic extends Base_Object {
      * @var integer
      */
     public $id;
-
-    /**
-     * 景点id
-     * @var integer
-     */
-    public $sightId;
 
     /**
      * 副标题

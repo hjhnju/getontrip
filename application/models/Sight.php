@@ -181,4 +181,30 @@ class SightModel extends PgBaseModel
         }
         return $ret;
     }
+    
+    /**
+     * 根据给定条件查询
+     * @param array $arrInfo
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function query($arrInfo,$page,$pageSize){
+        $offset = ($page-1)*$pageSize;
+        $where = "where ";
+        foreach ($arrInfo as $key => $val){
+            $where .= "$key = '".$val."' and";
+        }
+        $where = substr($where, 0,-4);
+        $sql = "SELECT * FROM sight $where limit $pageSize offset $offset";
+        try {
+            $sth = $this->db->prepare($sql);
+            $sth->execute();
+            $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $ex) {
+            Base_Log::error($ex->getMessage());
+            return false;
+        }
+        return $ret;
+    }
 }

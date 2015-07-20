@@ -3,7 +3,7 @@
  * 标签信息表
  * @author huwei
  */
-class TopicTag_Object_Topictag extends Base_Object {
+class Topic_Object_Tag extends Base_Object {
     /**
      * 数据表名
      * @var string
@@ -20,7 +20,7 @@ class TopicTag_Object_Topictag extends Base_Object {
      * 类名
      * @var string
      */
-    const CLASSNAME = 'Topictag_Object_Topictag';
+    const CLASSNAME = 'Topic_Object_Tag';
 
     /**
      * 对象包含的所有字段
@@ -54,7 +54,7 @@ class TopicTag_Object_Topictag extends Base_Object {
 
     /**
      * @param array $data
-     * @return Topic_tag_Object_Topic_tag
+     * @return Topic_Object_Tag
      */
     public static function init($data) {
         return parent::initObject(self::CLASSNAME, $data);

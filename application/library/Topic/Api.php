@@ -18,7 +18,7 @@ class Topic_Api{
         $listTopic->setPagesize($pageSize);
         $arrRet = $listTopic->toArray();
         foreach ($arrRet['list'] as $key => $val){
-            $listTopictag = new Topictag_List_Topictag();
+            $listTopictag = new Topic_List_Tag();
             $listTopictag->setFilter(array('topic_id' => $val['id']));
             $arrTag = $listTopictag->toArray();
             $arrRet['list'][$key]['tags'] = $arrTag['list'];

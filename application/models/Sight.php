@@ -109,7 +109,7 @@ class SightModel extends PgBaseModel
      */
     public function eddSight($sightId, $_updateData){
         $_setData = '';  
-        $_where = "AND id = $sightId"; 
+        $_where = "WHERE id = $sightId"; 
         foreach ($_updateData as $_key=>$_value) {  
             if (is_array($_value)) {  
                 $_setData .= "$_key=$_value[0],";  
@@ -117,8 +117,9 @@ class SightModel extends PgBaseModel
                 $_setData .= "$_key='$_value',";  
             }  
         }  
-        $_setData = substr($_setData, 0, -1);  
-        $_sql = "UPDATE sight SET $_setData $_where";  
+        $time = time();
+        $_setData .= "update_time=$time";  
+        $_sql = "UPDATE sight SET $_setData $_where"; 
         $sth = $this->db->prepare($_sql);
         $ret = $sth->execute();
         return $ret;  

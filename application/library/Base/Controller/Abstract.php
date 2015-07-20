@@ -35,6 +35,8 @@ class Base_Controller_Abstract extends Yaf_Controller_Abstract
         
         $this->baselog();
         //未登录自动跳转
+        $logicUser = new User_Logic_Login();
+        $this->userid = $logicUser->checkLogin();
         if($this->needLogin && empty($this->userid)){
             //$u        = isset($_REQUEST['HTTP_REFERER']) ? $_REQUEST['HTTP_REFERER'] : null;
             $u        = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : null;

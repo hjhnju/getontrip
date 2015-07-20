@@ -10,6 +10,6 @@ class Topic_Keys {
     }
     
     public static function getTopicTagKey($id){
-        return sprintf(self::REDIS_TOPIC_VISIT_KEY, $id);
+        return sprintf(self::REDIS_TOPIC_TAG_KEY, $id);
     }
 }

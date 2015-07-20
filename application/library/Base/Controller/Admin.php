@@ -10,10 +10,10 @@ class Base_Controller_Admin extends Base_Controller_Page {
         parent::init();
 
         //必须管理员登录
-        $admin = new Admin_Object_Admin($this->userid);
+        /*$admin = new Admin_Object_Admin($this->userid);
         if ($admin->status !== 0) {
-            return $this->redirect('/');
-        }
+            return $this->redirect('/admin/login');
+        }*/
 
         // 定义的默认的action
         $controller = $this->_request->controller;

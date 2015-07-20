@@ -21,10 +21,9 @@ class AdminuserapiController extends Base_Controller_Api{
          if(empty($password)){ 
              return $this->ajaxError(Admin_RetCode::PASSWORD_EMPTY, Admin_RetCode::getMsg(Admin_RetCode::PASSWORD_EMPTY));
          }  
-    	 $dbRet=Admin_Api::login($name,$password);
+    	 $dbRet = Admin_Api::login($name,$password);
     	 if ($dbRet) {
-    	 	return $this->ajax();
-           //$this->redirect('/admin');  
+    	     return $this->redirect('/admin');
     	 } 
          return $this->ajaxError(Admin_RetCode::PASSWORD_WRONG, Admin_RetCode::getMsg(Admin_RetCode::PASSWORD_WRONG));
 
@@ -34,6 +33,8 @@ class AdminuserapiController extends Base_Controller_Api{
      *  
      */    
     public function logoutAction(){  
+         $logic   = new User_Logic_Login();
+         $ret = $logic->signOut();
          $this->redirect('/admin/login');
     }
 }

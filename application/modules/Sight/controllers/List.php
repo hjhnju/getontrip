@@ -27,7 +27,6 @@ class ListController extends Base_Controller_Api {
         $page = 1;
         $pageSize = 10;
         $cityId = 1;
-        $logic      = new Sight_Logic_Sight();
         if(!empty($cityId)){
             $ret  =  Sight_Api::getSightList($page,$pageSize);
         }else{

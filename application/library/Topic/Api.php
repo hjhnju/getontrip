@@ -65,14 +65,23 @@ class Topic_Api{
      * 接口4：Topic_Api::addTopic($arrInfo)
      * 添加话题接口
      * @param array $arrInfo,话题信息,eg:array('name'=>xxx,....)
+     * @param array $arrTags,话题标签数组,eg:array(1,2)
      * @return boolean
      */
-    public static function addTopic($arrInfo){
+    public static function addTopic($arrInfo,$arrTags){
         $objTopic = new Topic_Object_Topic();
         foreach ($arrInfo as $key => $val){
             $objTopic->$key = $val;
         }
-        return $objTopic->save();
+        $ret1 = $objTopic->save();
+        foreach($arrTags as $val){
+            $objTopictag = new Topic_Object_Tag();
+            $objTopictag->topicId = $objTopic->id;
+            $objTopictag->tagId   = $val;
+            $objTopictag->save();
+        }
+        
+        $redis = Base_Redis::getInstance();
     }
     
     /**

@@ -42,7 +42,11 @@ class Tag_Api{
     public static function saveTag($name){
         $objTag = new Tag_Object_Tag();
         $objTag->name = $name;
-        return $objTag->save();
+        $ret1 = $objTag->save();
+        
+        $redis = Base_Redis::getInstance();
+        $ret2 = $redis->hSet(Tag_Keys::getTagInfoKey(),$objTag->id,$objTag->name);
+        return $ret1&&$ret2;
     }
     
     /**
@@ -54,7 +58,7 @@ class Tag_Api{
     public static function delTag($id){
         $objTag = new Tag_Object_Tag();
         $objTag->fetch(array('id' => $id));
-        $objTag->remove();
+        $ret1 = $objTag->remove();
         
         $listTopictag = new Topic_List_Tag();
         $listTopictag->setFilter(array('tag_id' => $id));
@@ -65,6 +69,10 @@ class Tag_Api{
             $objTag->fetch(array('id'=>$val['id']));
             $objTag->remove();
         }
-        return true;
+        
+        $redis = Base_Redis::getInstance();
+        $ret2 = $redis->hDel(Tag_Keys::getTagInfoKey(),$id);
+        
+        return $ret1&&$ret2;
     }
 }

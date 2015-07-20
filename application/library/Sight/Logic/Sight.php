@@ -29,9 +29,10 @@ class Sight_Logic_Sight{
         $redis   = Base_Redis::getInstance();
         if(self::ORDER_NEW == $order){
             $arrRet =  $this->logicTopic->getNewTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
+        }else{
+            $arrTopic =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,PHP_INT_MAX,$strTags);
+            $arrRet = array_slice($arrTopic,($page-1)*$pageSize,$pageSize);
         }
-        $arrTopic =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,PHP_INT_MAX,$strTags);
-        $arrRet = array_slice($arrTopic,($page-1)*$pageSize,$page*$pageSize);
         
         foreach ($arrRet as $key => $val){
             $arrTags = array();
@@ -40,7 +41,6 @@ class Sight_Logic_Sight{
                 $arrTags[] = $redis->hGet(Tag_Keys::getTagInfoKey(),$id);
             }
             $arrRet[$key]['tags'] = $arrTags;
-            unset($arrRet[$key]['visit']);
         }   
         return $arrRet;
     }

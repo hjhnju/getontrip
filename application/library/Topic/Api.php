@@ -64,6 +64,7 @@ class Topic_Api{
      */
     public static function editTopic($topicId,$arrInfo){
         $objTopic = new Topic_Object_Topic();
+        $redis    = Base_Redis::getInstance();
         $objTopic->fetch(array('id' => $topicId));
         if(empty($objTopic->id)){
             return false;
@@ -82,6 +83,7 @@ class Topic_Api{
                 $objTopicTag = new Topic_Object_Tag();
                 $objTopicTag->fetch(array('id' => $val['id']));
                 if(!in_array($objTopicTag->tagId,$arrInfo['tags'])){
+                    $redis->sRemove(Topic_Keys::getTopicTagKey($topicId),$objTopicTag->tagId);
                     $objTopicTag->remove();
                 }
             }
@@ -93,6 +95,7 @@ class Topic_Api{
                     $objTopicTag->tagId   = $tag;
                     $objTopicTag->topicId = $topicId;
                     $objTopicTag->save();
+                    $redis->sAdd(Topic_Keys::getTopicTagKey($topicId),$objTopicTag->tagId);
                 }
             }
         }
@@ -106,6 +109,7 @@ class Topic_Api{
                 $objSightTopic = new Sight_Object_Topic();
                 $objSightTopic->fetch(array('id' => $val['id']));
                 if(!in_array($objSightTopic->sightId,$arrInfo['sights'])){
+                    $redis->zDelete(Sight_Keys::getSightTopicName($objSightTopic->sightId),$topicId);
                     $objSightTopic->remove();
                 }
             }
@@ -117,6 +121,7 @@ class Topic_Api{
                     $objSightTopic->sightId = $sight;
                     $objSightTopic->topicId = $topicId;
                     $objSightTopic->save();
+                    $redis->zAdd(Sight_Keys::getSightTopicName($objSightTopic->sightId),time(),$topicId);
                 }
             }
         }

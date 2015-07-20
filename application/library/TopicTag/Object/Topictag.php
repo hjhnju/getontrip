@@ -3,7 +3,7 @@
  * 标签信息表
  * @author huwei
  */
-class Topictag_Object_Topictag extends Base_Object {
+class TopicTag_Object_Topictag extends Base_Object {
     /**
      * 数据表名
      * @var string

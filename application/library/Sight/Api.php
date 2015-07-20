@@ -113,7 +113,13 @@ class Sight_Api{
      */
     public function querySights($arrInfo,$page,$pageSize){
         $model = new SightModel();
-        $ret   = $model->query($arrInfo,$page,$pageSize);
-        return $ret;
+        $ret   = $model->query($arrInfo,1,PHP_INT_MAX);
+        $num   = count($ret);
+        $arrRet['page']     = $page;
+        $arrRet['pagesize'] = $pageSize;
+        $arrRet['pageall']  = ceil($num/$pageSize);
+        $arrRet['total']    = $num;
+        $arrRet['list']     = array_slice($ret,($page-1)*$pageSize,$pageSize);
+        return $arrRet;
     }
 }

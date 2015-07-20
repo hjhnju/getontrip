@@ -38,7 +38,7 @@ class Sight_Logic_Sight{
             $arrTags = array();
             $arrTemp = $redis->sGetMembers(Topic_Keys::getTopicTagKey($val['id']));
             foreach ($arrTemp as $id){
-                $arrTags[] = $redis->hGet(Tag_Keys::getTagInfoKey(),$id);
+                $arrTags[] = $redis->hGet(Tag_Keys::getTagInfoKey($id),'name');
             }
             $arrRet[$key]['tags'] = $arrTags;
         }   

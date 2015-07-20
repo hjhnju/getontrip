@@ -29,7 +29,7 @@ class Tag_Logic_Tag{
         $listTag->setPagesize(PHP_INT_MAX);
         $arrTag = $listTag->toArray();
         foreach ($arrTag['list'] as $val){
-            $arrCount[] = $redis->sCard(Tag_Keys::getTagTopic($val['id']));
+            $arrCount[] = $redis->hGet(Tag_Keys::getTagInfoKey($val['id']),'num');
         }
         array_multisort($arrCount, SORT_DESC , $arrTag['list']);
         $arrRet = array_slice($arrTag['list'],0,$size);

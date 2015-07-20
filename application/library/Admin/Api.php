@@ -16,9 +16,9 @@ class Admin_Api{
        $objAdmin->fetch(array('name' => $name,'passwd' => $password));
        if(!empty($objAdmin->id)){
            $objAdmin->loginTime = time();
-           Yaf_Session::getInstance()->set(User_Keys::getLoginUserKey(), $objAdmin->id);
+           Yaf_Session::getInstance()->set(Admin_Keys::getLoginAdminKey(), $objAdmin->id);
            return $objAdmin->save();
        }       
        return false;
-    }  
+    } 
 }

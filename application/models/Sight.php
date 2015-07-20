@@ -110,12 +110,10 @@ class SightModel extends PgBaseModel
     public function eddSight($sightId, $_updateData){
         $_setData = '';  
         $_where = "WHERE id = $sightId"; 
-        foreach ($_updateData as $_key=>$_value) {  
-            if (is_array($_value)) {  
-                $_setData .= "$_key=$_value[0],";  
-            } else {  
-                $_setData .= "$_key='$_value',";  
-            }  
+        foreach ($_updateData as $_key=>$_value) { 
+            if(in_array($_key,$this->_fileds)){
+                $_setData .= "$_key='$_value',"; 
+            } 
         }  
         $time = time();
         $_setData .= "update_time=$time";  

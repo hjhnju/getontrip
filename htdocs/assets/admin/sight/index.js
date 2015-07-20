@@ -4,7 +4,7 @@ $(document).ready(function() {
     var editBtn = '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
     var cityArray = {};
     //获取全局城市json数据
-    $.ajax({
+/*    $.ajax({
         "url": "/admin/cityapi/list",
         "async": false,
         "error": function(e) {
@@ -13,7 +13,7 @@ $(document).ready(function() {
         "success": function(response) {
             cityArray = response.data.data;
         }
-    });
+    });*/
 
     var oTable = $('#editable').dataTable({
         "serverSide": true, //分页，取数据等等的都放到服务端去
@@ -43,10 +43,12 @@ $(document).ready(function() {
         }, {
             "data": "name"
         }, {
+            "data": 'city_name'
+        },/* {
             "data": function(e) {
                 return getCityNameById(e.city_id);
             }
-        }, {
+        }*/ {
             "data": 'level'
         }, {
             "data": 'x'

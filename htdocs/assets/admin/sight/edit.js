@@ -72,6 +72,7 @@ $(document).ready(function() {
     $('#myModal').on('loaded.bs.modal', function(e) {
         $("#txtSearch").val($.trim($("#name").val()));
         $("#cityName").val($.trim($("#city_name").val()));
+        $('#myModal .btn-search').click();
     });
 
     //模态框 点击确定之后立即触发该事件。

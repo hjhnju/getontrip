@@ -22,8 +22,8 @@ class AdminuserapiController extends Base_Controller_Api{
              return $this->ajaxError(Admin_RetCode::PASSWORD_EMPTY, Admin_RetCode::getMsg(Admin_RetCode::PASSWORD_EMPTY));
          }  
     	 $dbRet = Admin_Api::login($name,$password);
-    	 if ($dbRet) {
-    	     return $this->redirect('/admin');
+    	 if ($dbRet) { 
+    	     return $this->ajax();
     	 } 
          return $this->ajaxError(Admin_RetCode::PASSWORD_WRONG, Admin_RetCode::getMsg(Admin_RetCode::PASSWORD_WRONG));
 

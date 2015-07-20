@@ -57,6 +57,7 @@
         oldXY.y = data.y;
         $("#txtSearch").val(data.name);
         $("#cityName").val(data.name);
+        $('#map-modal .btn-search').click();
     });
 
     //模态框 点击确定之后立即触发该事件。

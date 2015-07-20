@@ -1,7 +1,10 @@
 <?php
 class City_Logic_City{
     
+    protected $_modeSight;
+    
     public function __construct(){
+        $this->_modeSight = new SightModel();
     }   
     
     /**
@@ -19,5 +22,23 @@ class City_Logic_City{
             );
         }
         return array();
+    }
+    
+    /**
+     * 根据城市ID获取城市信息，包含景点及话题信息
+     * @param integer $cityId
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function getCityDetail($cityId,$page,$pageSize){
+        $redis = Base_Redis::getInstance();
+        $ret   = City_Api::getCityById($cityId);
+        $arrSight = $this->_modeSight->getSightByCity($page, $pageSize, $cityId);
+        foreach ($arrSight as $key => $val){
+            $arrSight[$key]['topics'] = count($redis->zRange(Sight_Keys::getSightTopicName($val['id']),0,-1));
+        }
+        $ret['sights'] = $arrSight;
+        return $ret;
     }
 }

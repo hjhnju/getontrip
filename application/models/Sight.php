@@ -120,7 +120,7 @@ class SightModel extends PgBaseModel
         $_setData = substr($_setData, 0, -1);  
         $_sql = "UPDATE sight SET $_setData $_where";  
         $sth = $this->db->prepare($_sql);
-        $ret = $sth->execute()->rowCount();
+        $ret = $sth->execute();
         return $ret;  
     }
     

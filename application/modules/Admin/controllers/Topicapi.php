@@ -1,8 +1,8 @@
 <?php
 /**
- * 景点相关操作
+ * 话题相关操作
  */
-class  SightapiController extends Base_Controller_Api{
+class  TopicapiController extends Base_Controller_Api{
      
      public function init() {
         parent::init();
@@ -13,6 +13,7 @@ class  SightapiController extends Base_Controller_Api{
      *  
      */    
     public function listAction(){  
+
         //第一条数据的起始位置，比如0代表第一条数据
         $start=isset($_REQUEST['start'])?$_REQUEST['start']:0;
        
@@ -20,35 +21,35 @@ class  SightapiController extends Base_Controller_Api{
 
         $page=($start/$pageSize)+1;
          
-        $arrInfo =isset($_REQUEST['params'])?$_REQUEST['params']:array();
+        $arrParam = isset($_REQUEST['params'])?$_REQUEST['params']:array();
         
      
-        $List =Sight_Api::querySights($arrInfo,$page, $pageSize);
-    
-    
+        $List = Topic_Api::queryTopic($arrParam,$page,$pageSize);
         
-        //添加城市名称
-        $cityArray=array(); 
+       
+        
+        //添加景点名称
+     /*   $sightArray=array(); 
         $tmpList=$List['list'];
         foreach($tmpList as $key=>$item){   
-           $city_id=$item['city_id']; 
-            if (!array_key_exists($city_id,$cityArray)) {  
+           $sight_id=$item['sight_id']; 
+            if (!array_key_exists($sight_id,$cityArray)) {  
                   //根据ID查找城市名称
-                  $cityInfo = City_Api::getCityById($item['city_id']);
-                  $tmpList[$key]['city_name'] = $cityInfo['name']; 
+                  $cityInfo = City_Api::getCityById($item['sight_id']);
+                  $tmpList[$key]['sight_name'] = $cityInfo['name']; 
                   //添加到数组
-                  $cityArray[$city_id]=$cityInfo['name'];  
+                  $cityArray[$sight_id]=$cityInfo['name'];  
             }
             else{
                  
-                 $tmpList[$key]['city_name']  = $cityArray[$item['city_id']];
+                 $tmpList[$key]['sight_name']  = $cityArray[$item['sight_id']];
             }
         } 
-        $List['list']=$tmpList;
+        $List['list']=$tmpList;*/
 
         $retList['recordsFiltered'] =$List['total'];
         $retList['recordsTotal'] = $List['total']; 
-        $retList['data'] =$List['list']; 
+        $retList['data'] =$List['list'];  
 		    return $this->ajax($retList);
          
     }
@@ -89,15 +90,10 @@ class  SightapiController extends Base_Controller_Api{
     }
     
 
-    /**
-      * 获取景点信息，模糊查询，用于自动完成下拉框
-      * @return [type] [description]
-    */
-    public function getSightListAction(){ 
-        $str=isset($_REQUEST['query'])?$_REQUEST['query']:'天'; 
-        //最大值 PHP_INT_MAX   
-        $List = Sight_Api::search('',1,PHP_INT_MAX); 
-      
-        return $this->ajax($List);   
+
+    public function getTagNames(){
+        
     }
+
+
 }

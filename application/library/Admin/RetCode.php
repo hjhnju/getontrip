@@ -39,4 +39,8 @@ class Admin_RetCode extends Base_RetCode {
         self::CAPTCHA_WRONG => '验证码错误',
         self::NOT_ADMIN => '不是管理员',
     );
+
+
+
 }
+

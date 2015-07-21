@@ -5,18 +5,7 @@
 			<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-dialog  modal-lg">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-							<h4 class="modal-title">添加景点信息</h4>
-						</div>
-						<div class="modal-body">
-							  
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn blue">保存</button>
-							<button type="button" class="btn default" data-dismiss="modal">关闭</button>
-						</div>
+					<div class="modal-content"> 
 					</div>
 					<!-- /.modal-content -->
 				</div>
@@ -26,7 +15,7 @@
 			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
-			  {%$action%}景点 <small>reports & statistics</small>
+			  {%$action%}话题 <small>reports & statistics</small>
 			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
@@ -37,11 +26,11 @@
 					</li>
 					<li>
 						<i class="fa fa-home"></i>
-						<a href="/admin/sight">景点管理</a>
+						<a href="/admin/sight">话题管理</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
-						<a href="#">{%$action%}景点</a>
+						<a href="#">{%$action%}话题</a>
 					</li>
 				</ul>
 			</div>
@@ -54,39 +43,44 @@
                     {%/if%}
                   	
                       <div class="form-group ">
-                          <label for="name" class="control-label col-lg-2">名称*</label>
+                          <label for="content" class="control-label col-lg-2">主标题*</label>
                           <div class="col-lg-5">
-                              <input class="form-control" id="name" name="name" minlength="2" type="text" required="" value="{%if isset($post.name)%}{%$post.name%}{%/if%}"><label for="name" class="error"></label>
+                              <input class="form-control" id="content" name="content" minlength="2" type="text" required="" value="{%if isset($post.content)%}{%$post.content%}{%/if%}"><label for="content" class="error"></label>
                           </div>
                       </div>
                       <div class="form-group ">
-                          <label for="level" class="control-label col-lg-2">级别*</label> 
+                          <label for="title" class="control-label col-lg-2">副标题*</label>
+                          <div class="col-lg-5">
+                              <input class="form-control" id="title" name="title" minlength="2" type="text" required="" value="{%if isset($post.title)%}{%$post.title%}{%/if%}"><label for="title" class="error"></label>
+                          </div>
+                      </div>
+                       <div class="form-group ">
+                          <label for="desc" class="control-label col-lg-2">补充描述</label>
+                          <div class="col-lg-5">
+                               <textarea class="form-control" id="desc" name="desc" rows="5">{%if isset($post.desc)%}{%$post.desc%}{%/if%}</textarea><label for="desc" class="error"></label>
+                          </div>
+                      </div>  
+                      <div class="form-group ">
+                          <label for="sight_name" class="control-label col-lg-2">所属景点*</label>
+                          <div class="col-lg-3"> 
+                               <input class="form-control" id="sight_name" name="sight_name"  type="text" required=""  autocomplete="off" value="{%if isset($post.sight_name)%}{%$post.sight_name%}{%/if%}" placeholder="输入后请在下拉框选择"/> 
+                               <label for="sight_name" class="error"></label>
+                          </div>
+                           <div class="col-lg-3">
+                           	 <div class="alert alert-info" role="alert" id="sight_alert">
+                               
+                             </div>
+                           </div>  
+                      </div>
+                      <div class="form-group ">
+                          <label for="sight_name" class="control-label col-lg-2">贴标签*</label>
                           <div class="col-lg-5"> 
-                          <select class="form-control" name="level" id="level"> 
-							             {%foreach $levelArray as $key=>$item%}
-		                          <option value="{%$item%}" {%if isset($post.level) and $item eq $post.level%}selected{%/if%} >{%$item%}</option>
-		                       {%/foreach%}
-							</select>
-							<label for="level" class="error"></label>
-						  </div>
-                      </div>
-
-                      <div class="form-group ">
-                          <label for="describe" class="control-label col-lg-2">描述</label>
-                          <div class="col-lg-5">
-                               <textarea class="form-control" id="describe" name="describe">{%if isset($post.describe)%}{%$post.describe%}{%/if%}</textarea><label for="describe" class="error"></label>
-                          </div>
-                      </div>
-                      <div class="form-group ">
-                          <label for="city_name" class="control-label col-lg-2">所属城市*</label>
-                          <div class="col-lg-5">
-                          	   <input  id="city_id" name="city_id"  type="hidden" value="{%if isset($post.city_id)%}{%$post.city_id%}{%/if%}">
-                               <input class="form-control" id="city_name" name="city_name"  type="text" required=""  autocomplete="off" value="{%if isset($post.city_name)%}{%$post.city_name%}{%/if%}"/> 
-                               <label for="city_name" class="error"></label>
-                          </div>
-                           <div class="col-lg-5">
-                           	<p class="help-block">输入后请在下拉框选择(键盘也可选择)，否则无效</p> 
-                           </div>
+                               <select multiple="multiple" class="multi-select" id="tags" name="tags[]" >
+                                   {%foreach $tagList as $key=>$item%}
+                                     <option value="{%$item.id%}" {%if isset($item.selected)%}selected{%/if%} >{%$item.name%}</option>
+                                   {%/foreach%} 
+                              </select>
+                           </div>  
                       </div>
                        <div class="form-group ">
                           <label for="xy" class="control-label col-lg-2">坐标*</label>
@@ -101,7 +95,7 @@
                           </div> 
                       </div>
                       <div class="form-group"> 
-                          <label for="" class="control-label col-lg-2">图片</label>
+                          <label for="" class="control-label col-lg-2">背景图片</label>
                           <div class="col-md-9">
                               <div class="fileupload fileupload-new" data-provides="fileupload">
                                   <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
@@ -153,9 +147,12 @@
 <script src="{%$feroot%}s/global/plugins/typeahead/bootstrap-typeahead.js" type="text/javascript"></script> 
 <script src="{%$feroot%}s/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script> 
  <link href="{%$feroot%}s/global/plugins/bootstrap-fileupload/bootstrap-fileupload.css" rel="stylesheet" type="text/css"/> 
-<script src="{%$feroot%}s/global/plugins/bootstrap-fileupload/bootstrap-fileupload.js" type="text/javascript"></script> 
-<script src="{%$feroot%}s/global/plugins/ajaxfileupload.js" type="text/javascript"></script> 
-<script src="{%$feroot%}s/admin/sight/edit.js" type="text/javascript"></script> 
+<script src="{%$feroot%}s/global/plugins/bootstrap-fileupload/bootstrap-fileupload.js" type="text/javascript"></script>
+<script src="{%$feroot%}s/global/plugins/jquery-multi-select/js/jquery.multi-select.js" type="text/javascript"></script>
+<link href="{%$feroot%}s/global/plugins/jquery-multi-select/css/multi-select.css" rel="stylesheet" type="text/css"/>  
+<script src="{%$feroot%}s/global/plugins/ajaxfileupload.js" type="text/javascript"></script>
+
+<script src="{%$feroot%}s/admin/topic/edit.js" type="text/javascript"></script> 
 
  
 {%/block%}

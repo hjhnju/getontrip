@@ -1226,6 +1226,7 @@ Custom Bootstrap Badges
     text-shadow: none !important;
     text-align: center;
     vertical-align: middle;
+    margin-right: 3px;
 }
 
 .badge.badge-roundless {

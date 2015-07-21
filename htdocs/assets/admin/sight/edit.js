@@ -54,7 +54,7 @@ $(document).ready(function() {
         //判断城市和景点名称是否已经填写
         if (!$.trim($("#city_name").val()) || !$.trim($("#name").val())) {
             validate.settings.rules.xy.required = function() {
-                return !$.trim($("#city_name").val()) && $.trim($("#name").val());
+                return !$.trim($("#city_name").val()) || $.trim($("#name").val());
             };
             $("#Form").submit();
             return false;

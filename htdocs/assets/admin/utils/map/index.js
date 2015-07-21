@@ -16,7 +16,7 @@
     map.setCity(cityName);
 
     //默认搜索传过来的城市名称 
-    //placeSearch();
+    placeSearch();
 
     //为地图注册click事件获取鼠标点击出的经纬度坐标
     var clickEventListener = AMap.event.addListener(map, 'click', function(e) {
@@ -25,7 +25,7 @@
     });
      
     $(".btn-search").click(function(event) {
-        keyWords = $.trim($('#txtSearch').val()); 
+        keyWords = $.trim($('#txtSearch').val());  
         placeSearch();
     });
 
@@ -36,7 +36,7 @@
      /*   //默认增加字符串市
         if (cityName.indexOf('市') < 0&&cityName.indexOf('州')< 0&&cityName.indexOf('区')< 0) {
             cityName = cityName + '市';
-        }*/  
+        }*/   
         var MSearch;
         AMap.service(["AMap.PlaceSearch"], function() {
             MSearch = new AMap.PlaceSearch({ //构造地点查询类

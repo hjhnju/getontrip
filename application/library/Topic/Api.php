@@ -52,6 +52,12 @@ class Topic_Api{
             $listTopictag->setFilter(array('topic_id' => $val['id']));
             $arrTag = $listTopictag->toArray();
             $arrRet['list'][$key]['tags'] = $arrTag['list'];
+            
+            $listSighttopic = new Sight_List_Topic();
+            $listSighttopic->setFilter(array('topic_id' =>$val['id']));
+            $listSighttopic->setPagesize(PHP_INT_MAX);
+            $arrSighttopic = $listSighttopic->toArray();
+            $arrRet['list'][$key]['sights'] = $arrSighttopic['list'];
         }
         return $arrRet;
     }

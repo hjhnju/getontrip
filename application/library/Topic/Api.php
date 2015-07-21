@@ -53,6 +53,7 @@ class Topic_Api{
             $arrTag = $listTopictag->toArray();
             $arrRet['list'][$key]['tags'] = $arrTag['list'];
         }
+        return $arrRet;
     }
     
     /**
@@ -195,6 +196,12 @@ class Topic_Api{
         return $listTopic->toArray();
     }
     
+    /**
+     * 接口7：Topic_Api::delTopic($id)
+     * 删除话题接口
+     * @param integer $id
+     * @return boolean
+     */
     public static function delTopic($id){
         $objTopic = new Topic_Object_Topic();
         $objTopic->fetch(array('id' => $id));

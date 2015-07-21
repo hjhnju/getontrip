@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    var FORMATER = 'YYYY-MM-DD HH:mm:ss';
     var newBtn = '<button type="button" class="btn btn-success btn-xs save"  title="保存" data-toggle="tooltip"><i class="fa fa-save"></i></button>' + '<button type="button" class="btn btn-danger btn-xs cancel"  title="取消" data-toggle="tooltip" data-mode="new"><i class="fa fa-remove"></i></button>';
     var saveBtn = '<button type="button" class="btn btn-success btn-xs save"  title="保存" data-toggle="tooltip"><i class="fa fa-save"></i></button>' + '<button type="button" class="btn btn-danger btn-xs cancel"  title="取消" data-toggle="tooltip"><i class="fa fa-remove"></i></button>';
     var editBtn = '<button type="button" class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip"><i class="fa fa-pencil"></i></button>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
@@ -25,18 +26,15 @@ $(document).ready(function() {
             "data": "name"
         }, {
             "data": function(e) {
-                if (e.create_time) {
-                    //默认是/Date(794851200000)/格式，需要显示成年月日方式
-                    // return new Date(Number(e.create_time.replace(/\D/g, ''))).toLocaleDateString();
-                    return new Date(Number(e.create_time)).toLocaleDateString();
-
+                if (e.create_time) {  
+                    return  moment.unix(e.create_time).format(FORMATER);
                 }
                 return "空";
             }
         }, {
             "data": function(e) {
                 if (e.update_time) {
-                    return new Date(Number(e.update_time)).toLocaleDateString();
+                    return  moment.unix(e.update_time).format(FORMATER); 
 
                 }
                 return "空";

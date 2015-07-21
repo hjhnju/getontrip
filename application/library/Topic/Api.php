@@ -136,7 +136,7 @@ class Topic_Api{
     }
     
     /**
-     * 接口4：Topic_Api::addTopic($arrInfo,$arrTags)
+     * 接口4：Topic_Api::addTopic($arrInfo)
      * 添加话题接口
      * @param array $arrInfo,话题信息，注意标签及景点是数组,eg:array('name'=>xxx,'tags'=>array(1,2))
      * @return boolean
@@ -209,9 +209,49 @@ class Topic_Api{
      * @return boolean
      */
     public static function delTopic($id){
+        $redis = Base_Redis::getInstance();
+        //删除话题
         $objTopic = new Topic_Object_Topic();
         $objTopic->fetch(array('id' => $id));
         $objTopic->status = Topic_Type_Status::DELETED;
-        return $objTopic->save();
+        $ret =  $objTopic->save();
+        
+        //删除答案
+        $listAnswers = new Answers_List_Answers();
+        $listAnswers->setFilter(array('topic_id' => $id));
+        $arrAnswers = $listAnswers->toArray();
+        foreach ($arrAnswers['list'] as $index => $val){
+            $objAnswer = new Answers_Object_Answers();
+            $objAnswer->fetch(array('id' => $val['id']));
+            $objAnswer->status = Answers_Type_Status::DELETED;
+            $objAnswer->save();
+        }
+        
+        //删除话题标签关系
+        $listTopicTag = new Topic_List_Tag();
+        $listTopicTag->setFilter(array('topic_id' => $id));
+        $arrTopicTag = $listTopicTag->toArray();
+        foreach ($arrTopicTag['list'] as $index => $val){
+            $objTopicTag = new Topic_Object_Tag();
+            $objTopicTag->fetch(array('id' => $val['id']));
+            $objTopicTag->remove();
+            $redis->sRemove(Topic_Keys::getTopicTagKey($id),$objTopicTag->tagId);
+            $redis->hIncrBy(Tag_Keys::getTagInfoKey($objTopicTag->tagId),'num',-1);
+        }
+        //删除话题景点关系
+        $listSigtTopic = new Sight_List_Topic();
+        $listSigtTopic->setFilter(array('topic_id' => $id));
+        $arrSigtTopic = $listSigtTopic->toArray();
+        foreach ($arrSigtTopic['list'] as $index => $val){
+            $objSightTopic = new Sight_Object_Topic();
+            $objSightTopic->fetch(array('id' => $val['id']));
+            $objAnswer->remove();
+            $redis->zDelete(Sight_Keys::getSightTopicName($objSightTopic->sightId),$id);
+        }
+        
+        //更新redis统计数据
+        $redis->hDel(Topic_Keys::getTopicVisitKey(),$id);
+        $redis->delete(Topic_Keys::getTopicTagKey($id));
+        return $ret;
     }
 }

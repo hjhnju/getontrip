@@ -86,6 +86,20 @@ class Sight_Api{
     public static function delSight($id){
         $model = new SightModel();
         $ret = $model->delSight($id);
+        
+        //删除景点话题关系
+        $redis = Base_Redis::getInstance();
+        $listSightTopic = new Sight_List_Topic();
+        $listSightTopic->setFilter(array('sight_id' => $id));
+        $listSightTopic->setPagesize(PHP_INT_MAX);
+        $arrSightTopic = $listSightTopic->toArray();
+        foreach ($arrSightTopic['list'] as $key => $val){
+            $objSightTopic = new Sight_Object_Topic();
+            $objSightTopic->fetch(array('id' => $val['id']));
+            $objSightTopic->remove();
+        }
+        //删除redis缓存
+        $redis->delete(Sight_Keys::getSightTopicName($id));
         return $ret;
     }
     

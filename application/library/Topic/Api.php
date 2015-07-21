@@ -50,6 +50,7 @@ class Topic_Api{
         foreach ($arrRet['list'] as $key => $val){
             $listTopictag = new Topic_List_Tag();
             $listTopictag->setFilter(array('topic_id' => $val['id']));
+            $listTopictag->setPagesize(PHP_INT_MAX);
             $arrTag = $listTopictag->toArray();
             $arrRet['list'][$key]['tags'] = $arrTag['list'];
             
@@ -219,6 +220,7 @@ class Topic_Api{
         //删除答案
         $listAnswers = new Answers_List_Answers();
         $listAnswers->setFilter(array('topic_id' => $id));
+        $listAnswers->setPagesize(PHP_INT_MAX);
         $arrAnswers = $listAnswers->toArray();
         foreach ($arrAnswers['list'] as $index => $val){
             $objAnswer = new Answers_Object_Answers();
@@ -230,6 +232,7 @@ class Topic_Api{
         //删除话题标签关系
         $listTopicTag = new Topic_List_Tag();
         $listTopicTag->setFilter(array('topic_id' => $id));
+        $listTopicTag->setPagesize(PHP_INT_MAX);
         $arrTopicTag = $listTopicTag->toArray();
         foreach ($arrTopicTag['list'] as $index => $val){
             $objTopicTag = new Topic_Object_Tag();
@@ -241,6 +244,7 @@ class Topic_Api{
         //删除话题景点关系
         $listSigtTopic = new Sight_List_Topic();
         $listSigtTopic->setFilter(array('topic_id' => $id));
+        $listSigtTopic->setPagesize(PHP_INT_MAX);
         $arrSigtTopic = $listSigtTopic->toArray();
         foreach ($arrSigtTopic['list'] as $index => $val){
             $objSightTopic = new Sight_Object_Topic();

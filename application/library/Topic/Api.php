@@ -220,24 +220,35 @@ class Topic_Api{
      */
     public static function search($arrParam,$page,$pageSize){
         $arrTopics = array();
+        $filter    = '';
+        $sight_id  = '';
         if(isset($arrParam['sight_id'])){
             $logic = new Topic_Logic_Topic();
             $arrTopics = $logic->getTopicBySight($arrParam['sight_id']);
+            $sight_id  = $arrParam['sight_id'];
             unset($arrParam['sight_id']);
-        }
-        
+        }        
         
         $listTopic = new Topic_List_Topic();
-        $filter = "`title` like '%".$arrParam['title']."%' ";
-        unset($arrParam['title']);
+        if(isset($arrParam['content'])){
+            $filter = "`content` like '%".$arrParam['content']."%' and ";
+            unset($arrParam['content']);
+        }        
+        
         foreach ($arrParam as $key => $val){
-            $filter .= "and `".$key."` = $val ";
+            $filter .= "`".$key."` = $val and ";
         }
         if(!empty($arrTopics)){
             $strTopics = implode(",",$arrTopics);
-            $filter .= "and `id` in ($strTopics)";
+            $filter .= "`id` in ($strTopics)";
+        }else{
+            if(!empty($filter)){
+                $filter  = substr($filter,0,-4);
+            }
         }
-        $listTopic->setFilterString($filter);
+        if(!empty($filter)){
+            $listTopic->setFilterString($filter);
+        }
         $listTopic->setPage($page);
         $listTopic->setPagesize($pageSize);
         $arrRet = $listTopic->toArray();

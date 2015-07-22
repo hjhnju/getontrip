@@ -19,4 +19,10 @@ class User_Logic_User{
         $objUser->save();
         return $objUser->id;
     }
+    
+    public function getUserName($userId){
+        $objUser  = new User_Object_User();
+        $objUser->fetch(array('id' => $userId));
+        return $objUser->nickName;
+    }
 }

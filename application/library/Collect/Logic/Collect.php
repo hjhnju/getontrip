@@ -104,11 +104,11 @@ class Collect_Logic_Collect{
      * @param unknown $type
      * @param unknown $objId
      */
-    public function getLateCollectNum($type,$objId){
+    public function getLateCollectNum($type,$objId,$periods){
         $redis = Base_Redis::getInstance();
         $count = 0;
         $end = time();
-        $start = strtotime("-1 month");
+        $start = strtotime($periods);
         $ret = $redis->zRangeByScore(Collect_Keys::getHashKeyByType($type),$objId,$objId);
         if(empty($ret)){
             return 0;

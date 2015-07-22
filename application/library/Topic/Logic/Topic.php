@@ -11,7 +11,7 @@ class Topic_Logic_Topic{
     }
     
     /**
-     * 获取最热门的话题，带景点ID、时间范围、大小、标签过滤，并加上答案等信息:热度=话题收藏数+答案数+答案点赞数
+     * 获取最热门的话题，带景点ID、时间范围、大小、标签过滤，并加上答案等信息:热度=话题收藏数+评论数+话题浏览量
      * @param integer $sightId
      * @param integer $size
      * @return array
@@ -21,13 +21,12 @@ class Topic_Logic_Topic{
         $arrTags          = array();
         $arrTet           = array();
         $collectTopicNum  = 0;
-        $visitTopicNum    = 0;
-        $answerNum        = 0;
-        $collectAnswerNum = 0;
+        $visitTopicUv     = 0;
+        $commentNum       = 0;
         
         $redis = Base_Redis::getInstance();
         
-
+        //获取景点的所有话题
         if(!empty($sightId)){        
             $ret = $redis->zRange(Sight_Keys::getSightTopicName($sightId),0,-1);
         }else{
@@ -37,6 +36,7 @@ class Topic_Logic_Topic{
             }            
         }
         foreach($ret as $key => $val){
+            //根据标签过滤话题
             if(!empty($strTags)){
                 $arrTags = explode(",",$strTags);
                 $arrHasTags = $redis->sGetMembers(Topic_Keys::getTopicTagKey($val['id']));
@@ -50,40 +50,30 @@ class Topic_Logic_Topic{
             $objTopic->fetch(array('id' => $val));
             $arrRet[] = $objTopic->toArray();
                        
+            //话题最近收藏数
             $logicCollect      = new Collect_Logic_Collect();
-            $collectTopicNum   = $logicCollect->getLateCollectNum(Collect_Keys::TOPIC, $val['id']); //话题收藏数
-            $listAnswer        = new Answers_List_Answers();
-            $time   = strtotime($period);
-            $filter = "`topic_id` = ".$val['id']." and `update_time` > $time";
-            $listAnswer->setFilterString($filter);
-            $arrAnswer = $listAnswer->toArray();
-            $answerNum    = $arrAnswer['total'];  //答案数                       
-            $logicPraise  = new Praise_Logic_Praise();
-            foreach ($arrAnswer['list'] as $data){
-                //答案点赞数
-                $upAnswerNum       += $logicPraise->getLatePraiseNum($data['id']);
-                //答案收藏数
-                $collectAnswerNum  += $logicCollect->getLateCollectNum(Collect_Keys::ANSWER, $data['id']);
-            }
+            $collectTopicNum   = $logicCollect->getLateCollectNum(Collect_Keys::TOPIC, $val['id'],$period);
             
-            $arrHotDegree[] = $collectTopicNum + $answerNum + $collectAnswerNum;
+            //话题最近访问人数
+            $visitTopicUv      = $this->getTopicVistUv($val, $period);
             
-            //有描述用描述，没描述用答案
-            if(isset($val['desc']) &&(!empty($val['desc']))){
-                $arrRet[$key]['addinfo'] = $val['desc'];
-            }else{
-                $listAnswer = new Answers_List_Answers();
-                $listAnswer->setFilter(array('topic_id' => $val['id']));
-                $listAnswer->setFields(array('id','from','content'));
-                $listAnswer->setOrder("create_time desc");
-                $listAnswer->setPagesize(1);
-                $arrAnswer = $listAnswer->toArray();
-                $arrRet[$key]['addinfo'] = $arrAnswer['list'];
-            }            
-            $visitTopicNum = $redis->hGet(Topic_Keys::REDIS_TOPIC_VISIT_KEY,$val['id']);
-            $arrRet[$key]['visit']   = empty($visitTopicNum)?0:$visitTopicNum;
+            //最近评论次数
+            $logicComment      = new Comment_Logic_Comment();
+            $commentNum        = $logicComment->getCommentNum($val, $period);
+            
+            $arrHotDegree[] = $collectTopicNum + $commentNum + $visitTopicUv;
+            
+            //话题访问次数            
+            $arrRet[$key]['visit']   = $this->getTopicVistPv($val, $period);
+            
+            //话题收藏数
             $arrRet[$key]['collect'] = $collectTopicNum;
+            
+            //话题来源
+            $logicSource = new Source_Logic_Source();
+            $arrRet[$key]['from']    = $logicSource->getSourceName($objTopic->from);
         }        
+        //根据权重排序
         array_multisort($arrHotDegree, SORT_DESC , $arrRet);
         return array_slice($arrRet,0,$size);
     }
@@ -129,25 +119,17 @@ class Topic_Logic_Topic{
                     continue;
                 }
             }            
-                         
+
+            //话题收藏数
             $logicCollect      = new Collect_Logic_Collect();
-            $collectTopicNum   = $logicCollect->getLateCollectNum(Collect_Keys::TOPIC, $val['id']); //话题收藏数
-            
-            //有描述用描述，没描述用答案
-            if(isset($val['desc']) &&(!empty($val['desc']))){
-                $ret['list'][$key]['addinfo'] = $val['desc'];
-            }else{
-                $listAnswer        = new Answers_List_Answers();
-                $listAnswer->setFilter(array('topic_id' => $val['id']));
-                $listAnswer->setFields(array('id','from','content'));
-                $listAnswer->setOrder("create_time desc");
-                $listAnswer->setPagesize(1);
-                $arrAnswer = $listAnswer->toArray();
-                $ret['list'][$key]['addinfo'] = $arrAnswer['list'];
-            }            
-            $visitTopicNum = $redis->hGet(Topic_Keys::REDIS_TOPIC_VISIT_KEY,$val['id']);
-            $ret['list'][$key]['visit']   = empty($visitTopicNum)?0:$visitTopicNum;
+            $collectTopicNum   = $logicCollect->getLateCollectNum(Collect_Keys::TOPIC, $val['id']);             
+
+            $ret['list'][$key]['visit']   = $this->getTopicVistPv($val, $period);
             $ret['list'][$key]['collect'] = $collectTopicNum;
+            
+            //话题来源
+            $logicSource = new Source_Logic_Source();
+            $arrRet[$key]['from']    = $logicSource->getSourceName($objTopic->from);
         }        
         return $ret;
     }
@@ -174,25 +156,18 @@ class Topic_Logic_Topic{
      * @param integer $topicId
      * @return Topic_Object_Topic
      */
-    public function getTopicDetail($topicId,$page,$pageSize){
+    public function getTopicDetail($topicId,$device_id,$page,$pageSize){
         $objTopic = new Topic_Object_Topic();
         $objTopic->fetch(array('id' => $topicId));
         $arrRet = $objTopic->toArray();
-        $listAnswers = new Answers_List_Answers();
-        $listAnswers->setFilter(array('topic_id' => $topicId));
-        $listAnswers->setPage($page);
-        $listAnswers->setPagesize($pageSize);
-        $arrAnswers = $listAnswers->toArray();
-        $arrRet['answers'] = $arrAnswers;
         
         //添加redis中话题访问次数统计
         $redis = Base_Redis::getInstance();
-        $visitTopicNum = $redis->hGet(Topic_Keys::REDIS_TOPIC_VISIT_KEY,$topicId);
-        if(empty($visitTopicNum)){
-            $redis->hSet(Topic_Keys::REDIS_TOPIC_VISIT_KEY,$topicId,1);
-        }else{
-            $redis->hSet(Topic_Keys::REDIS_TOPIC_VISIT_KEY,$topicId,$visitTopicNum+1);
-        }
+        
+        $logicUser = new User_Logic_User();
+        $userId    = $logicUser->getUserId($device_id);
+        $redis->zAdd(Topic_Keys::getTopicVisitKey($topicId),time(),$userId);
+               
         return $arrRet;
     }    
     
@@ -213,6 +188,13 @@ class Topic_Logic_Topic{
         return $listTopic->toArray();
     }
     
+    /**
+     * 根据景点ID获取话题信息
+     * @param integer $sightId
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
     public function getTopicBySight($sightId,$page=1,$pageSize=PHP_INT_MAX){
         $arrRet = array();
         $listSightTopic = new Sight_List_Topic();
@@ -225,5 +207,31 @@ class Topic_Logic_Topic{
             $arrRet[] = $val['topic_id'];
         }
         return $arrRet;
+    }
+    
+    /**
+     * 获取话题最近的访问人数
+     * @param integer $topicId
+     * @param string $during
+     * @return integer
+     */
+    public function getTopicVistUv($topicId,$during){
+        $redis   = Base_Redis::getInstance();
+        $from    = strtotime($during);
+        $arrUser = $redis->zRangeByScore(Topic_Keys::getTopicVisitKey($topicId),$from,time());
+        return count(array_unique($arrUser));
+    }
+    
+    /**
+     * 获取话题最近的访问次数
+     * @param integer $topicId
+     * @param string $during
+     * @return integer
+     */
+    public function getTopicVistPv($topicId,$during){
+        $redis   = Base_Redis::getInstance();
+        $from    = strtotime($during);
+        $arrUser = $redis->zRangeByScore(Topic_Keys::getTopicVisitKey($topicId),$from,time());
+        return count($arrUser);
     }
 }

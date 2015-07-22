@@ -13,9 +13,13 @@ class City_Api{
      * @param integer $pageSize
      * @return array
      */
-    public static function getCityInfo($page, $pageSize){
+    public static function getCityInfo($page, $pageSize,$filter=''){
         $listCity = new City_List_City();
-        $listCity->setFilterString("`cityid` = 0 and `provinceid` != 0");
+        $strFilter = "`cityid` = 0 and `provinceid` != 0";
+        if(!empty($filter)){
+            $strFilter .=" and `pinyin` like '".strtolower($filter)."%'";
+        }
+        $listCity->setFilterString($strFilter);        
         $listCity->setPage($page);
         $listCity->setPagesize($pageSize);
         $arrCity = $listCity->toArray();

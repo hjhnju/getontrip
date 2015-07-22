@@ -16,14 +16,16 @@ class ListController extends Base_Controller_Page {
     /**
      * 接口1：/city/list
      * 获取城市列表信息
-     * @param integer page
-     * @param integer pageSize
+     * @param char filter,前缀字母
+     * @param integer page,页码
+     * @param integer pageSize,页面大小
      * @return json
      */
     public function indexAction(){
+        $filter   = isset($_POST['filter'])?trim($_POST['filter']):'';
         $page     = isset($_POST['page'])?intval($_POST['page']):1;
         $pageSize = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGE_SIZE;
-        $ret = City_Api::getCityInfo($page, $pageSize);
+        $ret = City_Api::getCityInfo($page, $pageSize,$filter);
         if($ret){
             return $this->ajax($ret);
         }

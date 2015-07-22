@@ -168,7 +168,7 @@ class Topic_Api{
     public static function addTopic($arrInfo){
         $objTopic = new Topic_Object_Topic();
         $redis = Base_Redis::getInstance();
-        foreach ($arrInfo as $key => $val){
+        foreach ($arrInfo as $key => $val){            
             $objTopic->$key = $val;
         }
         $ret = $objTopic->save();

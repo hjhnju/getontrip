@@ -212,4 +212,18 @@ class Topic_Logic_Topic{
         $listTopic->setPagesize($pageSize);
         return $listTopic->toArray();
     }
+    
+    public function getTopicBySight($sightId,$page=1,$pageSize=PHP_INT_MAX){
+        $arrRet = array();
+        $listSightTopic = new Sight_List_Topic();
+        $listSightTopic->setFields(array('topic_id'));
+        $listSightTopic->setFilter(array('sight_id' => $sightId));
+        $listSightTopic->setPage($page);
+        $listSightTopic->setPagesize($pageSize);
+        $ret = $listSightTopic->toArray();
+        foreach ($ret['list'] as $key => $val){
+            $arrRet[] = $val['topic_id'];
+        }
+        return $arrRet;
+    }
 }

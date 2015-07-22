@@ -41,9 +41,28 @@ class Topic_Api{
      * @param integer $pageSize
      * @return array
      */
-    public function queryTopic($arrParam,$page,$pageSize){
+    public static function queryTopic($arrParam,$page,$pageSize){
         $listTopic = new Topic_List_Topic();
-        $listTopic->setFilter($arrParam);
+        $arrTopics = array();
+        $filter    = '';
+        $sight_id  = '';
+        if(isset($arrParam['sight_id'])){
+            $logic = new Topic_Logic_Topic();
+            $arrTopics = $logic->getTopicBySight($arrParam['sight_id']);
+            $sight_id  = $arrParam['sight_id'];
+            unset($arrParam['sight_id']);
+        }
+        foreach ($arrParam as $key => $val){
+            $filter = "`".$key."`=$val and ";
+        }
+        if(!empty($arrTopics)){
+            $strTopics = implode(",",$arrTopics);
+            $filter .= "`id` in ($strTopics)";
+        }else{
+            $filter = substr($filter,0,-4);
+        }
+        
+        $listTopic->setFilterString($filter);
         $listTopic->setPage($page);
         $listTopic->setPagesize($pageSize);
         $arrRet = $listTopic->toArray();
@@ -55,7 +74,11 @@ class Topic_Api{
             $arrRet['list'][$key]['tags'] = $arrTag['list'];
             
             $listSighttopic = new Sight_List_Topic();
-            $listSighttopic->setFilter(array('topic_id' =>$val['id']));
+            if(!empty($sight_id)){
+                $listSighttopic->setFilter(array('topic_id' =>$val['id'],'sight_id' =>$sight_id));
+            }else{
+                $listSighttopic->setFilter(array('topic_id' =>$val['id']));
+            }           
             $listSighttopic->setPagesize(PHP_INT_MAX);
             $arrSighttopic = $listSighttopic->toArray();
             $arrRet['list'][$key]['sights'] = $arrSighttopic['list'];
@@ -188,19 +211,31 @@ class Topic_Api{
     
 
     /**
-     * 接口6：Topic_Api::search($query,$arrParam,$page,$pageSize)
+     * 接口6：Topic_Api::search($arrParam,$page,$pageSize)
      * 对话题中的标题内容进行模糊查询
-     * @param string $query，查询词
-     * @param array $arrParam，条件数组
+     * @param array $arrParam，条件数组,$arrParam['title']中包含模糊匹配词
      * @param integer $page
      * @param integer $pageSize
      * @return array
      */
-    public static function search($query,$arrParam,$page,$pageSize){
+    public static function search($arrParam,$page,$pageSize){
+        $arrTopics = array();
+        if(isset($arrParam['sight_id'])){
+            $logic = new Topic_Logic_Topic();
+            $arrTopics = $logic->getTopicBySight($arrParam['sight_id']);
+            unset($arrParam['sight_id']);
+        }
+        
+        
         $listTopic = new Topic_List_Topic();
-        $filter = "`title` like '%".$query."%' ";
+        $filter = "`title` like '%".$arrParam['title']."%' ";
+        unset($arrParam['title']);
         foreach ($arrParam as $key => $val){
             $filter .= "and `".$key."` = $val ";
+        }
+        if(!empty($arrTopics)){
+            $strTopics = implode(",",$arrTopics);
+            $filter .= "and `id` in ($strTopics)";
         }
         $listTopic->setFilterString($filter);
         $listTopic->setPage($page);

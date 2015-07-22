@@ -65,4 +65,14 @@ class Sight_Logic_Sight{
         }
         return $arrRet;
     }
+    
+    public function getSightByTopic($topicId,$page=1,$pageSize=PHP_INT_MAX){
+        $listSightTopic = new Sight_List_Topic();
+        $listSightTopic->setFields(array('sight_id'));
+        $listSightTopic->setFilter(array('topic_id' => $topicId));
+        $listSightTopic->setPage($page);
+        $listSightTopic->setPagesize($pageSize);
+        $ret = $listSightTopic->toArray();
+        return $ret;
+    }
 }

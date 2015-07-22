@@ -238,8 +238,11 @@ class Topic_Api{
         foreach ($arrParam as $key => $val){
             $filter .= "`".$key."` = $val and ";
         }
-        if(!empty($arrTopics)){
+        if(!empty($sight_id)){
             $strTopics = implode(",",$arrTopics);
+            if(empty($strTopics)){
+                $strTopics = -1;
+            }
             $filter .= "`id` in ($strTopics)";
         }else{
             if(!empty($filter)){
@@ -260,13 +263,16 @@ class Topic_Api{
             $arrRet['list'][$key]['tags'] = $arrTag['list'];
         
             $listSighttopic = new Sight_List_Topic();
-            $listSighttopic->setFilter(array('topic_id' =>$val['id']));
+            if(!empty($sight_id)){
+                $listSighttopic->setFilter(array('topic_id' =>$val['id'],'sight_id' =>$sight_id));
+            }else{
+                $listSighttopic->setFilter(array('topic_id' =>$val['id']));
+            } 
             $listSighttopic->setPagesize(PHP_INT_MAX);
             $arrSighttopic = $listSighttopic->toArray();
             $arrRet['list'][$key]['sights'] = $arrSighttopic['list'];
         }
         return $arrRet;
-        $listTopic->setFilterString("");
     }
     
     /**

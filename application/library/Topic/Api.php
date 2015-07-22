@@ -188,19 +188,39 @@ class Topic_Api{
     
 
     /**
-     * 接口6：Topic_Api::search($query,$page,$pageSize)
+     * 接口6：Topic_Api::search($query,$arrParam,$page,$pageSize)
      * 对话题中的标题内容进行模糊查询
-     * @param string $query
+     * @param string $query，查询词
+     * @param array $arrParam，条件数组
      * @param integer $page
      * @param integer $pageSize
      * @return array
      */
-    public static function search($query,$page,$pageSize){
+    public static function search($query,$arrParam,$page,$pageSize){
         $listTopic = new Topic_List_Topic();
-        $listTopic->setFilterString("`title` like '%".$query."%'");
+        $filter = "`title` like '%".$query."%' ";
+        foreach ($arrParam as $key => $val){
+            $filter .= "and `".$key."` = $val ";
+        }
+        $listTopic->setFilterString($filter);
         $listTopic->setPage($page);
         $listTopic->setPagesize($pageSize);
-        return $listTopic->toArray();
+        $arrRet = $listTopic->toArray();
+        foreach ($arrRet['list'] as $key => $val){
+            $listTopictag = new Topic_List_Tag();
+            $listTopictag->setFilter(array('topic_id' => $val['id']));
+            $listTopictag->setPagesize(PHP_INT_MAX);
+            $arrTag = $listTopictag->toArray();
+            $arrRet['list'][$key]['tags'] = $arrTag['list'];
+        
+            $listSighttopic = new Sight_List_Topic();
+            $listSighttopic->setFilter(array('topic_id' =>$val['id']));
+            $listSighttopic->setPagesize(PHP_INT_MAX);
+            $arrSighttopic = $listSighttopic->toArray();
+            $arrRet['list'][$key]['sights'] = $arrSighttopic['list'];
+        }
+        return $arrRet;
+        $listTopic->setFilterString("");
     }
     
     /**

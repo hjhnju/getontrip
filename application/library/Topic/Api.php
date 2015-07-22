@@ -230,9 +230,9 @@ class Topic_Api{
         }        
         
         $listTopic = new Topic_List_Topic();
-        if(isset($arrParam['content'])){
-            $filter = "`content` like '%".$arrParam['content']."%' and ";
-            unset($arrParam['content']);
+        if(isset($arrParam['title'])){
+            $filter = "`title` like '%".$arrParam['title']."%' and ";
+            unset($arrParam['title']);
         }        
         
         foreach ($arrParam as $key => $val){

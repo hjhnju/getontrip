@@ -26,7 +26,7 @@ class Topic_Object_Topic extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'title', 'content', 'desc', 'image', 'user_id', 'status', 'x', 'y', 'create_time', 'update_time');
+    protected $fields = array('id', 'title', 'subtitle', 'content', 'desc', 'image', 'user_id', 'from', 'url', 'status', 'x', 'y', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -35,10 +35,13 @@ class Topic_Object_Topic extends Base_Object {
     public $properties = array(
         'id'          => 'id',
         'title'       => 'title',
+        'subtitle'    => 'subtitle',
         'content'     => 'content',
         'desc'        => 'desc',
         'image'       => 'image',
         'user_id'     => 'userId',
+        'from'        => 'from',
+        'url'         => 'url',
         'status'      => 'status',
         'x'           => 'x',
         'y'           => 'y',
@@ -52,6 +55,8 @@ class Topic_Object_Topic extends Base_Object {
      */
     protected $intProps = array(
         'id'          => 1,
+        'user_id'     => 1,
+        'from'        => 1,
         'status'      => 1,
         'create_time' => 1,
         'update_time' => 1,
@@ -72,10 +77,16 @@ class Topic_Object_Topic extends Base_Object {
     public $id;
 
     /**
-     * 副标题
+     * 标题
      * @var string
      */
     public $title;
+
+    /**
+     * 
+     * @var string
+     */
+    public $subtitle;
 
     /**
      * 话题内容
@@ -97,12 +108,24 @@ class Topic_Object_Topic extends Base_Object {
 
     /**
      * 话题作者ID
-     * @var string
+     * @var integer
      */
     public $userId;
 
     /**
-     * 话题状态
+     * 话题来源
+     * @var integer
+     */
+    public $from;
+
+    /**
+     * 源链接
+     * @var string
+     */
+    public $url;
+
+    /**
+     * 话题状态,1:未发布,2:审核中,3:审核通过,4:审核未通过,5:已发布,6:已删除
      * @var integer
      */
     public $status;

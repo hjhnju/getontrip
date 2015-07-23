@@ -12,13 +12,7 @@ class Admin_Api{
      * @return boolean
      */
     public static function login($name,$password){
-       $objAdmin = new Admin_Object_Admin();
-       $objAdmin->fetch(array('name' => $name,'passwd' => $password));
-       if(!empty($objAdmin->id)){
-           $objAdmin->loginTime = time();
-           Yaf_Session::getInstance()->set(Admin_Keys::getLoginAdminKey(), $objAdmin->id);
-           return $objAdmin->save();
-       }       
-       return false;
+       $logicAdmin = new Admin_Logic_Admin();
+       return $logicAdmin->login($name, $password);
     } 
 }

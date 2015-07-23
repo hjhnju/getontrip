@@ -14,20 +14,8 @@ class City_Api{
      * @return array
      */
     public static function getCityInfo($page, $pageSize,$filter=''){
-        $listCity = new City_List_City();
-        $strFilter = "`cityid` = 0 and `provinceid` != 0";
-        if(!empty($filter)){
-            $strFilter .=" and `pinyin` like '".strtolower($filter)."%'";
-        }
-        $listCity->setFilterString($strFilter);        
-        $listCity->setPage($page);
-        $listCity->setPagesize($pageSize);
-        $arrCity = $listCity->toArray();
-        foreach ($arrCity['list'] as $key => $val){
-            $city = City_Api::getCityById($val['pid']);
-            $arrCity['list'][$key]['pidname'] = $city['name'];
-        }
-        return $arrCity;
+       $logicCity = new City_Logic_City();
+       return $logicCity->getCityInfo($page, $pageSize,$filter);
     }
     
     /**
@@ -37,12 +25,8 @@ class City_Api{
      * @return array
      */
     public static function getCityById($cityId){
-        $objCity = new City_Object_City();
-        $objCity->fetch(array('id' => $cityId));
-        $ret = $objCity->toArray();               
-        $objCity->fetch(array('id' => $ret['pid']));
-        $ret['pidname'] = $objCity->name;
-        return $ret;
+        $logicCity = new City_Logic_City();
+        return $logicCity->getCityById($cityId);
     }
     
     /**
@@ -53,15 +37,8 @@ class City_Api{
      * @return boolean
      */
     public static function editCity($cityId,$arrInfo){
-        $objCity = new City_Object_City();
-        $objCity->fetch(array('id' => $cityId));
-        if(empty($objCity->id)){
-            return false;
-        }
-        foreach ($arrInfo as $key => $val){
-            $objCity->$key = $val;
-        }
-        return $objCity->save();
+        $logicCity = new City_Logic_City();
+        return $logicCity->editCity($cityId, $arrInfo);
     }
     
     /**
@@ -71,35 +48,21 @@ class City_Api{
      * @return boolean
      */
     public static function addCity($arrInfo){
-        $objCity = new City_Object_City();
-        foreach ($arrInfo as $key => $val){
-            $objCity->$key = $val;
-        }
-        return $objCity->save();
+        $logicCity = new City_Logic_City();
+        return $logicCity->addCity($arrInfo);
     }
     
     /**
      * 接口5：City_Api::queryCity($arrInfo,$page,$pageSize)
+     * 查询城市
      * @param array $arrInfo:过滤条件，如:array("status"=>1);
      * @param integer $page
      * @param integer $pageSize
      * @return array
      */
     public static function queryCity($arrInfo,$page,$pageSize){
-        $listCity = new City_List_City();
-        $strFileter = "`cityid` = 0 and `provinceid` != 0";
-        foreach ($arrInfo as $key => $val){
-            $strFileter .=" and `".$key."` = $val";
-        }
-        $listCity->setFilterString("$strFileter");
-        $listCity->setPage($page);
-        $listCity->setPagesize($pageSize);
-        $arrCity = $listCity->toArray();
-        foreach ($arrCity['list'] as $key => $val){
-            $city = City_Api::getCityById($val['pid']);
-            $arrCity['list'][$key]['pidname'] = $city['name'];
-        }
-        return $arrCity;
+        $logicCity = new City_Logic_City();
+        return $logicCity->queryCity($arrInfo, $page, $pageSize);
     }
     
     /**
@@ -110,16 +73,8 @@ class City_Api{
      * @return array
      */
     public static function getProvinceList($page,$pageSize){
-        $listCity = new City_List_City();        
-        $listCity->setFilter(array('provinceid' => 0));
-        $listCity->setPage($page);
-        $listCity->setPagesize($pageSize);
-        $arrCity = $listCity->toArray();
-        foreach ($arrCity['list'] as $key => $val){
-            $city = City_Api::getCityById($val['pid']);
-            $arrCity['list'][$key]['pidname'] = $city['name'];
-        }
-        return $arrCity;
+        $logicCity = new City_Logic_City();
+        return $logicCity->getProvinceList($page, $pageSize);
     }
     
     /**
@@ -131,17 +86,8 @@ class City_Api{
      * @return array
      */
     public static function queryCityPrefix($str,$page,$pageSize){
-        $listCity = new City_List_City();
-        $strFileter = "`cityid` = 0 and `provinceid` != 0 and name like '".$str."%'";
-        $listCity->setFilterString("$strFileter");
-        $listCity->setPage($page);
-        $listCity->setPagesize($pageSize);
-        $arrCity = $listCity->toArray();
-        foreach ($arrCity['list'] as $key => $val){
-            $city = City_Api::getCityById($val['pid']);
-            $arrCity['list'][$key]['pidname'] = $city['name'];
-        }
-        return $arrCity;
+        $logicCity = new City_Logic_City();
+        return $logicCity->queryCityPrefix($str, $page, $pageSize);
     }
     
     /**
@@ -153,16 +99,7 @@ class City_Api{
      * @return array
      */
     public static function queryProvincePrefix($str,$page,$pageSize){
-        $listCity = new City_List_City();
-        $strFileter = "`provinceid` = 0 and name like '".$str."%'";
-        $listCity->setFilterString("$strFileter");
-        $listCity->setPage($page);
-        $listCity->setPagesize($pageSize);
-        $arrCity = $listCity->toArray();
-        foreach ($arrCity['list'] as $key => $val){
-            $city = City_Api::getCityById($val['pid']);
-            $arrCity['list'][$key]['pidname'] = $city['name'];
-        }
-        return $arrCity;
+        $logicCity = new City_Logic_City();
+        return $logicCity->queryProvincePrefix($str, $page, $pageSize);
     }
 }

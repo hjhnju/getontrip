@@ -17,6 +17,16 @@ class Sight_Logic_Sight{
     }
     
     /**
+     * 根据景点ID获取景点详情
+     * @param integer $sightId
+     * @return array
+     */
+    public function getSightById($sightId){
+        $arr = $this->modelSight->getSightById($sightId);
+        return $arr;
+    }
+    
+    /**
      * 根据景点ID获取景点及话题信息，支持带标签筛选及热度的时间范围设置
      * @param integer $sightId
      * @param integer $page
@@ -52,7 +62,7 @@ class Sight_Logic_Sight{
      * @param integer $cityId
      * @return array
      */
-    public function getSightList($page,$pageSize,$cityId){
+    public function getSightListByCity($page,$pageSize,$cityId){
         $arrRet = array();
         if(empty($cityId)){
             $arrSight = $this->modelSight->getSightList($page,$pageSize);
@@ -63,6 +73,23 @@ class Sight_Logic_Sight{
             $arrRet[$index]['id']   = $val['id'];
             $arrRet[$index]['name'] = $val['name'];
         }
+        return $arrRet;
+    }
+    
+    /**
+     * 获取景点列表
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function getSightList($page,$pageSize){
+        $arr = $this->modelSight->getSightList($page,$pageSize);
+        $num = $this->modelSight->getSightNum();
+        $arrRet['page']     = $page;
+        $arrRet['pagesize'] = $pageSize;
+        $arrRet['pageall']  = ceil($num/$pageSize);
+        $arrRet['total']    = $num;
+        $arrRet['list']     = $arr;
         return $arrRet;
     }
     
@@ -80,6 +107,81 @@ class Sight_Logic_Sight{
         $listSightTopic->setPage($page);
         $listSightTopic->setPagesize($pageSize);
         $ret = $listSightTopic->toArray();
+        return $ret;
+    }
+    
+    /**
+     * 根据条件数组筛选景点
+     * @param array $arrInfo，条件数组，如:array('id'=1);
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function querySights($arrInfo,$page,$pageSize){
+        $ret   = $this->modelSight->query($arrInfo,1,PHP_INT_MAX);
+        $num   = count($ret);
+        $arrRet['page']     = $page;
+        $arrRet['pagesize'] = $pageSize;
+        $arrRet['pageall']  = ceil($num/$pageSize);
+        $arrRet['total']    = $num;
+        $arrRet['list']     = array_slice($ret,($page-1)*$pageSize,$pageSize);
+        return $arrRet;
+    }
+    
+    /**
+     * 对景点中的标题内容进行模糊查询
+     * @param string $query
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function search($query,$page,$pageSize){
+        $ret = $this->modelSight->search($query, $page, $pageSize);
+        return $ret;
+    }
+    
+    /**
+     * 根据ID删除景点信息
+     * @param integer $id
+     * @return boolean
+     */
+    public function delSight($id){
+        $ret = $this->modelSight->delSight($id);
+    
+        //删除景点话题关系
+        $redis = Base_Redis::getInstance();
+        $listSightTopic = new Sight_List_Topic();
+        $listSightTopic->setFilter(array('sight_id' => $id));
+        $listSightTopic->setPagesize(PHP_INT_MAX);
+        $arrSightTopic = $listSightTopic->toArray();
+        foreach ($arrSightTopic['list'] as $key => $val){
+            $objSightTopic = new Sight_Object_Topic();
+            $objSightTopic->fetch(array('id' => $val['id']));
+            $objSightTopic->remove();
+        }
+        //删除redis缓存
+        $redis->delete(Sight_Keys::getSightTopicName($id));
+        return $ret;
+    }
+    
+    /**
+     * 根据$arrInfo添加景点
+     * @param array $arrInfo:array('name' => 'xxx','level' => 'xxx');
+     * @return integer:更新影响的行数，返回非零值正确
+     */
+    public function addSight($arrInfo){
+        $ret = $this->modelSight->addNewSight($arrInfo);
+        return $ret;
+    }
+    
+    /**
+     * 根据$_updateData更新景点信息
+     * @param integer $sightId
+     * @param array $_updateData: array('describe' =>'xxx','name' => 'xxx');
+     * @return integer:更新影响的行数，返回非零值正确
+     */
+    public function editSight($sightId,$_updateData){
+        $ret = $this->modelSight->eddSight($sightId, $_updateData);
         return $ret;
     }
 }

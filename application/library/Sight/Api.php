@@ -9,15 +9,8 @@ class Sight_Api{
      * @return array
      */
     public static function getSightList($page,$pageSize){
-        $model = new SightModel();
-        $arr = $model->getSightList($page,$pageSize);
-        $num = $model->getSightNum();
-        $arrRet['page']     = $page;
-        $arrRet['pagesize'] = $pageSize;
-        $arrRet['pageall']  = ceil($num/$pageSize);
-        $arrRet['total']    = $num;
-        $arrRet['list']     = $arr;
-        return $arrRet;
+        $logicSight = new Sight_Logic_Sight();
+        return $logicSight->getSightList($page, $pageSize);
     }
     
     /**
@@ -27,9 +20,8 @@ class Sight_Api{
      * @return array
      */
     public static function getSightById($sightId){
-        $model = new SightModel();
-        $arr = $model->getSightById($sightId);
-        return $arr;        
+        $logicSight = new Sight_Logic_Sight();
+        return $logicSight->getSightById($sightId);       
     }
     
     /**
@@ -41,9 +33,10 @@ class Sight_Api{
      * @return array
      */
     public static function getSightByCity($cityId,$page,$pageSize){
-        $model = new SightModel();
-        $arr = $model->getSightByCity($page,$pageSize,$cityId);
-        $num = $model->getSightNum($cityId);
+        $logicSight = new Sight_Logic_Sight();
+        $arr        = $logicSight->getSightListByCity($page, $pageSize, $cityId);
+        $num        = count($arr);
+        
         $arrRet['page']     = $page;
         $arrRet['pagesize'] = $pageSize;
         $arrRet['pageall']  = ceil($num/$pageSize);
@@ -60,9 +53,8 @@ class Sight_Api{
      * @return integer:更新影响的行数，返回非零值正确
      */
     public static function editSight($sightId,$_updateData){
-        $model = new SightModel();
-        $ret = $model->eddSight($sightId, $_updateData);
-        return $ret;
+        $logicSight = new Sight_Logic_Sight();
+        return $logicSight->editSight($sightId, $_updateData);
     }
     
     /**
@@ -72,9 +64,8 @@ class Sight_Api{
      * @return integer:更新影响的行数，返回非零值正确
      */
     public static function addSight($arrInfo){
-        $model = new SightModel();
-        $ret = $model->addNewSight($arrInfo);
-        return $ret;
+        $logicSight = new Sight_Logic_Sight();
+        return $logicSight->addSight($arrInfo);
     }
     
     /**
@@ -84,23 +75,8 @@ class Sight_Api{
      * @return boolean
      */
     public static function delSight($id){
-        $model = new SightModel();
-        $ret = $model->delSight($id);
-        
-        //删除景点话题关系
-        $redis = Base_Redis::getInstance();
-        $listSightTopic = new Sight_List_Topic();
-        $listSightTopic->setFilter(array('sight_id' => $id));
-        $listSightTopic->setPagesize(PHP_INT_MAX);
-        $arrSightTopic = $listSightTopic->toArray();
-        foreach ($arrSightTopic['list'] as $key => $val){
-            $objSightTopic = new Sight_Object_Topic();
-            $objSightTopic->fetch(array('id' => $val['id']));
-            $objSightTopic->remove();
-        }
-        //删除redis缓存
-        $redis->delete(Sight_Keys::getSightTopicName($id));
-        return $ret;
+        $logicSight = new Sight_Logic_Sight();
+        return $logicSight->delSight($id);
     }
     
     /**
@@ -112,9 +88,8 @@ class Sight_Api{
      * @return array
      */
     public function search($query,$page,$pageSize){
-        $model = new SightModel();
-        $ret = $model->search($query, $page, $pageSize);
-        return $ret;
+        $logicSight = new Sight_Logic_Sight();
+        return $logicSight->search($query, $page, $pageSize);
     }
     
     /**
@@ -126,14 +101,7 @@ class Sight_Api{
      * @return array
      */
     public function querySights($arrInfo,$page,$pageSize){
-        $model = new SightModel();
-        $ret   = $model->query($arrInfo,1,PHP_INT_MAX);
-        $num   = count($ret);
-        $arrRet['page']     = $page;
-        $arrRet['pagesize'] = $pageSize;
-        $arrRet['pageall']  = ceil($num/$pageSize);
-        $arrRet['total']    = $num;
-        $arrRet['list']     = array_slice($ret,($page-1)*$pageSize,$pageSize);
-        return $arrRet;
+        $logicSight = new Sight_Logic_Sight();
+        return $logicSight->querySights($arrInfo, $page, $pageSize);
     }
 }

@@ -181,6 +181,8 @@ class City_Logic_City{
         foreach ($arrCity['list'] as $key => $val){
             $city = City_Api::getCityById($val['pid']);
             $arrCity['list'][$key]['pidname'] = $city['name'];
+            $arrCity['list'][$key]['sight_num'] = $this->_modeSight->getSightNum($val['id']);
+            $arrCity['list'][$key]['topic_num'] = $this->getTopicNum($val['id']);
         }
         return $arrCity;
     }
@@ -204,5 +206,20 @@ class City_Logic_City{
             $arrCity['list'][$key]['pidname'] = $city['name'];
         }
         return $arrCity;
+    }
+    
+    /**
+     * 获取一个城市的话题总数
+     * @param integer $cityId
+     * @return integer
+     */
+    public function getTopicNum($cityId){
+        $count = 0;
+        $redis = Base_Redis::getInstance();
+        $ret   = $this->_modeSight->getSightByCity(1,PHP_INT_MAX,$cityId);
+        foreach ($ret as $val){
+            $count += $redis->zSize(Sight_Keys::getSightTopicName($val['id']));
+        }
+        return $count;
     }
 }

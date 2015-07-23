@@ -3,6 +3,7 @@ class Keyword_Api{
     
     /**
      * 接口1：Keyword_Api::queryKeywords($sight_id,$page,$pageSize)
+     * 查询景点的词条信息
      * @param unknown $sight_id
      * @param unknown $page
      * @param unknown $pageSize

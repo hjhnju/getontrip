@@ -168,9 +168,13 @@ class SightModel extends PgBaseModel
      * @param integer $pageSize
      * @return array
      */
-    public function search($query,$page,$pageSize){
+    public function search($query,$page,$pageSize,$x,$y){
         $offset = ($page-1)*$pageSize;
-        $sql = "SELECT * FROM sight where name like '%".$query."%' limit $pageSize offset $offset";
+        if(empty($x)){
+            $sql = "SELECT * FROM sight where name like '%".$query."%' limit $pageSize offset $offset";
+        }else{
+            $sql = "SELECT id, city_id, name, image, describe,  earth_distance(ll_to_earth(sight.x, sight.y),ll_to_earth($x,$y)) AS dis FROM sight where name like '%".$query."%'  ORDER BY dis ASC limit $pageSize offset $offset";
+        }                
         try {
             $sth = $this->db->prepare($sql);
             $sth->execute();

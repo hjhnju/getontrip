@@ -4,7 +4,7 @@
  * @author huwei
  *
  */
-class CommentController extends Base_Controller_Api {
+class ListController extends Base_Controller_Api {
     
     const PAGESIZE = 6;
     
@@ -25,7 +25,7 @@ class CommentController extends Base_Controller_Api {
         $page       = isset($_POST['page'])?intval($_POST['page']):1;
         $pageSize   = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGESIZE;
         if(empty($topicId)){
-            return $this->ajaxError();
+            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $logic      = new Comment_Logic_Comment();
         $ret        = $logic->getCommentList($topicId, $page, $pageSize);

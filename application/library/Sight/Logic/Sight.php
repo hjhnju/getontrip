@@ -135,8 +135,12 @@ class Sight_Logic_Sight{
      * @param integer $pageSize
      * @return array
      */
-    public function search($query,$page,$pageSize){
-        $ret = $this->modelSight->search($query, $page, $pageSize);
+    public function search($query,$page,$pageSize,$x='',$y=''){
+        $redis = Base_Redis::getInstance();
+        $ret = $this->modelSight->search($query, $page, $pageSize,$x,$y);
+        foreach ($ret as $key => $val){
+            $ret[$key]['topicNum'] = $redis->zSize(Sight_Keys::getSightTopicName($val['id']));
+        }
         return $ret;
     }
     

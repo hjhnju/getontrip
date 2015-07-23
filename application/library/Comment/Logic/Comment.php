@@ -34,11 +34,13 @@ class Comment_Logic_Comment  extends Base_Logic{
      * @param integer $id
      * @param array $info
      */
-    public function  addComment($deviceId,$info){
+    public function  addComment($topicId,$deviceId,$toUserId,$content){
         $objComment = new Comment_Object_Comment();    
-        $logicUser = new User_Logic_User();
+        $logicUser  = new User_Logic_User();
         $objComment->fromUserId = $logicUser->getUserId($deviceId);
-        $objComment->toUserId   = $info['to_user_id'];
+        $objComment->toUserId   = $toUserId;
+        $objComment->topicId    = $topicId;
+        $objComment->content    = $content;
         return $objComment->save();
     }
     
@@ -74,7 +76,7 @@ class Comment_Logic_Comment  extends Base_Logic{
         if(empty($during)){
             $from = 0;
         }else{
-            $from    = strtotime($during);
+            $from = strtotime($during);
         }
         $redis = Base_Redis::getInstance();
         $ret = $redis->zRangeByScore(Topic_Keys::getTopicCommentKey($topicId),$from,time());

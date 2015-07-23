@@ -4,7 +4,7 @@
  * @author huwei
  *
  */
-class CommentController extends Base_Controller_Api {
+class AddController extends Base_Controller_Api {
     
     const PAGESIZE = 6;
     
@@ -22,13 +22,15 @@ class CommentController extends Base_Controller_Api {
      */
     public function indexAction() {
         $topicId    = isset($_POST['topicId'])?intval($_POST['topicId']):'';
-        $page       = isset($_POST['page'])?intval($_POST['page']):1;
-        $pageSize   = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGESIZE;
-        if(empty($topicId)){
-            return $this->ajaxError();
+        $deviceId   = isset($_POST['deviceId'])?intval($_POST['deviceId']):'';
+        $toUserId   = isset($_POST['toUserId'])?intval($_POST['toUserId']):'';
+        $content    = isset($_POST['content'])?intval($_POST['content']):'';
+               
+        if(empty($topicId) || empty($deviceId)|| empty($toUserId) ||empty($content)){
+            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $logic      = new Comment_Logic_Comment();
-        $ret        = $logic->getCommentList($topicId, $page, $pageSize);
+        $ret        = $logic->addComment($topicId,$deviceId,$toUserId,$content);
         $this->ajax($ret);
     }    
 }

@@ -1,6 +1,8 @@
 <?php
 class City_Logic_City{
     
+    const HOTPERIOD = '1 month ago';
+    
     protected $_modeSight;
     
     public function __construct(){
@@ -25,19 +27,28 @@ class City_Logic_City{
     }
     
     /**
-     * 根据城市ID获取城市信息，包含景点及话题信息
+     * 根据城市ID获取城市信息，包含景点及话题信息，景点按话题热度排序
      * @param integer $cityId
      * @param integer $page
      * @param integer $pageSize
      * @return array
      */
     public function getCityDetail($cityId,$page,$pageSize){
-        $redis = Base_Redis::getInstance();
-        $ret   = City_Api::getCityById($cityId);
-        $arrSight = $this->_modeSight->getSightByCity($page, $pageSize, $cityId);
+        $arrHot     = array();
+        $logicTopic = new Topic_Logic_Topic();
+        $redis      = Base_Redis::getInstance();
+        $ret        = City_Api::getCityById($cityId);
+        $arrSight   = $this->_modeSight->getSightByCity($page, $pageSize, $cityId);
         foreach ($arrSight as $key => $val){
+            $ret    = $redis->zRange(Sight_Keys::getSightTopicName($val['id']),0,-1);
+            $hot    = 0;
+            foreach ($ret as $topicId){
+                $hot += $logicTopic->getTopicHotDegree($topicId, self::HOTPERIOD);
+            }
+            $arrHot[] = $hot;            
             $arrSight[$key]['topics'] = count($redis->zRange(Sight_Keys::getSightTopicName($val['id']),0,-1));
         }
+        array_multisort($arrHot, SORT_DESC , $arrSight);
         $ret['sights'] = $arrSight;
         return $ret;
     }

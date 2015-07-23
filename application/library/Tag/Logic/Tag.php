@@ -35,4 +35,58 @@ class Tag_Logic_Tag{
         $arrRet = array_slice($arrTag['list'],0,$size);
         return $arrRet;
     }
+    
+    /**
+     * 编辑标签信息
+     * @param integer $id
+     * @param string $name
+     * @return boolean
+     */
+    public function editTag($id, $name){
+        $objTag = new Tag_Object_Tag();
+        $objTag->fetch(array('id' => $id));
+        $objTag->name = $name;
+        return $objTag->save();
+    }
+    
+    /**
+     * 添加标签信息
+     * @param string $name
+     * @return boolean
+     */
+    public static function saveTag($name){
+        $objTag = new Tag_Object_Tag();
+        $objTag->name = $name;
+        $ret1 = $objTag->save();
+    
+        $redis = Base_Redis::getInstance();
+        $ret2 = $redis->hSet(Tag_Keys::getTagInfoKey(),$objTag->id,$objTag->name);
+        return $ret1&&$ret2;
+    }
+    
+    /**
+     * 标签删除接口
+     * @param integer $id
+     * @return boolean
+     */
+    public function delTag($id){
+        $objTag = new Tag_Object_Tag();
+        $objTag->fetch(array('id' => $id));
+        $ret1 = $objTag->remove();
+    
+        $listTopictag = new Topic_List_Tag();
+        $listTopictag->setFilter(array('tag_id' => $id));
+        $listTopictag->setPagesize(PHP_INT_MAX);
+        $arrList = $listTopictag->toArray();
+        foreach ($arrList['list'] as $val){
+            $objTag = new Topic_Object_Tag();
+            $objTag->fetch(array('id'=>$val['id']));
+            $objTag->remove();
+        }
+    
+        $redis = Base_Redis::getInstance();
+        $ret2 = $redis->hDel(Tag_Keys::getTagInfoKey(),$id);
+    
+        return $ret1&&$ret2;
+    }
 }

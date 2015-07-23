@@ -4,7 +4,7 @@
  * @author huwei
  *
  */
-class Comment_Logic_Comment{
+class Comment_Logic_Comment  extends Base_Logic{
     
     const ANONYMOUS = "匿名用户";
     
@@ -70,8 +70,12 @@ class Comment_Logic_Comment{
      * @param string  $during
      * @return integer
      */
-    public function getCommentNum($topicId,$during){
-        $from    = strtotime($during);
+    public function getCommentNum($topicId,$during=''){
+        if(empty($during)){
+            $from = 0;
+        }else{
+            $from    = strtotime($during);
+        }
         $redis = Base_Redis::getInstance();
         $ret = $redis->zRangeByScore(Topic_Keys::getTopicCommentKey($topicId),$from,time());
         return count($ret);

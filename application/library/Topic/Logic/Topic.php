@@ -1,4 +1,9 @@
 <?php
+/**
+ * 话题逻辑层
+ * @author huwei
+ *
+ */
 class Topic_Logic_Topic{
     
     protected $sightId = '';
@@ -11,7 +16,7 @@ class Topic_Logic_Topic{
     }
     
     /**
-     * 获取最热门的话题，带景点ID、时间范围、大小、标签过滤，并加上答案等信息:热度=话题收藏数+评论数+话题浏览量
+     * 获取最热门的话题，带景点ID、时间范围、大小、标签过滤，并加上答案等信息
      * @param integer $sightId
      * @param integer $size
      * @return array
@@ -49,19 +54,8 @@ class Topic_Logic_Topic{
             $objTopic = new Topic_Object_Topic();
             $objTopic->fetch(array('id' => $val));
             $arrRet[] = $objTopic->toArray();
-                       
-            //话题最近收藏数
-            $logicCollect      = new Collect_Logic_Collect();
-            $collectTopicNum   = $logicCollect->getLateCollectNum(Collect_Keys::TOPIC, $val['id'],$period);
-            
-            //话题最近访问人数
-            $visitTopicUv      = $this->getTopicVistUv($val, $period);
-            
-            //最近评论次数
-            $logicComment      = new Comment_Logic_Comment();
-            $commentNum        = $logicComment->getCommentNum($val, $period);
-            
-            $arrHotDegree[] = $collectTopicNum + $commentNum + $visitTopicUv;
+                                   
+            $arrHotDegree[] = $this->getTopicHotDegree($val, $period);
             
             //话题访问次数            
             $arrRet[$key]['visit']   = $this->getTopicVistPv($val, $period);
@@ -233,5 +227,328 @@ class Topic_Logic_Topic{
         $from    = strtotime($during);
         $arrUser = $redis->zRangeByScore(Topic_Keys::getTopicVisitKey($topicId),$from,time());
         return count($arrUser);
+    }
+    
+    /**
+     * 获取话题的热度:热度=话题收藏数+评论数+话题浏览量
+     * @param integer $sightId，景点ID
+     * @param string $period,时间段
+     * @return integer，话题热度
+     */
+    public function getTopicHotDegree($topicId,$period){
+    
+        //话题最近收藏数
+        $logicCollect      = new Collect_Logic_Collect();
+        $collectTopicNum   = $logicCollect->getLateCollectNum(Collect_Keys::TOPIC, $topicId,$period);
+    
+        //话题最近访问人数
+        $visitTopicUv      = $this->getTopicVistUv($topicId, $period);
+    
+        //最近评论次数
+        $logicComment      = new Comment_Logic_Comment();
+        $commentNum        = $logicComment->getCommentNum($topicId, $period);
+        
+        return $collectTopicNum + $commentNum + $visitTopicUv;
+    }
+    
+    public function search($arrParam,$page,$pageSize){
+        $arrTopics = array();
+        $filter    = '';
+        $sight_id  = '';
+        if(isset($arrParam['sight_id'])){
+            $logic = new Topic_Logic_Topic();
+            $arrTopics = $logic->getTopicBySight($arrParam['sight_id']);
+            $sight_id  = $arrParam['sight_id'];
+            unset($arrParam['sight_id']);
+        }
+    
+        $listTopic = new Topic_List_Topic();
+        if(isset($arrParam['title'])){
+            $filter = "`title` like '%".$arrParam['title']."%' and ";
+            unset($arrParam['title']);
+        }
+    
+        foreach ($arrParam as $key => $val){
+            $filter .= "`".$key."` = $val and ";
+        }
+        if(!empty($sight_id)){
+            $strTopics = implode(",",$arrTopics);
+            if(empty($strTopics)){
+                $strTopics = -1;
+            }
+            $filter .= "`id` in ($strTopics)";
+        }else{
+            if(!empty($filter)){
+                $filter  = substr($filter,0,-4);
+            }
+        }
+        if(!empty($filter)){
+            $listTopic->setFilterString($filter);
+        }
+        $listTopic->setPage($page);
+        $listTopic->setPagesize($pageSize);
+        $arrRet = $listTopic->toArray();
+        foreach ($arrRet['list'] as $key => $val){
+            $listTopictag = new Topic_List_Tag();
+            $listTopictag->setFilter(array('topic_id' => $val['id']));
+            $listTopictag->setPagesize(PHP_INT_MAX);
+            $arrTag = $listTopictag->toArray();
+            $arrRet['list'][$key]['tags'] = $arrTag['list'];
+    
+            $listSighttopic = new Sight_List_Topic();
+            if(!empty($sight_id)){
+                $listSighttopic->setFilter(array('topic_id' =>$val['id'],'sight_id' =>$sight_id));
+            }else{
+                $listSighttopic->setFilter(array('topic_id' =>$val['id']));
+            }
+            $listSighttopic->setPagesize(PHP_INT_MAX);
+            $arrSighttopic = $listSighttopic->toArray();
+            $arrRet['list'][$key]['sights'] = $arrSighttopic['list'];
+             
+            $logicCollect      = new Collect_Logic_Collect();           
+            $arrRet['list'][$key]['collect'] = $logicCollect->getCollectNum(Collect_Keys::TOPIC, $val['id']);
+            
+            $logicComment      = new Comment_Logic_Comment();
+            $arrRet['list'][$key]['comment'] = $logicComment->getCommentNum($val['id']);
+        }
+        return $arrRet;
+    }
+    
+    public function delTopic($id){
+        $redis = Base_Redis::getInstance();
+        //删除话题
+        $objTopic = new Topic_Object_Topic();
+        $objTopic->fetch(array('id' => $id));
+        $objTopic->status = Topic_Type_Status::DELETED;
+        $ret =  $objTopic->save();
+    
+        //删除答案
+        $listAnswers = new Answers_List_Answers();
+        $listAnswers->setFilter(array('topic_id' => $id));
+        $listAnswers->setPagesize(PHP_INT_MAX);
+        $arrAnswers = $listAnswers->toArray();
+        foreach ($arrAnswers['list'] as $index => $val){
+            $objAnswer = new Answers_Object_Answers();
+            $objAnswer->fetch(array('id' => $val['id']));
+            $objAnswer->status = Answers_Type_Status::DELETED;
+            $objAnswer->save();
+        }
+    
+        //删除话题标签关系
+        $listTopicTag = new Topic_List_Tag();
+        $listTopicTag->setFilter(array('topic_id' => $id));
+        $listTopicTag->setPagesize(PHP_INT_MAX);
+        $arrTopicTag = $listTopicTag->toArray();
+        foreach ($arrTopicTag['list'] as $index => $val){
+            $objTopicTag = new Topic_Object_Tag();
+            $objTopicTag->fetch(array('id' => $val['id']));
+            $objTopicTag->remove();
+            $redis->sRemove(Topic_Keys::getTopicTagKey($id),$objTopicTag->tagId);
+            $redis->hIncrBy(Tag_Keys::getTagInfoKey($objTopicTag->tagId),'num',-1);
+        }
+        //删除话题景点关系
+        $listSigtTopic = new Sight_List_Topic();
+        $listSigtTopic->setFilter(array('topic_id' => $id));
+        $listSigtTopic->setPagesize(PHP_INT_MAX);
+        $arrSigtTopic = $listSigtTopic->toArray();
+        foreach ($arrSigtTopic['list'] as $index => $val){
+            $objSightTopic = new Sight_Object_Topic();
+            $objSightTopic->fetch(array('id' => $val['id']));
+            $objAnswer->remove();
+            $redis->zDelete(Sight_Keys::getSightTopicName($objSightTopic->sightId),$id);
+        }
+    
+        //更新redis统计数据
+        $redis->hDel(Topic_Keys::getTopicVisitKey(),$id);
+        $redis->delete(Topic_Keys::getTopicTagKey($id));
+        return $ret;
+    }
+    
+    /**
+     * 获取话题列表信息
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function getTopicList($page, $pageSize){
+        $listTopic = new Topic_List_Topic();
+        $listTopic->setPage($page);
+        $listTopic->setPagesize($pageSize);
+        $arrRet = $listTopic->toArray();
+        foreach ($arrRet['list'] as $key => $val){
+            $listTopictag = new Topic_List_Tag();
+            $listTopictag->setFilter(array('topic_id' => $val['id']));
+            $listTopictag->setPagesize(PHP_INT_MAX);
+            $arrTag = $listTopictag->toArray();
+            $arrRet['list'][$key]['tags'] = $arrTag['list'];
+    
+            $listSighttopic = new Sight_List_Topic();
+            $listSighttopic->setFilter(array('topic_id' =>$val['id']));
+            $listSighttopic->setPagesize(PHP_INT_MAX);
+            $arrSighttopic = $listSighttopic->toArray();
+            $arrRet['list'][$key]['sights'] = $arrSighttopic['list'];
+        }
+        return $arrRet;
+    }
+    
+    /**
+     * 根据条件获取话题信息
+     * @param array $arrParam:参数数组，如：array('sight_id'=>1);
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public  function queryTopic($arrParam,$page,$pageSize){
+        $listTopic = new Topic_List_Topic();
+        $arrTopics = array();
+        $filter    = '';
+        $sight_id  = '';
+        if(isset($arrParam['sight_id'])){
+            $logic = new Topic_Logic_Topic();
+            $arrTopics = $logic->getTopicBySight($arrParam['sight_id']);
+            $sight_id  = $arrParam['sight_id'];
+            unset($arrParam['sight_id']);
+        }
+        foreach ($arrParam as $key => $val){
+            $filter = "`".$key."`=$val and ";
+        }
+        if(!empty($arrTopics)){
+            $strTopics = implode(",",$arrTopics);
+            $filter .= "`id` in ($strTopics)";
+        }else{
+            $filter = substr($filter,0,-4);
+        }
+    
+        $listTopic->setFilterString($filter);
+        $listTopic->setPage($page);
+        $listTopic->setPagesize($pageSize);
+        $arrRet = $listTopic->toArray();
+        foreach ($arrRet['list'] as $key => $val){
+            $listTopictag = new Topic_List_Tag();
+            $listTopictag->setFilter(array('topic_id' => $val['id']));
+            $listTopictag->setPagesize(PHP_INT_MAX);
+            $arrTag = $listTopictag->toArray();
+            $arrRet['list'][$key]['tags'] = $arrTag['list'];
+    
+            $listSighttopic = new Sight_List_Topic();
+            if(!empty($sight_id)){
+                $listSighttopic->setFilter(array('topic_id' =>$val['id'],'sight_id' =>$sight_id));
+            }else{
+                $listSighttopic->setFilter(array('topic_id' =>$val['id']));
+            }
+            $listSighttopic->setPagesize(PHP_INT_MAX);
+            $arrSighttopic = $listSighttopic->toArray();
+            $arrRet['list'][$key]['sights'] = $arrSighttopic['list'];
+        }
+        return $arrRet;
+    }
+    
+    /**
+     * 修改话题状态接口
+     * @param integer $topicId
+     * @param integer $status
+     * @return boolean
+     */
+    public function changeTopicStatus($topicId,$status){
+        $objTopic = new Topic_Object_Topic();
+        $objTopic->fetch(array('id' => $topicId));
+        $objTopic->status = $status;
+        return $objTopic->save();
+    }
+    
+    public function addTopic($arrInfo){
+        $objTopic = new Topic_Object_Topic();
+        $redis = Base_Redis::getInstance();
+        foreach ($arrInfo as $key => $val){
+            $objTopic->$key = $val;
+        }
+        $ret = $objTopic->save();
+        if(isset($arrInfo['tags'])){
+            foreach($arrInfo['tags'] as $val){
+                $objTopictag = new Topic_Object_Tag();
+                $objTopictag->topicId = $objTopic->id;
+                $objTopictag->tagId   = $val;
+                $objTopictag->save();
+    
+                $redis->sAdd(Topic_Keys::getTopicTagKey($objTopic->id),$val);
+            }
+        }
+        if(isset($arrInfo['sights'])){
+            foreach($arrInfo['sights'] as $val){
+                $objSightTopic = new Sight_Object_Topic();
+                $objSightTopic->topicId = $objTopic->id;
+                $objSightTopic->sightId = $val;
+                $objSightTopic->save();
+    
+                $redis->zAdd(Sight_Keys::getSightTopicName($val),time(),$objTopic->id);
+            }
+        }
+        return $ret;
+    }
+    
+    public function editTopic($topicId,$arrInfo){
+        $objTopic = new Topic_Object_Topic();
+        $redis    = Base_Redis::getInstance();
+        $objTopic->fetch(array('id' => $topicId));
+        if(empty($objTopic->id)){
+            return false;
+        }
+        foreach ($arrInfo as $key => $val){
+            $objTopic->$key = $val;
+        }
+        $ret = $objTopic->save();
+    
+        if(isset($arrInfo['tags'])){
+            $listTopicTag = new Topic_List_Tag();
+            $listTopicTag->setFilter(array('topic_id' => $topicId));
+            $listTopicTag->setPagesize(PHP_INT_MAX);
+            $arrList = $listTopicTag->toArray();
+            foreach($arrList['list'] as $key => $val){
+                $objTopicTag = new Topic_Object_Tag();
+                $objTopicTag->fetch(array('id' => $val['id']));
+                if(!in_array($objTopicTag->tagId,$arrInfo['tags'])){
+                    $redis->sRemove(Topic_Keys::getTopicTagKey($topicId),$objTopicTag->tagId);
+                    $objTopicTag->remove();
+                }
+            }
+    
+            foreach($arrInfo['tags'] as $tag){
+                $objTopicTag = new Topic_Object_Tag();
+                $objTopicTag->fetch(array('topic_id' => $topicId,'tag_id' =>$tag));
+                if(empty($objTopicTag->id)){
+                    $objTopicTag->tagId   = $tag;
+                    $objTopicTag->topicId = $topicId;
+                    $objTopicTag->save();
+                    $redis->sAdd(Topic_Keys::getTopicTagKey($topicId),$objTopicTag->tagId);
+                }
+            }
+        }
+    
+        if(isset($arrInfo['sights'])){
+            $listSightTopic = new Sight_List_Topic();
+            $listSightTopic->setFilter(array('topic_id' => $topicId));
+            $listSightTopic->setPagesize(PHP_INT_MAX);
+            $arrList = $listSightTopic->toArray();
+            foreach($arrList['list'] as $key => $val){
+                $objSightTopic = new Sight_Object_Topic();
+                $objSightTopic->fetch(array('id' => $val['id']));
+                if(!in_array($objSightTopic->sightId,$arrInfo['sights'])){
+                    $redis->zDelete(Sight_Keys::getSightTopicName($objSightTopic->sightId),$topicId);
+                    $objSightTopic->remove();
+                }
+            }
+    
+            foreach($arrInfo['sights'] as $sight){
+                $objSightTopic = new Sight_Object_Topic();
+                $objSightTopic->fetch(array('topic_id' => $topicId,'sight_id' =>$sight));
+                if(empty($objSightTopic->id)){
+                    $objSightTopic->sightId = $sight;
+                    $objSightTopic->topicId = $topicId;
+                    $objSightTopic->save();
+                    $redis->zAdd(Sight_Keys::getSightTopicName($objSightTopic->sightId),time(),$topicId);
+                }
+            }
+        }
+        return $ret;
     }
 }

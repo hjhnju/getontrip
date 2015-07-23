@@ -1,5 +1,5 @@
 <?php
-class Keyword_Logic_Keyword{
+class Keyword_Logic_Keyword extends Base_Logic{
     
     protected $_fields;
     
@@ -31,15 +31,8 @@ class Keyword_Logic_Keyword{
         $bCheck = false;
         $obj    = new Keyword_Object_Keyword();
         foreach ($arrInfo as $key => $val){
-            if(in_array($key,$this->_fields)){
-                if(false !== strpos($key,"_")){
-                    $arrTemp = explode("_",$key);
-                    $key = '';
-                    foreach ($arrTemp as $data){
-                        $key .= ucfirst($data);
-                    }
-                }
-                $key = lcfirst($key);
+            if(in_array($key,$this->_fields)){  
+                $key = $this->getprop($key);              
                 $obj->$key = $val;
                 $bCheck    = true;
             }

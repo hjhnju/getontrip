@@ -13,10 +13,8 @@ class Tag_Api{
      * @return array
      */
     public static function getTagList($page, $pageSize){
-        $listTag = new Tag_List_Tag();
-        $listTag->setPage($page);
-        $listTag->setPagesize($pageSize);
-        return $listTag->toArray();
+       $logicTag = new Tag_Logic_Tag();
+       return $logicTag->getTagList($page, $pageSize);
     }
     
     /**
@@ -27,10 +25,8 @@ class Tag_Api{
      * @return boolean
      */
     public static function editTag($id, $name){
-        $objTag = new Tag_Object_Tag();
-        $objTag->fetch(array('id' => $id));
-        $objTag->name = $name;
-        return $objTag->save();
+        $logicTag = new Tag_Logic_Tag();
+        return $logicTag->editTag($id, $name);
     }
     
     /**
@@ -40,13 +36,8 @@ class Tag_Api{
      * @return boolean
      */
     public static function saveTag($name){
-        $objTag = new Tag_Object_Tag();
-        $objTag->name = $name;
-        $ret1 = $objTag->save();
-        
-        $redis = Base_Redis::getInstance();
-        $ret2 = $redis->hSet(Tag_Keys::getTagInfoKey(),$objTag->id,$objTag->name);
-        return $ret1&&$ret2;
+        $logicTag = new Tag_Logic_Tag();
+        return $logicTag->saveTag($name);
     }
     
     /**
@@ -56,23 +47,7 @@ class Tag_Api{
      * @return boolean
      */
     public static function delTag($id){
-        $objTag = new Tag_Object_Tag();
-        $objTag->fetch(array('id' => $id));
-        $ret1 = $objTag->remove();
-        
-        $listTopictag = new Topic_List_Tag();
-        $listTopictag->setFilter(array('tag_id' => $id));
-        $listTopictag->setPagesize(PHP_INT_MAX);
-        $arrList = $listTopictag->toArray();
-        foreach ($arrList['list'] as $val){
-            $objTag = new Topic_Object_Tag();
-            $objTag->fetch(array('id'=>$val['id']));
-            $objTag->remove();
-        }
-        
-        $redis = Base_Redis::getInstance();
-        $ret2 = $redis->hDel(Tag_Keys::getTagInfoKey(),$id);
-        
-        return $ret1&&$ret2;
+        $logicTag = new Tag_Logic_Tag();
+        return $logicTag->delTag($id);
     }
 }

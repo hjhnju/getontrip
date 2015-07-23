@@ -66,6 +66,13 @@ class Sight_Logic_Sight{
         return $arrRet;
     }
     
+    /**
+     * 根据话题ID获取景点信息
+     * @param integer $topicId
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
     public function getSightByTopic($topicId,$page=1,$pageSize=PHP_INT_MAX){
         $listSightTopic = new Sight_List_Topic();
         $listSightTopic->setFields(array('sight_id'));

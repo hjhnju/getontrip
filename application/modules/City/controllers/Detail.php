@@ -23,7 +23,7 @@ class DetailController extends Base_Controller_Page {
      * @return json
      */
     public function indexAction(){
-        $cityId     = isset($_POST['cityId'])?intval($_POST['cityId']):'';
+        $cityId   = isset($_POST['cityId'])?intval($_POST['cityId']):'';
         $page     = isset($_POST['page'])?intval($_POST['page']):1;
         $pageSize = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGE_SIZE;
         if(empty($cityId)){

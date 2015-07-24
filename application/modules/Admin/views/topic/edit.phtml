@@ -25,8 +25,8 @@
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
-						<i class="fa fa-home"></i>
-						<a href="/admin/sight">话题管理</a>
+						<i class="fa fa-list-ul"></i>
+						<a href="/admin/topic/list">话题列表</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
@@ -39,19 +39,25 @@
 		     <div class=" form">
                   <form class="cmxform form-horizontal tasi-form" id="Form" method="post" action="" novalidate="novalidate" >
                     {%if isset($post.id)%}
-                    <input type="hidden" name="id" id="id" value="{%$post.id%}"/>
+                    <input type="hidden" name="id" id="id" value="{%$post.id%}"/> 
+                     <div class="form-group ">
+                          <label for="title" class="control-label col-lg-2">当前状态*</label>
+                          <label class="control-label col-lg-2" style="text-align: left;">
+                               {%$post.statusName%} 
+                          </label>
+                      </div>
                     {%/if%}
-                  	
+                  	<input type="hidden" name="status" id="status" value="{%if isset($post.status)%}$post.status{%else%}5{%/if%}"/>
                       <div class="form-group ">
-                          <label for="content" class="control-label col-lg-2">主标题*</label>
+                          <label for="title" class="control-label col-lg-2">主标题*</label>
                           <div class="col-lg-5">
-                              <input class="form-control" id="content" name="content" minlength="2" type="text" required="" value="{%if isset($post.content)%}{%$post.content%}{%/if%}"><label for="content" class="error"></label>
+                              <input class="form-control" id="title" name="title" minlength="2" type="text" value="{%if isset($post.title)%}{%$post.title%}{%/if%}" ><label for="title" class="error"></label>
                           </div>
                       </div>
                       <div class="form-group ">
-                          <label for="title" class="control-label col-lg-2">副标题*</label>
+                          <label for="subtitle" class="control-label col-lg-2">副标题</label>
                           <div class="col-lg-5">
-                              <input class="form-control" id="title" name="title" minlength="2" type="text" required="" value="{%if isset($post.title)%}{%$post.title%}{%/if%}"><label for="title" class="error"></label>
+                              <input class="form-control" id="subtitle" name="subtitle" minlength="2" type="text"  value="{%if isset($post.subtitle)%}{%$post.subtitle%}{%/if%}"><label for="subtitle" class="error"></label>
                           </div>
                       </div>
                        <div class="form-group ">
@@ -63,37 +69,41 @@
                       <div class="form-group ">
                           <label for="sight_name" class="control-label col-lg-2">所属景点*</label>
                           <div class="col-lg-3"> 
-                               <input class="form-control" id="sight_name" name="sight_name"  type="text" required=""  autocomplete="off" value="{%if isset($post.sight_name)%}{%$post.sight_name%}{%/if%}" placeholder="输入后请在下拉框选择"/> 
-                               <label for="sight_name" class="error"></label>
+                               <input class="form-control" id="sight_name"    type="text"  autocomplete="off"  placeholder="输入后请在下拉框选择"/>
                           </div>
                            <div class="col-lg-3">
                            	 <div class="alert alert-info" role="alert" id="sight_alert">
-                               
-                             </div>
-                           </div>  
+                                  {%foreach $sightList as $key=>$item%}
+                                  <span class="badge badge-sm label-danger" role="badge">   {%$item.name%}
+                                    <button type="button" class="close" data-id="{%$item.id%}"><span class="fa fa-remove"></span></button>
+                                  </span> 
+                                   {%/foreach%}  
+                             </div> 
+                           </div> 
+                           
                       </div>
                       <div class="form-group ">
                           <label for="sight_name" class="control-label col-lg-2">贴标签*</label>
                           <div class="col-lg-5"> 
-                               <select multiple="multiple" class="multi-select" id="tags" name="tags[]" >
+                               <select multiple="multiple" class="multi-select" id="tags"  >
                                    {%foreach $tagList as $key=>$item%}
                                      <option value="{%$item.id%}" {%if isset($item.selected)%}selected{%/if%} >{%$item.name%}</option>
                                    {%/foreach%} 
                               </select>
                            </div>  
                       </div>
-                       <div class="form-group ">
-                          <label for="xy" class="control-label col-lg-2">坐标*</label>
-                          <div class="col-lg-5">
-                              <input  id="x" name="x"  type="hidden" value="{%if isset($post.x)%}{%$post.x%}{%/if%}">
-                              <input  id="y" name="y"  type="hidden" value="{%if isset($post.y)%}{%$post.y%}{%/if%}">
-                              <input class="form-control" id="xy"  type="text" required="" readonly="readonly" value="{%if isset($post.name)%}{%$post.x%},{%$post.y%}{%/if%}"><label for="xy" class="error"></label>  
-                           </div>
-                           <div class="col-lg-5"> 
-                          <button type="button"  class="btn btn-success" id="position">
-                               	<i class="fa fa-map-marker  fa-3x"></i>点我定位</button>
-                          </div> 
-                      </div>
+                      <div class="form-group ">
+                       <label for="xy" class="control-label col-lg-2">坐标*</label>
+                       <div class="col-lg-5">
+                           <input  id="x" name="x"  type="hidden" value="{%if isset($post.x)%}{%$post.x%}{%/if%}">
+                           <input  id="y" name="y"  type="hidden" value="{%if isset($post.y)%}{%$post.y%}{%/if%}">
+                           <input class="form-control" id="xy"  type="text"  readonly="readonly" value="{%if isset($post.x)%}{%$post.x%},{%$post.y%}{%/if%}"><label for="xy" class="error"></label>  
+                        </div>
+                        <div class="col-lg-5"> 
+                       <button type="button"  class="btn btn-success" id="position">
+                              <i class="fa fa-map-marker  fa-3x"></i>点我定位</button>
+                       </div> 
+                      </div>  
                       <div class="form-group"> 
                           <label for="" class="control-label col-lg-2">背景图片</label>
                           <div class="col-md-9">
@@ -104,7 +114,7 @@
                                   <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"> 
                                   </div>
                                   <div id="imageView" class="imageView thumbnail {%if isset($post.image)%}imagedis{%/if%}" style="max-width: 200px; max-height: 150px; line-height: 20px;"> 
-                                    {%if isset($post.image)%} 
+                                    {%if !empty($post.image)%} 
                                     <img src="{%$webroot%}/pic/{%$post.image%}.jpg" alt="">
                                     {%/if%}
                                   </div>
@@ -121,11 +131,36 @@
                               </div> 
                           </div>
                       </div>
+                       <div class="form-group ">
+                          <label for="from" class="control-label col-lg-2">来源</label>
+                          <div class="col-lg-5"> 
+                              <select name="from" id="form-from"> 
+                                 {%foreach $sourceList as $key=>$item%}
+                                     <option value="{%$item.url%}" {%if isset($post.from)  and $item.from eq $item.id%}selected{%/if%}  data-id="{%$item.id%}">{%$item.name%}</option>
+                                  {%/foreach%}   
+                              </select>
+                              <label for="from" class="error"></label>
+                          </div>
+                      </div>
+                      <div class="form-group ">
+                          <label for="url" class="control-label col-lg-2">原文链接</label>
+                          <div class="col-lg-5">
+                              <input class="form-control" id="url" name="url" minlength="2" type="text"  value="{%if isset($post.url)%}{%$post.url%}{%/if%}"><label for="url" class="error"></label>
+                          </div>
+                      </div>
+                      <div class="form-group ">
+                          <label for="summernote" class="control-label col-lg-2">正文</label>
+                          <div class="col-lg-10">
+                              <div id="summernote" >{%if isset($post.content)%}{%$post.content%}{%/if%}</div>
+                          </div>
+                      </div>
                       <div class="form-group">
                           <div class="col-lg-offset-2 col-lg-10">
+                            {%if !isset($disabled)%} 
                               <button class="btn btn-danger" type="submit" id="">保存</button>
+                            {%/if%}
                                {%if isset($post.id)%} 
-                                 <a class="btn btn-default"  href="/admin/sight">返回列表</a> 
+                                 <a class="btn btn-default"  href="/admin/topic/list">返回列表</a> 
                                 {%else%}
                                 <button class="btn btn-default"  name="reset"  type="reset">重置</button> 
                                 {%/if%}
@@ -149,8 +184,13 @@
  <link href="{%$feroot%}s/global/plugins/bootstrap-fileupload/bootstrap-fileupload.css" rel="stylesheet" type="text/css"/> 
 <script src="{%$feroot%}s/global/plugins/bootstrap-fileupload/bootstrap-fileupload.js" type="text/javascript"></script>
 <script src="{%$feroot%}s/global/plugins/jquery-multi-select/js/jquery.multi-select.js" type="text/javascript"></script>
-<link href="{%$feroot%}s/global/plugins/jquery-multi-select/css/multi-select.css" rel="stylesheet" type="text/css"/>  
+<link href="{%$feroot%}s/global/plugins/jquery-multi-select/css/multi-select.css" rel="stylesheet" type="text/css"/> 
+<script src="{%$feroot%}s/global/plugins/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+<link href="{%$feroot%}s/global/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" type="text/css"/>    
 <script src="{%$feroot%}s/global/plugins/ajaxfileupload.js" type="text/javascript"></script>
+<script src="{%$feroot%}s/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
+<script src="{%$feroot%}s/global/plugins/bootstrap-summernote/summernote-zh-CN.js" type="text/javascript"></script> 
+<link href="{%$feroot%}s/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css"/>  
 
 <script src="{%$feroot%}s/admin/topic/edit.js" type="text/javascript"></script> 
 

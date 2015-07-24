@@ -5,7 +5,7 @@
 $(document).ready(function() {
     var validate = null;
     var sight_id_array = [];
-    var tag_id_array = []; 
+    var tag_id_array = [];
 
     bindEvents();
     validations();
@@ -18,6 +18,25 @@ $(document).ready(function() {
      *  
      */
     function bindEvents() {
+        //初始化编辑器
+        $('#summernote').summernote({
+            lang: "zh-CN",
+            height: 300,
+            toolbar: [
+                //[groupname, [button list]] 
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['height', ['height']],
+                ['insert', ['hr', 'link', 'picture']],
+                ['view', ['fullscreen', 'codeview']]
+            ]
+        });
+
+
         //表单提交事件
         $.validator.setDefaults({
             submitHandler: function(data) {
@@ -25,17 +44,31 @@ $(document).ready(function() {
                 var param = $("#Form").serializeObject();
 
                 //特殊处理景点和标签 
+                sight_id_array = [];
+                $('#sight_alert span button').each(function() {
+                    sight_id_array.push(Number($(this).attr('data-id')));
+                });
+
+                if (sight_id_array.length == 0) {
+                    toastr.warning('至少选择一个景点吧');
+                    return false;
+                }
+
+                tag_id_array = [];
                 $('#tags option:selected').each(function() {
-                    tag_id_array.push(Number($(this).val())); 
+                    tag_id_array.push(Number($(this).val()));
                 });
                 param.tags = tag_id_array;
-                param.sights =sight_id_array;
+                param.sights = sight_id_array;
+                param.content = $("#summernote").code();
+                //已发布的状态
+                param.status = 5;
 
                 var url;
                 if (!$('#id').val()) {
-                    url = "/admin/sightapi/add";
+                    url = "/admin/topicapi/add";
                 } else {
-                    url = "/admin/sightapi/save"
+                    url = "/admin/topicapi/save"
                 }
                 $.ajax({
                     "url": url,
@@ -47,10 +80,13 @@ $(document).ready(function() {
                     },
                     "success": function(response) {
                         if (response.status == 0) {
-                            alert('保存成功');
-                            $("button[name='reset']").click();
-                            $('#imageView').html('');
-                            $('#imageView').addClass('imageView');
+                            toastr.success('保存成功');
+                            if (url.indexOf('add') >= 0) {
+                                resetForm();
+                            } else {
+                                window.location.reload();
+                            }
+
                         }
                     }
                 });
@@ -82,22 +118,34 @@ $(document).ready(function() {
         });
 
         //标签选择
-        $('#tags').multiSelect();
+        $('#tags').multiSelect({
+            selectableHeader: '<span class="label label-primary">标签库</span>',
+            selectionHeader: '<span class="label label-success">已选标签</span>'
+        });
 
+        //上传图片，得到url
+        $("#upload-img").click(function(event) {
+            $.ajaxFileUpload({
+                url: '/upload/pic',
+                secureuri: false,
+                fileElementId: 'imageBtn',
+                dataType: 'json',
+                success: function(res, status) { //当文件上传成功后，需要向数据库中插入数据
+                    $('#image').val(res.data.hash);
+                    $('#imageView').html('<img src="' + res.data.url + '" style="width:186px;height:140px;"/>');
+                    $('#imageView').removeClass('imageView');
+                },
+                error: function(data, status, e) {
+                    alert(status.statusInfo);
+                }
+            })
+        });
+
+        //搜索来源下拉列表 
+        $('#form-from').selectpicker();
 
         //定位地图模态框
         $('#position').click(function(e) {
-            //判断城市和景点名称是否已经填写
-            if (!$.trim($("#city_name").val()) || !$.trim($("#name").val())) {
-                validate.settings.rules.xy.required = function() {
-                    return !$.trim($("#city_name").val()) || $.trim($("#name").val());
-                };
-                $("#Form").submit();
-                return false;
-            }
-
-            validate.settings.rules.xy.required = true;
-
             //打开模态框
             $('#myModal').modal({
                 remote: '/admin/utils/map'
@@ -123,29 +171,12 @@ $(document).ready(function() {
             $("#y").val(arrayXy[1]);
             $("#xy").val(valXY);
 
-            validate.settings.rules.xy.required = true;
 
             //手工关闭模态框
             $('#myModal').modal('hide');
         });
 
-        //上传图片，得到url
-        $("#upload-img").click(function(event) {
-            $.ajaxFileUpload({
-                url: '/upload/pic',
-                secureuri: false,
-                fileElementId: 'imageBtn',
-                dataType: 'json',
-                success: function(res, status) { //当文件上传成功后，需要向数据库中插入数据
-                    $('#image').val(res.data.hash);
-                    $('#imageView').html('<img src="' + res.data.url + '" style="width:186px;height:140px;"/>');
-                    $('#imageView').removeClass('imageView');
-                },
-                error: function(data, status, e) {
-                    alert(status.statusInfo);
-                }
-            })
-        });
+
     }
 
     /*
@@ -155,17 +186,23 @@ $(document).ready(function() {
         // validate signup form on keyup and submit
         validate = $("#Form").validate({
             rules: {
-                name: "required",
-                city_name: "required",
-                xy: {
-                    required: true
-                }
+                title: "required"
             },
             messages: {
-                name: "景点名称不能为空！",
-                city_name: "城市名称不能为空哦！",
-                xy: "坐标不能为空"
+                title: "这可是主标题，不能为空呀！"
             }
         });
+    }
+
+    //重置表单
+    function resetForm() {
+        $("button[name='reset']").click();
+        $('#imageView').html('');
+        $('#imageView').addClass('imageView');
+        sight_id_array = [];
+        tag_id_array = [];
+        $('#sight_alert').html('');
+        $('#ms-tags .ms-selection li').click();
+
     }
 });

@@ -74,9 +74,11 @@
 
         that.$selectableUl.on(action, '.ms-elem-selectable', function(){
           that.select($(this).data('ms-value'));
+          that.options.itemSelected($(this), $(this).data('ms-value'), $(this).find('span').text());
         });
         that.$selectionUl.on(action, '.ms-elem-selection', function(){
-          that.deselect($(this).data('ms-value'));
+           that.deselect($(this).data('ms-value'));
+                    that.options.itemSelected($(this), $(this).data('ms-value'), $(this).find('span').text());
         });
 
         that.activeMouse(that.$selectionUl);
@@ -514,7 +516,8 @@
     disabledClass : 'disabled',
     dblClick : false,
     keepOrder: false,
-    cssClass: ''
+    cssClass: '',
+    itemSelected: function () { }
   };
 
   $.fn.multiSelect.Constructor = MultiSelect;

@@ -5,7 +5,8 @@
  *
  */
 class ListAction extends Yaf_Action_Abstract {
-    public function execute() {
-    	  
+    public function execute() { 
+    	$statusTypeArray=Topic_Type_Status::$names;
+    	$this->getView()->assign('statusTypeArray', $statusTypeArray);
     }
 }

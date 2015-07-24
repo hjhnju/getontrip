@@ -1,5 +1,8 @@
 <?php
 /**
+ * 话题详情页
+ * @author huwei
+ *
  */
 class DetailController extends Base_Controller_Api {
     
@@ -11,7 +14,13 @@ class DetailController extends Base_Controller_Api {
     }
     
     /**
-     * 话题详情接口
+     * 接口1：/topic/detail/
+     * 话题详情页接口
+     * @param integer page
+     * @param integer pageSize
+     * @param integer topicId，话题ID
+     * @param integer deviceId，用户的设备ID（因为要统计UV）
+     * @return json
      */
     public function indexAction() {
         $page       = isset($_POST['page'])?intval($_POST['page']):1;

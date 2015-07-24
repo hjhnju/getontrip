@@ -22,4 +22,10 @@ class Admin_Logic_Admin{
         }
         return false;
     }
+    
+    public function getUserName($userId){
+        $objAdmin = new Admin_Object_Admin();
+        $objAdmin->fetch(array('id' => $userId));
+        return $objAdmin->name;
+    }
 }

@@ -16,8 +16,7 @@ class CityController extends Base_Controller_Api {
     /**
      * 接口1：/home/city
      * 首页数据获取接口
-     * @param double x，经度
-     * @param double y，纬度
+     * @param integer city，城市ID
      * @param integer page，页码
      * @param integer pageSize，页面大小
      * @return json

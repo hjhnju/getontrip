@@ -98,7 +98,7 @@ class Topic_Logic_Topic{
             $time      = strtotime($period);
             $strFileter .= " AND `update_time` > $time";
         }
-        $listTopic->setFields(array('id','title','content','desc','image'));
+        $listTopic->setFields(array('id','title','content','desc','image','from'));
         $listTopic->setFilterString($strFileter);
         $listTopic->setOrder("update_time desc");
         $listTopic->setPage($page);
@@ -123,7 +123,7 @@ class Topic_Logic_Topic{
             
             //话题来源
             $logicSource = new Source_Logic_Source();
-            $arrRet[$key]['from']    = $logicSource->getSourceName($objTopic->from);
+            $arrRet[$key]['from']    = $logicSource->getSourceName($val['from']);
         }        
         return $ret;
     }

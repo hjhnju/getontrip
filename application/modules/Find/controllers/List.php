@@ -23,6 +23,8 @@ class ListController extends Base_Controller_Api {
     public function indexAction() {
         $page       = isset($_POST['page'])?intval($_POST['page']):1;
         $pageSize   = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGESIZE;
+        $x          = isset($_POST['x'])?doubleval($_POST['x']):'';
+        $y          = isset($_POST['y'])?doubleval($_POST['y']):'';
         $logic      = new Topic_Logic_Topic();
         $ret        = $logic->getNewTopic('','',$page,$pageSize);
         $this->ajax($ret);

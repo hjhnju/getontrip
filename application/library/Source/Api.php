@@ -46,4 +46,14 @@ class Source_Api{
         $logicSource = new Source_Logic_Source();
         return $logicSource->searchSource($query, $page, $pageSize);
     }
+    
+    /**
+     * 接口5：Source_Api::getSourceByName($name)
+     * @param string $name
+     * @return array
+     */
+    public static function getSourceByName($name){
+        $logicSource = new Source_Logic_Source();
+        return $logicSource->getSourceByName($name);
+    }
 }

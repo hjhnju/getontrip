@@ -77,4 +77,15 @@ class Source_Logic_Source extends Base_Logic{
         $list->setPagesize($pageSize);
         return $list->toArray();
     }
+    
+    /**
+     * 根据名称获取源信息
+     * @param string $name
+     * @return array
+     */
+    public function getSourceByName($name){
+        $obj = new Source_Object_Source();
+        $obj->fetch(array('name' => $name));
+        return $obj->toArray();
+    }
 }

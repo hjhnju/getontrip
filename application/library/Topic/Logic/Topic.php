@@ -418,8 +418,9 @@ class Topic_Logic_Topic extends Base_Logic{
         }else{
             $filter = substr($filter,0,-4);
         }
-    
-        $listTopic->setFilterString($filter);
+        if(!empty($filter)){
+            $listTopic->setFilterString($filter);
+        }
         $listTopic->setPage($page);
         $listTopic->setPagesize($pageSize);
         $arrRet = $listTopic->toArray();

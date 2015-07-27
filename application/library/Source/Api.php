@@ -36,19 +36,21 @@ class Source_Api{
     }
     
     /**
-     * 接口4：Source_Api::searchSource($query,$page,$pageSize)
-     * @param string $query
+     * 接口4：Source_Api::searchSource($arrConf,$page,$pageSize)
+     * 根据arrConf来进行查询，
+     * @param array   $arrConf,array,eg:array('type'=>1,'name'="xx");
      * @param integer $page
      * @param integer $pageSize
      * @return array
      */
-    public static function searchSource($query,$page,$pageSize){
+    public static function searchSource($arrConf,$page,$pageSize){
         $logicSource = new Source_Logic_Source();
-        return $logicSource->searchSource($query, $page, $pageSize);
+        return $logicSource->searchSource($arrConf,$page, $pageSize);
     }
     
     /**
      * 接口5：Source_Api::getSourceByName($name)
+     * 根据来源名获取来源信息
      * @param string $name
      * @return array
      */

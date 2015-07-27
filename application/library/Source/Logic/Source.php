@@ -65,14 +65,26 @@ class Source_Logic_Source extends Base_Logic{
     
     /**
      * 模糊查询来源
-     * @param string $query
+     * @param array   $arrConf
      * @param integer $page
      * @param integer $pageSize
      * @return array
      */
-    public function searchSource($query,$page,$pageSize){
-        $list = new Source_List_Source();
-        $list->setFilterString("`name` like '%".$query."%'");
+    public function searchSource($arrConf,$page,$pageSize){
+        $list   = new Source_List_Source();
+        $filter = "";
+        if(isset($arrConf['name'])){
+            $filter = "`name` like '%".$arrConf['name']."%' and ";
+            unset($arrConf['name']);
+        }
+               
+        foreach ($arrConf as $key => $val){
+            $filter .= "`$key` = $val and ";
+        }
+        if(!empty($filter)){
+            $filter  = substr($filter,0,-4);
+            $list->setFilterString($filter);
+        }        
         $list->setPage($page);
         $list->setPagesize($pageSize);
         return $list->toArray();

@@ -4,7 +4,7 @@
  * @author huwei
  *
  */
-class Topic_Logic_Topic{
+class Topic_Logic_Topic extends Base_Logic{
     
     protected $sightId = '';
     protected $size    = 0;
@@ -460,8 +460,15 @@ class Topic_Logic_Topic{
         $objTopic = new Topic_Object_Topic();
         $redis = Base_Redis::getInstance();
         foreach ($arrInfo as $key => $val){
+            $key  = $this->getprop($key);
             $objTopic->$key = $val;
         }
+        $logicUser = new User_Logic_Login();
+        $userId = $logicUser->checkLogin();
+        if(!empty($userId)){
+            $objTopic->userId = $userId;
+        }
+        
         $ret = $objTopic->save();
         if(isset($arrInfo['tags'])){
             foreach($arrInfo['tags'] as $val){

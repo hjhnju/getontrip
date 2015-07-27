@@ -23,4 +23,27 @@ class Source_Api{
         $logicSource = new Source_Logic_Source();
         return $logicSource->addSource($arrInfo);
     }
+    
+    /**
+     * 接口3：Source_Api::getSourceInfo($id)
+     * 根据id获取来源信息
+     * @param integer $id
+     * @return array
+     */
+    public static function getSourceInfo($id){
+        $logicSource = new Source_Logic_Source();
+        return $logicSource->getSourceInfo($id);
+    }
+    
+    /**
+     * 接口4：Source_Api::searchSource($query,$page,$pageSize)
+     * @param string $query
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public static function searchSource($query,$page,$pageSize){
+        $logicSource = new Source_Logic_Source();
+        return $logicSource->searchSource($query, $page, $pageSize);
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-class Source_Logic_Source{
+class Source_Logic_Source extends Base_Logic{
     
     protected $_fields ;
     
@@ -29,15 +29,8 @@ class Source_Logic_Source{
         $obj    = new Source_Object_Source();
         $bCheck = false;
         foreach ($arrInfo as $key => $val){
-            if(in_array($key,$this->_fields)){
-                if(false !== strpos($key,"_")){
-                    $arrTemp = explode("_",$key);
-                    $key = '';
-                    foreach ($arrTemp as $data){
-                        $key .= ucfirst($data);
-                    }
-                }
-                $key = lcfirst($key);
+            if(in_array($key,$this->_fields)){                
+                $key = $this->getprop($key);
                 $obj->$key = $val;
                 $bCheck    = true;
             }
@@ -57,5 +50,31 @@ class Source_Logic_Source{
         $obj = new Source_Object_Source();
         $obj->fetch(array('id' => $id));
         return $obj->name;
+    }
+    
+    /**
+     * 获取来源信息
+     * @param integer $id
+     * @return array
+     */
+    public function getSourceInfo($id){
+        $obj = new Source_Object_Source();
+        $obj->fetch(array('id' => $id));
+        return $obj->toArray();
+    }
+    
+    /**
+     * 模糊查询来源
+     * @param string $query
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function searchSource($query,$page,$pageSize){
+        $list = new Source_List_Source();
+        $list->setFilterString("`name` like '%".$query."%'");
+        $list->setPage($page);
+        $list->setPagesize($pageSize);
+        return $list->toArray();
     }
 }

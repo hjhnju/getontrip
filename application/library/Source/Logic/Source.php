@@ -4,7 +4,7 @@ class Source_Logic_Source extends Base_Logic{
     protected $_fields ;
     
     public function __construct(){   
-        $this->_fields = array('id','name','url','create_time','update_time');  
+        $this->_fields = array('id','name','url','type','create_time','update_time');  
     }
     
     /**

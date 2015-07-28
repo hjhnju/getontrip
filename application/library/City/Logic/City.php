@@ -49,8 +49,7 @@ class City_Logic_City{
             $arrSight[$key]['topics'] = count($redis->zRange(Sight_Keys::getSightTopicName($val['id']),0,-1));
         }
         array_multisort($arrHot, SORT_DESC , $arrSight);
-        $ret['sights'] = $arrSight;
-        return $ret;
+        return $arrSight;
     }
     
     /**

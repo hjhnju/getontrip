@@ -20,25 +20,36 @@ class Wiki_Logic_Wiki extends Base_Logic{
         $to     = $page*$pageSize;
         $ret    = array();
         $arrRet = array();
-        for($i = $from; $i<=$to; $i++){
-            $arrItem = array();
-            $ret = $redis->hGetAll(Wiki_Keys::getWikiInfoName($sightId, $i));
-            if(($status !== Wiki_Type_Status::ALL)&&($status !== $ret['status'])){
-                $i--;
-                continue;
+        if($status == Wiki_Type_Status::ALL){
+            for($i = $from; $i<=$to; $i++){
+                $arrItem = array();
+                $ret = $redis->hGetAll(Wiki_Keys::getWikiInfoName($sightId, $i));
+                if(empty($ret)){
+                    break;
+                }
+                $arrKeys = $redis->keys(Wiki_Keys::getWikiCatalogName($sightId, $i, "*"));
+                foreach ($arrKeys as $key){
+                    $arrItem[] = $redis->hGetAll($key);
+                }
+                $ret['items']  = $arrItem;
+                $arrRet[]      = $ret;
             }
-            if(empty($ret)){
-                break;
+        }else{
+            $arrWikiKeys = $redis->keys(Wiki_Keys::getWikiInfoName($sightId, "*"));
+            foreach ($arrWikiKeys as $index => $wikiKey){
+                $ret = $redis->hGetAll($wikiKey);
+                $num = $index + 1;
+                if(($ret['status'] == $status)&&($num >= $from)&&($num <= $to)){
+                    $arrKeys = $redis->keys(Wiki_Keys::getWikiCatalogName($sightId, $num, "*"));
+                    foreach ($arrKeys as $key){
+                        $arrItem[] = $redis->hGetAll($key);
+                    }
+                    $ret['items']  = $arrItem;
+                    $arrRet[]      = $ret;
+                }
             }
-            $arrKeys = $redis->keys(Wiki_Keys::getWikiCatalogName($sightId, $i, "*"));
-            foreach ($arrKeys as $key){
-                $arrItem[] = $redis->hGetAll($key);
-            }
-            $ret['items']  = $arrItem; 
-            $arrRet[]      = $ret;
-        }
-        return $arrRet;
-       
+        }        
+        return $arrRet;       
     }
     
     
@@ -64,7 +75,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
             $image       = $html->find('img[alt=""]',0);
             $image       = $image->getAttribute('data-src');
             $hash        = $this->uploadPic(self::TYPE_WIKI,$sight['name'],$image);
-            $content = $html->find('div.card-summary-content div.para',0);
+            $content     = $html->find('div.card-summary-content div.para',0);
             if(empty($content)){
                 $content = $html->find('div[class="lemmaWgt-lemmaSummary lemmaWgt-lemmaSummary-light"]',0);
                 foreach($html->find('li[class^="title level1 column-"]') as $e){
@@ -74,7 +85,10 @@ class Wiki_Logic_Wiki extends Base_Logic{
                     $arrItems[] = array(
                         'name' => $name,
                         'url'  => $url,
-                    );                
+                    );  
+                    if(count($arrItems) > self::WIKI_CATALOG_NUM){
+                        break;
+                    }              
                 }
             }else{
                 $content     = strip_tags($content->innertext);
@@ -86,6 +100,10 @@ class Wiki_Logic_Wiki extends Base_Logic{
                         'name' => $name,
                         'url'  => $url,
                     );
+                    
+                    if(count($arrItems) > self::WIKI_CATALOG_NUM){
+                        break;
+                    }
                 }
             }
             

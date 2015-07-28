@@ -12,23 +12,32 @@ class Book_Logic_Book extends Base_Logic{
      * @param integer $pageSize
      * @return array
      */
-    public function getBooks($sightId,$page,$pageSize,$status=Book_Type_Type::PUBLISHED){
+    public function getBooks($sightId,$page,$pageSize,$status=Book_Type_Status::PUBLISHED){
         $redis  = Base_Redis::getInstance();
         $from   = ($page-1)*$pageSize+1;
         $to     = $page*$pageSize;
+        $ret    = array();
         $arrRet = array();
-        for($i = $from; $i<=$to; $i++){
-            $ret = $redis->hGetAll(Book_Keys::getBookInfoName($sightId, $i));
-            if(($status !== Book_Type_Type::ALL)&&($status !== $ret['status'])){
-                $i--;
-                continue;
+        if($status == Book_Type_Status::ALL){
+            for($i = $from; $i<=$to; $i++){
+                $arrItem = array();
+                $ret = $redis->hGetAll(Book_Keys::getBookInfoName($sightId, $i));
+                if(empty($ret)){
+                    break;
+                }
+                $arrRet[] = $ret;
             }
-            if(empty($ret)){
-                break;  
+        }else{
+            $arrBookKeys = $redis->keys(Book_Keys::getBookInfoName($sightId, "*"));
+            foreach ($arrBookKeys as $index => $BookKey){
+                $ret = $redis->hGetAll($BookKey);
+                $num = $index + 1;
+                if(($ret['status'] == $status)&&($num >= $from)&&($num <= $to)){
+                    $arrRet[] = $ret;
+                }
             }
-            $arrRet[] = $ret;
-        }
-        return $arrRet;
+        }        
+        return $arrRet; 
     }
     
     /**

@@ -17,7 +17,7 @@ class ListController extends Base_Controller_Page {
     /**
      * 接口1：/collect/list
      * 获取收藏列表内容
-     * @param integer type,1：话题;2：景点；3：答案；4：主题
+     * @param integer type,1：话题;2：景点；3：主题
      * @param integer device,设备ID
      * @return json
      */

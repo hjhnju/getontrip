@@ -58,8 +58,11 @@ class Base_Controller_Abstract extends Yaf_Controller_Abstract
         }
         
         //为页面统一assign用户信息
-        $this->getView()->assign("username",$name);
-        $this->getView()->assign("userid",$this->userid);
+        if(!empty($name)){
+        	$this->getView()->assign("username",$name);
+        	$this->getView()->assign("userid",$this->userid);
+        }
+       
         
     }
     

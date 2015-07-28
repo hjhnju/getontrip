@@ -25,7 +25,7 @@ class IndexController extends Base_Controller_Api {
     public function indexAction() {
         $x         = isset($_POST['x'])?doubleval($_POST['x']):'';
         $y         = isset($_POST['y'])?doubleval($_POST['y']):'';
-        $page      = isset($_POST['page'])?intval($_POST['page']):1;
+        $page      = isset($_POST['page'])?intval($_POST['page']):2;
         $pageSize  = isset($_POST['size'])?$_POST['size']:self::PAGESIZE;
         $x = 100;
         $y = 100;

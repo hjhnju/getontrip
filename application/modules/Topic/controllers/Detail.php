@@ -27,6 +27,8 @@ class DetailController extends Base_Controller_Api {
         $pageSize   = isset($_POST['pageSize'])?intval($_POST['page']):self::PAGESIZE;
         $topicId    = isset($_POST['topicId'])?intval($_POST['topicId']):'';
         $deviceId   = isset($_POST['deviceId'])?trim($_POST['deviceId']):'';
+        $deviceId = 1;
+        $topicId = 1;
         if(empty($deviceId) || empty($topicId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }        

@@ -1,12 +1,13 @@
 <?php
 class Base_Logic{
      
-    const TYPE_WIKI  = 'wiki';
+    const TYPE_WIKI      = 'wiki';
     
-    const TYPE_VIDEO = 'video';
+    const TYPE_VIDEO     = 'video';
     
-    const TYPE_BOOK  = 'book';
+    const TYPE_BOOK      = 'book';
         
+    const REDIS_TIME_OUT = 86400;//一天
     
     /**
      * 将字段中带有'_'的key进行处理

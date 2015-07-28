@@ -48,6 +48,9 @@ class Home_Logic_List{
             }
             $total += $num;
             if($pageSize <= 0){
+                if($pageSize < 0){  
+                   array_pop($arr); 
+                }
                 break;
             }
             if( $total < ($page-1)*$pageSize){

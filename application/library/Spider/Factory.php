@@ -6,6 +6,8 @@
  */
 class Spider_Factory{
     
+    const PREFIX = 'Spider_Web_';
+    
     /**
      * 获取解析器
      * @param string $class，解析器名称（类名）
@@ -13,7 +15,8 @@ class Spider_Factory{
      * @return object 解析器对象
      */
     public static function getInstance($class,$url){
-        $obj = new $class($url);
+        $class = self::PREFIX.$class;
+        $obj   = new $class($url);
         return $obj;
     }
 }

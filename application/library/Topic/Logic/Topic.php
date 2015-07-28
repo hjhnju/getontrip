@@ -154,6 +154,8 @@ class Topic_Logic_Topic extends Base_Logic{
         $objTopic = new Topic_Object_Topic();
         $objTopic->fetch(array('id' => $topicId));
         $arrRet = $objTopic->toArray();
+        $logicComment          = new Comment_Logic_Comment();
+        $arrRet['commentNum']  = $logicComment->getCommentNum($topicId);
         
         //添加redis中话题访问次数统计
         $redis = Base_Redis::getInstance();
@@ -319,19 +321,25 @@ class Topic_Logic_Topic extends Base_Logic{
         //删除话题
         $objTopic = new Topic_Object_Topic();
         $objTopic->fetch(array('id' => $id));
-        $objTopic->status = Topic_Type_Status::DELETED;
-        $ret =  $objTopic->save();
+        
+        //删除图片
+        $oss = Oss_Adapter::getInstance();
+        $filename = $objTopic->image . '.jpg';
+        $oss->remove($filename);
+        
+        $ret = $objTopic->remove();
+        
+        
     
-        //删除答案
-        $listAnswers = new Answers_List_Answers();
-        $listAnswers->setFilter(array('topic_id' => $id));
-        $listAnswers->setPagesize(PHP_INT_MAX);
-        $arrAnswers = $listAnswers->toArray();
-        foreach ($arrAnswers['list'] as $index => $val){
-            $objAnswer = new Answers_Object_Answers();
-            $objAnswer->fetch(array('id' => $val['id']));
-            $objAnswer->status = Answers_Type_Status::DELETED;
-            $objAnswer->save();
+        //删除评论
+        $listComment = new Comment_List_Comment();
+        $listComment->setFilter(array('topic_id' => $id));
+        $listComment->setPagesize(PHP_INT_MAX);
+        $arrComment = $listComment->toArray();
+        foreach ($arrComment['list'] as $index => $val){
+            $objComment = new Comment_Object_Comment();
+            $objComment->fetch(array('id' => $val['id']));
+            $objComment->remove();
         }
     
         //删除话题标签关系
@@ -354,7 +362,7 @@ class Topic_Logic_Topic extends Base_Logic{
         foreach ($arrSigtTopic['list'] as $index => $val){
             $objSightTopic = new Sight_Object_Topic();
             $objSightTopic->fetch(array('id' => $val['id']));
-            $objAnswer->remove();
+            $objSightTopic->remove();
             $redis->zDelete(Sight_Keys::getSightTopicName($objSightTopic->sightId),$id);
         }
     

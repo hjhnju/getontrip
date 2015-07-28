@@ -22,7 +22,7 @@ class SightModel extends PgBaseModel
         try {
             $sth = $this->db->prepare($sql);
             $sth->execute();
-            $ret = $sth->fetchObject();
+            $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return false;

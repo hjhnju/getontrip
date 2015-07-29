@@ -72,49 +72,15 @@ class Home_Logic_List{
     
     /**
      * 根据给定位置及过滤条件，获取周边景点信息
-     * @param double $x
-     * @param double $y
      * @param integer $page
      * @param integer $pageSize
      * @param integer $order
-     * @param integer $city
      * @param integer $sight
      * @param string $strTags
      */
-    public function getFilterSight($x,$y,$page,$pageSize,$order,$sight,$strTags){
+    public function getFilterSight($page,$pageSize,$order,$sight,$strTags){
         $arr   = array();
-        if(!empty($sight)){
-            $arr = $this->_logicSight->getSightDetail($sight,$page,$pageSize,$order,$strTags);           
-        }else{
-            $total = 0;
-            $ret = $this->_model->getNearSight(array(
-                'x'=>$x,
-                'y'=>$y,            
-            ));        
-            foreach ($ret as $val){
-                $num = $this->_logicTopic->getHotTopicNum($val['id']);
-                $num = 0;
-                $total += $num;
-                if($pageSize <= 0){
-                    break;
-                }
-                if( $total < ($page-1)*$pageSize){
-                    continue;
-                }else{
-                    $arr[] = $val;
-                    $pageSize -= $num; 
-                }
-            }
-            if($order == self::ORDER_NEW){
-                foreach ($arr as $index => $val){
-                    $arr[$index]['topic'] = $this->_logicTopic->getNewTopic($val['id'],1,self::PAGE_SIZE,$strTags);
-                }
-            }else{                
-                foreach ($arr as $index => $val){
-                    $arr[$index]['topic'] = $this->_logicTopic->getHotTopic($val['id'],self::PAGE_SIZE,$strTags);
-                }
-            }
-        }
+        $arr   = $this->_logicSight->getSightDetail($sight,$page,$pageSize,$order,$strTags);           
         return $arr;
     }
 }

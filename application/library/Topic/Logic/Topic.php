@@ -52,6 +52,7 @@ class Topic_Logic_Topic extends Base_Logic{
             }              
             
             $objTopic = new Topic_Object_Topic();
+            $objTopic->setFileds(array('id', 'title', 'subtitle', 'content', 'desc', 'image', 'from', 'url'));
             $objTopic->fetch(array('id' => $val));
             $arrRet[] = $objTopic->toArray();
                                    

@@ -5,13 +5,15 @@ require_once(APP_PATH."/application/library/Base/Simple_html_dom.php");
  * @author huwei
  *
  */
-abstract class Spider_Base{
+abstract class Spider_Web_Base{
     
     /**
      * 文档对象
      * @var object
      */
     public $objDom;
+    
+    public $url;
     
     /**
      * 获取正文的抽象方法，子类必须实现
@@ -23,6 +25,7 @@ abstract class Spider_Base{
      * @param string $url
      */
     public function __construct( $url ){
+        $this->url    = $url;
         $this->objDom = file_get_html($url);
     }
     

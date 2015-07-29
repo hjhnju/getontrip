@@ -19,19 +19,28 @@ class Video_Logic_Video extends Base_Logic{
         $redis  = Base_Redis::getInstance();
         $from   = ($page-1)*$pageSize+1;
         $to     = $page*$pageSize;
+        $ret    = array();
         $arrRet = array();
-        for($i = $from; $i<=$to; $i++){
-            $ret = $redis->hGetAll(Video_Keys::getVideoInfoName($sightId, $i));
-            if(($status !== Video_Type_Type::ALL)&&($status !== $ret['status'])){
-                $i--;
-                continue;
+        if($status == Video_Type_Status::ALL){
+            for($i = $from; $i<=$to; $i++){
+                $arrItem = array();
+                $ret = $redis->hGetAll(Video_Keys::getVideoInfoName($sightId, $i));
+                if(empty($ret)){
+                    break;
+                }
+                $arrRet[] = $ret;
             }
-            if(empty($ret)){
-                break;  
+        }else{
+            $arrVideoKeys = $redis->keys(Video_Keys::getVideoInfoName($sightId, "*"));
+            foreach ($arrVideoKeys as $index => $VideoKey){
+                $ret = $redis->hGetAll($VideoKey);
+                $num = $index + 1;
+                if(($ret['status'] == $status)&&($num >= $from)&&($num <= $to)){
+                    $arrRet[] = $ret;
+                }
             }
-            $arrRet[] = $ret;
-        }
-        return $arrRet;
+        }        
+        return $arrRet; 
     }
         
     /**

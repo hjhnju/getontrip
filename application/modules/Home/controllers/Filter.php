@@ -16,8 +16,6 @@ class FilterController extends Base_Controller_Api {
     /**
      * 接口1：/home/filter
      * 通过条件过滤的数据获取接口
-     * @param double x，经度
-     * @param double y，纬度
      * @param integer sight，景点ID，没有可以不传
      * @param integer order，顺序,1:人气，2：最近更新，默认可以不传
      * @param integer page，页码
@@ -29,8 +27,6 @@ class FilterController extends Base_Controller_Api {
         $page      = isset($_POST['page'])?intval($_POST['page']):1;
         $pageSize  = isset($_POST['pageSize'])?$_POST['pageSize']:self::PAGESIZE;
         $order     = isset($_POST['order'])?intval($_POST['order']):'';
-        $x         = isset($_POST['x'])?doubleval($_POST['x']):'';
-        $y         = isset($_POST['y'])?doubleval($_POST['y']):'';
         $sight     = isset($_POST['sight'])?intval($_POST['sight']):'';
         $strTags   = isset($_POST['tags'])?trim($_POST['tags']):''; 
         if(empty($x) || empty($y) || empty($sight)){
@@ -38,7 +34,7 @@ class FilterController extends Base_Controller_Api {
         }
                   
         $logic  = new Home_Logic_List();
-        $ret    = $logic->getFilterSight($x,$y,$page,$pageSize,$order,$sight,$strTags);
+        $ret    = $logic->getFilterSight($page,$pageSize,$order,$sight,$strTags);
         return $this->ajaxError();
     } 
 }

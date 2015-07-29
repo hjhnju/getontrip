@@ -17,9 +17,9 @@ class AddController extends Base_Controller_Page {
     /**
      * 接口1：/collect/add
      * 添加收藏接口
-     * @param integer type,1：话题;2：景点；3：答案；4：主题
-     * @param integer device，设备ID
-     * @param integer  objid，收藏对象的ID
+     * @param integer type,1：话题;2：景点；3:主题
+     * @param string  device，设备ID
+     * @param integer objid，收藏对象的ID
      * @return json
      */
     public function indexAction() {

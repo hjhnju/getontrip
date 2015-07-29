@@ -19,7 +19,7 @@ class DetailController extends Base_Controller_Api {
      * @param integer page
      * @param integer pageSize
      * @param integer topicId，话题ID
-     * @param integer deviceId，用户的设备ID（因为要统计UV）
+     * @param string deviceId，用户的设备ID（因为要统计UV）
      * @return json
      */
     public function indexAction() {

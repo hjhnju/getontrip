@@ -4,7 +4,7 @@
  * @author huwei
  *
  */
-class Book_Type_Type extends Base_Type {
+class Book_Type_Status extends Base_Type {
     /**
      * 1 未发布
      * @var integer

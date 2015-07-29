@@ -348,7 +348,8 @@ class Base_Object {
      */
     public function toArray() {
         $data = array();
-        foreach ($this->properties as $key => $prop) {
+        foreach($this->fields as $key){
+            $prop       = $this->properties[$key];
             $data[$key] = $this->$prop;
         }
         return $data;
@@ -370,4 +371,11 @@ class Base_Object {
         return $this->fetched ? true : false;
     }
     
+    /**
+     * 设置要取出的字段
+     * @param array $arrFileds
+     */
+    public function setFileds($arrFileds){
+        $this->fields = $arrFileds;
+    }
 }

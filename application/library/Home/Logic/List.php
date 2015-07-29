@@ -71,6 +71,9 @@ class Home_Logic_List{
             if(!empty($arr[$index]['image'])){
                 $arr[$index]['image']  = $_SERVER['HTTP_HOST']."/Pic/".$arr[$index]['image'].".jpg";
             }
+            
+            //距离转换成KM
+            $arr[$index]['dis'] = strval(floor($arr[$index]['dis']/1000));
         }        
         return $arr; 
     }

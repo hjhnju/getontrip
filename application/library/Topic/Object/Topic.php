@@ -80,31 +80,31 @@ class Topic_Object_Topic extends Base_Object {
      * 标题
      * @var string
      */
-    public $title;
+    public $title ='';
 
     /**
      * 
      * @var string
      */
-    public $subtitle;
+    public $subtitle = '';
 
     /**
      * 话题内容
      * @var string
      */
-    public $content;
+    public $content = '';
 
     /**
      * 补充描述
      * @var string
      */
-    public $desc;
+    public $desc = '';
 
     /**
      * 话题背景图片
      * @var string
      */
-    public $image;
+    public $image = '';
 
     /**
      * 话题作者ID
@@ -122,7 +122,7 @@ class Topic_Object_Topic extends Base_Object {
      * 源链接
      * @var string
      */
-    public $url;
+    public $url = '';
 
     /**
      * 话题状态,1:未发布,2:审核中,3:审核通过,4:审核未通过,5:已发布,6:已删除

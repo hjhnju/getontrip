@@ -59,10 +59,10 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrHotDegree[] = $this->getTopicHotDegree($val, $period);
             
             //话题访问次数            
-            $arrRet[$key]['visit']   = $this->getTopicVistPv($val, $period);
+            $arrRet[$key]['visit']   = strval($this->getTopicVistPv($val, $period));
             
             //话题收藏数
-            $arrRet[$key]['collect'] = $collectTopicNum;
+            $arrRet[$key]['collect'] = strval($collectTopicNum);
             
             //话题来源
             $logicSource = new Source_Logic_Source();

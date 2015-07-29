@@ -18,9 +18,9 @@ class IndexController extends Base_Controller_Api {
      * 搜索信息接口
      * @param integer page
      * @param integer pageSize
-     * @param string  query
-     * @param double  x
-     * @param double  y
+     * @param string  query，查询词
+     * @param double  x,经度
+     * @param double  y，纬度
      * @return json
      */
     public function indexAction() {

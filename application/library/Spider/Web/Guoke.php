@@ -6,8 +6,8 @@
  */
 class Spider_Web_Guoke extends Spider_Web_Base{
     
-    public function __construct($url){
-        parent::__construct($url);
+    public function __construct($url,$type){
+        parent::__construct($url,$type);
     }
     
     /**

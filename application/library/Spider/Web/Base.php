@@ -1,5 +1,5 @@
 <?php
-require_once(APP_PATH."/application/library/Base/Simple_html_dom.php");
+require_once(APP_PATH."/application/library/Base/HtmlDom.php");
 /**
  * 话题来源网页解析基类
  * @author huwei

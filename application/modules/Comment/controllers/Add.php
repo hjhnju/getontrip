@@ -15,14 +15,17 @@ class AddController extends Base_Controller_Api {
     
     /**
      * 接口1：/comment/add
-     * 评论列表页
+     * 添加评论页
+     * @param integer topicId,话题ID
+     * @param string  deviceId,设备ID
+     * @param integer toUserId,回复给的人，如果是回复话题，则不传些值
      * @param integer page
      * @param integer pageSize
      * @return json
      */
     public function indexAction() {
         $topicId    = isset($_POST['topicId'])?intval($_POST['topicId']):'';
-        $deviceId   = isset($_POST['deviceId'])?intval($_POST['deviceId']):'';
+        $deviceId   = isset($_POST['deviceId'])?trim($_POST['deviceId']):'';
         $toUserId   = isset($_POST['toUserId'])?intval($_POST['toUserId']):'';
         $content    = isset($_POST['content'])?intval($_POST['content']):'';
                

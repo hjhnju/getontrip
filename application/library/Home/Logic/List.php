@@ -66,6 +66,11 @@ class Home_Logic_List{
             $objCity->fetch(array('id' => $val['city_id']));
             $arr[$index]['city']  = $objCity->name;
             $arr[$index]['topic'] = $this->_logicTopic->getHotTopic($val['id']);
+            
+            //图片用全路径
+            if(!empty($arr[$index]['image'])){
+                $arr[$index]['image']  = $_SERVER['HTTP_HOST']."/Pic/".$arr[$index]['image'].".jpg";
+            }
         }        
         return $arr; 
     }

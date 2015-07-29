@@ -15,6 +15,12 @@ abstract class Spider_Web_Base{
     
     public $url;
     
+    public $strDom;
+    
+    const TYPE_WEB    = 1;
+    
+    const TYPE_STRING = 2;
+    
     /**
      * 获取正文的抽象方法，子类必须实现
      */
@@ -24,9 +30,19 @@ abstract class Spider_Web_Base{
      * 构造函数，通过传URL参数来构造对象
      * @param string $url
      */
-    public function __construct( $url ){
-        $this->url    = $url;
-        $this->objDom = file_get_html($url);
+    public function __construct( $source ,$type=self::TYPE_WEB){
+        switch($type){
+            case self::TYPE_WEB:
+                $this->url     = $source;
+                $this->objDom  = file_get_html($source);
+                break;
+            case self::TYPE_STRING:
+                $this->strDom  = $source;
+                $this->objDom  =  str_get_html($source);
+                break;
+            default:
+                break;
+        }      
     }
     
     /**

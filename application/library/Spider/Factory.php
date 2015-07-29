@@ -14,9 +14,9 @@ class Spider_Factory{
      * @param string $url,解析的URL
      * @return object 解析器对象
      */
-    public static function getInstance($class,$url){
+    public static function getInstance($class,$url,$type){
         $class = self::PREFIX.$class;
-        $obj   = new $class($url);
+        $obj   = new $class($url,$type);
         return $obj;
     }
 }

@@ -67,6 +67,7 @@ class Topic_Logic_Topic extends Base_Logic{
             //话题来源
             $logicSource = new Source_Logic_Source();
             $arrRet[$key]['from']    = $logicSource->getSourceName($objTopic->from);
+                       
         }        
         //根据权重排序
         array_multisort($arrHotDegree, SORT_DESC , $arrRet);
@@ -254,6 +255,14 @@ class Topic_Logic_Topic extends Base_Logic{
         return $collectTopicNum + $commentNum + $visitTopicUv;
     }
     
+
+    /**
+     * 对话题中的标题内容进行模糊查询
+     * @param array $arrParam，条件数组,$arrParam['title']中包含模糊匹配词
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
     public function search($arrParam,$page,$pageSize){
         $arrTopics = array();
         $filter    = '';

@@ -19,6 +19,12 @@ class Base_Extract {
 	public $rawPageCode = '';
 	
 	/**
+	 * 解析的URL
+	 * @var string
+	 */
+	public $url         = '';
+	
+	/**
 	 * record the text after preprocessing
 	 * @var array
 	 */
@@ -41,7 +47,7 @@ class Base_Extract {
 	 * it is the only parameter of this method
 	 * @var int
 	 */
-	public $blkSize;
+	public $blkSize     =  3;
 	
 	///////////////////////////////////
 	// METHODS
@@ -53,9 +59,9 @@ class Base_Extract {
 	 * @param int $_blkSize
 	 * @return void
 	 */
-	function __construct( $_rawPageCode, $_blkSize = 3 ) {
+	function __construct( $_rawPageCode, $url ) {
 		$this->rawPageCode = $_rawPageCode;
-		$this->blkSize     = $_blkSize;
+		$this->url         = $url;
 	}
 	
 	/**
@@ -84,14 +90,22 @@ class Base_Extract {
 		$pattern = '/<style.*?>.*?<\/style>/si';
 		$replacement = '';
 		$content = preg_replace( $pattern, $replacement, $content );
-        
-        //备份
-        /*$pattern = '/<.*?>/s';
-		  $replacement = '';
-          $content = preg_replace( $pattern, $replacement, $content );*/
+		
+		$pattern = '/&lt;/';
+		$replacement = "<";
+		$content = preg_replace( $pattern, $replacement, $content );
+		
+		$pattern = '/&gt;/';
+		$replacement = ">";
+		$content = preg_replace( $pattern, $replacement, $content );
+		
+		$pattern = '/&quot;/';
+		$replacement = "\"";
+		$content = preg_replace( $pattern, $replacement, $content );
 		
 		// 5. HTML TAGs
-		$pattern = '/<[^(img|p|br)].*?>/s';
+		/*$pattern = '/<[^(img|p|br)].*?>/s';*/
+		$pattern = '/<(?!img|p|br).*?>/s';
 		$replacement = '';
 		$content = preg_replace( $pattern, $replacement, $content );
 		
@@ -180,8 +194,42 @@ class Base_Extract {
 				$end = $i - 1;
 			}
 		}
-		$content = preg_replace( '/imgsrc/', 'img src', $this->text );
+		$content = $this->text;
+		$content = preg_replace( '/<p.*?>/', '<p>', $content );		
+		
+		$num = preg_match_all('/img.*?src=\"(.*?)\".*?\/>/si',$content,$match);
+		for($i=0;$i<$num;$i++){
+		    if($this->isFullPath($match[1][$i])){
+		        $content = str_replace($match[0][$i],"img src=\"".$match[1][$i]."\"",$content);
+		    }else{
+		        $content = str_replace($match[0][$i],"img src=\"".$this->getUrlBase().$match[1][$i]."\"",$content);
+		    }
+		}
+		
+		
 		return $content;
 	}
+	
+	/**
+	 * 判断路径是不是全路径，主要用在图片上
+	 * @param string $url
+	 * @return boolean
+	 */
+	public function isFullPath($url){
+	    $parts = parse_url($url);
+	    if(isset($parts['host'])){
+	        return true;
+	    }
+	    return false;
+	}
+	
+	/**
+	 * 获取网站域名
+	 * @return string
+	 */
+	public function getUrlBase(){
+	    $parts = parse_url( $this->url);
+	    return $parts['scheme']."://".$parts['host'];
+	}
 }
-?>
+

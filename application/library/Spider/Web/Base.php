@@ -23,7 +23,7 @@ abstract class Spider_Web_Base{
     abstract public function getBody();
     
     /**
-     * 构造函数，通过传URL参数来构造对象
+     * 构造函数，source可能是网址，也可以是页面内容
      * @param string $url
      */
     public function __construct( $source ,$type=Spider_Type_Source::URL){

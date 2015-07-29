@@ -17,11 +17,13 @@ class Spider_Auto{
         $pattern    = '/<meta.*?>/si';
         $obj        = new Base_Extract($content,$url);
         $text       = $obj->getPlainText();
-        preg_match($pattern,$content,$match);
-        if((isset($match[0])) &&(false !== stristr($match[0],"charset"))){
-            preg_match('/charset=\"?(.*?)(\"|\s|\/|>)/si',$content,$match);
-            $sourceCode = trim($match[1]);
-            return mb_convert_encoding($text,"utf8",$sourceCode);
+        $num = preg_match_all($pattern,$content,$match);
+        for($i=0;$i<$num;$i++){
+            if((false !== stristr($match[0][$i],"charset"))){
+                preg_match('/charset=\"?(.*?)(\"|\s|\/|>)/si',$content,$match);
+                $sourceCode = trim($match[1]);
+                return mb_convert_encoding($text,"utf8",$sourceCode);
+            }
         }
         return $text;
     }

@@ -69,7 +69,7 @@ class Home_Logic_List{
             
             //图片用全路径
             if(!empty($arr[$index]['image'])){
-                $arr[$index]['image']  = $_SERVER['HTTP_HOST']."/Pic/".$arr[$index]['image'].".jpg";
+                $arr[$index]['image']  = "http://".$_SERVER['HTTP_HOST']."/Pic/".$arr[$index]['image'].".jpg";
             }
             
             //距离转换成KM

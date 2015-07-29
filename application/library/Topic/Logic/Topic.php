@@ -67,6 +67,10 @@ class Topic_Logic_Topic extends Base_Logic{
             //话题来源
             $logicSource = new Source_Logic_Source();
             $arrRet[$key]['from']    = $logicSource->getSourceName($objTopic->from);
+            
+            if(!empty($arrRet[$key]['image'])){
+                $arrRet[$key]['image']   = "http://".$_SERVER['HTTP_HOST']."/Pic/".$arrRet[$key]['image'].".jpg";
+            }
                        
         }        
         //根据权重排序

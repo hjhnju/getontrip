@@ -3,12 +3,12 @@
  * 登录信息表
  * @author huwei
  */
-class Login_Object_Login extends Base_Object {
+class User_Object_Login extends Base_Object {
     /**
      * 数据表名
      * @var string
      */
-    protected $table = 'login';
+    protected $table = 'user_login';
 
     /**
      * 主键
@@ -20,7 +20,7 @@ class Login_Object_Login extends Base_Object {
      * 类名
      * @var string
      */
-    const CLASSNAME = 'Login_Object_Login';
+    const CLASSNAME = 'User_Object_Login';
 
     /**
      * 对象包含的所有字段
@@ -56,7 +56,7 @@ class Login_Object_Login extends Base_Object {
 
     /**
      * @param array $data
-     * @return Login_Object_Login
+     * @return User_Object_Login
      */
     public static function init($data) {
         return parent::initObject(self::CLASSNAME, $data);

@@ -10,10 +10,6 @@ class User_Keys {
     const ACCESS_TOKEN_KEY     = 'user_openid_%s';
 
     const SESSION_LOGINFAIL_KEY= 'login_fails';
-
-    const IMAGE_CODE_KEY       = 'imagecode_%s_%s';
-
-    const SMS_CODE_KEY         = 'smscode_%s_%s';
     
     const OPEN_INFO_KEY        = 'openinfo_%s_%s';
     
@@ -37,14 +33,6 @@ class User_Keys {
 
     public static function getFailTimesKey(){
         return self::SESSION_LOGINFAIL_KEY;
-    }
-
-    public static function getImageCodeKey($strType){
-        return sprintf(self::IMAGE_CODE_KEY, session_id(), $strType);
-    }
-
-    public static function getSmsCodeKey($strPhone, $strType){
-        return sprintf(self::SMS_CODE_KEY, $strPhone, $strType);
     }
 
     public static function getOpenInfoKey($authtype, $openid){

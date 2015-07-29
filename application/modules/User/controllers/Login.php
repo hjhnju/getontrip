@@ -9,27 +9,10 @@ class LoginController extends Base_Controller_Page{
         $this->setNeedLogin(false);
 
         parent::init();
-    }
-    
-    /**
-     * 标准登录过程
-     * 状态返回0表示登录成功
-     */    
-    public function indexAction(){
-        $strType = strtolower(trim($_REQUEST['type']));
-
-        //设置登陆类型qq|weibo|weixin
-        Yaf_Session::getInstance()->set(User_Keys::getAuthTypeKey(), $strType);
-
-        $logic = new User_Logic_Third();
-        $url   = $logic->getAuthCodeUrl($strType);
-
-        Base_Log::debug(array('authtype' => $strType));
-        $this->redirect($url);
-    }
+    } 
   
     /**
-     * /user/login/third
+     * /user/login
      * 作为redirect_uri，第三方回调
      * 
      * 获取open id，分为如下几步骤:
@@ -43,7 +26,7 @@ class LoginController extends Base_Controller_Page{
      * @param string $code, authcode
      * @param string $state, rand num
      */
-    public function thirdAction(){
+    public function indexAction(){
         $state    = trim($_REQUEST['state']);
         //TODO:check state
         $strAuthCode  = trim($_REQUEST['code']);
@@ -61,34 +44,7 @@ class LoginController extends Base_Controller_Page{
             return $this->ajaxError(User_RetCode::GET_OPENID_FAIL,
                 User_RetCode::getMsg(User_RetCode::GET_OPENID_FAIL));
         }
-        Yaf_Session::getInstance()->set(User_Keys::getOpenidKey(), $openid);
-
-        //是否已有绑定账号
-        $userid = $logic->getBindUserid($openid, $strType);
-
-        if(!empty($userid)){
-            //已绑定的用户登录成功
-            $objUser = new User_Object($userid);
-            $logic   = new User_Logic_Login();
-            $logic->setLogin($objUser);
-            Base_Log::notice(array(
-                'msg'  => 'success',
-                'type' => $strType,
-                'code' => $strAuthCode,
-                'openid' => $openid,
-            ));
-            $this->redirect('/account/overview');
-        }else{
-            //用户未绑定账号
-            //session 中已存openid
-            Base_Log::notice(array(
-                'msg' => 'redirect to regist bind',
-                'type' => $strType,
-                'code' => $strAuthCode,
-                'openid' => $openid,
-            ));
-            $this->redirect('/user/regist');
-        }
+        Yaf_Session::getInstance()->set(User_Keys::getOpenidKey(), $openid);        
     }
 
     /**

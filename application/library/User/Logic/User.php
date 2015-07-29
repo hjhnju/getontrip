@@ -5,6 +5,7 @@
  *
  */
 class User_Logic_User{
+    
     public function __construct(){
     
     }

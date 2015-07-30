@@ -500,7 +500,7 @@ class Topic_Logic_Topic extends Base_Logic{
                 $objTopictag->tagId   = $val;
                 $objTopictag->save();
     
-                $redis->sAdd(Topic_Keys::getTopicTagKey($objTopic->id),$val);
+                $redis->zAdd(Topic_Keys::getTopicTagKey($objTopic->id),$val);
             }
         }
         if(isset($arrInfo['sights'])){

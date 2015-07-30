@@ -18,7 +18,7 @@ class EditAction extends Yaf_Action_Abstract {
         $action = isset($_REQUEST['action'])?$_REQUEST['action']:'add';  
 
         $postid = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
-        if(empty($postid)){
+        if($postid==''){
             $this->getView()->assign('post', '');
         }
         $postInfo  = Sight_Api::getSightById($postid); 

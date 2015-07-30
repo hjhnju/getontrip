@@ -9,6 +9,7 @@ $(document).ready(function() {
     var tagStr = '';
     var tag_idArray = [];
     var keywordStr = '';
+    var keyword_idArray = [];
 
     bindEvents();
     setQuery();
@@ -36,7 +37,7 @@ $(document).ready(function() {
                 setQuery();
                 //搜索景点所属的词条 
                 $.ajax({
-                    "url": "/admin/keywordsapi/getKeywordsBySightId",
+                    "url": "/admin/keywordapi/getKeywordsBySightId",
                     "data": {
                         "sight_id": val
                     },
@@ -46,24 +47,18 @@ $(document).ready(function() {
                     },
                     "success": function(response) {
                         if (response.status == 0) {
-                            var option;
-                            var data = response.data;
-                            for (var i = 0; i < data.length; i++) {
-                                option = option + '<option value="' + data.url + '">' + data.name + '</option>';
+                            var option = '';
+                            var datas = response.data;
+                            for (var i = 0; i < datas.length; i++) {
+                                var data = datas[i];
+                                option = option + '<label class="checkbox-inline">';
+                                option = option + '<input type="checkbox" id="" data-name="form-keyword" value="' + data.id + '" data-text="' + data.name + '"/>' + data.name;
+                                option = option + ' </label>';
                             }
                             $('#keywords').html(option);
-                            $('#keywords').multiSelect({
-                                selectableHeader: '<span class="label label-primary">景点词条库</span>',
-                                selectionHeader: '<span class="label label-success">已选词条</span>',
-                                itemSelected: function(item, val, text) {
-                                    keywordsStr = '';
-                                    $('#keywords option:selected').each(function() {
-                                        keywordsStr = keywordsStr + ' ' + $(this).text();
-                                    });
-                                    setQuery();
-                                }
-                            });
                             $('#form-group-keywords').show();
+                            //绑定Uniform
+                            Metronic.initUniform($('input[data-name="form-keyword"]'));
                         }
                     }
                 });
@@ -75,6 +70,8 @@ $(document).ready(function() {
         $('#clear-sight').click(function(event) {
             $("#sight_name").val('');
             $("#sight_id").val('');
+            $('#keywords').html('');
+            $('#form-group-keywords').hide();
             setQuery();
         });
 
@@ -104,6 +101,17 @@ $(document).ready(function() {
             });
             setQuery();
         });
+
+        //选择keyword词条
+        $('#Form').delegate('input[data-name="form-keyword"]', 'change', function(event) {
+            keywordStr = '';
+            keyword_idArray = [];
+            $('input[data-name="form-keyword"]:checked').each(function() {
+                keywordStr = keywordStr + ' ' + $(this).attr('data-text');
+                keyword_idArray.push(Number($(this).val()));
+            });
+            setQuery();
+        }); 
 
         //选择不同的搜索来源
         $('#Form').delegate('input[data-name="form-from"]', 'click touchend', function(event) {
@@ -201,6 +209,9 @@ $(document).ready(function() {
 
         //点击创建话题
         $('#addTopic-btn').click(function(event) {
+            //按钮disabled
+            $(this).attr('disabled', 'disabled');
+
             var sight = $('#sight_id').val();
             if (!sight) {
                 toastr.warning('请选择一个景点！');
@@ -234,12 +245,14 @@ $(document).ready(function() {
                 "data": params,
                 "type": "post",
                 "error": function(e) {
+                    $('#addTopic-btn').attr('disabled', false);
                     alert("服务器未正常响应，请重试");
                 },
                 "success": function(response) {
                     if (response.status == 0) {
                         //document.getElementById("Form").reset();
                         toastr.success('创建成功了，再去列表页编辑一下吧');
+                        $('#addTopic-btn').attr('disabled', false);
 
                     }
                 }
@@ -251,7 +264,7 @@ $(document).ready(function() {
 
 
     function setQuery() {
-        var query = $("#sight_name").val() + ' ' + tagStr + ' ' + keywordStr;
+        var query = $("#sight_name").val() + ' ' + tagStr + ' ' + keywordStr+ ' ';
         var action = $("#Form").attr('action');
         if (action == sogou) {
             $('#Type').attr('name', "type");

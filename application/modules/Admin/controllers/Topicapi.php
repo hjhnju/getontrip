@@ -159,8 +159,8 @@ class  TopicapiController extends Base_Controller_Api{
     public function testAction(){
          $content= '<p><img src="/pic/c764a2fa76f15db7.jpg" width="" data-sada="asdad" data-hash="c764a2fa76f15db7"><img src="http://2.im.guokr.com/rBHeW-_MDGAF0LlVLbQW7eAhS8Pp6746R19uS9qkuKr_BAAAiQMAAEpQ.jpg?sdsd"></p>';
        
-          /*$imgArray=array();
-          $obj = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
+          $imgArray=array();
+         /* $obj = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
           $content = $obj->getImgUrlArray();
           var_dump($content);
           $content = $obj->uploadImgs();
@@ -169,7 +169,7 @@ class  TopicapiController extends Base_Controller_Api{
            $content = $obj->replaceImg();
           var_dump($content);*/
           
-          var_dump(preg_replace('/data-(.)*\"/', '', $content));
+          var_dump($obj->isUrl('/data-(.)*\"/', '', $content));
           
     }
 

@@ -16,11 +16,7 @@ class Spider_Web_Auto extends Spider_Web_Base{
      * @see Spider_Base::getBody()
      */
     public function getBody(){
-        if(stristr($this->url,"www.zhihu.com")){
-            $content    = file_get_contents("compress.zlib://".$this->url);
-        }else{
-            $content    = file_get_contents($this->url);
-        }        
+        $content    = file_get_contents("compress.zlib://".$this->url);      
         $obj        = new Base_Extract($content,$this->url);
         $text       = $obj->getPlainText();
         $num = preg_match_all('/<meta.*?>/si',$content,$match);        

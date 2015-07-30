@@ -197,7 +197,7 @@ class Base_Extract {
 		$content = $this->text;
 		$content = preg_replace( '/<p.*?>/', '<p>', $content );		
 		
-		$num = preg_match_all('/img.*?src=\"(.*?)\".*?\/>/si',$content,$match);
+		$num = preg_match_all('/img.*?src=\"(.*?)\".*?>/si',$content,$match);
 		for($i=0;$i<$num;$i++){
 		    if($this->isFullPath($match[1][$i])){
 		        $content = str_replace($match[0][$i],"img src=\"".$match[1][$i]."\"",$content);

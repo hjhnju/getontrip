@@ -109,6 +109,11 @@ class Base_Extract {
 		$replacement = '';
 		$content = preg_replace( $pattern, $replacement, $content );
 		
+		//**图片中有实体数据，直接过滤掉
+		$pattern = '/<img.*?src=\"data.*?>/s';
+		$replacement = '';
+		$content = preg_replace( $pattern, $replacement, $content );
+		
 		// 6. some special charcaters
 		$pattern = '/&.{1,5};|&#.{1,5};/';
 		$replacement = '';

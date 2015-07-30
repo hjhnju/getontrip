@@ -51,7 +51,7 @@ class Book_Logic_Book extends Base_Logic{
         Base_JosSdk::register();
         $conf      = new Yaf_Config_INI(CONF_PATH. "/jd.ini");
         $sight     = Sight_Api::getSightById($sightId);
-        $query     = trim($sight[0]['name']);
+        $query     = trim($sight['name']);
 
         $appKey    = $conf['appKey'];
         $appSecret = $conf['appSecret'];

@@ -50,9 +50,9 @@ class Video_Logic_Video extends Base_Logic{
      * @return array
      */
     public function getAiqiyiSource($sightId,$page){
-        require_once(APP_PATH."/application/library/Base/Simple_html_dom.php");
+        require_once(APP_PATH."/application/library/Base/HtmlDom.php");
         $sight = Sight_Api::getSightById($sightId);
-        $name  = urlencode(trim($sight[0]['name']));        
+        $name  = urlencode(trim($sight['name']));        
         $url = "http://so.iqiyi.com/so/q_".$name."?source=input";
         $html = file_get_html($url);
         foreach($html->find('li.list_item') as $key => $e){

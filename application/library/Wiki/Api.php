@@ -2,7 +2,7 @@
 class Wiki_Api{
     
     /**
-     * 接口1：Wiki_Api::getWikiSource($sightId,$page,$pageSize)
+     * 接口1：Wiki_Api::getWiki($sightId,$page,$pageSize)
      * 根据景点获取百科词条信息
      * @param integer $sightId
      * @param integer $page
@@ -10,7 +10,7 @@ class Wiki_Api{
      * @param integer $status,类型：1未发布，2已发布，3所有
      * @return array
      */
-    public static function getWikiSource($sightId,$page,$pageSize,$status=Wiki_Type_Status::ALL){
+    public static function getWiki($sightId,$page,$pageSize,$status=Wiki_Type_Status::ALL){
         $logicWiki = new Wiki_Logic_Wiki();
         $arrWiki   = $logicWiki->getWikis($sightId, $page, $pageSize,$status);
         if(empty($arrWiki)){
@@ -19,7 +19,7 @@ class Wiki_Api{
         return $arrWiki;
     }
     
-    public static function updateWikiSource($sightId){
+    public static function editWiki($sightId,$keywordId,$arrInfo){
         $logicWiki  = new Wiki_Logic_Wiki();
     }
 }

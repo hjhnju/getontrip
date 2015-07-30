@@ -63,7 +63,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
         $arrRet    = array();
         $arrTemp   = array();
         $hash      = '';
-        require_once(APP_PATH."/application/library/Base/Simple_html_dom.php");
+        require_once(APP_PATH."/application/library/Base/HtmlDom.php");
         $arrsight     = Keyword_Api::queryKeywords($sightId,$page,$pageSize);
         foreach ($arrsight['list'] as $key  => $sight){
             $redis       = Base_Redis::getInstance();
@@ -86,7 +86,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
                         'name' => $name,
                         'url'  => $url,
                     );  
-                    if(count($arrItems) > self::WIKI_CATALOG_NUM){
+                    if(count($arrItems) >= self::WIKI_CATALOG_NUM){
                         break;
                     }              
                 }
@@ -101,13 +101,12 @@ class Wiki_Logic_Wiki extends Base_Logic{
                         'url'  => $url,
                     );
                     
-                    if(count($arrItems) > self::WIKI_CATALOG_NUM){
+                    if(count($arrItems) >= self::WIKI_CATALOG_NUM){
                         break;
                     }
                 }
             }
             
-            $arrItems = array_slice($arrItems,self::WIKI_CATALOG_NUM);
             
             $arrTemp['word']    = $sight['name'];
             $arrTemp['content'] = $content;
@@ -138,7 +137,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
         return $arrRet;
     }
     
-    public function updateWikiData($sightId){
+    public function editWiki($sightId,$keywordId,$arrInfo){
         
     }
 }

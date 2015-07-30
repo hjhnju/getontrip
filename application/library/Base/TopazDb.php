@@ -454,6 +454,10 @@ class Base_TopazDb {
      * 回收资源
      */
     public function close() {
+        //出错后加的这个判断
+        if(isset($this->_objQueryID) && is_bool($this->_objQueryID)){
+            return;
+        }
         if (! empty($this->_objQueryID)) {
             mysqli_free_result($this->_objQueryID);
         }

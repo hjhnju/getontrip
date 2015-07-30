@@ -337,9 +337,11 @@ class Topic_Logic_Topic extends Base_Logic{
         $objTopic->fetch(array('id' => $id));
         
         //删除图片
-        $oss = Oss_Adapter::getInstance();
-        $filename = $objTopic->image . '.jpg';
-        $oss->remove($filename);
+        if(!empty($objTopic->image)){
+            $oss      = Oss_Adapter::getInstance();
+            $filename = $objTopic->image . '.jpg';
+            $oss->remove($filename);
+        }
         
         $ret = $objTopic->remove();
         
@@ -361,27 +363,27 @@ class Topic_Logic_Topic extends Base_Logic{
         $listTopicTag->setFilter(array('topic_id' => $id));
         $listTopicTag->setPagesize(PHP_INT_MAX);
         $arrTopicTag = $listTopicTag->toArray();
-        foreach ($arrTopicTag['list'] as $index => $val){
+        foreach ($arrTopicTag['list'] as  $val){
             $objTopicTag = new Topic_Object_Tag();
             $objTopicTag->fetch(array('id' => $val['id']));
-            $objTopicTag->remove();
             $redis->sRemove(Topic_Keys::getTopicTagKey($id),$objTopicTag->tagId);
             $redis->hIncrBy(Tag_Keys::getTagInfoKey($objTopicTag->tagId),'num',-1);
+            $objTopicTag->remove();
         }
         //删除话题景点关系
-        $listSigtTopic = new Sight_List_Topic();
-        $listSigtTopic->setFilter(array('topic_id' => $id));
-        $listSigtTopic->setPagesize(PHP_INT_MAX);
-        $arrSigtTopic = $listSigtTopic->toArray();
-        foreach ($arrSigtTopic['list'] as $index => $val){
+        $listSightTopic = new Sight_List_Topic();
+        $listSightTopic->setFilter(array('topic_id' => $id));
+        $listSightTopic->setPagesize(PHP_INT_MAX);
+        $arrSightTopic = $listSightTopic->toArray();
+        foreach ($arrSightTopic['list'] as $data){
             $objSightTopic = new Sight_Object_Topic();
-            $objSightTopic->fetch(array('id' => $val['id']));
-            $objSightTopic->remove();
+            $objSightTopic->fetch(array('id' => $data['id']));
             $redis->zDelete(Sight_Keys::getSightTopicName($objSightTopic->sightId),$id);
+            $objSightTopic->remove();
         }
     
         //更新redis统计数据
-        $redis->hDel(Topic_Keys::getTopicVisitKey(),$id);
+        $redis->delete(Topic_Keys::getTopicVisitKey($id));
         $redis->delete(Topic_Keys::getTopicTagKey($id));
         return $ret;
     }

@@ -205,9 +205,9 @@ class Base_Extract {
 		$num = preg_match_all('/img.*?src=\"(.*?)\".*?>/si',$content,$match);
 		for($i=0;$i<$num;$i++){
 		    if($this->isFullPath($match[1][$i])){
-		        $content = str_replace($match[0][$i],"img src=\"".$match[1][$i]."\"",$content);
+		        $content = str_replace($match[0][$i],"img src=\"".$match[1][$i]."\">",$content);
 		    }else{
-		        $content = str_replace($match[0][$i],"img src=\"".$this->getUrlBase().$match[1][$i]."\"",$content);
+		        $content = str_replace($match[0][$i],"img src=\"".$this->getUrlBase().$match[1][$i]."\">",$content);
 		    }
 		}
 		

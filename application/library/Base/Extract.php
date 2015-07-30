@@ -208,8 +208,7 @@ class Base_Extract {
 		        $content = str_replace($match[0][$i],"img src=\"".$match[1][$i]."\">",$content);
 		    }else{
 		        if(stristr($match[1][$i],"//")){
-		            $match[1][$i] = trim($match[1][$i],"//");
-		            $content = str_replace($match[0][$i],"img src=\"".$match[1][$i]."\">",$content);
+		            $content = str_replace($match[0][$i],"img src=\""."http:".$match[1][$i]."\">",$content);
 		        }else{
 		            $content = str_replace($match[0][$i],"img src=\"".$this->getUrlBase().$match[1][$i]."\">",$content);
 		        }		        

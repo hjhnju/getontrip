@@ -207,7 +207,12 @@ class Base_Extract {
 		    if($this->isFullPath($match[1][$i])){
 		        $content = str_replace($match[0][$i],"img src=\"".$match[1][$i]."\">",$content);
 		    }else{
-		        $content = str_replace($match[0][$i],"img src=\"".$this->getUrlBase().$match[1][$i]."\">",$content);
+		        if(stristr($match[1][$i],"//")){
+		            $match[1][$i] = trim($match[1][$i],"//");
+		            $content = str_replace($match[0][$i],"img src=\"".$match[1][$i]."\">",$content);
+		        }else{
+		            $content = str_replace($match[0][$i],"img src=\"".$this->getUrlBase().$match[1][$i]."\">",$content);
+		        }		        
 		    }
 		}
 		

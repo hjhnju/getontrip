@@ -90,6 +90,7 @@ class Book_Logic_Book extends Base_Logic{
             
             $redis = Base_Redis::getInstance();
             $index = ($page-1)*$pageSize+$key+1;
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'id',$index);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'title',$temp[$key]['wareName']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'author',isset($temp[$key]['detail']['author'])?$temp[$key]['detail']['author']:'');
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'price_mart',$temp[$key]['martPrice']);
@@ -98,10 +99,45 @@ class Book_Logic_Book extends Base_Logic{
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'isbn',isset($temp[$key]['detail']['isbn'])?$temp[$key]['detail']['isbn']:'');
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'url',$temp[$key]['url']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'image',$temp[$key]['imageUrl']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'status',Book_Type_Type::NOTPUBLISHED);
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'status',Book_Type_Status::NOTPUBLISHED);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'create_time',time());
             $redis->setTimeout(Book_Keys::getBookInfoName($sightId, $index),self::REDIS_TIME_OUT);
+            
+            $temp[$key]['id'] = $index;
         }
         return $temp;
-    }   
+    }
+
+    /**
+     * 修改书籍数据
+     * @param integer $sightId,景点ID
+     * @param integer $id,书籍ID
+     * @param array $arrInfo
+     * @return boolean
+     */
+    public function editBook($sightId,$id,$arrInfo){
+        $redis   = Base_Redis::getInstance();
+        $ret     = false;
+        $arr     = $redis->hGetAll(Book_Keys::getBookInfoName($sightId, $id));
+        $arrKeys  = array_keys($arr);
+        foreach ($arrInfo as $key => $val){
+            if(in_array($key,$arrKeys)){
+                $arr[$key] = $val;
+            }
+        }
+        $ret = $redis->hMset(Book_Keys::getBookInfoName($sightId, $id),$arr);
+        return $ret;
+    }
+    
+    /**
+     * 删除书籍数据
+     * @param integer $sightId,景点ID
+     * @param integer $id,书籍ID
+     * @return boolean
+     */
+    public function delBook($sightId,$id){
+        $redis        = Base_Redis::getInstance();
+        $ret      = $redis->delete(Book_Keys::getBookInfoName($sightId, $id));
+        return $ret;
+    }
 }

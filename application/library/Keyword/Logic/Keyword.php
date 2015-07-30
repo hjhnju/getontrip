@@ -87,4 +87,15 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $obj->fetch(array('id' => $id));
         return $obj->toArray();
     }
+    
+    /**
+     * 根据词条ID获取景点ID
+     * @param unknown $keywordId
+     * @return number
+     */
+    public function getSightId($keywordId){
+        $obj = new Keyword_Object_Keyword();
+        $obj->fetch(array('id' => $keywordId));
+        return $obj->sightId;
+    }
 }

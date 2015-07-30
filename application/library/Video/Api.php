@@ -18,4 +18,29 @@ class Video_Api{
         }
         return $logicVideo->getAiqiyiSource($sightId,$page);
     }
+    
+    /**
+     * 接口2：Video_Api::editVideo($sightId,$id,$arrInfo)
+     * 修改视频数据
+     * @param integer $sightId,景点ID
+     * @param integer $id,视频ID
+     * @param array $arrInfo
+     * @return boolean
+     */
+    public static function editVideo($sightId,$id,$arrInfo){
+        $logicVideo = new Video_Logic_Video();
+        return $logicVideo->editVideo($sightId, $id, $arrInfo);
+    }
+    
+    /**
+     * 接口3：Video_Api::delVideo($sightId,$id)
+     * 删除视频数据
+     * @param integer $sightId,景点ID
+     * @param integer $id,视频ID
+     * @return boolean
+     */
+    public function delVideo($sightId,$id){
+        $logicVideo = new Video_Logic_Video();
+        return $logicVideo->delWiki($sightId, $id);
+    }
 }

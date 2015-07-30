@@ -5143,7 +5143,8 @@
         var filterContent = function(html) {
             var pattern = /style=\"(.*?)\"/gi;//去掉样式 
             var pattern2 = /data-(.*?)=\"(.*?)\"/gi;//去掉多余的属性
-            return html.replace(pattern, '').replace('blockquote','p').replace(pattern2,'');
+            var pattern3 = /class=\"(.*?)\"/gi;//去掉class样式 
+            return html.replace(pattern, '').replace('blockquote','p').replace(pattern2,'').replace(pattern3,'');
         }
 
         /**

@@ -120,6 +120,7 @@ class  TopicapiController extends Base_Controller_Api{
    * 过滤器 添加话题
    */
     public function addByFilterAction(){
+     
        //1、调用相应的采集器
        $obj = Spider_Factory::getInstance("Auto",$_REQUEST['url'],Spider_Type_Source::URL);
        //2、获取title
@@ -129,14 +130,15 @@ class  TopicapiController extends Base_Controller_Api{
        //4、content中剔除多余的图片属性
        $content = preg_replace('/data-(.)*\"/', '', $content);
        $content = preg_replace('/style=(.)*\"/', '', $content);
-       //5、批量上传图片，得到最终的content
+       //5、批量上传图片，得到最终的content 
        if($content != ""){
           $obj = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
-          $content = $obj->getReplacedContent();
-       }
+          $content = $obj->getReplacedContent();  
+       } 
        $_REQUEST['content'] =$content; 
        //保存到数据库
-       $bRet=Topic_Api::addTopic($_REQUEST);   
+       $bRet=Topic_Api::addTopic($_REQUEST);
+       ob_end_clean();   
        if($bRet){
             return $this->ajax();
        } 

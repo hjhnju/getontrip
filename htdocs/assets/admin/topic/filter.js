@@ -111,7 +111,7 @@ $(document).ready(function() {
                 keyword_idArray.push(Number($(this).val()));
             });
             setQuery();
-        }); 
+        });
 
         //选择不同的搜索来源
         $('#Form').delegate('input[data-name="form-from"]', 'click touchend', function(event) {
@@ -208,10 +208,7 @@ $(document).ready(function() {
         });
 
         //点击创建话题
-        $('#addTopic-btn').click(function(event) {
-            //按钮disabled
-            $(this).attr('disabled', 'disabled');
-
+        $('#addTopic-btn').click(function(event) { 
             var sight = $('#sight_id').val();
             if (!sight) {
                 toastr.warning('请选择一个景点！');
@@ -240,22 +237,26 @@ $(document).ready(function() {
                 url: url,
                 status: 1 //未发布的状态
             }
+            //按钮disabled
+            $(this).attr('disabled', 'disabled');
             $.ajax({
                 "url": "/admin/topicapi/addByFilter",
                 "data": params,
                 "type": "post",
-                "error": function(e) {
+                'timeout' : 5000, //超时时间设置，单位毫秒
+                "dataType": 'json' , 
+                "error": function(XMLHttpRequest, textStatus,errorThrown) {
                     $('#addTopic-btn').attr('disabled', false);
                     alert("服务器未正常响应，请重试");
                 },
-                "success": function(response) {
+                "success": function(response) { 
                     if (response.status == 0) {
-                        //document.getElementById("Form").reset();
+                        document.getElementById("Form").reset();
                         toastr.success('创建成功了，再去列表页编辑一下吧');
                         $('#addTopic-btn').attr('disabled', false);
 
                     }
-                }
+                } 
             });
         });
 
@@ -264,7 +265,7 @@ $(document).ready(function() {
 
 
     function setQuery() {
-        var query = $("#sight_name").val() + ' ' + tagStr + ' ' + keywordStr+ ' ';
+        var query = $("#sight_name").val() + ' ' + tagStr + ' ' + keywordStr + ' ';
         var action = $("#Form").attr('action');
         if (action == sogou) {
             $('#Type').attr('name', "type");

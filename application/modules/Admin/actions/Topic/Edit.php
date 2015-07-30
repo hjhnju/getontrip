@@ -44,7 +44,7 @@ class EditAction extends Yaf_Action_Abstract {
             $sightSelected=$postInfo['sights'];  
             for($i=0; $i<count($sightSelected); $i++) {
                 $sight=Sight_Api::getSightById($sightSelected[$i]['sight_id']);
-                array_push($sightList,$sight[0]);
+                array_push($sightList,$sight);
             } 
             //处理来源
             $sourceInfo = Source_Api::getSourceInfo($postInfo['from']);

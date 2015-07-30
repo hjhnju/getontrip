@@ -9,7 +9,7 @@ class Spider_Type_Source extends Base_Type {
      * 1 网址
      * @var integer
      */
-    const WEB = 1;  
+    const URL = 1;  
 
     /**
      * 2 字符串
@@ -22,7 +22,7 @@ class Spider_Type_Source extends Base_Type {
      * @var array
      */
     public static $names = array(
-        self::WEB     => '网址',
+        self::URL     => '网址',
         self::STRING  => '字符串',
     );
 }

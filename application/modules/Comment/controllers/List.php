@@ -16,6 +16,7 @@ class ListController extends Base_Controller_Api {
     /**
      * 接口1：/comment/list
      * 评论列表页
+     * @param integer topicId，话题ID
      * @param integer page
      * @param integer pageSize
      * @return json

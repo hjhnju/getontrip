@@ -3,12 +3,12 @@
  * 登录信息表 列表类
  * @author huwei
  */
-class Login_List_Login extends Base_List {
+class User_List_Login extends Base_List {
     /**
      * 数据表名
      * @var string
      */
-    protected $table = 'login';
+    protected $table = 'user_login';
 
     /**
      * 主键
@@ -36,11 +36,11 @@ class Login_List_Login extends Base_List {
 
     /**
      * 获取数据的对象数组
-     * @return array|Login_Object_Login[]
+     * @return array|User_Object_Login[]
      * 返回的是一个数组，每个元素是一个Loan_Object_Attach对象
      */
     public function getObjects() {
-        return parent::getObjects('Login_Object_Login');
+        return parent::getObjects('User_Object_Login');
     }
 
 }

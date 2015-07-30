@@ -64,61 +64,6 @@ class User_Logic_Login {
     }
 
     /**
-     * @param string $strName,用户名
-     * @param string $strPasswd,用户密码
-     * @return User_RetCode::USER_NAME_NOTEXIT | USER_PASSWD_ERROR | SUCCESS
-     */
-    public function login($strType,$strName, $strPasswd){
-        $strPasswd = Base_Util_Secure::encrypt($strPasswd);
-
-        $objLogin = new User_Object_Login();
-        $objLogin->fetch(array($strType=>$strName));
-
-        $objRecord     = new User_Object_Record();
-        $lastip        = Base_Util_Ip::getClientIp();
-        $objRecord->ip = $lastip;
-        
-        //用户名不存在 
-        if(empty($objLogin->userid)){
-            $objRecord->status = self::STATUS_LOGIN_FAIL;
-            $objRecord->save();
-            if('name' === $strType){
-                return User_RetCode::USER_NAME_NOTEXIT;
-            }elseif('phone' === $strType){
-                return User_RetCode::USER_PHONE_NOTEXIT;
-            }elseif('email' === $strType){
-                return User_RetCode::USER_EMAIL_NOTEXIT;
-            }
-        }
-
-        //用户名或密码错误
-        if($objLogin->passwd !== $strPasswd){
-            $objRecord->status = self::STATUS_LOGIN_FAIL;
-            $objRecord->save();
-            if('name' === $strType){
-                return  User_RetCode::USER_NAME_OR_PASSWD_ERROR;;
-            }elseif('phone' === $strType){
-                return User_RetCode::PHONE_OR_PASSWD_ERROR;
-            }elseif('email' === $strType){
-                return User_RetCode::EMAIL_OR_PASSWD_ERROR;
-            }
-        }
-
-        //正确保存
-        $objLogin->lastip = $lastip;
-        $objLogin->loginTime = time();
-        $objLogin->save();
-        //保存正确纪录
-        $objRecord->userid = $objLogin->userid;
-        $objRecord->status = self::STATUS_LOGIN_SUCC;
-        $objRecord->save();
-
-        $this->setLogin(new User_Object($objLogin->userid));
-
-        return User_RetCode::SUCCESS;
-    }
-    
-    /**
      * 设置用户登录后的跳转页面
      * @param string $strRefer
      * @return string

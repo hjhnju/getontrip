@@ -59,14 +59,18 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrHotDegree[] = $this->getTopicHotDegree($val, $period);
             
             //话题访问次数            
-            $arrRet[$key]['visit']   = $this->getTopicVistPv($val, $period);
+            $arrRet[$key]['visit']   = strval($this->getTopicVistPv($val, $period));
             
             //话题收藏数
-            $arrRet[$key]['collect'] = $collectTopicNum;
+            $arrRet[$key]['collect'] = strval($collectTopicNum);
             
             //话题来源
             $logicSource = new Source_Logic_Source();
             $arrRet[$key]['from']    = $logicSource->getSourceName($objTopic->from);
+            
+            if(!empty($arrRet[$key]['image'])){
+                $arrRet[$key]['image']   = "http://".$_SERVER['HTTP_HOST']."/Pic/".$arrRet[$key]['image'].".jpg";
+            }
                        
         }        
         //根据权重排序

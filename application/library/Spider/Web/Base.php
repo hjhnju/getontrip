@@ -17,26 +17,22 @@ abstract class Spider_Web_Base{
     
     public $strDom;
     
-    const TYPE_WEB    = 1;
-    
-    const TYPE_STRING = 2;
-    
     /**
      * 获取正文的抽象方法，子类必须实现
      */
     abstract public function getBody();
     
     /**
-     * 构造函数，通过传URL参数来构造对象
+     * 构造函数，source可能是网址，也可以是页面内容
      * @param string $url
      */
-    public function __construct( $source ,$type=self::TYPE_WEB){
+    public function __construct( $source ,$type=Spider_Type_Source::URL){
         switch($type){
-            case self::TYPE_WEB:
+            case Spider_Type_Source::URL:
                 $this->url     = $source;
                 $this->objDom  = file_get_html($source);
                 break;
-            case self::TYPE_STRING:
+            case Spider_Type_Source::STRING:
                 $this->strDom  = $source;
                 $this->objDom  =  str_get_html($source);
                 break;

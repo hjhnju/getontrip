@@ -42,4 +42,38 @@ class Keyword_Logic_Keyword extends Base_Logic{
         }
         return false;
     }
+    
+    /**
+     * 词条编辑
+     * @param integer $id
+     * @param array $arrInfo
+     * @return boolean
+     */
+    public function editKeyword($id,$arrInfo){
+        $bCheck = false;
+        $obj    = new Keyword_Object_Keyword();
+        $obj->fetch(array('id' => $id));
+        foreach ($arrInfo as $key => $val){
+            if(in_array($key,$this->_fields)){  
+                $key = $this->getprop($key);              
+                $obj->$key = $val;
+                $bCheck    = true;
+            }
+        }
+        if($bCheck){
+            return $obj->save();
+        }
+        return false;
+    }
+    
+    /**
+     * 删除词条
+     * @param integer $id
+     * @return boolean
+     */
+    public function delKeyword($id){
+        $obj    = new Keyword_Object_Keyword();
+        $obj->fetch(array('id' => $id));
+        return $obj->remove();
+    }
 }

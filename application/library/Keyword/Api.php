@@ -24,4 +24,27 @@ class Keyword_Api{
         $logic = new Keyword_Logic_Keyword();
         return $logic->addKeywords($arrInfo);
     }
+    
+    /**
+     * 接口3:Keyword_Api::editKeyword($id,$arrInfo)
+     * 词条编辑
+     * @param integer $id
+     * @param array $arrInfo
+     * @return boolean
+     */
+    public static function editKeyword($id,$arrInfo){
+        $logic = new Keyword_Logic_Keyword();
+        return $logic->editKeyword($id, $arrInfo);
+    }
+    
+    /**
+     * 接口4：Keyword_Api::delKeyword($id)
+     * 删除词条
+     * @param integer $id
+     * @return boolean
+     */
+    public static function delKeyword($id){
+        $logic = new Keyword_Logic_Keyword();
+        return $logic->delKeyword($id);
+    }
 }

@@ -11,7 +11,7 @@ $(document).ready(function() {
     var keywordStr = '';
 
     bindEvents();
-
+    setQuery();
 
     /**
      * 绑定事件
@@ -79,26 +79,42 @@ $(document).ready(function() {
         });
 
         //标签选择
-        $('#tags').multiSelect({
-            selectableHeader: '<span class="label label-primary">标签库</span>',
-            selectionHeader: '<span class="label label-success">已选标签</span>',
-            itemSelected: function(item, val, text) {
-                tagStr = '';
-                tag_idArray = [];
-                $('#tags option:selected').each(function() {
-                    tagStr = tagStr + ' ' + $(this).text();
-                    tag_idArray.push(Number($(this).val()));
-                });
-                setQuery();
-            }
+        /*    $('#tags').multiSelect({
+                selectableHeader: '<span class="label label-primary">标签库</span>',
+                selectionHeader: '<span class="label label-success">已选标签</span>',
+                itemSelected: function(item, val, text) {
+                    tagStr = '';
+                    tag_idArray = [];
+                    $('#tags option:selected').each(function() {
+                        tagStr = tagStr + ' ' + $(this).text();
+                        tag_idArray.push(Number($(this).val()));
+                    });
+                    setQuery();
+                }
+            });*/
+
+        //选择标签
+        $('input[data-name="form-tag"]').change(function(event) {
+            //处理所选的标签
+            tagStr = '';
+            tag_idArray = [];
+            $('input[data-name="form-tag"]:checked').each(function() {
+                tagStr = tagStr + ' ' + $(this).attr('data-text');
+                tag_idArray.push(Number($(this).val()));
+            });
+            setQuery();
         });
 
         //选择不同的搜索来源
-        $('#form-from').change(function(event) {
-            if ($(this).val() == "1" || $(this).val() == "2") {
+        $('#Form').delegate('input[data-name="form-from"]', 'click touchend', function(event) {
+            $('input[data-name="form-from"]').attr('checked', false);
+            $(this).attr('checked', 'ture');
+            if ($(this).val() == "weixin") {
                 $("#Form").attr('action', sogou);
+                $('#weixin-from-input').show();
             } else {
                 $("#Form").attr('action', baidu);
+                $('#weixin-from-input').hide();
             }
             setQuery();
         });
@@ -107,23 +123,114 @@ $(document).ready(function() {
 
 
         //搜索事件
-        $('#search-btn,#search-btn2').click(function(event) {
+        $('#search-btn').click(function(event) {
 
             $("#Form").submit();
         });
 
+        //微信公众号自动完成 
+        $('#weixin-from').typeahead({
+            display: 'name',
+            val: 'id',
+            ajax: {
+                url: '/admin/sourceapi/getSourceList',
+                triggerLength: 1
+            },
+            itemSelected: function(item, val, text) {
+                $("#weixin-from").val(text);
+                $("#weixin-from_id").val(val);
+            }
+        });
+
+        //点击打开来源创建模态框
+        $('.openSource').click(function(event) {
+            event.preventDefault();
+            var type = $(this).attr('data-type');
+            $('#source-type').val(type);
+            if (type == "1") {
+                //微信公众号
+                $('#source label[for="source-name"]').text('公众号名称:');
+                $('#source-name').val($('#weixin-from').val());
+                $('#source .source-url').hide();
+                $('#source-url').val('mp.weixin.qq.com');
+            }
+            $('#source-type').val(type);
+            //打开模态框
+            $('#myModal').modal();
+        });
+
+        //点击创建话题来源
+        $('#addSource-btn').click(function(event) {
+            $.ajax({
+                "url": "/admin/Sourceapi/addAndReturn",
+                "data": {
+                    name: $('#source-name').val(),
+                    url: $('#source-url').val(),
+                    type: $('#source-type').val()
+                },
+                "async": false,
+                "error": function(e) {
+                    alert("服务器未正常响应，请重试");
+                },
+                "success": function(response) {
+                    if (response.status != 0) {
+                        alert(response.statusInfo);
+                    } else {
+                        //添加创建的来源 并选中
+                        var data = response.data;
+                        if (data.type == 1) {
+                            //公众号
+                            $('#weixin-from_id').val(data.id);
+                            $('#weixin-from').val(data.name);
+                        } else {
+                            $('#div-from label:last').after('<label class="radio-inline"><input type="radio" name="form-from" data-name="form-from" id="" value="' + data.url + '" data-id="' + data.id + '" data-type="' + data.type + '">' + data.name + '</label>');
+                            $('input[data-name="form-from"]').attr('checked', false);
+                            $('#div-from input:last').attr('checked', 'ture');
+                            $('#div-from input:last').click();
+                            //绑定Uniform
+                            Metronic.initUniform($('input[data-name="form-from"]'));
+
+                        }
+                        //手工关闭模态框
+                        $('#myModal').modal('hide');
+                        document.getElementById("source").reset();
+                    }
+                }
+            });
+        });
+
         //点击创建话题
         $('#addTopic-btn').click(function(event) {
+            var sight = $('#sight_id').val();
+            if (!sight) {
+                toastr.warning('请选择一个景点！');
+                return false;
+            }
+            var url = $('#url').val();
+            if (!url) {
+                toastr.warning('请填写原文链接！');
+                return false;
+            }
+            var from = "";
+            if ($('input[data-name="form-from"]:checked').val() == "weixin") {
+                from = $('#weixin-from_id').val();
+                if (!from) {
+                    toastr.warning('请填写微信公众号！');
+                    return false;
+                }
+            } else {
+                from = $('input[data-name="form-from"]:checked').attr('data-id');
+            }
             //组装话题参数
             var params = {
-                from: $('#form-from option:selected').attr('data-id'),
-                sights: [Number($('#sight_id').val())],
+                from: from,
+                sights: [Number(sight)],
                 tags: tag_idArray,
-                url: $('#url').val(),
-                status:1 //未发布的状态
-            } 
+                url: url,
+                status: 1 //未发布的状态
+            }
             $.ajax({
-                "url": "/admin/topicapi/add",
+                "url": "/admin/topicapi/addByFilter",
                 "data": params,
                 "type": "post",
                 "error": function(e) {
@@ -131,33 +238,35 @@ $(document).ready(function() {
                 },
                 "success": function(response) {
                     if (response.status == 0) {
-                         toastr.success('创建成功了，再去编辑一下吧');
-                         
+                        //document.getElementById("Form").reset();
+                        toastr.success('创建成功了，再去列表页编辑一下吧');
+
                     }
                 }
             });
         });
+
+
     }
 
 
     function setQuery() {
-
-        /*    var keywords;
-            $('#keywords option:selected').each(function() {
-                keywords = keywords + ' ' + $(this).text();
-            });*/
         var query = $("#sight_name").val() + ' ' + tagStr + ' ' + keywordStr;
         var action = $("#Form").attr('action');
         if (action == sogou) {
             $('#Type').attr('name', "type");
-            $('#Type').val($('#form-from').val());
+            $('#Type').val('2');
             $('#query').attr('name', 'query');
             $('#query').val(query);
         } else if (action == baidu) {
             $('#Type').attr('name', "tn");
             $('#Type').val('baidu');
             $('#query').attr('name', 'wd');
-            $('#query').val('site:' + $('#form-from').val() + ' ' + query);
+            $('#query').val('site:' + $('input[data-name="form-from"]:checked').val() + ' ' + query + '-日游');
+
+            if ($('#query').val().getBytes() > 76) {
+                alert('请控制关键词在38个汉字以内(一个汉字相当于两个字母或数字)');
+            }
         }
     }
 

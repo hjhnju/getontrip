@@ -10,7 +10,7 @@ class FilterAction extends Yaf_Action_Abstract {
     	$tagList = Tag_Api::getTagList(1, PHP_INT_MAX);
         $tagList=$tagList['list'];
     	
-    	$sourceList = Source_Api::listSource(1, PHP_INT_MAX);
+    	$sourceList = Source_Api::searchSource(array("type"=>2),1, PHP_INT_MAX);
         $sourceList=$sourceList['list']; 
 
         $keywordsList = Source_Api::listSource(1, PHP_INT_MAX);

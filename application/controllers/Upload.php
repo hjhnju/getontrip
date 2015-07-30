@@ -50,4 +50,20 @@ class UploadController extends Base_Controller_Page {
         Base_Log::warn($msg);
         $this->ajaxError();
     }
+
+
+    /**
+     * 删除图片
+     * @return [type] [description]
+     */
+    public function delPicAction(){ 
+       $oss = Oss_Adapter::getInstance();
+       $filename = $_REQUEST['hash'].'.jpg';  
+       //$filename='2a0a53495cd589fd.jpg';
+       $res = $oss->remove($filename);
+       if ($res) {
+          return  $this->ajax();
+       }
+       return  $this->ajaxError();
+    }
 }

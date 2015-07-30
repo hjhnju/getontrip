@@ -18,26 +18,7 @@ $(document).ready(function() {
      *  
      */
     function bindEvents() {
-        //初始化编辑器
-        $('#summernote').summernote({
-            lang: "zh-CN",
-            height: 300,
-            toolbar: [
-                //[groupname, [button list]] 
-                ['style', ['bold', 'italic', 'underline', 'clear']],
-                ['font', ['strikethrough']],
-                ['fontsize', ['fontsize']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['table', ['table']],
-                ['height', ['height']],
-                ['insert', ['hr', 'link', 'picture']],
-                ['view', ['fullscreen', 'codeview']]
-            ]
-        });
-
-
-        //表单提交事件
+         //表单提交事件
         $.validator.setDefaults({
             submitHandler: function(data) {
                 //序列化表单  
@@ -58,8 +39,20 @@ $(document).ready(function() {
                 $('#tags option:selected').each(function() {
                     tag_id_array.push(Number($(this).val()));
                 });
+                //处理来源
+                var from = "";
+                if ($('input[data-name="form-from"]:checked').val() == "weixin") {
+                    from = $('#weixin-from_id').val();
+                    if (!from) {
+                        toastr.warning('请填写微信公众号！');
+                        return false;
+                    }
+                } else {
+                    from = $('input[data-name="form-from"]:checked').attr('data-id');
+                }
                 param.tags = tag_id_array;
                 param.sights = sight_id_array;
+                param.from =from;
                 param.content = $("#summernote").code();
                 //已发布的状态
                 param.status = 5;
@@ -93,6 +86,50 @@ $(document).ready(function() {
 
             }
         });
+        //初始化编辑器
+        $('#summernote').summernote({
+            lang: "zh-CN",
+            height: 300,
+            toolbar: [
+                //[groupname, [button list]] 
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['height', ['height']],
+                ['insert', ['hr', 'link', 'picture']],
+                ['view', ['codeview']]
+            ],
+            onInit: function() {
+                $('#summernote').code($('#content-text').html());
+            },
+            onImageUpload: function(files, editor, $editable) {
+                sendFile(files[0], editor, $editable);
+            },
+            onMediaDelete: function(files, editor, $editable) {
+                if (confirm("会从服务器删除图片，确定删除么 ?") == false) {
+                    return false;
+                }
+                //删除图片
+                deleteImage(files[0], editor, $editable);
+            },
+            onChange: function(characters, editor, $editable) {
+               //alert(characters);
+                   /* if ($(characters).is('img') || $(characters).find('img').is('img')) {
+                        deleteImage(characters, editor, $editable);
+                    } */
+            }
+          /*  ,
+            onPaste: function(event) { 
+               var layoutInfo = $.summernote.core.dom.makeLayoutInfo(event.currentTarget || event.target);
+               var clipboardData = event.originalEvent.clipboardData;
+               var content = clipboardData.getData(clipboardData.types[0]);
+               layoutInfo.holder().summernote('pasteHTML', content);
+               return;
+            }*/
+        }); 
 
         //景点输入框自动完成
         $('#sight_name').typeahead({
@@ -117,6 +154,20 @@ $(document).ready(function() {
             $(this).parent().remove();
         });
 
+         //微信公众号自动完成 
+        $('#weixin-from').typeahead({
+            display: 'name',
+            val: 'id',
+            ajax: {
+                url: '/admin/sourceapi/getSourceList',
+                triggerLength: 1
+            },
+            itemSelected: function(item, val, text) {
+                $("#weixin-from").val(text);
+                $("#weixin-from_id").val(val);
+            }
+        });
+        
         //标签选择
         $('#tags').multiSelect({
             selectableHeader: '<span class="label label-primary">标签库</span>',
@@ -142,7 +193,17 @@ $(document).ready(function() {
         });
 
         //搜索来源下拉列表 
-        $('#form-from').selectpicker();
+        // $('#form-from').selectpicker();
+        //选择不同的搜索来源
+        $('#Form').delegate('input[data-name="form-from"]', 'click touchend', function(event) {
+            $('input[data-name="form-from"]').attr('checked', false);
+            $(this).attr('checked', 'ture');
+            if ($(this).val() == "weixin") {
+                $('#weixin-from-input').show();
+            } else {
+                $('#weixin-from-input').hide();
+            }
+        });
 
         //定位地图模态框
         $('#position').click(function(e) {
@@ -204,5 +265,66 @@ $(document).ready(function() {
         $('#sight_alert').html('');
         $('#ms-tags .ms-selection li').click();
 
+    }
+
+    /**
+     * 上传图片
+     * @param  {[type]} file      [description]
+     * @param  {[type]} editor    [description]
+     * @param  {[type]} $editable [description]
+     * @return {[type]}           [description]
+     */
+    function sendFile(file, editor, $editable) {
+        $(".note-toolbar.btn-toolbar").append('正在上传图片');
+        var filename = false;
+        try {
+            filename = file['name'];
+        } catch (e) {
+            filename = false;
+        }
+        if (!filename) {
+            $(".note-alarm").remove();
+        }
+        //以上防止在图片在编辑器内拖拽引发第二次上传导致的提示错误 
+        // $('#summernote').summernote('editor.insertImage', 'http://res.cloudinary.com/demo/image/upload/butterfly.jpg'); 
+        $.ajaxFileUpload({
+            url: '/upload/pic',
+            secureuri: false,
+            fileElementId: 'note-image-input',
+            dataType: 'json',
+            success: function(res, status) { //当文件上传成功后，需要向数据库中插入数据
+                //把图片放到编辑框中。editor.insertImage 是参数，写死。后面的http是网上的图片资源路径。  
+                //网上很多就是这一步出错。  
+                $('#summernote').summernote('editor.insertImage', res.data.url);
+                $('img[src="' + res.data.url + '"]').attr('data-hash', res.data.hash);
+                toastr.success('图片上传成功！');
+            },
+            error: function(data, status, e) {
+                alert("服务器未正常响应，请重试");
+            }
+        })
+    }
+    /**
+     * 删除图片
+     * @return {[type]} [description]
+     */
+    function deleteImage(file, editor, $editable) {
+        var data = {
+            hash: $(file).attr("data-hash")
+        };
+        $.ajax({
+            "url": '/upload/delpic',
+            "data": data,
+            "type": "post",
+            "dataType": "json",
+            "error": function(e) {
+                alert("服务器未正常响应，请重试");
+            },
+            "success": function(response) {
+                if (response.status == 0) {
+                    toastr.success('删除成功');
+                }
+            }
+        });
     }
 });

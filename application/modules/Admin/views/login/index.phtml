@@ -45,7 +45,7 @@
 <!-- BEGIN LOGIN -->
 <div class="content">
 	<!-- BEGIN LOGIN FORM --> 
-    <form class="login-form" id="Form" method="post" action="" novalidate="novalidate">
+    <form class="login-form" id="Form"  action="" novalidate="novalidate">
 		<h3 class="form-title">后台登录</h3>
 		<div class="alert alert-danger display-hide">
 			<button class="close" data-close="alert"></button>
@@ -116,13 +116,15 @@ jQuery(document).ready(function() {
 /*	{%if !empty($result.statusInfo)%}
 	Login.alert('{%$result.statusInfo%}');
 	{%/if%}*/
-
-	$(document).keydown(function(event){
-		if(event.keyCode == 13){ //绑定回车
-		$('#loginBtn').click(); /自动/触发登录按钮
+ 	$(document).keydown(function(event){ 
+ 	   //绑定回车
+		if(event.keyCode == 13){ 
+		//自动触发登录按钮
+		   $('#loginBtn').click(); 
 		}
 	}); 
     $('#loginBtn').click(function(event) {
+    	
     	  $.ajax({
 	        "url": "/admin/AdminUserapi/login",
 	        "data": {
@@ -141,10 +143,10 @@ jQuery(document).ready(function() {
 	        }
 	    });
     });
-  
 	 
 });
 </script>
+
 </body>
 
 <!-- END BODY -->

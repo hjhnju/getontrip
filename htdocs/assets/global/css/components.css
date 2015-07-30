@@ -32734,3 +32734,6 @@ Transparent Button
     background: transparent;
     color: #888;
 }
+.checkbox-inline, .radio-inline{
+    padding-left: 0px;
+}

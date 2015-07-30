@@ -265,7 +265,7 @@ var Metronic = function() {
     };
 
     // Handles Bootstrap Modals.
-    var handleModals = function() {        
+    var handleModals = function() {
         // fix stackable modal issue: when 2 or more modals opened, closing one of modal will remove .modal-open class. 
         $('body').on('hide.bs.modal', function() {
             if ($('.modal:visible').size() > 1 && $('html').hasClass('modal-open') === false) {
@@ -288,7 +288,7 @@ var Metronic = function() {
         });
 
         // remove ajax content and remove cache on modal closed 
-        $('body').on('hidden.bs.modal', '.modal:not(.modal-cached)', function () {
+        $('body').on('hidden.bs.modal', '.modal:not(.modal-cached)', function() {
             $(this).removeData('bs.modal');
         });
     };
@@ -437,6 +437,15 @@ var Metronic = function() {
         }
     };
 
+
+    //函数拓展
+    var fnExtend = function() {
+        String.prototype.getBytes = function() {
+            var cArr = this.match(/[^\x00-\xff]/ig);
+            return this.length + (cArr == null ? 0 : cArr.length);
+        }
+    }
+
     //* END:CORE HANDLERS *//
 
     return {
@@ -467,6 +476,10 @@ var Metronic = function() {
 
             // Hacks
             handleFixInputPlaceholderForIE(); //IE8 & IE9 input placeholder issue fix
+
+            //函数拓展
+            fnExtend();
+
         },
 
         //main function to initiate core javascript after ajax complete

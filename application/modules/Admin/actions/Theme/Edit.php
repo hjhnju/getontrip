@@ -27,8 +27,8 @@ class EditAction extends Yaf_Action_Abstract {
            $postInfo=$List["list"][0]; 
            //处理状态值  
            $postInfo["statusName"] = Topic_Type_Status::getTypeName($postInfo["status"]);  
-          
-           //处理被选中的标签
+           $this->getView()->assign('post', $postInfo);
+            //处理被选中的标签
              $tagSelected=$postInfo['tags']; 
             $tag_id_array=array();
             for($i=0; $i<count($tagSelected); $i++) {
@@ -44,27 +44,20 @@ class EditAction extends Yaf_Action_Abstract {
             $sightSelected=$postInfo['sights'];  
             for($i=0; $i<count($sightSelected); $i++) {
                 $sight=Sight_Api::getSightById($sightSelected[$i]['sight_id']);
-                array_push($sightList,$sight[0]);
-            } 
-            //处理来源
-            $sourceInfo = Source_Api::getSourceInfo($postInfo['from']);
-            $postInfo["fromName"]=$sourceInfo['name'];
-            $postInfo["fromType"]=$sourceInfo['type'];
-
-             $this->getView()->assign('post', $postInfo);
-           
+                array_push($sightList,(array)$sight);
+            }
 
          }
          
         
-        $sourceList = Source_Api::searchSource(array("type"=>2),1, PHP_INT_MAX);
+        $sourceList = Source_Api::listSource(1, PHP_INT_MAX);
         $sourceList=$sourceList['list']; 
 
         if($action==Admin_Type_Action::ACTION_VIEW){
             $this->getView()->assign('disabled', 'disabled');
         } 
         
-        
+
 
         $this->getView()->assign('sourceList', $sourceList);
         $this->getView()->assign('tag_id_array', $tag_id_array);

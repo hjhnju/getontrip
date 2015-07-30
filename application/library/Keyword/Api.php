@@ -1,13 +1,18 @@
 <?php
+/**
+ * 景点所对应的百科词条接口
+ * @author huwei
+ *
+ */
 class Keyword_Api{
     
     /**
      * 接口1：Keyword_Api::queryKeywords($sight_id,$page,$pageSize)
      * 查询景点的词条信息
-     * @param unknown $sight_id
-     * @param unknown $page
-     * @param unknown $pageSize
-     * @return Ambigous <multitype:, multitype:number multitype: >
+     * @param integer $sight_id
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
      */
     public static function queryKeywords($sight_id,$page,$pageSize){
         $logic = new Keyword_Logic_Keyword();
@@ -46,5 +51,16 @@ class Keyword_Api{
     public static function delKeyword($id){
         $logic = new Keyword_Logic_Keyword();
         return $logic->delKeyword($id);
+    }
+    
+    /**
+     * 接口5：Keyword_Api::queryById($id)
+     * 根据ID查询词条
+     * @param integer $id
+     * @return array
+     */
+    public static function queryById($id){
+        $logic = new Keyword_Logic_Keyword();
+        return $logic->queryById($id);
     }
 }

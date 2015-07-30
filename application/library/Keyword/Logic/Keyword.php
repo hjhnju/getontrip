@@ -76,4 +76,15 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $obj->fetch(array('id' => $id));
         return $obj->remove();
     }
+    
+    /**
+     * 根据ID查询词条
+     * @param integer $id
+     * @return array
+     */
+    public function queryById($id){
+        $obj = new Keyword_Object_Keyword();
+        $obj->fetch(array('id' => $id));
+        return $obj->toArray();
+    }
 }

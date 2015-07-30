@@ -27,7 +27,10 @@ class SightModel extends PgBaseModel
             Base_Log::error($ex->getMessage());
             return false;
         }
-        return $ret;
+        if(isset($ret[0])){
+            return $ret[0];
+        }
+        return array();
     }
     
     /**

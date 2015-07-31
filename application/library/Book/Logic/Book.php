@@ -73,13 +73,14 @@ class Book_Logic_Book extends Base_Logic{
         $ret = $resp->resp;
         $arr = json_decode($ret,true);
         
-        if(isset($arr['jingdong_ware_product_search_list_get_responce']['searchProductList']['wareInfo'])){
+        $count = $arr['jingdong_ware_product_search_list_get_responce']['searchProductList']['wareCount'];
+        
+        if($count){
             $temp = $arr['jingdong_ware_product_search_list_get_responce']['searchProductList']['wareInfo'];
         }else{
             return array();
         }
-        
-        
+                
         foreach ($temp as $key => $val){
             if($val['isBook'] == false){
                 unset($temp[$key]);
@@ -114,6 +115,8 @@ class Book_Logic_Book extends Base_Logic{
             $temp[$key]['status'] = Book_Type_Status::PUBLISHED;
             $temp[$key]['create_time'] = time();
             
+            $temp[$key]['totalNum'] = $count;
+            
             $redis = Base_Redis::getInstance();
             $index = ($page-1)*$pageSize+$key+1;
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'id',$index);
@@ -127,6 +130,7 @@ class Book_Logic_Book extends Base_Logic{
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'image',$temp[$key]['image']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'status',$temp[$key]['status']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'create_time',$temp[$key]['create_time']);
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'totalNUm',$temp[$key]['totalNum']);
             $redis->setTimeout(Book_Keys::getBookInfoName($sightId, $index),self::REDIS_TIME_OUT);
     
             $temp[$key]['id'] = $index;

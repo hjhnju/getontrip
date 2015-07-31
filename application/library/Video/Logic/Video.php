@@ -56,6 +56,10 @@ class Video_Logic_Video extends Base_Logic{
         $name  = urlencode(trim($sight['name']));        
         $url = "http://so.iqiyi.com/so/q_".$name."?source=input";
         $html = file_get_html($url);
+        
+        $item  = $html->find('div.mod-page a',-2);
+        $count = $item->getAttribute('data-key')*self::PAGE_SIZE;
+        
         foreach($html->find('li.list_item') as $key => $e){
             $info = array();
             $info['title']      = $e->getAttribute('data-widget-searchlist-tvname');
@@ -69,6 +73,7 @@ class Video_Logic_Video extends Base_Logic{
             $info['status']    = Video_Type_Status::PUBLISHED;
             $info['from']      = '爱奇艺';
             $info['create_time'] = time();
+            $info['totalNum']    = $count;
             
             
             $redis = Base_Redis::getInstance();
@@ -82,6 +87,7 @@ class Video_Logic_Video extends Base_Logic{
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'type',$info['type']);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'status',$info['status']);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'create_time',$info['create_time']);
+            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'totalNum',$info['totalNum']);
             $redis->setTimeout(Video_Keys::getVideoInfoName($sightId, $index),self::REDIS_TIME_OUT);
             
             $info['id']      = $index;

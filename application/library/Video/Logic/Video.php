@@ -81,7 +81,7 @@ class Video_Logic_Video extends Base_Logic{
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'create_time',time());
             $redis->setTimeout(Video_Keys::getVideoInfoName($sightId, $index),self::REDIS_TIME_OUT);
             
-            $info->id        = $index;
+            $info['id']        = $index;
             $arrData[]       = $info;
         }
         $html->clear();

@@ -99,7 +99,7 @@ class Book_Logic_Book extends Base_Logic{
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'isbn',isset($temp[$key]['detail']['isbn'])?$temp[$key]['detail']['isbn']:'');
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'url',$temp[$key]['url']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'image',$temp[$key]['imageUrl']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'status',Book_Type_Status::NOTPUBLISHED);
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'status',Book_Type_Status::PUBLISHED);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'create_time',time());
             $redis->setTimeout(Book_Keys::getBookInfoName($sightId, $index),self::REDIS_TIME_OUT);
             

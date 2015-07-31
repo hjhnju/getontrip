@@ -51,6 +51,7 @@ class Video_Logic_Video extends Base_Logic{
      */
     public function getAiqiyiSource($sightId,$page){
         require_once(APP_PATH."/application/library/Base/HtmlDom.php");
+        $arrData = array();
         $sight = Sight_Api::getSightById($sightId);
         $name  = urlencode(trim($sight['name']));        
         $url = "http://so.iqiyi.com/so/q_".$name."?source=input";
@@ -75,7 +76,7 @@ class Video_Logic_Video extends Base_Logic{
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'url',$info->url);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'image',$info->image);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'type',$info->type);
-            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'status',Video_Type_Status::NOTPUBLISHED);
+            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'status',Video_Type_Status::PUBLISHED);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'create_time',time());
             $redis->setTimeout(Video_Keys::getVideoInfoName($sightId, $index),self::REDIS_TIME_OUT);
             

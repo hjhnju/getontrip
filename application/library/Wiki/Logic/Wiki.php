@@ -129,7 +129,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'title',$arrTemp['word']);
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'content',$arrTemp['content']);
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'image',$arrTemp['images']);
-            $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'status',Wiki_Type_Status::NOTPUBLISHED);
+            $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'status',Wiki_Type_Status::PUBLISHED);
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'create_time',time());
             $redis->setTimeout(Wiki_Keys::getWikiInfoName($sightId, $index),self::REDIS_TIME_OUT);
             

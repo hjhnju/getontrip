@@ -57,26 +57,27 @@ class Video_Logic_Video extends Base_Logic{
         $url = "http://so.iqiyi.com/so/q_".$name."?source=input";
         $html = file_get_html($url);
         foreach($html->find('li.list_item') as $key => $e){
-            $info = new stdClass();
-            $info->name      = $e->getAttribute('data-widget-searchlist-tvname');
-            $diversity       = intval($e->getAttribute('data-widget-searchlist-pagesize'));
-            $info->type      = ($diversity > 1)?Video_Type_Type::ALBUM:Video_Type_Type::VIDEO;
-            $info->catageory = $e->getAttribute('data-widget-searchlist-catageory');
-            $ret             = $e->find('a.figure',0);
-            $info->url       = $ret->getAttribute("href");        
-            $ret             = $e->find('a.figure img',0);
-            $info->image     = $this->uploadPic(self::TYPE_VIDEO, $sightId.$page.$key, $ret->getAttribute("src"));
+            $info = array();
+            $info['name']      = $e->getAttribute('data-widget-searchlist-tvname');
+            $diversity         = intval($e->getAttribute('data-widget-searchlist-pagesize'));
+            $info['type']      = ($diversity > 1)?Video_Type_Type::ALBUM:Video_Type_Type::VIDEO;
+            $info['catageory'] = $e->getAttribute('data-widget-searchlist-catageory');
+            $ret                = $e->find('a.figure',0);
+            $info['url']       = $ret->getAttribute("href");        
+            $ret               = $e->find('a.figure img',0);
+            $info['image']     = $this->uploadPic(self::TYPE_VIDEO, $sightId.$page.$key, $ret->getAttribute("src"));
+            $info['status']    = Video_Type_Status::PUBLISHED;
             
             $redis = Base_Redis::getInstance();
             $index = ($page-1)*self::PAGE_SIZE+$key+1;
             $redis->delete(Video_Keys::getVideoInfoName($sightId, $index));
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'id',$index);
-            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'title',$info->name);
+            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'title',$info['name']);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'from','爱奇艺');
-            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'url',$info->url);
-            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'image',$info->image);
-            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'type',$info->type);
-            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'status',Video_Type_Status::PUBLISHED);
+            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'url',$info['url']);
+            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'image',$info['image']);
+            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'type',$info['type']);
+            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'status',$info['status']);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'create_time',time());
             $redis->setTimeout(Video_Keys::getVideoInfoName($sightId, $index),self::REDIS_TIME_OUT);
             

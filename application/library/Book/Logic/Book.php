@@ -103,6 +103,7 @@ class Book_Logic_Book extends Base_Logic{
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'create_time',time());
             $redis->setTimeout(Book_Keys::getBookInfoName($sightId, $index),self::REDIS_TIME_OUT);
             
+            $temp[$key]['status']       = Book_Type_Status::PUBLISHED;
             $temp[$key]['id'] = $index;
         }
         return $temp;

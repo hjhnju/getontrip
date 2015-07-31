@@ -17,7 +17,7 @@ class KeywordapiController extends Base_Controller_Api{
 
         $page=($start/$pageSize)+1;
          
-        $sight_id =isset($_REQUEST['sight_id'])?$_REQUEST['sight_id']:'';
+        $sight_id =isset($_REQUEST['sight_id'])?$_REQUEST['sight_id']:0;
         
         
         $List =Keyword_Api::queryKeywords($sight_id,$page,$pageSize);

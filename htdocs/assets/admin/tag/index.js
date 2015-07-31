@@ -83,9 +83,10 @@ $(document).ready(function() {
                 alert("服务器未正常响应，请重试");
             },
             "success": function(response) {
-                alert('删除成功!');
-                oTable.fnDeleteRow(nRow);
-                oTable.fnDraw();
+                if (response.status == 0) {
+                        toastr.success('删除成功');
+                        oTable.fnDeleteRow(nRow); 
+                 }
             }
         }); 
     });

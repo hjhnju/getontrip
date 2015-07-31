@@ -5,6 +5,7 @@
  */
 $(document).ready(function() {
     var validate = null;
+    
     $.validator.setDefaults({
         submitHandler: function(data) {
             //序列化表单  

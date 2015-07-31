@@ -1,4 +1,4 @@
-$(document).ready(function() { 
+$(document).ready(function() {
     var oTable = $('#editable').dataTable({
         "serverSide": true, //分页，取数据等等的都放到服务端去
         "processing": true, //载入数据的时候是否显示“载入中”
@@ -42,7 +42,7 @@ $(document).ready(function() {
                 "data": 'y'
             }, {
                 "data": function(e) {
-                    return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/sight/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>'+ '<button type="button" class="btn btn-success btn-xs addKeyword"  title="添加词条" data-toggle="tooltip"><i class="fa fa-buysellads"></i></button>';
+                    return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/sight/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-success btn-xs addKeyword"  title="添加词条" data-toggle="tooltip"><i class="fa fa-buysellads"></i></button>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
                 }
             }
         ],
@@ -54,6 +54,9 @@ $(document).ready(function() {
 
     var api = oTable.api();
     bindEvents();
+    
+        var validate = null;
+    addKeyword();
 
     /*
      绑定事件
@@ -80,9 +83,10 @@ $(document).ready(function() {
                     alert("服务器未正常响应，请重试");
                 },
                 "success": function(response) {
-                    alert('删除成功');
-                    oTable.fnDeleteRow(nRow);
-                    oTable.fnDraw();
+                    if (response.status == 0) {
+                        toastr.success('删除成功');
+                        oTable.fnDeleteRow(nRow);
+                    }
                 }
             });
         });
@@ -104,12 +108,16 @@ $(document).ready(function() {
             }
         });
 
-        //添加词条
+        //点击打开添加词条模态框
         $("#editable button.addKeyword").live('click', function(event) {
+            var nRow = $(this).parents('tr')[0];
+            var data = oTable.api().row(nRow).data();
+            $('#sight_name').val(data.name);
+            $('#sight_id').val(data.id);
+            $('#Form input').removeClass('error'); 
+            $('#Form .error').hide();
             //打开模态框 
-            $('#myModal').modal({
-
-            });
+            $('#myModal').modal({});
         });
     }
 
@@ -121,5 +129,53 @@ $(document).ready(function() {
             }
         }
         return "";
+    }
+
+    function addKeyword() {
+          $.validator.setDefaults({
+            submitHandler: function(data) {
+                //序列化表单  
+                var param = $("#Form").serializeObject(); 
+                $.ajax({
+                    "url": "/admin/keywordapi/add",
+                    "data": param,
+                    "type": "post",
+                    "dataType": "json",
+                    "error": function(e) {
+                        alert("服务器未正常响应，请重试");
+                    },
+                    "success": function(response) {
+                        if (response.status == 0) {
+                            toastr.success('保存成功');
+                             //手工关闭模态框
+                           $('#myModal').modal('hide');
+                        }
+                    }
+                });
+
+            }
+        });
+        validations();
+      
+      
+
+        /*
+          表单验证
+       */
+        function validations() {
+            // validate signup form on keyup and submit
+            validate = $("#Form").validate({
+                rules: {
+                    name: "required",
+                    sight_name: "required",
+                    url: "required"
+                },
+                messages: {
+                    name: "名称不能为空！",
+                    sight_name: "景点名称不能为空哦！",
+                    url: "链接url不能为空!"
+                }
+            });
+        }
     }
 });

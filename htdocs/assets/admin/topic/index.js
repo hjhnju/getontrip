@@ -113,8 +113,8 @@ $(document).ready(function() {
         //删除操作
         $('#editable button.delete').live('click', function(e) {
             e.preventDefault();
-            if (confirm("确定删除么 ?") == false) {
-                return;
+            if (confirm("确定删除么？删除后不可恢复！") == false) {
+                return false;
             }
             var nRow = $(this).parents('tr')[0];
             var data = oTable.api().row(nRow).data();
@@ -128,8 +128,7 @@ $(document).ready(function() {
                 "success": function(response) {
                     if (response.status == 0) {
                         toastr.success('删除成功');
-                        oTable.fnDeleteRow(nRow);
-                        oTable.fnDraw();
+                        oTable.fnDeleteRow(nRow); 
                     }
                 }
             });

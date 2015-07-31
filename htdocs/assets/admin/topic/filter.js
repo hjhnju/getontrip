@@ -49,16 +49,21 @@ $(document).ready(function() {
                         if (response.status == 0) {
                             var option = '';
                             var datas = response.data;
-                            for (var i = 0; i < datas.length; i++) {
-                                var data = datas[i];
-                                option = option + '<label class="checkbox-inline">';
-                                option = option + '<input type="checkbox" id="" data-name="form-keyword" value="' + data.id + '" data-text="' + data.name + '"/>' + data.name;
-                                option = option + ' </label>';
+                            if (datas.length != 0) {
+                                for (var i = 0; i < datas.length; i++) {
+                                    var data = datas[i];
+                                    option = option + '<label class="checkbox-inline">';
+                                    option = option + '<input type="checkbox" id="" data-name="form-keyword" value="' + data.id + '" data-text="' + data.name + '"/>' + data.name;
+                                    option = option + ' </label>';
+                                }
+                                $('#keywords').html(option);
+                                $('#form-group-keywords').show();
+                                //绑定Uniform
+                                Metronic.initUniform($('input[data-name="form-keyword"]'));
+                            } else {
+                                $('#keywords').html('');
+                                $('#form-group-keywords').hide();
                             }
-                            $('#keywords').html(option);
-                            $('#form-group-keywords').show();
-                            //绑定Uniform
-                            Metronic.initUniform($('input[data-name="form-keyword"]'));
                         }
                     }
                 });
@@ -125,9 +130,7 @@ $(document).ready(function() {
                 $('#weixin-from-input').hide();
             }
             setQuery();
-        });
-        //搜索来源下拉列表 
-        $('#form-from').selectpicker();
+        }); 
 
 
         //搜索事件
@@ -208,7 +211,7 @@ $(document).ready(function() {
         });
 
         //点击创建话题
-        $('#addTopic-btn').click(function(event) { 
+        $('#addTopic-btn').click(function(event) {
             var sight = $('#sight_id').val();
             if (!sight) {
                 toastr.warning('请选择一个景点！');
@@ -231,32 +234,33 @@ $(document).ready(function() {
             }
             //组装话题参数
             var params = {
-                from: from,
-                sights: [Number(sight)],
-                tags: tag_idArray,
-                url: url,
-                status: 1 //未发布的状态
-            }
-            //按钮disabled
+                    from: from,
+                    sights: [Number(sight)],
+                    tags: tag_idArray,
+                    url: url,
+                    status: 1 //未发布的状态
+                }
+                //按钮disabled
             $(this).attr('disabled', 'disabled');
+            $(this).html('<i class="fa fa-spinner fa-pulse"></i>保存中，请稍后')
             $.ajax({
                 "url": "/admin/topicapi/addByFilter",
                 "data": params,
                 "type": "post",
-                'timeout' : 5000, //超时时间设置，单位毫秒
-                "dataType": 'json' , 
-                "error": function(XMLHttpRequest, textStatus,errorThrown) {
+                'timeout': 10000, //超时时间设置，单位毫秒
+                "dataType": 'json',
+                "error": function(XMLHttpRequest, textStatus, errorThrown) {
                     $('#addTopic-btn').attr('disabled', false);
                     alert("服务器未正常响应，请重试");
                 },
-                "success": function(response) { 
+                "success": function(response) {
                     if (response.status == 0) {
                         document.getElementById("Form").reset();
                         toastr.success('创建成功了，再去列表页编辑一下吧');
                         $('#addTopic-btn').attr('disabled', false);
-
+                        ('#addTopic-btn').html('添加并创建话题')
                     }
-                } 
+                }
             });
         });
 

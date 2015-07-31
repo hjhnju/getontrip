@@ -150,7 +150,26 @@ class  TopicapiController extends Base_Controller_Api{
     */
     public function delAction(){
         //判断是否有ID
-        $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0;  
+        $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0; 
+        //根据ID查询出话题信息 
+        $topicList = Topic_Api::search(array('id'=>$postid),1,1);
+        if (count($topicList['list'])==0) {
+            return $this->ajaxError();
+        }
+        $topicInfo=$topicList['list'][0];
+        //正则提取出hash
+        $content=$topicInfo['content'];
+        if(!empty($content)&&$content!=''){
+           $imgHashArray=$this->getimgHashArray($content);  
+           $oss = Oss_Adapter::getInstance();  
+           //循环删除图片
+           foreach ($imgHashArray as $key => $value) {
+              $filename = $value.'.jpg';   
+              $res = $oss->remove($filename);
+           }   
+        }
+        
+
         $bRet =Topic_Api::delTopic($postid);
         if($bRet){
             return $this->ajax($postid);
@@ -158,21 +177,36 @@ class  TopicapiController extends Base_Controller_Api{
         return $this->ajaxError();
     }
      
-    public function testAction(){
-         $content= '<p><img src="/pic/c764a2fa76f15db7.jpg" width="" data-sada="asdad" data-hash="c764a2fa76f15db7"><img src="http://2.im.guokr.com/rBHeW-_MDGAF0LlVLbQW7eAhS8Pp6746R19uS9qkuKr_BAAAiQMAAEpQ.jpg?sdsd"></p>';
-       
-          $imgArray=array();
-         /* $obj = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
-          $content = $obj->getImgUrlArray();
-          var_dump($content);
-          $content = $obj->uploadImgs();
-          var_dump($content);
+   public function getimgHashArray($content){ 
+       $pat='/data-hash=\"(.){16,16}\"/';
+       //将匹配成功的参数写入数组中 
+       preg_match_all($pat, $content, $matches); 
+       preg_match_all('/data-hash=\"?(.){16,16}\"?/i',$content,$matches);
+       for($i=0;$i<count($matches[0]);$i++) {  
+            $matches[0][$i]=preg_replace('/data-hash=\"/i','',$matches[0][$i]);
+            $matches[0][$i]=preg_replace('/\"/i','',$matches[0][$i]); 
+          } 
+      return $matches[0];
+   }
 
-           $content = $obj->replaceImg();
-          var_dump($content);*/
+
+
+    public function testAction(){
+         $content= '<img src="/pic/75d01bab52523301.jpg" data-hash="75d01bab52523301"><img src="/pic/b55734902e2ff1bd.jpg" data-hash="b55734902e2ff1bd">显示全部';
+         var_dump($content);
+         $pat='/data-hash=\"(.){16,16}\"/';
+         $pat='/data-hash=\"(.){16,16}\"/';
+         //将匹配成功的参数写入数组中 
+         //preg_match($pat, $content, $matches); 
+          preg_match_all('/data-hash=\"?(.){16,16}\"?/i',$content,$matches);
+        
+          for($i=0;$i<count($matches[0]);$i++) {  
+            $matches[0][$i]=preg_replace('/data-hash=\"/i','',$matches[0][$i]);
+            $matches[0][$i]=preg_replace('/\"/i','',$matches[0][$i]);
           
-          var_dump($obj->isUrl('/data-(.)*\"/', '', $content));
-          
+           
+          }
+          var_dump($matches[0]);
     }
 
    

@@ -20,7 +20,18 @@ class Comment_Api{
     }
     
     /**
-     * 接口2：Comment_Api::addComment($topicId,$deviceId,$toUserId,$content)
+     * 接口2：Comment_Api::getCommnetById($id)
+     * 根据ID获取评论详情
+     * @param integer $id
+     * @return array
+     */
+    public static function getCommnetById($id){
+        $logicComment = new Comment_Logic_Comment();
+        return $logicComment->getCommentById($id);
+    }
+    
+    /**
+     * 接口3：Comment_Api::addComment($topicId,$deviceId,$toUserId,$content)
      * 添加评论信息
      * @param integer $topicId
      * @param string $deviceId
@@ -34,7 +45,7 @@ class Comment_Api{
     }
     
     /**
-     * 接口3：Comment_Api::delComment($id)
+     * 接口4：Comment_Api::delComment($id)
      * @param integer $id
      * @return boolean
      */

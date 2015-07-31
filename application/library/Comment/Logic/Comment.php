@@ -67,6 +67,17 @@ class Comment_Logic_Comment  extends Base_Logic{
     }
     
     /**
+     * 根据ID获取评论详情
+     * @param integer $id
+     * @return array
+     */
+    public function getCommentById($id){
+        $objComment = new Comment_Object_Comment();
+        $objComment->fetch(array('id' => $id));
+        return $objComment->toArray();
+    }
+    
+    /**
      * 获取话题最近的评论数
      * @param integer $topicId
      * @param string  $during

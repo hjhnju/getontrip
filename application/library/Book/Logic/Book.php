@@ -72,7 +72,13 @@ class Book_Logic_Book extends Base_Logic{
         $resp = $c->execute($req);
         $ret = $resp->resp;
         $arr = json_decode($ret,true);
-        $temp = $arr['jingdong_ware_product_search_list_get_responce']['searchProductList']['wareInfo'];
+        
+        if(isset($arr['jingdong_ware_product_search_list_get_responce']['searchProductList']['wareInfo'])){
+            $temp = $arr['jingdong_ware_product_search_list_get_responce']['searchProductList']['wareInfo'];
+        }else{
+            return array();
+        }
+        
         
         foreach ($temp as $key => $val){
             if($val['isBook'] == false){

@@ -71,7 +71,7 @@ $(document).ready(function() {
         }, {
             "data": function(e) {
                 if (e.image) {
-                    return '<img alt="" src="/pic/' + e.image + '_80_22.jpg"/>';
+                    return '<a href="/pic/' + e.image + '.jpg" target="_blank"><img alt="" src="/pic/' + e.image + '_80_22.jpg"/></a>';
                 }
                 return "未上传";
             }

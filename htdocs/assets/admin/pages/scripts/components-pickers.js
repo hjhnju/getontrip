@@ -52,7 +52,7 @@ var ComponentsPickers = function () {
                 opens: (Metronic.isRTL() ? 'left' : 'right'),
                 format: 'MM/DD/YYYY',
                 separator: ' to ',
-                startDate: moment().subtract('days', 29),
+                startDate: moment().subtract(29,'days'),
                 endDate: moment(),
                 minDate: '01/01/2012',
                 maxDate: '12/31/2014',
@@ -66,7 +66,7 @@ var ComponentsPickers = function () {
                 opens: (Metronic.isRTL() ? 'left' : 'right'),
                 format: 'MM/DD/YYYY',
                 separator: ' to ',
-                startDate: moment().subtract('days', 29),
+                startDate: moment().subtract(29,'days'),
                 endDate: moment(),
                 minDate: '01/01/2012',
                 maxDate: '12/31/2014',
@@ -86,7 +86,7 @@ var ComponentsPickers = function () {
 
         $('#reportrange').daterangepicker({
                 opens: (Metronic.isRTL() ? 'left' : 'right'),
-                startDate: moment().subtract('days', 29),
+                startDate: moment().subtract(29,'days'),
                 endDate: moment(),
                 minDate: '01/01/2012',
                 maxDate: '12/31/2014',
@@ -100,11 +100,11 @@ var ComponentsPickers = function () {
                 timePicker12Hour: true,
                 ranges: {
                     'Today': [moment(), moment()],
-                    'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
-                    'Last 7 Days': [moment().subtract('days', 6), moment()],
-                    'Last 30 Days': [moment().subtract('days', 29), moment()],
+                    'Yesterday': [moment().subtract(1,'days'), moment().subtract(1,'days')],
+                    'Last 7 Days': [moment().subtract(6,'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29,'days'), moment()],
                     'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                    'Last Month': [moment().subtract(1,'month').startOf('month'), moment().subtract(1,'month').endOf('month')]
                 },
                 buttonClasses: ['btn'],
                 applyClass: 'green',
@@ -126,7 +126,7 @@ var ComponentsPickers = function () {
             }
         );
         //Set the initial state of the picker label
-        $('#reportrange span').html(moment().subtract('days', 29).format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
+        $('#reportrange span').html(moment().subtract(29,'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
     }
 
     var handleDatetimePicker = function () {

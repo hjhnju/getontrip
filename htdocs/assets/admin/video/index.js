@@ -1,49 +1,55 @@
 /*
 
- 景点词条列表
+ 京东书籍列表
   author:fyy
  */
 $(document).ready(function() {
-     var FORMATER = 'YYYY-MM-DD HH:mm:ss';
+    var editBtn = '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-success btn-xs addKeyword"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
+    var FORMATER = 'YYYY-MM-DD HH:mm:ss';
     var oTable = $('#editable').dataTable({
         "serverSide": true, //分页，取数据等等的都放到服务端去
         "processing": true, //载入数据的时候是否显示“载入中”
-        "pageLength": 10, //首次加载的数据条数  
+        "pageLength": 20, //首次加载的数据条数  
         "searching": false, //是否开启本地分页
-        "ordering":false,
+        "ordering": false,
         "ajax": {
-            "url": "/admin/Keywordapi/list",
+            "url": "/admin/videoapi/list",
             "type": "POST",
             "data": function(d) {
                 //添加额外的参数传给服务器
-                d.sight_id = '';
-                if ($("#form-sight").val()) {
-                    d.sight_id = Number($.trim($("#form-sight").attr('data-sight_id')));
-                } 
+                d.sight_id = 1;
+                if ($("#form-sight").attr('data-sight_id')) {
+                    d.sight_id = $.trim($("#form-sight").attr('data-sight_id'));
+                }
             }
         },
-        "columnDefs": [{
-            "targets": [0],
-            "visible": true,
-            "searchable": false
-        }, {
-            "targets": [1],
+        "columnDefs": [ {
+            "targets": [1, 2],
             "orderable": false,
-            "width": 20
+            "width": 150
         }],
-        "columns": [{
-            "data": "id"
+        "columns": [  {
+            "data": 'title'
         }, {
-            "data": 'name'
+            "data": function(e) {
+                if (e.image) {
+                    return '<a href="/pic/' + e.image + '.jpg" target="_blank"><img alt="" src="/pic/' + e.image + '_80_22.jpg"/></a>';
+                }
+                return "空";
+            }
+        }, {
+            "data": 'from'
+        }, {
+            "data": 'typeName'
         }, {
             "data": function(e) {
                 if (e.url) {
-                    return '<a href="' + e.url + '" target="_blank" title="' + e.url + '">' + (e.url.length > 20 ? e.url.substr(0, 20)+'...' : e.url) + '</a>';
+                    return '<a href="' + e.url + '" target="_blank" title="' + e.url + '">' + (e.url.length > 20 ? e.url.substr(0, 20) + '...' : e.url) + '</a>';
                 }
                 return '暂无';
             }
         }, {
-            "data": "sightName"
+            "data": "statusName"
         }, {
             "data": function(e) {
                 if (e.create_time) {
@@ -53,13 +59,7 @@ $(document).ready(function() {
             }
         }, {
             "data": function(e) {
-                if (e.update_time) {
-                    return moment.unix(e.update_time).format(FORMATER);
-                }
-                return "空";
-            }
-        }, {
-            "data": function(e) {
+                return '';
                 return '<a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
             }
         }],
@@ -112,14 +112,14 @@ $(document).ready(function() {
             });
         });
 
-      
-     
+
+
     }
 
     /*
       过滤事件
      */
-    function filters() { 
+    function filters() {
 
         //景点输入框自动完成
         $('#form-sight').typeahead({
@@ -143,13 +143,13 @@ $(document).ready(function() {
             $("#form-sight").attr('data-sight_id', '');
             //触发dt的重新加载数据的方法
             api.ajax.reload();
-        }); 
-       
-        
+        });
 
-      
+
+
+
     }
 
- 
+
 
 });

@@ -1,10 +1,11 @@
 /*
 
- 景点词条列表
+ 京东书籍列表
   author:fyy
  */
 $(document).ready(function() {
-     var FORMATER = 'YYYY-MM-DD HH:mm:ss';
+    var editBtn = '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-success btn-xs addKeyword"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>' ;
+    var FORMATER = 'YYYY-MM-DD HH:mm:ss';
     var oTable = $('#editable').dataTable({
         "serverSide": true, //分页，取数据等等的都放到服务端去
         "processing": true, //载入数据的时候是否显示“载入中”
@@ -12,14 +13,14 @@ $(document).ready(function() {
         "searching": false, //是否开启本地分页
         "ordering":false,
         "ajax": {
-            "url": "/admin/Keywordapi/list",
+            "url": "/admin/bookapi/list",
             "type": "POST",
             "data": function(d) {
                 //添加额外的参数传给服务器
-                d.sight_id = '';
-                if ($("#form-sight").val()) {
-                    d.sight_id = Number($.trim($("#form-sight").attr('data-sight_id')));
-                } 
+                d.sight_id = 1;
+                if ($("#form-sight").attr('data-sight_id')) {
+                    d.sight_id = $.trim($("#form-sight").attr('data-sight_id'));
+                }
             }
         },
         "columnDefs": [{
@@ -27,14 +28,24 @@ $(document).ready(function() {
             "visible": true,
             "searchable": false
         }, {
-            "targets": [1],
+            "targets": [1,2],
             "orderable": false,
-            "width": 20
+            "width": 150
         }],
         "columns": [{
             "data": "id"
         }, {
-            "data": 'name'
+            "data": 'title'
+        }, {
+            "data": 'author'
+        }, {
+            "data": 'press'
+        }, {
+            "data": 'isbn'
+        }, {
+            "data": 'price_mart'
+        }, {
+            "data": 'price_jd'
         }, {
             "data": function(e) {
                 if (e.url) {
@@ -43,23 +54,10 @@ $(document).ready(function() {
                 return '暂无';
             }
         }, {
-            "data": "sightName"
+            "data": "statusName"
         }, {
             "data": function(e) {
-                if (e.create_time) {
-                    return moment.unix(e.create_time).format(FORMATER);
-                }
-                return "空";
-            }
-        }, {
-            "data": function(e) {
-                if (e.update_time) {
-                    return moment.unix(e.update_time).format(FORMATER);
-                }
-                return "空";
-            }
-        }, {
-            "data": function(e) {
+                return '';
                 return '<a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
             }
         }],

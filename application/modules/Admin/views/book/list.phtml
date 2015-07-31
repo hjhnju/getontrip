@@ -16,7 +16,7 @@
             <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
             <!-- BEGIN PAGE HEADER-->
             <h3 class="page-title">
-              景点词条 <small>reports & statistics</small>
+              书籍管理 <small>reports & statistics</small>
             </h3>
             <div class="page-bar">
                 <ul class="page-breadcrumb">
@@ -26,7 +26,7 @@
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
-                        <a href="#">景点词条</a>
+                        <a href="#">书籍列表</a>
                     </li>
                 </ul>
             </div>
@@ -34,14 +34,14 @@
             <!-- BEGIN content STATS --> 
             <div class="adv-table editable-table ">
                  <div class="clearfix"> 
-                   <div class="btn-group">
+                   <!-- <div class="btn-group">
                       <a  class="btn  btn-primary" href="/admin/keyword/edit">
                           添加 <i class="fa fa-plus"></i>
                       </a>
-                   </div>
+                   </div> -->
                    <div class="col-xs-3 pull-right">   
                             <div class="input-group "> 
-                              <input type="text" class="form-control" placeholder="输入并选择景点" aria-describedby="sightName" id="form-sight" autocomplete="off">
+                              <input type="text" class="form-control" placeholder="输入并选择景点" aria-describedby="sightName" id="form-sight" autocomplete="off" value="故宫">
                               <span class="input-group-btn">
                               <button type="button" class="btn btn-white" id="clear-sight"><i class="fa fa-remove"></i></button>
                             </span>
@@ -53,11 +53,14 @@
                      <thead>
                          <tr role="row">  
                             <th>ID</th>
-                            <th>词条名称</th>
-                            <th>url</th>
-                            <th>关联景点</th> 
-                            <th>创建时间</th>
-                            <th>更新时间</th> 
+                            <th>书籍名称</th>
+                            <th>作者</th>
+                            <th>出版社</th> 
+                            <th>ISBN</th>
+                            <th>市场价</th> 
+                            <th>京东价</th>
+                            <th>链接</th> 
+                            <th>状态</th>
                             <th>操作</th>  
                           </tr>
                       </thead>
@@ -76,6 +79,5 @@
  <link href="{%$feroot%}s/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css" rel="stylesheet" type="text/css"/> 
 <script src="{%$feroot%}s/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js" type="text/javascript"></script> 
 <script src="{%$feroot%}s/global/plugins/typeahead/bootstrap-typeahead.js" type="text/javascript"></script>  
-<script src="{%$feroot%}s/admin/keyword/index.js" type="text/javascript"></script> 
- 
+<script src="{%$feroot%}s/admin/book/index.js" type="text/javascript"></script>  
 {%/block%}

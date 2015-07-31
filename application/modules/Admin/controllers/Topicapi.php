@@ -191,23 +191,7 @@ class  TopicapiController extends Base_Controller_Api{
 
 
 
-    public function testAction(){
-         $content= '<img src="/pic/75d01bab52523301.jpg" data-hash="75d01bab52523301"><img src="/pic/b55734902e2ff1bd.jpg" data-hash="b55734902e2ff1bd">显示全部';
-         var_dump($content);
-         $pat='/data-hash=\"(.){16,16}\"/';
-         $pat='/data-hash=\"(.){16,16}\"/';
-         //将匹配成功的参数写入数组中 
-         //preg_match($pat, $content, $matches); 
-          preg_match_all('/data-hash=\"?(.){16,16}\"?/i',$content,$matches);
-        
-          for($i=0;$i<count($matches[0]);$i++) {  
-            $matches[0][$i]=preg_replace('/data-hash=\"/i','',$matches[0][$i]);
-            $matches[0][$i]=preg_replace('/\"/i','',$matches[0][$i]);
-          
-           
-          }
-          var_dump($matches[0]);
-    }
+
 
    
 }

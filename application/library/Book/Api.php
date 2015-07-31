@@ -9,7 +9,7 @@ class Book_Api{
      * @param integer $pageSize
      * @return array
      */
-    public static function getJdBooks($sightId,$page,$pageSize,$status=Book_Type_Type::ALL){
+    public static function getJdBooks($sightId,$page,$pageSize,$status=Book_Type_Status::ALL){
         $logicBook = new Book_Logic_Book();
         $arrBooks  = $logicBook->getBooks($sightId, $page, $pageSize,$status);
         if(!empty($arrBooks)){

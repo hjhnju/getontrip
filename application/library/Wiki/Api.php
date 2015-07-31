@@ -19,7 +19,25 @@ class Wiki_Api{
         return $arrWiki;
     }
     
-    public static function editWiki($sightId,$keywordId,$arrInfo){
-        $logicWiki  = new Wiki_Logic_Wiki();
+    /**
+     * 接口2：Wiki_Api::editWiki($keywordId,$arrInfo)
+     * 修改百科数据
+     * @param integer $keywordId，词条的ID
+     * @param array $arrInfo
+     * @return boolean
+     */
+    public static function editWiki($keywordId,$arrInfo){
+        $logicWiki = new Wiki_Logic_Wiki();
+        return $logicWiki->editWiki($keywordId, $arrInfo);  
+    }
+    
+    /**
+     * 接口3：Wiki_Api::delWiki($wikiId)
+     * @param integer $wikiId，词条的ID
+     * @return boolean
+     */
+    public static function delWiki($keywordId){
+        $logicWiki = new Wiki_Logic_Wiki();
+        return $logicWiki->delWiki($keywordId);
     }
 }

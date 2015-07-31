@@ -4,17 +4,20 @@
  * @author huwei
  *
  */
-class ListController extends Base_Controller_Api {
+class IndexController extends Base_Controller_Api {
     
     const PAGESIZE = 6;
     
+    protected $logicFind;
+    
     public function init() {
         $this->setNeedLogin(false);
-        parent::init();        
+        parent::init();  
+        $this->logicFind = new Find_Logic_Find();      
     }
     
     /**
-     * 接口1：/find/list
+     * 接口1：/find
      * 推荐发现列表页
      * @param integer page
      * @param integer pageSize
@@ -25,8 +28,7 @@ class ListController extends Base_Controller_Api {
         $pageSize   = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGESIZE;
         $x          = isset($_POST['x'])?doubleval($_POST['x']):'';
         $y          = isset($_POST['y'])?doubleval($_POST['y']):'';
-        $logic      = new Topic_Logic_Topic();
-        $ret        = $logic->getNewTopic('','',$page,$pageSize);
+        $ret        = $this->logicFind->listFind($x,$y,$page,$pageSize);
         $this->ajax($ret);
     }    
 }

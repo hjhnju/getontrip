@@ -116,10 +116,13 @@ class Wiki_Logic_Wiki extends Base_Logic{
             foreach ($arrItems as $id => $item){
                 $num  = $id + 1;
                 $redis->delete(Wiki_Keys::getWikiCatalogName($sightId, $index, $num));
+                $redis->hset(Wiki_Keys::getWikiCatalogName($sightId, $index, $num),'id',$num);
                 $redis->hset(Wiki_Keys::getWikiCatalogName($sightId, $index, $num),'name',$item['name']);
                 $redis->hset(Wiki_Keys::getWikiCatalogName($sightId, $index, $num),'url',$item['url']);
                 $redis->hset(Wiki_Keys::getWikiCatalogName($sightId, $index, $num),'create_time',time());
                 $redis->setTimeout(Wiki_Keys::getWikiCatalogName($sightId, $index,$num),self::REDIS_TIME_OUT);
+                
+                $arrItems[$id]['id'] = $num;
             }
 
             $redis->delete(Wiki_Keys::getWikiInfoName($sightId, $index));
@@ -137,7 +140,68 @@ class Wiki_Logic_Wiki extends Base_Logic{
         return $arrRet;
     }
     
-    public function editWiki($sightId,$keywordId,$arrInfo){
-        
+    /**
+     * 修改百科数据
+     * @param integer $keywordId
+     * @param array $arrInfo
+     * @return boolean
+     */
+    public function editWiki($keywordId,$arrInfo){
+        $redis        = Base_Redis::getInstance();
+        $ret          = false;
+        $arrCatalog   = array();
+        $logicKeyword = new Keyword_Logic_Keyword();
+        $sightId      = $logicKeyword->getSightId($keywordId);
+        if(!empty($sightId)){
+            $arr      = $redis->hGetAll(Wiki_Keys::getWikiInfoName($sightId, $keywordId));
+            if(isset($arrInfo['catalog'])){
+               $arrCatalog = $arrInfo['catalog']; 
+               unset($arrInfo['catalog']);
+            }
+            $arrKeys  = array_keys($arr);
+            foreach ($arrInfo as $key => $val){
+                if(in_array($key,$arrKeys)){
+                    $arr[$key] = $val;
+                }
+            }
+            $ret1 = $redis->hMset(Wiki_Keys::getWikiInfoName($sightId, $keywordId),$arr);
+        }
+        //修改百科目录
+        if(!empty($arrCatalog)){
+            foreach ($arrCatalog as $index => $val){
+                $id = $val['id'];
+                unset($val['id']);
+                $arr      = $redis->hGetAll(Wiki_Keys::getWikiCatalogName($sightId, $keywordId, $id));                
+                $arrKeys  = array_keys($arr);
+                foreach ($val as $key => $data){
+                    if(in_array($key,$arrKeys)){
+                        $val[$key] = $data;
+                    }
+                }
+                $ret2 = $redis->hMset(Wiki_Keys::getWikiCatalogName($sightId, $keywordId, $id));
+            }
+        }
+        return $ret1&&$ret2;       
+    }
+    
+    /**
+     * 删除百科数据
+     * @param integer $keywordId
+     * @return boolean
+     */
+    public function delWiki($keywordId){
+        $redis        = Base_Redis::getInstance();
+        $ret          = false;
+        $logicKeyword = new Keyword_Logic_Keyword();
+        $sightId      = $logicKeyword->getSightId($keywordId);
+        if(!empty($sightId)){
+            $ret      = $redis->delete(Wiki_Keys::getWikiInfoName($sightId, $keywordId));
+            
+            $arrKeys = $redis->keys(Wiki_Keys::getWikiCatalogName($sightId, $keywordId, "*"));
+            foreach ($arrKeys as $key){
+                $redis->delete($key);
+            }          
+        }
+        return $ret;
     }
 }

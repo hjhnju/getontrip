@@ -51,6 +51,19 @@ class GisModel extends PgBaseModel
     }
     
     /**
+     * 根据给定点，找出其到某景点的距离，单位米
+     * @param double $x
+     * @param double $y
+     * @param integer $topicId
+     * @return double
+     */
+    public function getEarthDistanceToTopic($x,$y,$topicId){
+        $objTopic = new Topic_Object_Topic();
+        $objTopic->fetch(array('id' => $topicId));
+        return $this->getEarthDistanceToPoint($x, $y, $objTopic->x, $objTopic->y);
+    }
+    
+    /**
      * 计算两点间的地球面距离，单位米
      * @param double $x1
      * @param double $y1

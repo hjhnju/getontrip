@@ -65,11 +65,11 @@ class Video_Logic_Video extends Base_Logic{
             $info->url       = $ret->getAttribute("href");        
             $ret             = $e->find('a.figure img',0);
             $info->image     = $this->uploadPic(self::TYPE_VIDEO, $sightId.$page.$key, $ret->getAttribute("src"));
-            $arrData[]       = $info;
             
             $redis = Base_Redis::getInstance();
             $index = ($page-1)*self::PAGE_SIZE+$key+1;
             $redis->delete(Video_Keys::getVideoInfoName($sightId, $index));
+            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'id',$index);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'title',$info->name);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'from','爱奇艺');
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'url',$info->url);
@@ -78,22 +78,44 @@ class Video_Logic_Video extends Base_Logic{
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'status',Video_Type_Status::NOTPUBLISHED);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'create_time',time());
             $redis->setTimeout(Video_Keys::getVideoInfoName($sightId, $index),self::REDIS_TIME_OUT);
+            
+            $info->id        = $index;
+            $arrData[]       = $info;
         }
         $html->clear();
         return $arrData;
     }
     
     /**
-     * 根据ID数组删除视频信息
-     * @param array $arrIds
+     * 修改视频数据
+     * @param integer $sightId,景点ID
+     * @param integer $id,视频ID
+     * @param array $arrInfo
      * @return boolean
      */
-    public function delVideos($arrIds){
-        foreach ($arrIds as $id){
-            $objVideo = new Video_Object_Video();
-            $objVideo->fetch(array('id' => $id));
-            $ret = $objVideo->remove();
+    public function editVideo($sightId,$id,$arrInfo){
+        $redis   = Base_Redis::getInstance();
+        $ret     = false;
+        $arr     = $redis->hGetAll(Video_Keys::getVideoInfoName($sightId, $id));
+        $arrKeys  = array_keys($arr);
+        foreach ($arrInfo as $key => $val){
+            if(in_array($key,$arrKeys)){
+                $arr[$key] = $val;
+            }
         }
+        $ret = $redis->hMset(Video_Keys::getVideoInfoName($sightId, $id),$arr);
+        return $ret;       
+    }
+    
+    /**
+     * 删除视频数据
+     * @param integer $sightId,景点ID
+     * @param integer $id,视频ID
+     * @return boolean
+     */
+    public function delVideo($sightId,$id){
+        $redis        = Base_Redis::getInstance();
+        $ret      = $redis->delete(Video_Keys::getVideoInfoName($sightId, $id));
         return $ret;
     }
 }

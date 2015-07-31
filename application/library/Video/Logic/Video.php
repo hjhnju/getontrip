@@ -61,6 +61,11 @@ class Video_Logic_Video extends Base_Logic{
         $count = $item->getAttribute('data-key')*self::PAGE_SIZE;
         
         foreach($html->find('li.list_item') as $key => $e){
+            $strMark = $e->getAttribute('data-searchpingback-position');
+            preg_match('/target=(.*?)&/is', $strMark,$match);
+            if(isset($match[1])){
+                $sign = $match[1];
+            }
             $info = array();
             $info['title']      = $e->getAttribute('data-widget-searchlist-tvname');
             $diversity         = intval($e->getAttribute('data-widget-searchlist-pagesize'));

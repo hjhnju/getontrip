@@ -92,24 +92,43 @@ class Book_Logic_Book extends Base_Logic{
             $detail = $c->execute($detailRequest);
             $ret = $detail->resp;
             $arr = json_decode($ret,true);
-            $temp[$key]['detail'] =  $arr['jingdong_ware_basebook_get_responce']['BookEntity'][0]['book_info'];
+            $detail =  $arr['jingdong_ware_basebook_get_responce']['BookEntity'][0]['book_info'];
+            
+            $temp[$key]['title'] = $temp[$key]['wareName'];
+            unset($temp[$key]['wareName']);
+            
+            $temp[$key]['author'] = isset($detail['author'])?$detail['author']:'';
+            
+            $temp[$key]['price_mart'] = $temp[$key]['martPrice'];
+            unset($temp[$key]['martPrice']);
+            
+            $temp[$key]['price_jd'] = $temp[$key]['jdPrice'];
+            unset($temp[$key]['jdPrice']);
+            
+            $temp[$key]['press'] = isset($detail['publishers'])?$detail['publishers']:'';
+            $temp[$key]['isbn'] = isset($detail['isbn'])?$detail['isbn']:'';
+            
+            $temp[$key]['image'] = $temp[$key]['imageUrl'];
+            unset($temp[$key]['imageUrl']);
+            
+            $temp[$key]['status'] = Book_Type_Status::PUBLISHED;
+            $temp[$key]['create_time'] = time();
             
             $redis = Base_Redis::getInstance();
             $index = ($page-1)*$pageSize+$key+1;
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'id',$index);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'title',$temp[$key]['wareName']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'author',isset($temp[$key]['detail']['author'])?$temp[$key]['detail']['author']:'');
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'price_mart',$temp[$key]['martPrice']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'price_jd',$temp[$key]['jdPrice']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'press',isset($temp[$key]['detail']['publishers'])?$temp[$key]['detail']['publishers']:'');
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'isbn',isset($temp[$key]['detail']['isbn'])?$temp[$key]['detail']['isbn']:'');
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'title',$temp[$key]['title']);
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'author',$temp[$key]['author']);
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'price_mart',$temp[$key]['price_mart']);
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'price_jd',$temp[$key]['price_jd']);
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'press',$temp[$key]['press']);
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'isbn',$temp[$key]['isbn']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'url',$temp[$key]['url']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'image',$temp[$key]['imageUrl']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'status',Book_Type_Status::PUBLISHED);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'create_time',time());
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'image',$temp[$key]['image']);
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'status',$temp[$key]['status']);
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'create_time',$temp[$key]['create_time']);
             $redis->setTimeout(Book_Keys::getBookInfoName($sightId, $index),self::REDIS_TIME_OUT);
-            
-            $temp[$key]['status']       = Book_Type_Status::PUBLISHED;
+    
             $temp[$key]['id'] = $index;
         }
         return $temp;

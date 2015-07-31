@@ -74,7 +74,12 @@ class Comment_Logic_Comment  extends Base_Logic{
     public function getCommentById($id){
         $objComment = new Comment_Object_Comment();
         $objComment->fetch(array('id' => $id));
-        return $objComment->toArray();
+        $ret =  $objComment->toArray();
+        if(!empty($ret)){
+            $logicUser    = new User_Logic_User();
+            $ret['from_name'] = $logicUser->getUserName($ret['from_user_id']);
+            $ret['to_name']   = $logicUser->getUserName($ret['to_user_id']);
+        }
     }
     
     /**

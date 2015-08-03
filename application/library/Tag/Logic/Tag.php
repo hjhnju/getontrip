@@ -55,7 +55,7 @@ class Tag_Logic_Tag{
      * @return boolean
      */
     public static function saveTag($name){
-        $objTag = new Tag_Object_Tag();
+        $objTag       = new Tag_Object_Tag();
         $objTag->name = $name;
         $ret1 = $objTag->save();
     
@@ -86,5 +86,16 @@ class Tag_Logic_Tag{
         $redis = Base_Redis::getInstance();
         $ret2 = $redis->delete(Tag_Keys::getTagInfoKey($id));
         return $ret1&&$ret2;
+    }
+    
+    /**
+     * 根据名称获取标签信息
+     * @param string $name
+     * @return array
+     */
+    public function getTagByName($name){
+        $objTag = new Tag_Object_Tag();
+        $objTag->fetch(array('name' => $name));
+        return $objTag->toArray();
     }
 }

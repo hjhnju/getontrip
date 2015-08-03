@@ -50,4 +50,15 @@ class Tag_Api{
         $logicTag = new Tag_Logic_Tag();
         return $logicTag->delTag($id);
     }
+    
+    /**
+     * 接口5：Tag_Api::getTagByName($name)
+     * 根据名称获取标签信息
+     * @param string $name
+     * @return array
+     */
+    public static function getTagByName($name){
+        $logicTag = new Tag_Logic_Tag();
+        return $logicTag->getTagByName($name);
+    }
 }

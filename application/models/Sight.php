@@ -40,7 +40,7 @@ class SightModel extends PgBaseModel
      */
     public function getSightByCity($page,$pageSize,$cityId){
         $from = ($page-1)*$pageSize;
-        $sql = "SELECT * FROM sight WHERE city_id = $cityId  LIMIT $pageSize OFFSET $from";
+        $sql = "SELECT * FROM sight WHERE city_id = $cityId  ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
         try {
             $sth = $this->db->prepare($sql);
             $sth->execute();
@@ -58,7 +58,8 @@ class SightModel extends PgBaseModel
      */
     public function getSightList($page,$pageSize){
         $from = ($page-1)*$pageSize;
-        $sql = "SELECT * FROM sight LIMIT $pageSize OFFSET $from";
+        $sql = "SELECT * FROM sight ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
+        var_dump($sql);die;
         try {
             $sth = $this->db->prepare($sql);
             $sth->execute();
@@ -203,7 +204,7 @@ class SightModel extends PgBaseModel
             $where .= "$key = '".$val."' and";
         }
         $where = substr($where, 0,-4);
-        $sql = "SELECT * FROM sight $where limit $pageSize offset $offset";
+        $sql = "SELECT * FROM sight $where ORDER BY update_time DESC limit $pageSize offset $offset";
         try {
             $sth = $this->db->prepare($sql);
             $sth->execute();

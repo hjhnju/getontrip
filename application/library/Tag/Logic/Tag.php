@@ -60,7 +60,7 @@ class Tag_Logic_Tag{
         $ret1 = $objTag->save();
     
         $redis = Base_Redis::getInstance();
-        $ret2 = $redis->hSet(Tag_Keys::getTagInfoKey(),$objTag->id,$objTag->name);
+        $ret2 = $redis->hSet(Tag_Keys::getTagInfoKey($objTag->id),'name',$objTag->name);
         return $ret1&&$ret2;
     }
     
@@ -85,7 +85,7 @@ class Tag_Logic_Tag{
         }
     
         $redis = Base_Redis::getInstance();
-        $ret2 = $redis->hDel(Tag_Keys::getTagInfoKey(),$id);
+        $ret2 = $redis->hDel(Tag_Keys::getTagInfoKey($objTag->id),$id);
     
         return $ret1&&$ret2;
     }

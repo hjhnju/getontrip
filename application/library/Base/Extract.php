@@ -132,6 +132,8 @@ class Base_Extract {
 		$replacement = '';
 		$content = preg_replace( $pattern, $replacement, $content );
 		
+		$content = html_entity_decode($content);
+		
 		return $content;
 	}
 	
@@ -257,6 +259,7 @@ class Base_Extract {
 	            }
 	        }
 	    }	    
+	    $content = html_entity_decode($content);
 	    return $content;
 	}
 }

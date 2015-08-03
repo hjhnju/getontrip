@@ -62,7 +62,7 @@
                     </div>   
                      <div class="col-xs-3 pull-right">   
                             <div class="input-group "> 
-                              <input type="text" class="form-control" placeholder="输入并选择景点" aria-describedby="sightName" id="form-sight" autocomplete="off">
+                              <input type="text" class="form-control" placeholder="输入并选择景点" aria-describedby="sightName" id="form-sight" autocomplete="off" value="{%if isset($sight)%}{%$sight.name%}{%/if%}" data-sight_id="{%if isset($sight)%}{%$sight.id%}{%/if%}"/>
                               <span class="input-group-btn">
                               <button type="button" class="btn btn-white" id="clear-sight"><i class="fa fa-remove"></i></button>
                             </span>

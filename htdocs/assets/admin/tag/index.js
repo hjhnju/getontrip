@@ -8,6 +8,7 @@ $(document).ready(function() {
         "processing": true, //载入数据的时候是否显示“载入中”
         "pageLength": 10, //首次加载的数据条数  
         "searching": false, //是否开启本地分页
+        "ordering":false,
         "ajax": {
             "url": "/admin/Tagapi/list",
             "type": "POST",

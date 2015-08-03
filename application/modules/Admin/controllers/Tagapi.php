@@ -1,6 +1,7 @@
 <?php
 /**
  * 标签相关操作
+ * author:fyy
  */
 class TagapiController extends Base_Controller_Api{
      
@@ -52,7 +53,9 @@ class TagapiController extends Base_Controller_Api{
        } 
 
         if($bRet){
-            return $this->ajax();
+            //根据名称返回标签信息 
+            $tagInfo = Tag_Api::getTagByName($name);
+            return $this->ajax($tagInfo);
         }
         return $this->ajaxError();
     }

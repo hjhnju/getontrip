@@ -1,6 +1,7 @@
 <?php
 /**
  * 话题相关操作
+ * author :fyy
  */
 class  TopicapiController extends Base_Controller_Api{
      
@@ -22,7 +23,7 @@ class  TopicapiController extends Base_Controller_Api{
         $page=($start/$pageSize)+1;
          
         $arrParam = isset($_REQUEST['params'])?$_REQUEST['params']:array();
-        $query =isset($_REQUEST['params']['content'])?$_REQUEST['params']['content']:'';
+        //$query =isset($_REQUEST['params']['content'])?$_REQUEST['params']['content']:'';
         
          
         
@@ -110,8 +111,8 @@ class  TopicapiController extends Base_Controller_Api{
       
        //添加到数据库
        $bRet=Topic_Api::addTopic($_REQUEST);   
-       if($bRet){
-            return $this->ajax();
+       if(!empty($bRet)){
+            return $this->ajax($bRet);
        } 
        return $this->ajaxError();
     }
@@ -140,11 +141,12 @@ class  TopicapiController extends Base_Controller_Api{
        //保存到数据库
        $bRet=Topic_Api::addTopic($_REQUEST);
        ob_end_clean();   
-       if($bRet){
-            return $this->ajax();
+       if(!empty($bRet)){
+            return $this->ajax($bRet);
        } 
        return $this->ajaxError();
     }
+
 
     /**
     * 删除话题

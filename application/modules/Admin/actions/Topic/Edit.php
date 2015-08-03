@@ -21,7 +21,15 @@ class EditAction extends Yaf_Action_Abstract {
         $List=Topic_Api::search(array("id"=>$postid),1,1); 
 
         if(count($List["list"])==0){
-                $action='add';
+            $action='add';
+
+            //处理传递过来的景点
+            $sight_id  = isset($_REQUEST['sight_id'])?intval($_REQUEST['sight_id']):'';
+            if($sight_id!=''){
+               $sight=Sight_Api::getSightById($sight_id);
+               array_push($sightList,$sight); 
+            } 
+
         }else{
 
            $postInfo=$List["list"][0]; 

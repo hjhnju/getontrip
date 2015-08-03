@@ -16,6 +16,13 @@ class FilterAction extends Yaf_Action_Abstract {
         $keywordsList = Source_Api::listSource(1, PHP_INT_MAX);
         $keywordsList=$keywordsList['list']; 
 
+        //处理传递过来的景点
+        $sight_id  = isset($_REQUEST['sight_id'])?intval($_REQUEST['sight_id']):'';
+        if($sight_id!=''){
+           $sight=Sight_Api::getSightById($sight_id); 
+           $this->getView()->assign('sight', $sight);
+        } 
+
     	$this->getView()->assign('tagList', $tagList);
     	$this->getView()->assign('sourceList', $sourceList);
     	$this->getView()->assign('keywordsList', $keywordsList);

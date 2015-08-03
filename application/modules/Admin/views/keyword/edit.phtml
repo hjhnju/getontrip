@@ -56,14 +56,15 @@
                       <div class="form-group ">
                           <label for="name" class="control-label col-lg-2">名称*</label>
                           <div class="col-lg-5">
-                              <input class="form-control" id="name" name="name"  type="text" required="" value="{%if isset($post.name)%}{%$post.name%}{%/if%}"><label for="name" class="error"></label>
+                              <input class="form-control" id="name" name="name"  type="text" required="" value="{%if isset($post.name)%}{%$post.name%}{%/if%}"/>
+                              <label for="name" class="error"></label> 
                           </div>
                       </div> 
                       <div class="form-group ">
                           <label for="sight_name" class="control-label col-lg-2">所属景点*</label>
                           <div class="col-lg-5">
-                          	   <input  id="sight_id" name="sight_id"  type="hidden" value="{%if isset($post.sight_id)%}{%$post.sight_id%}{%/if%}">
-                               <input class="form-control" id="sight_name" name="sight_name"  type="text" required=""  autocomplete="off" value="{%if isset($post.sight_name)%}{%$post.sight_name%}{%/if%}"/> 
+                          	   <input  id="sight_id" name="sight_id"  type="hidden" value="{%if isset($post.sight_id)%}{%$post.sight_id%}{%elseif isset($sight)%}{%$sight.id%}{%/if%}">
+                               <input class="form-control" id="sight_name" name="sight_name"  type="text" required=""  autocomplete="off" value="{%if isset($post.sight_name)%}{%$post.sight_name%}{%elseif isset($sight)%}{%$sight.name%}{%/if%}"  data-/> 
                                <label for="sight_name" class="error"></label>
                           </div>
                            <div class="col-lg-5">

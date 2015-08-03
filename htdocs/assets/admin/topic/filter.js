@@ -270,7 +270,8 @@ $(document).ready(function() {
                         document.getElementById("Form").reset();
                         toastr.success('创建成功了，再去列表页编辑一下吧');
                         $('#addTopic-btn').attr('disabled', false);
-                        $('#addTopic-btn').html('添加并创建话题')
+                        $('#addTopic-btn').html('添加并创建话题');
+                        window.open('/admin/topic/edit?action=edit&id='+response.data);
                     }
                 }
             });

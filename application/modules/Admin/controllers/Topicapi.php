@@ -123,8 +123,9 @@ class  TopicapiController extends Base_Controller_Api{
      
        //1、调用相应的采集器
        $obj = Spider_Factory::getInstance("Auto",$_REQUEST['url'],Spider_Type_Source::URL);
-       //2、获取title
+       //2、获取title 解析title 去掉-后面的内容
        $_REQUEST['title'] = $obj->getTitle();
+       $_REQUEST['title'] = trim(preg_replace('/-(.)*/i','',$_REQUEST['title'])); 
        //3、获取content
        $content = $obj->getBody();
        //4、content中剔除多余的图片属性

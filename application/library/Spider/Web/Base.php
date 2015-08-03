@@ -76,4 +76,15 @@ abstract class Spider_Web_Base{
     public function release(){
         return $this->objDom->clear();
     }
+    
+    /**
+     * 网页内容预处理,只保留URL及换行
+     * @param string $content
+     * @return string
+     */
+    protected function preProcess($url,$content) {
+        $obj   = new Base_Extract($url,$content);
+        $data  = $obj->preProcess();    
+        return $obj->dataClean($data); 
+    }
 }

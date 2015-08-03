@@ -59,9 +59,13 @@ class Base_Extract {
 	 * @param int $_blkSize
 	 * @return void
 	 */
-	function __construct( $_rawPageCode, $url ) {
-		$this->rawPageCode = $_rawPageCode;
-		$this->url         = $url;
+	function __construct( $url,$content='') {
+	    $this->url         = "compress.zlib://".$url;
+	    if(empty($content)){
+	        $this->rawPageCode = file_get_contents($this->url);
+	    }else{
+	        $this->rawPageCode = $content;
+	    }
 	}
 	
 	/**
@@ -71,6 +75,15 @@ class Base_Extract {
 	function preProcess() {
 		$content = $this->rawPageCode;
 		
+		$num = preg_match_all('/<meta.*?>/si',$content,$match);
+		for( $i = 0; $i < $num; $i++ ){
+		    if(false !== stristr($match[0][$i],"charset")){
+		        preg_match('/charset=\"?(.*?)(\"|\s|\/|>)/si',$content,$match);
+		        $sourceCode = trim($match[1]);
+		        $content = mb_convert_encoding($content,"utf8",$sourceCode);
+		    }
+		}
+	
 		// 1. DTD information
 		$pattern = '/<!DOCTYPE.*?>/si';
 		$replacement = '';
@@ -199,24 +212,7 @@ class Base_Extract {
 				$end = $i - 1;
 			}
 		}
-		$content = $this->text;
-		$content = preg_replace( '/<p.*?>/', '<p>', $content );		
-		
-		$num = preg_match_all('/img.*?src=\"(.*?)\".*?>/si',$content,$match);
-		for($i=0;$i<$num;$i++){
-		    if($this->isFullPath($match[1][$i])){
-		        $content = str_replace($match[0][$i],"img src=\"".$match[1][$i]."\">",$content);
-		    }else{
-		        if(stristr($match[1][$i],"//")){
-		            $content = str_replace($match[0][$i],"img src=\""."http:".$match[1][$i]."\">",$content);
-		        }else{
-		            $content = str_replace($match[0][$i],"img src=\"".$this->getUrlBase().$match[1][$i]."\">",$content);
-		        }		        
-		    }
-		}
-		
-		
-		return $content;
+        return $this->dataClean($this->text);
 	}
 	
 	/**
@@ -239,6 +235,29 @@ class Base_Extract {
 	public function getUrlBase(){
 	    $parts = parse_url( $this->url);
 	    return $parts['scheme']."://".$parts['host'];
+	}
+	
+	/**
+	 * 对图像及p,br标签数据整理
+	 * @param string $content
+	 * @return string
+	 */
+	public function dataClean($content){
+	    $content = preg_replace( '/<p.*?>/', '<p>', $content );
+	    
+	    $num = preg_match_all('/img.*?src=\"(.*?)\".*?>/si',$content,$match);
+	    for($i=0;$i<$num;$i++){
+	        if($this->isFullPath($match[1][$i])){
+	            $content = str_replace($match[0][$i],"img src=\"".$match[1][$i]."\">",$content);
+	        }else{
+	            if(stristr($match[1][$i],"//")){
+	                $content = str_replace($match[0][$i],"img src=\""."http:".$match[1][$i]."\">",$content);
+	            }else{
+	                $content = str_replace($match[0][$i],"img src=\"".$this->getUrlBase().$match[1][$i]."\">",$content);
+	            }
+	        }
+	    }	    
+	    return $content;
 	}
 }
 

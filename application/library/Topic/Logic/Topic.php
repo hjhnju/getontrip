@@ -515,7 +515,7 @@ class Topic_Logic_Topic extends Base_Logic{
                 $redis->zAdd(Sight_Keys::getSightTopicName($val),time(),$objTopic->id);
             }
         }
-        return $ret;
+        return $objTopic->id;
     }
     
     public function editTopic($topicId,$arrInfo){

@@ -188,4 +188,25 @@ class Sight_Logic_Sight{
         $ret = $this->modelSight->eddSight($sightId, $_updateData);
         return $ret;
     }
+    
+    /**
+     * 获取景点的话题数
+     * @param integer $sightId
+     * @return integer
+     */
+    public function getTopicNum($sightId){
+        $redis = Base_Redis::getInstance();
+        return intval($redis->zSize(Sight_Keys::getSightTopicName($sightId)));
+    }
+    
+    /**
+     * 获取景点词条数
+     * @param integer  $sightId
+     * @return integer
+     */
+    public function getKeywordNum($sightId){
+        $listKeyword = new Keyword_List_Keyword();
+        $listKeyword->setFilter(array('sight_id' => $sightId));
+        return intval($listKeyword->getTotal());
+    }
 }

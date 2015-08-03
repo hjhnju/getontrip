@@ -87,7 +87,7 @@ class Sight_Api{
      * @param integer $pageSize
      * @return array
      */
-    public function search($query,$page,$pageSize){
+    public static function search($query,$page,$pageSize){
         $logicSight = new Sight_Logic_Sight();
         return $logicSight->search($query, $page, $pageSize);
     }
@@ -100,8 +100,30 @@ class Sight_Api{
      * @param integer $pageSize
      * @return array
      */
-    public function querySights($arrInfo,$page,$pageSize){
+    public static function querySights($arrInfo,$page,$pageSize){
         $logicSight = new Sight_Logic_Sight();
         return $logicSight->querySights($arrInfo, $page, $pageSize);
+    }
+    
+    /**
+     * 接口9：Sight_Api::getTopicNum($sightId)
+     * 获取景点的话题数
+     * @param integer $sightId
+     * @return integer 
+     */
+    public static function getTopicNum($sightId){
+        $logicSight = new Sight_Logic_Sight();
+        return $logicSight->getTopicNum($sightId);
+    }
+    
+    /**
+     * 接口10：Sight_Api::getKeywordNum($sightId)
+     * 获取景点词条数
+     * @param integer  $sightId
+     * @return integer
+     */
+    public static function getKeywordNum($sightId){
+        $logicSight = new Sight_Logic_Sight();
+        return $logicSight->getKeywordNum($sightId);
     }
 }

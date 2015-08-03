@@ -164,6 +164,11 @@ $(document).ready(function() {
                 $('#source-name').val($('#weixin-from').val());
                 $('#source .source-url').hide();
                 $('#source-url').val('mp.weixin.qq.com');
+            }else{
+                $('#source label[for="source-name"]').text('来源名称:');
+                $('#source-name').val('');
+                $('#source .source-url').show();
+                $('#source-url').val('');
             }
             $('#source-type').val(type);
             //打开模态框
@@ -172,6 +177,14 @@ $(document).ready(function() {
 
         //点击创建话题来源
         $('#addSource-btn').click(function(event) {
+            if(!$('#source-name').val()){
+                 toastr.warning('名称不能为空');
+               return false;
+            }
+            if(!$('#source-url').val()){
+                 toastr.warning('url不能为空');
+               return false;
+            }
             $.ajax({
                 "url": "/admin/Sourceapi/addAndReturn",
                 "data": {
@@ -246,8 +259,7 @@ $(document).ready(function() {
             $.ajax({
                 "url": "/admin/topicapi/addByFilter",
                 "data": params,
-                "type": "post",
-                'timeout': 10000, //超时时间设置，单位毫秒
+                "type": "post", 
                 "dataType": 'json',
                 "error": function(XMLHttpRequest, textStatus, errorThrown) {
                     $('#addTopic-btn').attr('disabled', false);
@@ -258,7 +270,7 @@ $(document).ready(function() {
                         document.getElementById("Form").reset();
                         toastr.success('创建成功了，再去列表页编辑一下吧');
                         $('#addTopic-btn').attr('disabled', false);
-                        ('#addTopic-btn').html('添加并创建话题')
+                        $('#addTopic-btn').html('添加并创建话题')
                     }
                 }
             });

@@ -76,6 +76,14 @@ function file_get_html($url, $use_include_path = false, $context=null, $offset =
     $dom = new simple_html_dom(null, $lowercase, $forceTagsClosed, $target_charset, $stripRN, $defaultBRText, $defaultSpanText);
     // For sourceforge users: uncomment the next line and comment the retreive_url_contents line 2 lines down if it is not already done.
     $contents = file_get_contents("compress.zlib://".$url, $use_include_path, $context, $offset);
+    $num = preg_match_all('/<meta.*?>/si',$contents,$match);
+    for( $i = 0; $i < $num; $i++ ){
+        if(false !== stristr($match[0][$i],"charset")){
+            preg_match('/charset=\"?(.*?)(\"|\s|\/|>)/si',$contents,$match);
+            $sourceCode = trim($match[1]);
+            $contents = mb_convert_encoding($contents,"utf8",$sourceCode);
+        }
+    }
     // Paperg - use our own mechanism for getting the contents as we want to control the timeout.
     //$contents = retrieve_url_contents($url);
     if (empty($contents) || strlen($contents) > MAX_FILE_SIZE)

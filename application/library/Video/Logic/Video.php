@@ -67,11 +67,11 @@ class Video_Logic_Video extends Base_Logic{
                 $sign = $match[1];
             }
             $info = array();
-            $info['title']      = $e->getAttribute('data-widget-searchlist-tvname');
+            $info['title']     = html_entity_decode($e->getAttribute('data-widget-searchlist-tvname'));
             $diversity         = intval($e->getAttribute('data-widget-searchlist-pagesize'));
             $info['type']      = ($diversity > 1)?Video_Type_Type::ALBUM:Video_Type_Type::VIDEO;
-            $info['catageory'] = $e->getAttribute('data-widget-searchlist-catageory');
-            $ret                = $e->find('a.figure',0);
+            $info['catageory'] = html_entity_decode($e->getAttribute('data-widget-searchlist-catageory'));
+            $ret               = $e->find('a.figure',0);
             $info['url']       = $ret->getAttribute("href");        
             $ret               = $e->find('a.figure img',0);
             $info['image']     = $this->uploadPic(self::TYPE_VIDEO, $sightId.$page.$key, $ret->getAttribute("src"));

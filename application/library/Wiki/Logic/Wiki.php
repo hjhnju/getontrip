@@ -81,7 +81,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
                 foreach($html->find('li[class^="title level1 column-"]') as $e){
                     $ret  = $e->find("a",0);
                     $url  = $ret->getAttribute("href")."\t";
-                    $name = $ret->innertext."\r\n";
+                    $name = html_entity_decode($ret->innertext)."\r\n";
                     $arrItems[] = array(
                         'name' => $name,
                         'url'  => $url,
@@ -95,7 +95,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
                 foreach($html->find('dd[class^="catalog-item "]') as $e){
                     $ret  = $e->find("p a",0);
                     $url  = $ret->getAttribute("href")."\t";
-                    $name = $ret->innertext."\r\n";
+                    $name = html_entity_decode($ret->innertext)."\r\n";
                     $arrItems[] = array(
                         'name' => $name,
                         'url'  => $url,
@@ -109,7 +109,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
             
             
             $arrTemp['word']    = $sight['name'];
-            $arrTemp['content'] = $content;
+            $arrTemp['content'] = html_entity_decode($content);
             $arrTemp['images']  = $hash;
             $arrTemp['items']   = $arrItems;
             

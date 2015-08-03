@@ -96,9 +96,6 @@ class Tag_Logic_Tag{
     public function getTagByName($name){
         $objTag = new Tag_Object_Tag();
         $objTag->fetch(array('name' => $name));
-        if(empty($objTag->id)){
-            return array();
-        }
         return $objTag->toArray();
     }
 }

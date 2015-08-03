@@ -350,7 +350,9 @@ class Base_Object {
         $data = array();
         foreach($this->fields as $key){
             $prop       = $this->properties[$key];
-            $data[$key] = $this->$prop;
+            if(isset($this->$prop)){
+                $data[$key] = $this->$prop;
+            }            
         }
         return $data;
     }

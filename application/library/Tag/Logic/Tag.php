@@ -80,13 +80,11 @@ class Tag_Logic_Tag{
         $arrList = $listTopictag->toArray();
         foreach ($arrList['list'] as $val){
             $objTag = new Topic_Object_Tag();
-            $objTag->fetch(array('id'=>$val['id']));
+            $objTag->fetch(array('id'=>$val['id']));            
             $objTag->remove();
-        }
-    
+        }    
         $redis = Base_Redis::getInstance();
-        $ret2 = $redis->hDel(Tag_Keys::getTagInfoKey($objTag->id),$id);
-    
+        $ret2 = $redis->delete(Tag_Keys::getTagInfoKey($id));
         return $ret1&&$ret2;
     }
 }

@@ -194,9 +194,22 @@ class Sight_Logic_Sight{
      * @param integer $sightId
      * @return integer
      */
-    public function getTopicNum($sightId){
-        $redis = Base_Redis::getInstance();
-        return intval($redis->zSize(Sight_Keys::getSightTopicName($sightId)));
+    public function getTopicNum($sightId,$arrConf){
+        $count = 0;
+        $listSightTopic = new Sight_List_Topic();
+        $listSightTopic->setFields(array('topic_id'));
+        $listSightTopic->setFilter(array('sight_id' => $sightId));
+        $listSightTopic->setPagesize(PHP_INT_MAX);
+        $arr = $listSightTopic->toArray();
+        foreach ($arr['list'] as $topicId){
+            $objTopic = new Topic_Object_Topic();
+            $arrFilter = array_merge(array('id' => $topicId['topic_id']),$arrConf);
+            $objTopic->fetch($arrFilter);
+            if(isset($objTopic->id)){
+                $count += 1;
+            }
+        }
+        return $count;
     }
     
     /**

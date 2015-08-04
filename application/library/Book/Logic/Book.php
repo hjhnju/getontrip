@@ -130,7 +130,7 @@ class Book_Logic_Book extends Base_Logic{
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'image',$temp[$key]['image']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'status',$temp[$key]['status']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'create_time',$temp[$key]['create_time']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'totalNUm',$temp[$key]['totalNum']);
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'totalNum',$temp[$key]['totalNum']);
             $redis->setTimeout(Book_Keys::getBookInfoName($sightId, $index),self::REDIS_TIME_OUT);
     
             $temp[$key]['id'] = $index;

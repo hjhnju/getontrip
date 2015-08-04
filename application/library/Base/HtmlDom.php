@@ -79,8 +79,8 @@ function file_get_html($url, $use_include_path = false, $context=null, $offset =
     $num = preg_match_all('/<meta.*?>/si',$contents,$match);
     for( $i = 0; $i < $num; $i++ ){
         if(false !== stristr($match[0][$i],"charset")){
-            preg_match('/charset=\"?(.*?)(\"|\s|\/|>)/si',$contents,$match);
-            $sourceCode = trim($match[1]);
+            preg_match('/charset=\"?(.*?)(\"|\s|\/|>)/si',$contents,$match1);
+            $sourceCode = trim($match1[1]);
             $contents = mb_convert_encoding($contents,"utf8",$sourceCode);
         }
     }

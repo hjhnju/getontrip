@@ -46,7 +46,11 @@ class Tag_Logic_Tag{
         $objTag = new Tag_Object_Tag();
         $objTag->fetch(array('id' => $id));
         $objTag->name = $name;
-        return $objTag->save();
+        $ret1 = $objTag->save();
+        
+        $redis = Base_Redis::getInstance();
+        $ret2 = $redis->hSet(Tag_Keys::getTagInfoKey($id),'name',$name);
+        return $ret1&&$ret2;
     }
     
     /**

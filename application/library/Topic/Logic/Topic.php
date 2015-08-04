@@ -52,7 +52,7 @@ class Topic_Logic_Topic extends Base_Logic{
             }              
             
             $objTopic = new Topic_Object_Topic();
-            $objTopic->setFileds(array('id', 'title', 'subtitle', 'content', 'desc', 'image', 'from', 'url'));
+            $objTopic->setFileds(array('id', 'title', 'subtitle', 'desc', 'image', 'from', 'url'));
             $objTopic->fetch(array('id' => $val));
             $arrRet[] = $objTopic->toArray();
                                    
@@ -89,7 +89,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrTags          = array();
         $collectTopicNum  = 0;
         $visitTopicNum    = 0;
-        $strFileter       = 'true';
+        $strFileter       = 'status = '.Topic_Type_Status::PUBLISHED;
         
         $redis = Base_Redis::getInstance();
         
@@ -98,13 +98,13 @@ class Topic_Logic_Topic extends Base_Logic{
         if(!empty($sightId)){
             $ret = $redis->zRange(Sight_Keys::getSightTopicName($sightId),0,-1);
             $strTopicIds = implode(",",$ret);
-            $strFileter = "`id` in($strTopicIds)";           
+            $strFileter = " AND`id` in($strTopicIds)";           
         }
         if(!empty($period)){
             $time      = strtotime($period);
             $strFileter .= " AND `update_time` > $time";
         }
-        $listTopic->setFields(array('id','title','content','desc','image','from'));
+        $listTopic->setFields(array('id','title','desc','image','from'));
         $listTopic->setFilterString($strFileter);
         $listTopic->setOrder("update_time desc");
         $listTopic->setPage($page);
@@ -162,6 +162,10 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrRet = $objTopic->toArray();
         $logicComment          = new Comment_Logic_Comment();
         $arrRet['commentNum']  = $logicComment->getCommentNum($topicId);
+        
+        //话题来源
+        $logicSource = new Source_Logic_Source();
+        $arrRet['from']    = $logicSource->getSourceName($objTopic->from);
         
         //添加redis中话题访问次数统计
         $redis = Base_Redis::getInstance();
@@ -475,12 +479,12 @@ class Topic_Logic_Topic extends Base_Logic{
      * @param integer $status
      * @return boolean
      */
-    public function changeTopicStatus($topicId,$status){
+    /*public function changeTopicStatus($topicId,$status){
         $objTopic = new Topic_Object_Topic();
         $objTopic->fetch(array('id' => $topicId));
         $objTopic->status = $status;
         return $objTopic->save();
-    }
+    }*/
     
     public function addTopic($arrInfo){
         $objTopic = new Topic_Object_Topic();
@@ -512,11 +516,13 @@ class Topic_Logic_Topic extends Base_Logic{
                 $objSightTopic->topicId = $objTopic->id;
                 $objSightTopic->sightId = $val;
                 $objSightTopic->save();
-    
-                $redis->zAdd(Sight_Keys::getSightTopicName($val),time(),$objTopic->id);
+                if($objTopic->status == Topic_Type_Status::PUBLISHED){
+                    $redis->zAdd(Sight_Keys::getSightTopicName($val),time(),$objTopic->id);
+                }                
             }
         }
         return $objTopic->id;
+        
     }
     
     public function editTopic($topicId,$arrInfo){
@@ -531,6 +537,21 @@ class Topic_Logic_Topic extends Base_Logic{
         }
         $ret = $objTopic->save();
     
+        //话题状态修改，对应改变缓存中信息
+        if(isset($arrInfo['status'])){
+            $listSightTopic = new Sight_List_Topic();
+            $listSightTopic->setFilter(array('topic_id' => $topicId));
+            $listSightTopic->setPagesize(PHP_INT_MAX);
+            $arrList = $listSightTopic->toArray();
+            foreach($arrList['list'] as $key => $val){
+                if($arrInfo['status'] == Topic_Type_Status::PUBLISHED){
+                    $redis->zAdd(Sight_Keys::getSightTopicName($val['sight_id']),time(),$topicId);
+                }else{
+                    $redis->zDelete(Sight_Keys::getSightTopicName($val['sight_id']),$topicId);
+                }
+            }
+        }
+                 
         if(isset($arrInfo['tags'])){
             $listTopicTag = new Topic_List_Tag();
             $listTopicTag->setFilter(array('topic_id' => $topicId));
@@ -578,7 +599,9 @@ class Topic_Logic_Topic extends Base_Logic{
                     $objSightTopic->sightId = $sight;
                     $objSightTopic->topicId = $topicId;
                     $objSightTopic->save();
-                    $redis->zAdd(Sight_Keys::getSightTopicName($objSightTopic->sightId),time(),$topicId);
+                    if($objTopic->status == Topic_Type_Status::PUBLISHED){
+                       $redis->zAdd(Sight_Keys::getSightTopicName($objSightTopic->sightId),time(),$topicId);
+                    }                    
                 }
             }
         }

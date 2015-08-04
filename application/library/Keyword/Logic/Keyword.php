@@ -14,9 +14,18 @@ class Keyword_Logic_Keyword extends Base_Logic{
      * @param integer $pageSize
      * @return array
      */
-    public function queryKeywords($sight_id,$page,$pageSize){
+    public function queryKeywords($page, $pageSize,$status,$sight_id){
         $list  = new Keyword_List_Keyword();
-        $list->setFilter(array('sight_id' => $sight_id));
+        $arr   = array();
+        if($status != Keyword_Type_Status::ALL){
+            $arr['status'] = $status;
+        }
+        if(!empty($sight_id)){
+            $arr['sight_id'] = $sight_id;
+        }
+        if(!empty($arr)){
+            $list->setFilter($arr);
+        }        
         $list->setPage($page);
         $list->setPagesize($pageSize);
         return $list->toArray();

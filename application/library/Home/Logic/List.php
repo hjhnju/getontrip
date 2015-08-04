@@ -42,22 +42,23 @@ class Home_Logic_List{
         ));    
         //从景点中找出包含了所要求的话题范围的景点    
         foreach ($ret as $val){
-            $num = $this->_logicTopic->getHotTopicNum($val['id'],"1 month ago");
+            $num  = $this->_logicTopic->getHotTopicNum($val['id'],"1 month ago");
             if(empty($num)){
                 continue;
             }
-            $total += $num;
-            if($pageSize <= 0){
-                if($pageSize < 0){  
-                   array_pop($arr); 
-                }
+            $num    = ($num > self::PAGE_SIZE)?self::PAGE_SIZE:$num;            
+            $total += $num;            
+            if( $total <= ($page-1)*$pageSize){
+                continue;
+            }
+            
+            $pageSize -= $num;
+            if($pageSize < 0){
                 break;
             }
-            if( $total < ($page-1)*$pageSize){
-                continue;
-            }else{
-                $arr[] = $val;
-                $pageSize -= $num; 
+            $arr[] = $val;
+            if($pageSize == 0){
+                break;
             }
         }
         //通过这些景点，取出其它的如城市、话题、答案等信息
@@ -73,7 +74,11 @@ class Home_Logic_List{
             }
             
             //距离转换成KM
-            $arr[$index]['dis'] = strval(floor($arr[$index]['dis']/1000));
+            if($arr[$index]['dis'] < 1000){
+                $arr[$index]['dis'] = strval(floor($arr[$index]['dis']))."m";
+            }else{
+                $arr[$index]['dis'] = strval(floor($arr[$index]['dis']/1000))."km";
+            }            
         }        
         return $arr; 
     }

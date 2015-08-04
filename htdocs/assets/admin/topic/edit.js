@@ -18,76 +18,7 @@ $(document).ready(function() {
      *  
      */
     function bindEvents() {
-        //表单提交事件
-        $.validator.setDefaults({
-            submitHandler: function(data) {
-                //序列化表单  
-                var param = $("#Form").serializeObject();
-
-                //特殊处理景点和标签 
-                sight_id_array = [];
-                $('#sight_alert span button').each(function() {
-                    sight_id_array.push(Number($(this).attr('data-id')));
-                });
-
-                if (sight_id_array.length == 0) {
-                    toastr.warning('至少选择一个景点吧');
-                    return false;
-                }
-
-                tag_id_array = [];
-                $('#tags option:selected').each(function() {
-                    tag_id_array.push(Number($(this).val()));
-                });
-                //处理来源
-                var from = "";
-                if ($('input[data-name="form-from"]:checked').val() == "weixin") {
-                    from = $('#weixin-from_id').val();
-                    if (!from) {
-                        toastr.warning('请填写微信公众号！');
-                        return false;
-                    }
-                } else {
-                    from = $('input[data-name="form-from"]:checked').attr('data-id');
-                }
-                param.tags = tag_id_array;
-                param.sights = sight_id_array;
-                param.from = from;
-                param.content = $("#summernote").code();
-
-                //发布的状态
-                param.status = status;
-
-                var url;
-                if (!$('#id').val()) {
-                    url = "/admin/topicapi/add";
-                } else {
-                    url = "/admin/topicapi/save"
-                }
-                $.ajax({
-                    "url": url,
-                    "data": param,
-                    "type": "post",
-                    "dataType": "json",
-                    "error": function(e) {
-                        alert("服务器未正常响应，请重试");
-                    },
-                    "success": function(response) {
-                        if (response.status == 0) {
-                            toastr.success('保存成功');
-                            if (url.indexOf('add') >= 0) {
-                                //resetForm();
-                                window.location.href='/admin/topic/edit?action=edit&id='+response.data;
-                            } else {
-                                window.location.reload();
-                            }
-
-                        }
-                    }
-                });
-
-            }
-        });
+      
         //初始化编辑器
         $('#summernote').summernote({
             lang: "zh-CN",
@@ -361,6 +292,76 @@ $(document).ready(function() {
        表单验证
      */
     function validations() {
+          //表单提交事件
+        $.validator.setDefaults({
+            submitHandler: function(data) {
+                //序列化表单  
+                var param = $("#Form").serializeObject();
+
+                //特殊处理景点和标签 
+                sight_id_array = [];
+                $('#sight_alert span button').each(function() {
+                    sight_id_array.push(Number($(this).attr('data-id')));
+                });
+
+                if (sight_id_array.length == 0) {
+                    toastr.warning('至少选择一个景点吧');
+                    return false;
+                }
+
+                tag_id_array = [];
+                $('input[data-name="form-tag"]:checked').each(function() {
+                    tag_id_array.push(Number($(this).val())); 
+                });
+                //处理来源
+                var from = "";
+                if ($('input[data-name="form-from"]:checked').val() == "weixin") {
+                    from = $('#weixin-from_id').val();
+                    if (!from) {
+                        toastr.warning('请填写微信公众号！');
+                        return false;
+                    }
+                } else {
+                    from = $('input[data-name="form-from"]:checked').attr('data-id');
+                }
+                param.tags = tag_id_array;
+                param.sights = sight_id_array;
+                param.from = from;
+                param.content = $("#summernote").code();
+
+                //发布的状态
+                param.status = status;
+
+                var url;
+                if (!$('#id').val()) {
+                    url = "/admin/topicapi/add";
+                } else {
+                    url = "/admin/topicapi/save"
+                }
+                $.ajax({
+                    "url": url,
+                    "data": param,
+                    "type": "post",
+                    "dataType": "json",
+                    "error": function(e) {
+                        alert("服务器未正常响应，请重试");
+                    },
+                    "success": function(response) {
+                        if (response.status == 0) {
+                            toastr.success('保存成功');
+                            if (url.indexOf('add') >= 0) {
+                                //resetForm();
+                                window.location.href='/admin/topic/edit?action=edit&id='+response.data;
+                            } else {
+                                window.location.reload();
+                            }
+
+                        }
+                    }
+                });
+
+            }
+        });
         // validate signup form on keyup and submit
         validate = $("#Form").validate({
             rules: {

@@ -4,6 +4,12 @@
          在后端处理的格式
   修改2：success处理方法
   修改3：处理数据总数的方法  修改3
+  修改4  新增刷新按钮  
+  修改5  删除行后刷新当前页
+  修改6 如果没有内容 而且当前页不是第一页 则往前刷新一页
+
+
+  新增1 刷新当前页面
  
    @author fyy
  */
@@ -1826,7 +1832,6 @@
                     _fnProcessingDisplay(oSettings, false);
                     return;
                 }
-
                 var i, iLen, n;
                 var anRows = [];
                 var iRowCount = 0;
@@ -1837,6 +1842,15 @@
                 var iInitDisplayStart = oSettings.iInitDisplayStart;
                 var bServerSide = _fnDataSource(oSettings) == 'ssp';
                 var aiDisplay = oSettings.aiDisplay;
+
+                //修改6 如果没有内容 而且当前页不是第一页 则往前刷新一页
+                var api = new $.fn.dataTable.Api(oSettings);
+                var currentPage = api.page();
+                if(currentPage!==0&&aiDisplay.length === 0&&!oSettings.bAjaxDataGet){
+                    oSettings.bAjaxDataGet=true;
+                    api.page(currentPage-1).draw(false); 
+                    return;
+                }
 
                 oSettings.bDrawing = true;
 
@@ -1854,6 +1868,8 @@
                 var iDisplayStart = oSettings._iDisplayStart;
                 var iDisplayEnd = oSettings.fnDisplayEnd();
 
+
+
                 /* Server-side processing draw intercept */
                 if (oSettings.bDeferLoading) {
                     oSettings.bDeferLoading = false;
@@ -1864,6 +1880,7 @@
                 } else if (!oSettings.bDestroying && !_fnAjaxUpdate(oSettings)) {
                     return;
                 }
+                
 
                 if (aiDisplay.length !== 0) {
                     var iStart = bServerSide ? 0 : iDisplayStart;
@@ -1903,8 +1920,8 @@
                     } else if (oLang.sEmptyTable && oSettings.fnRecordsTotal() === 0) {
                         sZero = oLang.sEmptyTable;
                     }
-
-                    anRows[0] = $('<tr/>', {
+                    
+                        anRows[0] = $('<tr/>', {
                             'class': iStripes ? asStripeClasses[0] : ''
                         })
                         .append($('<td />', {
@@ -1912,6 +1929,7 @@
                             'colSpan': _fnVisbleColumns(oSettings),
                             'class': oSettings.oClasses.sRowEmpty
                         }).html(sZero))[0];
+                     
                 }
 
                 /* Header and footer callbacks */
@@ -3033,13 +3051,10 @@
                     start = settings._iDisplayStart + 1,
                     len = settings._iDisplayLength,
                     vis = settings.fnRecordsDisplay(),
-                    all = len === -1;
-/*     console.log("formatter",formatter);
-     console.log("start",start);
-     console.log("len",len);
-     console.log("_TOTAL_",vis);
-     console.log("all",all);*/
+                    all = len === -1; 
+                     console.log('total:'+vis); 
                 return str.
+
                 replace(/_START_/g, formatter.call(settings, start)).
                 replace(/_END_/g, formatter.call(settings, settings.fnDisplayEnd())).
                 replace(/_MAX_/g, formatter.call(settings, settings.fnRecordsTotal())).
@@ -5311,7 +5326,10 @@
                     }
 
                     if (redraw === undefined || redraw) {
-                        api.draw();
+                        //修改5 刷新当前页 
+                         var page= api.page(); 
+                         api.page(page).draw(false);
+                         //api.draw();
                     }
 
                     return data;
@@ -5606,7 +5624,22 @@
                         api.draw(false);
                     }
                 };
+                 
+                /*
+                 * 新增1 刷新当前页面
+                 * @param  {bool}   [bRedraw=true] Redraw the table or not
+                 *  
+                 */
+                this.fnRefresh = function(bRedraw) {
+                    var api = this.api(true); 
+                    var page= api.page(); 
 
+                    api.page(page);
+
+                    if (bRedraw === undefined || bRedraw) {
+                        api.draw(false);
+                    }
+                };
 
                 /**
                  * Show a particular column
@@ -10685,7 +10718,8 @@
                          *      } );
                          *    } );
                          */
-                        "sPrevious": "Previous"
+                        "sPrevious": "Previous",
+                        "sRefresh":'Refresh'
                     },
 
                     /**
@@ -13762,20 +13796,21 @@
 
 
             $.extend(extPagination, {
+                //修改4 新增'refresh', 刷新按钮
                 simple: function(page, pages) {
-                    return ['previous', 'next'];
+                    return ['refresh','previous', 'next'];
                 },
 
                 full: function(page, pages) {
-                    return ['first', 'previous', 'next', 'last'];
+                    return ['refresh','first', 'previous', 'next', 'last'];
                 },
 
                 simple_numbers: function(page, pages) {
-                    return ['previous', _numbers(page, pages), 'next'];
+                    return ['refresh','previous', _numbers(page, pages), 'next'];
                 },
 
                 full_numbers: function(page, pages) {
-                    return ['first', 'previous', _numbers(page, pages), 'next', 'last'];
+                    return ['refresh','first', 'previous', _numbers(page, pages), 'next', 'last'];
                 },
 
                 // For testing and plug-ins to use
@@ -13811,6 +13846,11 @@
                                     btnClass = '';
 
                                     switch (button) {
+                                        //修改4 新增刷新按钮  
+                                        case 'refresh':
+                                            btnDisplay = lang.sRefresh;
+                                            btnClass = button;
+                                            break;
                                         case 'ellipsis':
                                             container.append('<span class="ellipsis">&#x2026;</span>');
                                             break;

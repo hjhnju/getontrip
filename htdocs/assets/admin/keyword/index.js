@@ -17,9 +17,12 @@ $(document).ready(function() {
             "data": function(d) {
                 //添加额外的参数传给服务器
                 d.sight_id = '';
-                if ($("#form-sight").val()) {
+                if ($("#form-sight").attr('data-sight_id')) {
                     d.sight_id = Number($.trim($("#form-sight").attr('data-sight_id')));
                 } 
+                if ($("#form-status").val()) {
+                    d.status = $.trim($("#form-status").val());
+                }
             }
         },
         "columnDefs": [{
@@ -43,7 +46,7 @@ $(document).ready(function() {
                 return '暂无';
             }
         }, {
-            "data": "sightName"
+            "data": "sight_name"
         }, {
             "data": function(e) {
                 if (e.create_time) {
@@ -59,8 +62,19 @@ $(document).ready(function() {
                 return "空";
             }
         }, {
+            "data": function(e){
+                if(e.status==2){
+                   return '<span class="span-status" data-id="'+e.id+'"><i class="fa fa-2x fa-check color-check"></i></span>'
+                }else if(e.status==1){
+                   return '<span class="span-status" data-id="'+e.id+'"><i class="fa fa-2x fa-close color-uncheck"></i></span>'
+                }else{
+                    return '<span class="span-status" data-id="'+e.id+'">未知状态</span>';
+                }
+                
+            }
+        }, {
             "data": function(e) {
-                return '<a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
+                return '<button class="btn btn-warning  btn-xs confirm" title="确认url" data-toggle="tooltip"><i class="fa fa-check-square-o"></i></button><a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
             }
         }],
         "initComplete": function(setting, json) {
@@ -70,22 +84,23 @@ $(document).ready(function() {
     });
 
     var api = oTable.api();
-
+    filters();
     bindEvents();
 
 
     /*
       绑定事件
      */
-    function bindEvents() {
-
-        filters();
+    function bindEvents() { 
 
         //绑定draw事件
         $('#editable').on('draw.dt', function() {
             //工具提示框
             $('[data-toggle="tooltip"]').tooltip();
         });
+
+        //状态下拉列表 
+        $('#form-status').selectpicker();
 
         //删除操作
         $('#editable button.delete').live('click', function(e) {
@@ -96,23 +111,46 @@ $(document).ready(function() {
             var nRow = $(this).parents('tr')[0];
             var data = oTable.api().row(nRow).data();
             $.ajax({
-                "url": "/admin/Keywordsapi/del",
+                "url": "/admin/Keywordapi/del",
                 "data": data,
                 "type": "post",
                 "error": function(e) {
                     alert("服务器未正常响应，请重试");
                 },
                 "success": function(response) {
-                    if (response.status == 0) {
-                        toastr.success('删除成功');
-                        oTable.fnDeleteRow(nRow);
-                        oTable.fnDraw();
+                    if (response.status == 0) { 
+                        oTable.fnDeleteRow(nRow); 
                     }
                 }
             });
         });
 
-      
+        //确认url操作
+         $('#editable button.confirm').live('click', function(e) {
+            e.preventDefault(); 
+            var nRow = $(this).parents('tr')[0];
+            var data = oTable.api().row(nRow).data();
+            var params={
+                id:data.id,
+                status:2 //确认的状态
+            }
+            $.ajax({
+                "url": "/admin/Keywordapi/save",
+                "data": params,
+                "type": "post",
+                "error": function(e) {
+                    alert("服务器未正常响应，请重试");
+                },
+                "success": function(response) {
+                    if (response.status == 0) {
+                        //刷新当前页
+                        oTable.fnRefresh();  
+                    }
+                }
+            });
+        });
+        
+        
      
     }
 
@@ -144,7 +182,11 @@ $(document).ready(function() {
             //触发dt的重新加载数据的方法
             api.ajax.reload();
         }); 
-       
+         
+        $('#form-status').change(function(event) {
+            //触发dt的重新加载数据的方法
+            api.ajax.reload();
+        });
         
 
       

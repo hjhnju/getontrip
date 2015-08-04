@@ -167,7 +167,7 @@ class  SightapiController extends Base_Controller_Api{
             $sightInfo['topicCount']=Sight_Api::getTopicNum(intval($sightInfo['id']));
 
             //相关词条
-            $keywordList = Keyword_Api::queryKeywords(intval($sightInfo['id']),1,PHP_INT_MAX);
+            $keywordList = Keyword_Api::queryKeywords(1,PHP_INT_MAX,Keyword_Type_Status::ALL,intval($sightInfo['id'])); 
             $sightInfo['keywordlist']=$keywordList['list'];
             $sightInfo['keywordCount']=count($keywordList['list']);
             $List['list'][0]=$sightInfo;

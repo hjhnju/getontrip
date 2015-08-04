@@ -18,9 +18,9 @@ class EditAction extends Yaf_Action_Abstract {
 
         $postid = isset($_REQUEST['id']) ? $_REQUEST['id'] : '0';
        
-        $List=Topic_Api::search(array("id"=>$postid),1,1); 
+        $postInfo=Topic_Api::getTopicById($postid); 
 
-        if(count($List["list"])==0){
+        if(empty($postInfo)){
             $action='add';
 
             //处理传递过来的景点
@@ -31,8 +31,7 @@ class EditAction extends Yaf_Action_Abstract {
             } 
 
         }else{
-
-           $postInfo=$List["list"][0]; 
+ 
            //处理状态值  
            $postInfo["statusName"] = Topic_Type_Status::getTypeName($postInfo["status"]);  
           

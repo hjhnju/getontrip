@@ -30,6 +30,6 @@ class Keyword_Type_Status extends Base_Type {
     public static $names = array(
         self::NOTPUBLISHED     => '未确认',
         self::PUBLISHED        => '已确认',
-        self::ALL              => '所有的',
+        self::ALL              => '全部状态',
     );
 }

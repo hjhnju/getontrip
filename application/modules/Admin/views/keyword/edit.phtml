@@ -52,6 +52,7 @@
                     {%if isset($post.id)%}
                     <input type="hidden" name="id" id="id" value="{%$post.id%}"/>
                     {%/if%}
+                    <input type="hidden" name="status" id="status" value="{%if isset($post.status)%}{%$post.status%}{%/if%}"/>
                   	
                       <div class="form-group ">
                           <label for="name" class="control-label col-lg-2">名称*</label>
@@ -71,23 +72,29 @@
                            	<p class="help-block">输入后请在下拉框选择(键盘也可选择)，否则无效</p> 
                            </div>
                       </div> 
-                      <div class="form-group ">
-                          <label for="url" class="control-label col-lg-2">链接url</label>
-                          <div class="col-lg-5"> 
-                               <input class="form-control" id="url" name="url"  type="text" required="" value="{%if isset($post.url)%}{%$post.url%}{%/if%}"><label for="url" class="error"></label> 
-                          </div>
-                      </div> 
+                    <div class="form-group ">
+                       <label for="url" class="control-label col-lg-2">链接url</label>
+                       <div class="col-lg-4">  
+                            <input class="form-control" type="text" name="url" id="url" value="{%if isset($post.url)%}{%$post.url%}{%/if%}" readonly="" />
+                             <p class="help-inline">url状态：{%if isset($post.status_name)%}{%$post.status_name%}{%/if%}</p> 
+                            <label for="url" class="error"></label> 
+                       </div> 
+                        <div class="col-lg-1">
+
+                            <a class="btn btn-default" target="_blank" id="view-link">查看</a> 
+                       </div>
+                   </div>  
                       <div class="form-group">
                           <div class="col-lg-offset-2 col-lg-10">
                               {%if !isset($disabled)%} 
-                                <button class="btn btn-danger" type="submit" id="">保存</button>
+                                <button class="btn btn-danger" type="submit" id="" data-status="1">只保存</button>
+                                <button class="btn btn-danger" type="submit" id="" data-status="2">确认并保存</button>
                               {%/if%} 
                                {%if isset($post.id)%} 
                                  <a class="btn btn-default"  href="/admin/keyword/list">返回列表</a> 
                                 {%else%}
                                 <button class="btn btn-default"  name="reset"  type="reset">重置</button> 
-                                {%/if%}
-                              
+                                {%/if%} 
                           </div>
                       </div>
                   </form>

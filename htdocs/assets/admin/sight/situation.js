@@ -8,7 +8,7 @@ $(document).ready(function() {
         "processing": true, //载入数据的时候是否显示“载入中”
         "pageLength": 10, //首次加载的数据条数  
         "searching": false, //是否开启本地分页
-        "ordering":false,
+        "ordering": false,
         "ajax": {
             "url": "/admin/sightapi/situationList",
             "type": "POST",
@@ -34,18 +34,18 @@ $(document).ready(function() {
         }, {
             "data": 'city_name'
         }, {
-            "data": function(e){ 
-                return '共'+e.topicCount+'个'+'<a class="btn btn-success btn-xs" title="创建" data-toggle="tooltip" target="_blank" href="/admin/topic/edit?action=add&sight_id='+e.id+'">创建</a><a class="btn btn-primary btn-xs" title="筛选" data-toggle="tooltip"  target="_blank"  href="/admin/topic/filter?sight_id=' + e.id + '">筛选</a><a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/topic/list?sight_id=' + e.id + '">列表</a>';
+            "data": function(e) {
+                return '共' + e.topicCount + '个' + '<a class="btn btn-success btn-xs" title="创建" data-toggle="tooltip" target="_blank" href="/admin/topic/edit?action=add&sight_id=' + e.id + '">创建</a><a class="btn btn-primary btn-xs" title="筛选" data-toggle="tooltip"  target="_blank"  href="/admin/topic/filter?sight_id=' + e.id + '">筛选</a><a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/topic/list?sight_id=' + e.id + '">列表</a>';
             }
         }, {
-            "data": function(e){
-                if(e.keywordlist){
-                   for(var i=0;i<e.keywordlist.length;i++){
-                      
-                   }
+            "data": function(e) {
+                if (e.keywordlist) {
+                    for (var i = 0; i < e.keywordlist.length; i++) {
+
+                    }
                 }
-                return '共'+e.keywordCount+'个'+'<a class="btn btn-success btn-xs" title="创建" data-toggle="tooltip" target="_blank" href="/admin/keyword/edit?action=add&sight_id='+e.id+'">创建</a><a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/keyword/list?sight_id=' + e.id + '">列表</a>';
-               
+                return '共' + e.keywordCount + '个' + '<a class="btn btn-success btn-xs" title="创建" data-toggle="tooltip" target="_blank" href="/admin/keyword/edit?action=add&sight_id=' + e.id + '">创建</a><a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/keyword/list?sight_id=' + e.id + '">列表</a>';
+
             }
         }],
         "initComplete": function(setting, json) {
@@ -69,57 +69,7 @@ $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip();
         });
 
-        $('#editable button.delete').live('click', function(e) {
-            e.preventDefault();
-            if (confirm("确定删除么 ?") == false) {
-                return;
-            }
-            var nRow = $(this).parents('tr')[0];
-            var data = oTable.api().row(nRow).data();
-            $.ajax({
-                "url": "/admin/sightapi/del",
-                "data": data,
-                "type": "post",
-                "error": function(e) {
-                    alert("服务器未正常响应，请重试");
-                },
-                "success": function(response) {
-                    if (response.status == 0) {
-                        toastr.success('删除成功');
-                        oTable.fnDeleteRow(nRow);
-                    }
-                }
-            });
-        });
 
-
-        //城市输入框自动完成
-        $('#form-city').typeahead({
-            display: 'name',
-            val: 'id',
-            ajax: {
-                url: '/admin/cityapi/getCityList',
-                triggerLength: 1
-            },
-            itemSelected: function(item, val, text) {
-                $("#form-city").val(text);
-                $("#form-city").attr('data-city_id', val);
-                //触发dt的重新加载数据的方法
-                api.ajax.reload();
-            }
-        });
-
-        //点击打开添加词条模态框
-        $("#editable button.addKeyword").live('click', function(event) {
-            var nRow = $(this).parents('tr')[0];
-            var data = oTable.api().row(nRow).data();
-            $('#sight_name').val(data.name);
-            $('#sight_id').val(data.id);
-            $('#Form input').removeClass('error');
-            $('#Form .error').hide();
-            //打开模态框 
-            $('#myModal').modal({});
-        });
     }
 
 
@@ -148,21 +98,23 @@ $(document).ready(function() {
             //触发dt的重新加载数据的方法
             api.ajax.reload();
         });
+
+        //城市输入框自动完成
+        /*        $('#form-city').typeahead({
+                    display: 'name',
+                    val: 'id',
+                    ajax: {
+                        url: '/admin/cityapi/getCityList',
+                        triggerLength: 1
+                    },
+                    itemSelected: function(item, val, text) {
+                        $("#form-city").val(text);
+                        $("#form-city").attr('data-city_id', val);
+                        //触发dt的重新加载数据的方法
+                        api.ajax.reload();
+                    }
+                });*/
     }
-
-    function getCityNameById(city_id) {
-        for (var key in cityArray) {
-            var item = cityArray[key];
-            if (item.id == city_id) {
-                return item.name;
-            }
-        }
-        return "";
-    }
-
-
-
-
-
+  
 
 });

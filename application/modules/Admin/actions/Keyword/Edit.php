@@ -26,7 +26,12 @@ class EditAction extends Yaf_Action_Abstract {
            //获取景点名称
            $sightInfo  = Sight_Api::getSightById($postInfo['sight_id']); 
            $postInfo["sight_name"]=$sightInfo["name"]; 
-           $this->getView()->assign('post', $postInfo);
+
+            //处理状态值
+           $postInfo["status_name"]=Keyword_Type_Status::getTypeName($postInfo['status']);
+           
+           $this->getView()->assign('post', $postInfo); 
+           
         }
  
         if($action=="view"){ 

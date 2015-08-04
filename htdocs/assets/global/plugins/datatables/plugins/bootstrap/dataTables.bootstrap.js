@@ -15,10 +15,11 @@ $.extend(true, $.fn.dataTable.defaults, {
         "sProcessing": "加载中....",
         "oPaginate": {
             "sPrevious": "上一页",
-            "sNext": "下一页"
+            "sNext": "下一页",
+            "sRefresh": '<i class="fa fa-refresh"></i>刷新'
         },
         "sSearch": "搜索",
-        "sEmptyTable":'没有内容',
+        "sEmptyTable": '没有内容',
         "zeroRecords": "没有内容", //table tbody内容为空时，tbody的内容。
         //下面三者构成了总体的左下角的内容。
         //显示第 1 至 3 项结果，共 3 项
@@ -50,7 +51,11 @@ $.fn.dataTable.ext.renderer.pageButton.bootstrap = function(settings, host, idx,
         var i, ien, node, button;
         var clickHandler = function(e) {
             e.preventDefault();
-            if (e.data.action !== 'ellipsis') {
+            if(e.data.action === 'refresh'){ 
+               var page= api.page(); 
+               api.page(page).draw(false);
+            }
+            else if (e.data.action !== 'ellipsis'&&e.data.action !== 'refresh') {
                 api.page(e.data.action).draw(false);
             }
         };
@@ -65,6 +70,11 @@ $.fn.dataTable.ext.renderer.pageButton.bootstrap = function(settings, host, idx,
                 btnClass = '';
 
                 switch (button) {
+                    //修改4 新增刷新按钮  
+                    case 'refresh':
+                        btnDisplay = lang.sRefresh;
+                        btnClass = button;
+                        break;
                     case 'ellipsis':
                         btnDisplay = '&hellip;';
                         btnClass = 'disabled';
@@ -422,13 +432,13 @@ add this plug in
 Datatables刷新方法
 oTable.fnReloadAjax(oTable.fnSettings());
 */
-$.fn.dataTableExt.oApi.fnReloadAjax = function(oSettings) { 
+$.fn.dataTableExt.oApi.fnReloadAjax = function(oSettings) {
     this.oApi._fnProcessingDisplay(oSettings, true);
     var that = this;
     var data = {
         start: oSettings._iDisplayStart,
         length: oSettings._iDisplayLength
-    }  
+    }
     $.ajax({
         "url": oSettings.ajax.url,
         "data": data,
@@ -438,15 +448,15 @@ $.fn.dataTableExt.oApi.fnReloadAjax = function(oSettings) {
         },
         "success": function(json) {
             if (json.status == 0) {
-                oSettings.json = json.data; 
-                that.oApi._fnProcessingDisplay(oSettings, false); 
+                oSettings.json = json.data;
+                that.oApi._fnProcessingDisplay(oSettings, false);
                 that.oApi._fnAjaxUpdateDraw(oSettings, oSettings.json);
             } else {
                 var error = json.statusInfo;
                 if (error) {
                     _fnLog(oSettings, 0, error);
                 }
-            }  
+            }
 
         }
     });

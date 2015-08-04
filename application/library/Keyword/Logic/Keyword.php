@@ -4,7 +4,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
     protected $_fields;
     
     public function __construct(){
-        $this->_fields = array('id','sight_id','name','url','create_time','update_time');
+        $this->_fields = array('id','sight_id','name','url','create_time','update_time','status');
     }
     
     /**
@@ -47,9 +47,12 @@ class Keyword_Logic_Keyword extends Base_Logic{
             }
         }
         if($bCheck){
-            return $obj->save();
+            $ret = $obj->save();
         }
-        return false;
+        if($ret){
+            return $obj->id;
+        }
+        return '';
     }
     
     /**

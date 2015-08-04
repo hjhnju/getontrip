@@ -29,12 +29,12 @@ class VideoapiController extends Base_Controller_Api{
                $tmpList[$i]['typeName'] = Video_Type_Type::getTypeName($tmpList[$i]["type"]);
                //处理状态值
                 $tmpList[$i]["statusName"] = Video_Type_Status::getTypeName($tmpList[$i]["status"]); 
-            }  
+            } 
+            $retList['recordsTotal'] = $List[0]['totalNum'];
+            $retList['recordsFiltered'] =$List[0]['totalNum'];  
         }
         $List =  $tmpList;
-
-        $retList['recordsFiltered'] =count($List);
-        $retList['recordsTotal'] = count($List); 
+ 
         $retList['data'] =$List; 
         return $this->ajax($retList);
     }

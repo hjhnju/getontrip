@@ -35,9 +35,20 @@ class Topic_Api{
      * @param integer $status
      * @return boolean
      */
-    public static function changeTopicStatus($topicId,$status){
+    /*public static function changeTopicStatus($topicId,$status){
         $logic = new Topic_Logic_Topic();
         return $logic->changeTopicStatus($topicId, $status);
+    }*/
+    
+    /**
+     * 接口3：Topic_Api::getTopicById($id)
+     * 根据话题ID获取话题详情
+     * @param integer $id
+     * @return array
+     */
+    public static function getTopicById($id){
+        $logic = new Topic_Logic_Topic();
+        return $logic->getTopicById($id);
     }
     
 

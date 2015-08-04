@@ -305,7 +305,7 @@ class Topic_Logic_Topic extends Base_Logic{
         if(!empty($filter)){
             $listTopic->setFilterString($filter);
         }
-        $listTopic->setFields(array('id','title','from','url','image','status'));
+        $listTopic->setFields(array('id','title','from','url','image','status','create_time','update_time'));
         $listTopic->setPage($page);
         $listTopic->setPagesize($pageSize);
         $arrRet = $listTopic->toArray();
@@ -333,6 +333,32 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrRet['list'][$key]['comment'] = $logicComment->getCommentNum($val['id']);
         }
         return $arrRet;
+    }
+    
+    
+    public function getTopicById($id){
+        $objTopic = new Topic_Object_Topic();
+        $objTopic->fetch(array('id' => $id));
+        $ret = $objTopic->toArray();
+        
+        $listTopictag = new Topic_List_Tag();
+        $listTopictag->setFilter(array('topic_id' => $id));
+        $listTopictag->setPagesize(PHP_INT_MAX);
+        $arrTag = $listTopictag->toArray();
+        $ret['tags'] = $arrTag['list'];
+        
+        $listSighttopic = new Sight_List_Topic();
+        $listSighttopic->setFilter(array('topic_id' =>$id));
+        $listSighttopic->setPagesize(PHP_INT_MAX);
+        $arrSighttopic = $listSighttopic->toArray();
+        $ret['sights'] = $arrSighttopic['list'];
+         
+        $logicCollect      = new Collect_Logic_Collect();
+        $ret['collect'] = $logicCollect->getCollectNum(Collect_Keys::TOPIC, $id);
+        
+        $logicComment      = new Comment_Logic_Comment();
+        $ret['comment'] = $logicComment->getCommentNum($id);
+        return $ret;
     }
     
     public function delTopic($id){

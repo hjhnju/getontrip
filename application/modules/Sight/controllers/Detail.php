@@ -19,6 +19,8 @@ class DetailController extends Base_Controller_Api {
      * @param integer sightId
      * @param integer page
      * @param integer pageSize
+     * @param string tags:逗号隔开的id串，如："1,2"
+     * @param integer order,次序，1：人气最高，2：最近更新，默认可以不传
      * @return json
      */
     public function indexAction() {
@@ -26,11 +28,10 @@ class DetailController extends Base_Controller_Api {
         $pageSize   = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGESIZE;
         $sightId    = isset($_POST['sightId'])?intval($_POST['sightId']):'';
         $strTags    = isset($_POST['tags'])?trim($_POST['tags']):'';
-        $page = 1;
-        $pageSize = 10;
+        $intOrder   = isset($_POST['order'])?intval($_POST['order']):2;
         $sightId = 1;
         $logic      = new Sight_Logic_Sight();
-        $ret        = $logic->getSightDetail($sightId,$page,$pageSize,$strTags);
+        $ret        = $logic->getSightDetail($sightId,$page,$pageSize,$intOrder,$strTags);
         $this->ajax($ret);
     }
     

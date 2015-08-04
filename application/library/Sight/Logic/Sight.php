@@ -39,19 +39,25 @@ class Sight_Logic_Sight{
         $redis   = Base_Redis::getInstance();
         if(self::ORDER_NEW == $order){
             $arrRet =  $this->logicTopic->getNewTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
+            $arrRet = $arrRet['list'];
         }else{
             $arrTopic =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,PHP_INT_MAX,$strTags);
             $arrRet = array_slice($arrTopic,($page-1)*$pageSize,$pageSize);
         }
-        
+
         foreach ($arrRet as $key => $val){
             $arrTags = array();
             $arrTemp = $redis->sGetMembers(Topic_Keys::getTopicTagKey($val['id']));
             foreach ($arrTemp as $id){
-                $arrTags[] = $redis->hGet(Tag_Keys::getTagInfoKey($id),'name');
+                $ret = $redis->hGet(Tag_Keys::getTagInfoKey($id),'name');
+                if(!$ret){
+                   $redis->sRem(Topic_Keys::getTopicTagKey($val['id']),$id); 
+                }else{
+                    $arrTags[] = $ret;
+                }                
             }
             $arrRet[$key]['tags'] = $arrTags;
-        }   
+        }
         return $arrRet;
     }
     

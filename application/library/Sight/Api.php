@@ -106,7 +106,7 @@ class Sight_Api{
     }
     
     /**
-     * 接口9：Sight_Api::getTopicNum($sightId)
+     * 接口9：Sight_Api::getTopicNum($sightId,$arrInfo=array())
      * 获取景点的话题数
      * @param integer $sightId
      * @param array $arrInfo,过滤条件，话题的一些属性

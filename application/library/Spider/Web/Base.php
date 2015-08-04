@@ -47,7 +47,6 @@ abstract class Spider_Web_Base{
      */
     public function getTitle(){
         $title = html_entity_decode($this->objDom->find('title',0)->innertext);
-        $this->objDom->clear();
         return $title;
     }
     

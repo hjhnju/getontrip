@@ -73,9 +73,12 @@ class Keyword_Logic_Keyword extends Base_Logic{
             }
         }
         if($bCheck){
-            return $obj->save();
+            $ret =  $obj->save();
         }
-        return false;
+        if($ret){
+            return $obj->id;
+        }
+        return '';
     }
     
     /**

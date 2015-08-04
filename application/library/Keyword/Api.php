@@ -7,16 +7,17 @@
 class Keyword_Api{
     
     /**
-     * 接口1：Keyword_Api::queryKeywords($sight_id,$page,$pageSize)
+     * 接口1：Keyword_Api::queryKeywords($page,$pageSize,$status,$sight_id='')
      * 查询景点的词条信息
      * @param integer $sight_id
      * @param integer $page
      * @param integer $pageSize
+     * @param integer  $status 1: 未确认，2：已确认，3：所有
      * @return array
      */
-    public static function queryKeywords($sight_id,$page,$pageSize){
+    public static function queryKeywords($page,$pageSize,$status,$sight_id=''){
         $logic = new Keyword_Logic_Keyword();
-        return $logic->queryKeywords($sight_id, $page, $pageSize);
+        return $logic->queryKeywords($page, $pageSize,$status,$sight_id);
     }
     
     /**

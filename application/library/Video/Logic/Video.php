@@ -54,7 +54,7 @@ class Video_Logic_Video extends Base_Logic{
         $arrData = array();
         $sight = Sight_Api::getSightById($sightId);
         $name  = urlencode(trim($sight['name']));        
-        $url = "http://so.iqiyi.com/so/q_".$name."?source=input";
+        $url = "http://so.iqiyi.com/so/q_".$name."_page_".$page;
         $html = file_get_html($url);
         
         $item  = $html->find('div.mod-page a',-2);

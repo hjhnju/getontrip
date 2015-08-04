@@ -117,6 +117,17 @@ class Book_Logic_Book extends Base_Logic{
             
             $temp[$key]['totalNum'] = $count;
             
+            $temp[$key]['pages']    = isset($detail['pages'])?$detail['pages']:'';
+            
+            
+            $obj = new WareBookbigfieldGetRequest();
+            $obj->setSkuId($val['skuId']);
+            $detail = $c->execute($obj);
+            $ret = $detail->resp;
+            $arr = json_decode($ret,true);
+            $info =  $arr["jingdong_ware_bookbigfield_get_responce"]["BookBigFieldEntity"][0]["book_big_field_info"];
+            $temp[$key]['content_desc'] = isset($info["content_desc"])?$info["content_desc"]:'';            
+            
             $redis = Base_Redis::getInstance();
             $index = ($page-1)*$pageSize+$key+1;
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'id',$index);
@@ -128,6 +139,8 @@ class Book_Logic_Book extends Base_Logic{
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'isbn',$temp[$key]['isbn']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'url',$temp[$key]['url']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'image',$temp[$key]['image']);
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'pages',$temp[$key]['pages']);
+            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'content_desc',$temp[$key]['content_desc']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'status',$temp[$key]['status']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'create_time',$temp[$key]['create_time']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'totalNum',$temp[$key]['totalNum']);

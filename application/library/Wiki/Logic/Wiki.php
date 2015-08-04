@@ -108,10 +108,12 @@ class Wiki_Logic_Wiki extends Base_Logic{
             }
             
             
-            $arrTemp['word']    = $sight['name'];
-            $arrTemp['content'] = html_entity_decode($content);
-            $arrTemp['images']  = $hash;
-            $arrTemp['items']   = $arrItems;
+            $arrTemp['title']       = $sight['name'];
+            $arrTemp['content']     = html_entity_decode($content);
+            $arrTemp['image']       = $hash;
+            $arrTemp['items']       = $arrItems;
+            $arrTemp['status']      = Wiki_Type_Status::PUBLISHED;
+            $arrTemp['create_time'] = time();
             
             foreach ($arrItems as $id => $item){
                 $num  = $id + 1;
@@ -126,11 +128,11 @@ class Wiki_Logic_Wiki extends Base_Logic{
             }
 
             $redis->delete(Wiki_Keys::getWikiInfoName($sightId, $index));
-            $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'title',$arrTemp['word']);
+            $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'title',$arrTemp['title']);
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'content',$arrTemp['content']);
-            $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'image',$arrTemp['images']);
-            $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'status',Wiki_Type_Status::PUBLISHED);
-            $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'create_time',time());
+            $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'image',$arrTemp['image']);
+            $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'status',$arrTemp['status']);
+            $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'create_time',$arrTemp['create_time']);
             $redis->setTimeout(Wiki_Keys::getWikiInfoName($sightId, $index),self::REDIS_TIME_OUT);
             
             $arrRet[] = $arrTemp;

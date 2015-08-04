@@ -17,18 +17,35 @@ class KeywordapiController extends Base_Controller_Api{
 
         $page=($start/$pageSize)+1;
          
-        $sight_id =isset($_REQUEST['sight_id'])?$_REQUEST['sight_id']:0;
+        $sight_id =isset($_REQUEST['sight_id'])?$_REQUEST['sight_id']:'';
+
+        $status = isset($_REQUEST['status'])?intval($_REQUEST['status']):3;
         
-        
-        $List =Keyword_Api::queryKeywords($sight_id,$page,$pageSize);
+        $List =Keyword_Api::queryKeywords($page,$pageSize,$status,$sight_id);
         
 
         $tmpList=$List['list'];
         if (count($tmpList)>0) {
-            //处理景点名称
-            $sightInfo = Sight_Api::getSightById($sight_id);
-            for($i=0;$i<count($tmpList);$i++){
-               $tmpList[$i]['sightName'] = $sightInfo['name'];
+            $sightArray=array(); 
+           
+            for($i=0;$i<count($tmpList);$i++){ 
+
+              //处理景点名称 
+              $sight_id = $tmpList[$i]['sight_id']; 
+              if (!array_key_exists($sight_id,$sightArray)) {  
+                    //根据ID查找景点名称
+                    $sightInfo =(array) Sight_Api::getSightById($sight_id);
+                     
+                    $tmpList[$i]['sight_name'] = isset($sightInfo['name'])?$sightInfo['name']:''; 
+                    //添加到数组
+                    $sightArray[$sight_id]=isset($sightInfo['name'])?$sightInfo['name']:'';  
+              }
+              else{ 
+                   $tmpList[$i]['sight_name']  = $sightArray[$sight_id];
+              } 
+
+              //处理状态名称
+              $tmpList[$i]['status_name'] = Keyword_Type_Status::getTypeName($tmpList[$i]['status']);
             }
         }
         $List['list'] =  $tmpList;
@@ -42,10 +59,10 @@ class KeywordapiController extends Base_Controller_Api{
     /**
      * 添加词条
      */
-    function addAction(){
+    function addAction(){ 
         $dbRet=Keyword_Api::addKeyword($_REQUEST);
-        if ($dbRet) {
-            return $this->ajax();
+        if (!empty($dbRet)) {
+            return $this->ajax($dbRet);
         }
         return $this->ajaxError();
     }
@@ -59,8 +76,8 @@ class KeywordapiController extends Base_Controller_Api{
             return $this->ajaxError();
         }
         $dbRet=Keyword_Api::editKeyword($id,$_REQUEST);
-        if ($dbRet) {
-            return $this->ajax();
+          if (!empty($dbRet)) {
+            return $this->ajax($dbRet);
         }
         return $this->ajaxError();
     }

@@ -5,8 +5,29 @@
 			<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-dialog  modal-lg">
-					<div class="modal-content"> 
-					</div>
+					 <div class="modal-content"> 
+             <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="gridSystemModalLabel">创建话题来源</h4>
+              </div>
+              <div class="modal-body">
+                <form id="source" >
+                  <input type="hidden"  id="source-type"/>
+               <div class="form-group source-name" >
+                 <label for="source-name" class="control-label">名称:</label>
+                 <input type="text" class="form-control" id="source-name">
+               </div>
+               <div class="form-group source-url">
+                 <label for="source-url" class="control-label">网址url(不要http 例如：zhihu.com)</label>
+                 <input type="text" class="form-control" id="source-url">
+               </div> 
+             </form> 
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="addSource-btn">创建</button>
+               </div>
+            </div>
 					<!-- /.modal-content -->
 				</div>
 				<!-- /.modal-dialog -->
@@ -55,17 +76,17 @@
                           </div>
                       </div>
                       <div class="form-group ">
-                          <label for="subtitle" class="control-label col-lg-2">副标题</label>
+                          <label for="subtitle" class="control-label col-lg-2">副标题：</label>
                           <div class="col-lg-5">
                               <input class="form-control" id="subtitle" name="subtitle"   type="text"  value="{%if isset($post.subtitle)%}{%$post.subtitle%}{%/if%}"><label for="subtitle" class="error"></label>
                           </div>
                       </div>
-                       <div class="form-group ">
-                          <label for="desc" class="control-label col-lg-2">补充描述</label>
-                          <div class="col-lg-5">
-                               <textarea class="form-control" id="desc" name="desc" rows="5">{%if isset($post.desc)%}{%$post.desc%}{%/if%}</textarea><label for="desc" class="error"></label>
-                          </div>
-                      </div>  
+                    <!--    <div class="form-group ">
+                        <label for="desc" class="control-label col-lg-2">补充描述</label>
+                        <div class="col-lg-5">
+                             <textarea class="form-control" id="desc" name="desc" rows="5">{%if isset($post.desc)%}{%$post.desc%}{%/if%}</textarea><label for="desc" class="error"></label>
+                        </div>
+                                           </div>  --> 
                       <div class="form-group ">
                           <label for="sight_name" class="control-label col-lg-2">所属景点*</label>
                           <div class="col-lg-3"> 
@@ -82,18 +103,31 @@
                            </div> 
                            
                       </div>
-                      <div class="form-group ">
-                          <label for="sight_name" class="control-label col-lg-2">贴标签*</label>
-                          <div class="col-lg-5"> 
-                               <select multiple="multiple" class="multi-select" id="tags"  >
-                                   {%foreach $tagList as $key=>$item%}
-                                     <option value="{%$item.id%}" {%if isset($item.selected)%}selected{%/if%} >{%$item.name%}</option>
-                                   {%/foreach%} 
-                              </select>
+                      <div class="form-group" id="div-tag">
+                          <label for="tag_name" class="control-label col-lg-2">贴标签：</label>
+                          <div class="col-lg-10">  
+                              {%foreach $tagList as $key=>$item%}
+                              <label class="checkbox-inline">
+                                <input type="checkbox" name="" data-name="form-tag" id="" value="{%$item.id%}" {%if isset($item.selected)%}checked{%/if%}>{%$item.name%}
+                              </label>
+                              {%/foreach%} 
+                              <span class="help-inline">
+                                  没有想要的标签？<a href="#" class="addTag">创建</a>一个
+                              </span> 
                            </div>  
                       </div>
+                      <div class="form-group" id="addTag" style="display:none">
+                          <label for="sight_name" class="control-label col-lg-2">新标签</label>
+                          <div class="col-lg-3"> 
+                              <input class="form-control" id="tag_name"    type="text"  autocomplete="off"  placeholder="输入新标签名称"/>
+                            </div>
+                           <div class="col-lg-3"> 
+                              <button type="button" class="btn btn-primary" id="addTag-btn">创建</button>
+                              <button type="button" class="btn btn-default" id="hideTag-btn">取消</button>
+                          </div>
+                      </div>
                       <div class="form-group ">
-                       <label for="xy" class="control-label col-lg-2">坐标*</label>
+                       <label for="xy" class="control-label col-lg-2">坐标：</label>
                        <div class="col-lg-5">
                            <input  id="x" name="x"  type="hidden" value="{%if isset($post.x)%}{%$post.x%}{%/if%}">
                            <input  id="y" name="y"  type="hidden" value="{%if isset($post.y)%}{%$post.y%}{%/if%}">
@@ -105,7 +139,7 @@
                        </div> 
                       </div>  
                       <div class="form-group"> 
-                          <label for="" class="control-label col-lg-2">背景图片</label>
+                          <label for="" class="control-label col-lg-2">背景图片*：</label>
                           <div class="col-md-9">
                               <div class="fileupload fileupload-new" data-provides="fileupload">
                                   <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
@@ -132,39 +166,42 @@
                           </div>
                       </div>
                        <div class="form-group ">
-                          <label for="from" class="control-label col-lg-2">来源{%$post.fromType%}</label>
-                          <div class="col-lg-10"> 
-                          <!--     <select name="from" id="form-from"> 
-                             {%foreach $sourceList as $key=>$item%}
-                                 <option value="{%$item.url%}" {%if isset($post.from)  and $post.from eq $item.id%}selected{%/if%}  data-id="{%$item.id%}">{%$item.name%}</option>
-                              {%/foreach%}   
-                          </select> -->
+                          <label for="from" class="control-label col-lg-2">来源*：</label>
+                          <div class="col-lg-10" id="div-from">  
+                              <label class="radio">
+                                <input type="radio" name="" data-name="form-from" id="" value="weixin" data-id="" data-type="1" {%if $post.fromType eq 1%}checked{%/if%}>微信公众号
+                              </label>   
                                {%foreach $sourceList as $key=>$item%} 
                               <label class="radio-inline">
                                 <input type="radio" name="" data-name="form-from" id="" value="{%$item.url%}" data-id="{%$item.id%}" data-type="{%$item.type%}" {%if $item.id eq $post.from%}checked{%/if%}>{%$item.name%}
                               </label>
-                              {%/foreach%} 
-                              <label class="radio">
-                                <input type="radio" name="" data-name="form-from" id="" value="weixin" data-id="" data-type="1" {%if $post.fromType eq 1%}checked{%/if%}>微信公众号
-                              </label>  
-                              <label for="from" class="error"></label>
+                              {%/foreach%}
+                               <span class="help-inline">
+                                  没有想要的来源？<a href="#" class="openSource" data-type="2">创建</a>一个
+                               </span> 
+                              <span for="from" class="error"></span>
                           </div>
                       </div>
                        <div class="form-group" id="weixin-from-input"  style="{%if $post.fromType neq 1%}display:none;{%/if%}">
-                          <label for="url" class="control-label col-lg-2">微信公众号</label>
-                          <div class="col-lg-5">
+                          <label for="url" class="control-label col-lg-2">微信公众号：</label>
+                          <div class="col-lg-3">
                               <input class="form-control" id="weixin-from_id" name="" type="hidden" value="{%if $post.fromType eq 1%}{%$post.from%}{%/if%}" /> 
                                 <input class="form-control" id="weixin-from" type="text" name="" autocomplete="off"  placeholder="输入后请在下拉框选择" value="{%if $post.fromType eq 1%}{%$post.fromName%}{%/if%}"/>
                           </div>
+                          <div class="col-lg-3">
+                          <p class="help-block">
+                             没有想要的公众号？<a href="#" class="openSource" data-type="1">创建</a>一个
+                          </p>
+                        </div>
                       </div>
                       <div class="form-group ">
-                          <label for="url" class="control-label col-lg-2">原文链接</label>
+                          <label for="url" class="control-label col-lg-2">原文链接：</label>
                           <div class="col-lg-5">
                               <input class="form-control" id="url" name="url"   type="text"  value="{%if isset($post.url)%}{%$post.url%}{%/if%}"><label for="url" class="error"></label>
                           </div>
                       </div>
                       <div class="form-group ">
-                          <label for="summernote" class="control-label col-lg-2">正文<br/>(注：键盘上的删除键不会从服务器删除图片，若想从服务器删除图片，请选中图片点击删除按钮)</label>
+                          <label for="summernote" class="control-label col-lg-2">正文：<br/>(注：若想从服务器删除图片，请选中图片点击删除按钮)</label>
                           <div class="col-lg-10">
                               <div id="summernote" ></div>
                           </div>
@@ -172,7 +209,8 @@
                       <div class="form-group">
                           <div class="col-lg-offset-2 col-lg-10">
                             {%if !isset($disabled)%} 
-                              <button class="btn btn-danger" type="submit" id="">保存</button>
+                              <button class="btn btn-danger" type="submit" data-status="1" id="">保存</button>
+                              <button class="btn btn-danger" type="submit" data-status="5" id="">发布</button>
                             {%/if%}
                                {%if isset($post.id)%} 
                                  <a class="btn btn-default"  href="/admin/topic/list">返回列表</a> 

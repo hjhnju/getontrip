@@ -32737,3 +32737,10 @@ Transparent Button
 .checkbox-inline, .radio-inline{
     padding-left: 0px;
 }
+
+.color-check{
+  color: #2bd11d;
+}
+.color-uncheck{
+  color: #fa3307;
+}

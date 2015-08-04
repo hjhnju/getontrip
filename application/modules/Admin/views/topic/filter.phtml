@@ -62,8 +62,8 @@
                     <label for="sight_name" class="control-label col-lg-2">所属景点*</label>
                     <div class="col-lg-3"> 
                       <div class="input-group">
-                        <input class="form-control" id="sight_id" name="" type="hidden"/>
-                         <input class="form-control" id="sight_name" type="text"  autocomplete="off"  placeholder="输入后请在下拉框选择"/>
+                        <input class="form-control" id="sight_id" name="" type="hidden" value="{%if isset($sight)%}{%$sight.id%}{%/if%}" />
+                         <input class="form-control" id="sight_name" type="text"  autocomplete="off"  placeholder="输入后请在下拉框选择" value="{%if isset($sight)%}{%$sight.name%}{%/if%}" />
                          <span class="input-group-btn">
                           <button class="btn btn-default" type="button" id="clear-sight"><i class="fa fa-remove"></i></button>
                         </span>
@@ -135,6 +135,7 @@
                   <div class="form-group "> 
                       <div class="col-lg-offset-2 col-lg-10">
                         <button class="btn btn-danger" type="button" id="addTopic-btn"> 添加并创建话题</button>
+                        <a class="hidden" href="" id="openWin" target="_blank"></a>
                       </div>  
                   </div>
              </form>

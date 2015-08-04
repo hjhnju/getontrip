@@ -9,6 +9,7 @@
         "processing": true, //载入数据的时候是否显示“载入中”
         "pageLength": 10, //首次加载的数据条数  
         "searching": false,
+        "ordering":false,
         "ajax": {
             "url": "/admin/cityapi/list",
             "type": "POST",

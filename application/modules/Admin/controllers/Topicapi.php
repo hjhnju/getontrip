@@ -1,6 +1,7 @@
 <?php
 /**
  * 话题相关操作
+ * author :fyy
  */
 class  TopicapiController extends Base_Controller_Api{
      
@@ -22,7 +23,7 @@ class  TopicapiController extends Base_Controller_Api{
         $page=($start/$pageSize)+1;
          
         $arrParam = isset($_REQUEST['params'])?$_REQUEST['params']:array();
-        $query =isset($_REQUEST['params']['content'])?$_REQUEST['params']['content']:'';
+        //$query =isset($_REQUEST['params']['content'])?$_REQUEST['params']['content']:'';
         
          
         
@@ -86,8 +87,8 @@ class  TopicapiController extends Base_Controller_Api{
        //1.批量上传图片 //2.修改content
        $content = $_REQUEST['content'];  
        if($content != ""){
-          $obj = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
-          $_REQUEST['content'] = $obj->getReplacedContent();
+          $spider = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
+          $_REQUEST['content'] = $spider->getReplacedContent();
        }
 
        $bRet=Topic_Api::editTopic($postid,$_REQUEST);
@@ -104,14 +105,14 @@ class  TopicapiController extends Base_Controller_Api{
        //1.批量上传图片 //2.修改content
        $content = $_REQUEST['content'];  
        if($content != ""){
-          $obj = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
-          $_REQUEST['content'] = $obj->getReplacedContent();
+          $spider = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
+          $_REQUEST['content'] = $spider->getReplacedContent();
        }
       
        //添加到数据库
        $bRet=Topic_Api::addTopic($_REQUEST);   
-       if($bRet){
-            return $this->ajax();
+       if(!empty($bRet)){
+            return $this->ajax($bRet);
        } 
        return $this->ajaxError();
     }
@@ -120,31 +121,45 @@ class  TopicapiController extends Base_Controller_Api{
    * 过滤器 添加话题
    */
     public function addByFilterAction(){
-     
+        
        //1、调用相应的采集器
-       $obj = Spider_Factory::getInstance("Auto",$_REQUEST['url'],Spider_Type_Source::URL);
+       //判断是否是知乎
+       if(stripos($_REQUEST['url'],'zhihu.com')>0){  
+            $spider = Spider_Factory::getInstance("Zhihu",$_REQUEST['url'],Spider_Type_Source::URL);
+       }else{
+            $spider = Spider_Factory::getInstance("Auto",$_REQUEST['url'],Spider_Type_Source::URL);
+       }
+
        //2、获取title 解析title 去掉-后面的内容
-       $_REQUEST['title'] = $obj->getTitle();
-       $_REQUEST['title'] = trim(preg_replace('/-(.)*/i','',$_REQUEST['title'])); 
+       $title = $spider->getTitle();
+       $title = trim(preg_replace('/-(.)*/i','',$title));
+       $_REQUEST['title'] = $title;
+         
+       
        //3、获取content
-       $content = $obj->getBody();
+       $content = $spider->getBody();
+      
        //4、content中剔除多余的图片属性
        $content = preg_replace('/data-(.)*\"/', '', $content);
        $content = preg_replace('/style=(.)*\"/', '', $content);
+      
        //5、批量上传图片，得到最终的content 
        if($content != ""){
-          $obj = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
-          $content = $obj->getReplacedContent();  
+          $spider = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
+          $content = $spider->getReplacedContent();  
        } 
        $_REQUEST['content'] =$content; 
+
+
        //保存到数据库
        $bRet=Topic_Api::addTopic($_REQUEST);
        ob_end_clean();   
-       if($bRet){
-            return $this->ajax();
+       if(!empty($bRet)){
+            return $this->ajax($bRet);
        } 
        return $this->ajaxError();
     }
+
 
     /**
     * 删除话题

@@ -1,16 +1,23 @@
+/*
+   景点列表
+   author:fyy
+ */
 $(document).ready(function() {
     var oTable = $('#editable').dataTable({
         "serverSide": true, //分页，取数据等等的都放到服务端去
         "processing": true, //载入数据的时候是否显示“载入中”
         "pageLength": 10, //首次加载的数据条数  
         "searching": false, //是否开启本地分页
+        "ordering":false,
         "ajax": {
             "url": "/admin/sightapi/list",
             "type": "POST",
             "data": function(d) {
                 //添加额外的参数传给服务器
-                d.params = {};
-                if ($("#form-city").attr('data-city_id')) {
+                d.params = {}; 
+                if ($("#form-sight").attr('data-sight_id')) {
+                    d.params.id = $("#form-sight").attr('data-sight_id');
+                }else if ($("#form-city").attr('data-city_id')) {
                     d.params.city_id = $("#form-city").attr('data-city_id');
                 }
             }
@@ -54,8 +61,9 @@ $(document).ready(function() {
 
     var api = oTable.api();
     bindEvents();
-    
-        var validate = null;
+    filter();
+
+    var validate = null;
     addKeyword();
 
     /*
@@ -92,6 +100,46 @@ $(document).ready(function() {
         });
 
 
+
+        //点击打开添加词条模态框
+        $("#editable button.addKeyword").live('click', function(event) {
+            var nRow = $(this).parents('tr')[0];
+            var data = oTable.api().row(nRow).data();
+            $('#sight_name').val(data.name);
+            $('#sight_id').val(data.id);
+            $('#Form input').removeClass('error');
+            $('#Form .error').hide();
+            //打开模态框 
+            $('#myModal').modal({});
+        });
+    }
+
+    function filter(){
+         //景点输入框自动完成
+        $('#form-sight').typeahead({
+            display: 'name',
+            val: 'id',
+            ajax: {
+                url: '/admin/sightapi/getSightList',
+                triggerLength: 1
+            },
+            itemSelected: function(item, val, text) {
+                $("#form-sight").val(text);
+                $("#form-sight").attr('data-sight_id', val);
+                //触发dt的重新加载数据的方法
+                api.ajax.reload();
+            }
+        });
+
+        //景点框后的清除按钮，清除所选的景点
+        $('#clear-sight').click(function(event) {
+            $("#form-sight").val('');
+            $("#form-sight").attr('data-sight_id', '');
+            //触发dt的重新加载数据的方法
+            api.ajax.reload();
+        });
+
+
         //城市输入框自动完成
         $('#form-city').typeahead({
             display: 'name',
@@ -108,16 +156,12 @@ $(document).ready(function() {
             }
         });
 
-        //点击打开添加词条模态框
-        $("#editable button.addKeyword").live('click', function(event) {
-            var nRow = $(this).parents('tr')[0];
-            var data = oTable.api().row(nRow).data();
-            $('#sight_name').val(data.name);
-            $('#sight_id').val(data.id);
-            $('#Form input').removeClass('error'); 
-            $('#Form .error').hide();
-            //打开模态框 
-            $('#myModal').modal({});
+         //景点框后的清除按钮，清除所选的景点
+        $('#clear-city').click(function(event) {
+            $("#form-city").val('');
+            $("#form-city").attr('data-city_id', '');
+            //触发dt的重新加载数据的方法
+            api.ajax.reload();
         });
     }
 
@@ -132,10 +176,10 @@ $(document).ready(function() {
     }
 
     function addKeyword() {
-          $.validator.setDefaults({
+        $.validator.setDefaults({
             submitHandler: function(data) {
                 //序列化表单  
-                var param = $("#Form").serializeObject(); 
+                var param = $("#Form").serializeObject();
                 $.ajax({
                     "url": "/admin/keywordapi/add",
                     "data": param,
@@ -147,17 +191,18 @@ $(document).ready(function() {
                     "success": function(response) {
                         if (response.status == 0) {
                             toastr.success('保存成功');
-                             //手工关闭模态框
-                           $('#myModal').modal('hide');
+                            //手工关闭模态框
+                            $('#myModal').modal('hide');
                         }
                     }
                 });
 
             }
         });
+
         validations();
-      
-      
+
+
 
         /*
           表单验证

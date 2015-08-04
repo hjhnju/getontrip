@@ -14,7 +14,7 @@ class Wiki_Api{
         $logicWiki = new Wiki_Logic_Wiki();
         $arrWiki   = $logicWiki->getWikis($sightId, $page, $pageSize,$status);
         if(empty($arrWiki)){
-            return $logicWiki->getWikiSource($sightId,$page,$pageSize);
+            return $logicWiki->getWikiSource($sightId,$page,$pageSize,Wiki_Type_Status::ALL);
         }
         return $arrWiki;
     }

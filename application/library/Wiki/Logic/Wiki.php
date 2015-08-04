@@ -58,13 +58,13 @@ class Wiki_Logic_Wiki extends Base_Logic{
      * @param string $word
      * @return array
      */
-    public function getWikiSource($sightId,$page,$pageSize){
+    public function getWikiSource($sightId,$page,$pageSize,$type){
         $arrItems  = array();
         $arrRet    = array();
         $arrTemp   = array();
         $hash      = '';
         require_once(APP_PATH."/application/library/Base/HtmlDom.php");
-        $arrsight     = Keyword_Api::queryKeywords($sightId,$page,$pageSize);
+        $arrsight     = Keyword_Api::queryKeywords($page,$pageSize,$type,$sightId);
         foreach ($arrsight['list'] as $key  => $sight){
             $redis       = Base_Redis::getInstance();
             $index       = ($page-1)*$pageSize+$key+1;    

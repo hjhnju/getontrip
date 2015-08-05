@@ -1,4 +1,8 @@
 /**
+ * 
+  修改 fyy
+  新增1 函数拓展
+
 Core script to handle the entire theme and core functions
 **/
 var Metronic = function() {
@@ -438,7 +442,7 @@ var Metronic = function() {
     };
 
 
-    //函数拓展
+    //新增1 函数拓展
     var fnExtend = function() {
         String.prototype.getBytes = function() {
             var cArr = this.match(/[^\x00-\xff]/ig);
@@ -459,6 +463,60 @@ var Metronic = function() {
             });
             return o;
         };
+        $.fn.limitTextarea = function(opts) {
+            var defaults = {
+                maxNumber: 140, //允许输入的最大字数  
+                position: 'top', //提示文字的位置，top：文本框上方，bottom：文本框下方  
+                onOk: function() {}, //输入后，字数未超出时调用的函数  
+                onOver: function() {} //输入后，字数超出时调用的函数     
+            }
+            var option = $.extend(defaults, opts);
+            //处理输入的内容是文字还是字母的函数
+            var getLength = function(str) {
+                return String(str).replace(/[^\x00-\xff]/g, 'aa').length;
+            };
+            this.each(function() {
+                var _this = $(this);
+                var info = '<div id="info" style="text-align:right;">还可以输入<b>'+(option.maxNumber - Math.ceil(getLength(_this.val())/2))+'</b>字</div>';  
+                var fn = function() { 
+                    //Math函数向上取值
+                    var extraNumber=option.maxNumber - Math.ceil(getLength(_this.val())/2); 
+                    var $info = $('#info');
+                    if (extraNumber >= 0) {
+                        $info.html('还可以输入<b>'+extraNumber+'</b>个字');     
+                        option.onOk();
+                    } else {
+                        $info.html('已经超出<b style="color:red;">' + (-extraNumber) + '</b>个字');
+                        option.onOver();
+                    }
+                };
+                switch (option.position) {
+                    case 'top':
+                        _this.before(info);
+                        break;
+                    case 'bottom':
+                    default:
+                        _this.after(info);
+                }
+                //绑定输入事件监听器  
+                if (window.addEventListener) { //先执行W3C  
+                    _this.get(0).addEventListener("input", fn, false);
+                } else {
+                    _this.get(0).attachEvent("onpropertychange", fn);
+                }
+                if (window.VBArray && window.addEventListener) { //IE9  
+                    _this.get(0).attachEvent("onkeydown", function() {
+                        var key = window.event.keyCode;
+                        (key == 8 || key == 46) && fn(); //处理回退与删除  
+                    });
+                    _this.get(0).attachEvent("oncut", fn); //处理粘贴  
+                }
+                //初始化的时候先执行一遍
+                fn();
+            });
+
+            
+        }
     }
 
     //* END:CORE HANDLERS *//

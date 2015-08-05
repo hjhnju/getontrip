@@ -74,8 +74,9 @@
                       <div class="form-group ">
                           <label for="describe" class="control-label col-lg-2">描述</label>
                           <div class="col-lg-5">
-                               <textarea class="form-control" id="describe" name="describe">{%if isset($post.describe)%}{%$post.describe%}{%/if%}</textarea><label for="describe" class="error"></label>
-                          </div>
+                               <textarea class="form-control" id="describe" name="describe" rows="3" >{%if isset($post.describe)%}{%$post.describe%}{%/if%}</textarea>
+                               <label for="describe" class="error"></label>
+                          </div> 
                       </div>
                       <div class="form-group ">
                           <label for="city_name" class="control-label col-lg-2">所属城市*</label>
@@ -129,7 +130,7 @@
                       </div>
                       <div class="form-group">
                           <div class="col-lg-offset-2 col-lg-10">
-                              <button class="btn btn-danger" type="submit" id="">保存</button>
+                              <button class="btn btn-danger" type="submit" id="submitBtn">保存</button>
                                {%if isset($post.id)%} 
                                  <a class="btn btn-default"  href="/admin/sight">返回列表</a> 
                                 {%else%}

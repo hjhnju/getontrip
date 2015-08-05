@@ -72,8 +72,14 @@ class Wiki_Logic_Wiki extends Base_Logic{
             
             $url         = "http://baike.baidu.com/search/word?word=".$word;
             $html        = file_get_html($url);
-            $image       = $html->find('img[alt=""]',0);
-            $image       = $image->getAttribute('data-src');
+            $image       = $html->find('img');
+            foreach ($image as $e){
+                $val = $e->getAttribute('data-src');
+                if(!empty($val)){
+                    $image  = $val;
+                    break;
+                }
+            }            
             $hash        = $this->uploadPic(self::TYPE_WIKI,$sight['name'],$image);
             $content     = $html->find('div.card-summary-content div.para',0);
             if(empty($content)){

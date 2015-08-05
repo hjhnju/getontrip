@@ -106,8 +106,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
                     }
                 }
             }
-            
-            
+                        
             $arrTemp['title']       = $sight['name'];
             $arrTemp['content']     = html_entity_decode($content);
             $arrTemp['image']       = $hash;

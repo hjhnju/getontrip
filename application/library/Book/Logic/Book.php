@@ -126,7 +126,7 @@ class Book_Logic_Book extends Base_Logic{
             $ret = $detail->resp;
             $arr = json_decode($ret,true);
             $info =  $arr["jingdong_ware_bookbigfield_get_responce"]["BookBigFieldEntity"][0]["book_big_field_info"];
-            $temp[$key]['content_desc'] = isset($info["content_desc"])?$info["content_desc"]:'';            
+            $temp[$key]['content_desc'] = isset($info["content_desc"])?html_entity_decode(strip_tags($info["content_desc"])):'';            
             
             $redis = Base_Redis::getInstance();
             $index = ($page-1)*$pageSize+$key+1;

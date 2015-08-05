@@ -75,4 +75,18 @@ class Base_Util_String {
 		}
 		return substr_replace($phone,'***',3,5);
 	}
+	
+	/**
+	 * 带中文的字符串截断
+	 * @param string $str
+	 * @param integer $length
+	 * @return string
+	 */
+	public static function getSubString($str,$length){
+	    $str = strip_tags($str);
+	    if(mb_strlen($str) > $length){
+	        return mb_substr($str,0,$length,'utf-8')."..";
+	    }
+	    return $str;
+	}
 }

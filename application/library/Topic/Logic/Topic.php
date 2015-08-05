@@ -9,6 +9,7 @@ class Topic_Logic_Topic extends Base_Logic{
     protected $sightId = '';
     protected $size    = 2;
     protected $strTags = '';
+    protected $contentSize = 25;
     protected $strDate = "1 month ago";
     
     public function __construct(){
@@ -52,9 +53,12 @@ class Topic_Logic_Topic extends Base_Logic{
             }              
             
             $objTopic = new Topic_Object_Topic();
-            $objTopic->setFileds(array('id', 'title', 'subtitle', 'desc', 'image', 'from', 'url'));
+            $objTopic->setFileds(array('id', 'title', 'subtitle', 'content', 'image', 'from', 'url'));
             $objTopic->fetch(array('id' => $val));
             $arrRet[] = $objTopic->toArray();
+
+            $arrRet[$key]['desc'] = Base_Util_String::getSubString($arrRet[$key]['content'],$this->contentSize);
+            unset($arrRet[$key]['content']);
                                    
             $arrHotDegree[] = $this->getTopicHotDegree($val, $period);
             
@@ -104,7 +108,7 @@ class Topic_Logic_Topic extends Base_Logic{
             $time      = strtotime($period);
             $strFileter .= " AND `update_time` > $time";
         }
-        $listTopic->setFields(array('id','title','desc','image','from'));
+        $listTopic->setFields(array('id','title','content','image','from'));
         $listTopic->setFilterString($strFileter);
         $listTopic->setOrder("update_time desc");
         $listTopic->setPage($page);
@@ -119,6 +123,9 @@ class Topic_Logic_Topic extends Base_Logic{
                     continue;
                 }
             }            
+            
+            $ret['list'][$key]['desc'] = Base_Util_String::getSubString($ret['list'][$key]['content'],$this->contentSize);
+            unset($ret['list'][$key]['content']);
 
             //话题收藏数
             $logicCollect      = new Collect_Logic_Collect();

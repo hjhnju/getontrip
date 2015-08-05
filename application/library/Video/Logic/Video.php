@@ -78,9 +78,30 @@ class Video_Logic_Video extends Base_Logic{
             $info['status']    = Video_Type_Status::PUBLISHED;
             $info['from']      = '爱奇艺';
             $info['create_time'] = time();
-            $info['totalNum']    = $count;
+            $info['totalNum']    = $count;           
             
-            
+            if(Video_Type_Type::VIDEO == $info['type']){
+                $ele = $e->find('p.viedo_rb span.v_name',0);
+                if($ele){
+                    $info['len'] = $ele->innertext;
+                }else{
+                    $info['len'] = '1';
+                }
+            }else{
+                $ele  = $e->find('li.album_item a',-1);
+                $data = $ele->getAttribute("title");
+                if(empty($data) || stristr($data,"更多")){
+                    $ele = $e->find('li.album_item a',-2);
+                }
+                if($ele){
+                    $strLen = $ele->getAttribute("title");
+                    sscanf($strLen,"第%d集",$intLen);
+                }else{
+                    $intLen = 1;
+                }
+                $info['len'] = strval($intLen);
+            }
+       
             $redis = Base_Redis::getInstance();
             $index = ($page-1)*self::PAGE_SIZE+$key+1;
             $redis->delete(Video_Keys::getVideoInfoName($sightId, $index));
@@ -93,6 +114,7 @@ class Video_Logic_Video extends Base_Logic{
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'status',$info['status']);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'create_time',$info['create_time']);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'totalNum',$info['totalNum']);
+            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'len',$info['len']);
             $redis->setTimeout(Video_Keys::getVideoInfoName($sightId, $index),self::REDIS_TIME_OUT);
             
             $info['id']      = $index;

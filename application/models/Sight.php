@@ -59,7 +59,6 @@ class SightModel extends PgBaseModel
     public function getSightList($page,$pageSize){
         $from = ($page-1)*$pageSize;
         $sql = "SELECT * FROM sight ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
-        var_dump($sql);die;
         try {
             $sth = $this->db->prepare($sql);
             $sth->execute();

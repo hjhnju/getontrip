@@ -84,8 +84,10 @@ class City_Logic_City{
         $objCity = new City_Object_City();
         $objCity->fetch(array('id' => $cityId));
         $ret = $objCity->toArray();
-        $objCity->fetch(array('id' => $ret['pid']));
-        $ret['pidname'] = $objCity->name;
+        if(!empty($ret)){
+            $objCity->fetch(array('id' => $ret['pid']));
+            $ret['pidname'] = $objCity->name;
+        }
         return $ret;
     }
     
@@ -201,7 +203,7 @@ class City_Logic_City{
         $listCity->setPagesize($pageSize);
         $arrCity = $listCity->toArray();
         foreach ($arrCity['list'] as $key => $val){
-            $city = City_Api::getCityById($val['pid']);
+            $city = City_Api::getCityById($val['id']);
             $arrCity['list'][$key]['pidname'] = $city['name'];
         }
         return $arrCity;

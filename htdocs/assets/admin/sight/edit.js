@@ -93,11 +93,11 @@ $(document).ready(function() {
         $('#describe').limitTextarea({
             maxNumber: 75,   
             onOk: function() {
-                $('label.error[for="describe"]').html('');
+                $('#describe').css('background-color','transparent');
                 $('#Form #submitBtn').attr('disabled',false);
             },
             onOver:function(){
-                $('label.error[for="describe"]').html('字数超过限制');
+                $('#describe').css('background-color','lightpink');
                 $('#Form #submitBtn').attr('disabled','disabled');
             }
         });

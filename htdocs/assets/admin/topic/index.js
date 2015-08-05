@@ -32,13 +32,17 @@ $(document).ready(function() {
             "visible": true,
             "searchable": false
         }, {
-            "targets": [0],
-            "orderable": false,
+            "targets": [0], 
             "width": 20
         }, {
-            "targets": [2],
-            "orderable": false,
+            "targets": [2], 
             "width": 250
+        }, {
+            "targets": [7], 
+            "width": 50
+        }, {
+            "targets": [9], 
+            "width": 80
         }],
         "columns": [{
             "data": function() {

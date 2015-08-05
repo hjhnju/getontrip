@@ -38,15 +38,15 @@ $(document).ready(function() {
             onInit: function() {
                 $('#summernote').code($('#content-text').html());
             },
-            onImageUpload: function(files, editor, $editable) {
-                sendFile(files[0], editor, $editable);
+            onImageUpload: function(files) {
+                sendFile(files[0]);
             },
-            onMediaDelete: function(files, editor, $editable) {
+            onMediaDelete: function(files) {
                 if (confirm("会从服务器删除图片，确定删除么 ?") == false) {
                     return false;
                 }
                 //删除图片
-                deleteImage(files[0], editor, $editable);
+                deleteImage(files[0]);
             },
             onChange: function(characters, editor, $editable) {
                     //alert(characters);
@@ -182,12 +182,12 @@ $(document).ready(function() {
             $('#source-type').val(type);
             if (type == "1") {
                 //微信公众号
-                $('#source label[for="source-name"]').text('公众号名称:');
+                $('#source label[for="source-name"]').text('公众号名称*');
                 $('#source-name').val($('#weixin-from').val());
                 $('#source .source-url').hide();
                 $('#source-url').val('mp.weixin.qq.com');
             } else {
-                $('#source label[for="source-name"]').text('来源名称:');
+                $('#source label[for="source-name"]').text('来源名称*');
                 $('#source-name').val('');
                 $('#source .source-url').show();
                 $('#source-url').val('');
@@ -203,10 +203,10 @@ $(document).ready(function() {
                 toastr.warning('名称不能为空');
                 return false;
             }
-            if (!$('#source-url').val()) {
+        /*    if (!$('#source-url').val()) {
                 toastr.warning('url不能为空');
                 return false;
-            }
+            }*/
             $.ajax({
                 "url": "/admin/Sourceapi/addAndReturn",
                 "data": {
@@ -387,13 +387,10 @@ $(document).ready(function() {
 
     /**
      * 上传图片
-     * @param  {[type]} file      [description]
-     * @param  {[type]} editor    [description]
-     * @param  {[type]} $editable [description]
+     * @param  {[type]} file      [description] 
      * @return {[type]}           [description]
      */
-    function sendFile(file, editor, $editable) {
-        $(".note-toolbar.btn-toolbar").append('正在上传图片');
+    function sendFile(file) { 
         var filename = false;
         try {
             filename = file['name'];
@@ -401,7 +398,7 @@ $(document).ready(function() {
             filename = false;
         }
         if (!filename) {
-            $(".note-alarm").remove();
+           return;
         }
         //以上防止在图片在编辑器内拖拽引发第二次上传导致的提示错误 
         // $('#summernote').summernote('editor.insertImage', 'http://res.cloudinary.com/demo/image/upload/butterfly.jpg'); 

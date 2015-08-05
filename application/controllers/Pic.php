@@ -13,6 +13,8 @@ class PicController extends Base_Controller_Page {
      * 图片浏览
      */
     public function indexAction() {
+        $width  = 0;
+        $height = 0;
         $hash = $this->_request->get('hash');
         if (empty($hash)) {
             header("HTTP/1.1 404 Not Found");
@@ -46,6 +48,7 @@ class PicController extends Base_Controller_Page {
         
         // @TODO 需要对图片跟缩略图做本地cache
         if ($width > 0 && $height > 0) {
+            //$imagick->adaptiveResizeImage($width, $height);
             $imagick->cropthumbnailimage($width, $height);
         }
         $imagick->setimagecompressionquality(75);

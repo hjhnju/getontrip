@@ -39,7 +39,7 @@ class Video_Logic_Video extends Base_Logic{
                     $arrRet[] = $ret;
                 }
             }
-        }        
+        }      
         return $arrRet; 
     }
         

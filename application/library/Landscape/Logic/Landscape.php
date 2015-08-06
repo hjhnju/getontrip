@@ -112,7 +112,7 @@ class Landscape_Logic_Landscape extends Base_Logic{
         $logicTopic      = new Topic_Logic_Topic();
         $ret['dis']      = $modelGis->getEarthDistanceToPoint($x, $y, $ret['x'], $ret['y']);
         $arrTopics       = $logicTopic->searchTopic($ret['name'],1,PHP_INT_MAX);
-        $ret['topics']   = $arrTopics;
+        $ret['topics']   = $arrTopics['list'];
         $ret['topicNum'] = $arrTopics['total'];
         return $ret;
     }

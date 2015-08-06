@@ -246,7 +246,7 @@ class Base_Extract {
 	 */
 	public function dataClean($content){
 	    $content = preg_replace( '/<p.*?>/', '<p>', $content );
-	    
+	    $content = preg_replace( '/<br.*?>/', '<br>', $content );	    
 	    $num = preg_match_all('/img.*?src=\"(.*?)\".*?>/si',$content,$match);
 	    for($i=0;$i<$num;$i++){
 	        if($this->isFullPath($match[1][$i])){

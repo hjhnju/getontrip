@@ -16,7 +16,7 @@ class ListController extends Base_Controller_Page {
     
     /**
      * 接口1：/theme/list
-     * 获取主题信息
+     * 获取主题列表信息
      * @return json
      */
     public function indexAction(){

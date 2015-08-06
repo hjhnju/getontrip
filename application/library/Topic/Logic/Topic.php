@@ -163,7 +163,7 @@ class Topic_Logic_Topic extends Base_Logic{
      * @param integer $topicId
      * @return Topic_Object_Topic
      */
-    public function getTopicDetail($topicId,$device_id,$page,$pageSize){
+    public function getTopicDetail($topicId,$device_id){
         $objTopic = new Topic_Object_Topic();
         $objTopic->fetch(array('id' => $topicId));
         $arrRet = $objTopic->toArray();

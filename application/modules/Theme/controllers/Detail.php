@@ -16,7 +16,7 @@ class DetailController extends Base_Controller_Page {
     
     /**
      * 接口1：/theme/detail
-     * 获取主题信息
+     * 获取主题详情信息
      * @param integer id，主题 ID
      * @return json
      */

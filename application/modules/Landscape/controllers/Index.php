@@ -13,7 +13,7 @@ class IndexController extends Base_Controller_Api {
     
     /**
      * 接口1：/landscape
-     * 搜索信息接口
+     * 景观详情信息接口
      * @param integer id
      * @param double  x,经度
      * @param double  y，纬度

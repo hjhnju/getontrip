@@ -62,9 +62,10 @@ class City_Logic_City{
         $listCity = new City_List_City();
         $strFilter = "`cityid` = 0 and `provinceid` != 0";
         if(!empty($filter)){
-            $strFilter .=" and `pinyin` like '".strtolower($filter)."%'";
+            $strFilter .=" and `pinyin` > '".strtolower($filter)."%'";
         }
         $listCity->setFilterString($strFilter);
+        $listCity->setOrder("pinyin asc");
         $listCity->setPage($page);
         $listCity->setPagesize($pageSize);
         $arrCity = $listCity->toArray();
@@ -223,5 +224,22 @@ class City_Logic_City{
             $count += $redis->zSize(Sight_Keys::getSightTopicName($val['id']));
         }
         return $count;
+    }
+    
+    /**
+     * 获取热门城市信息
+     * @return array
+     */
+    public function getHotCity(){
+        $arrHotCity = array(
+            array('id' =>2,   'name'=>'北京'),
+            array('id' =>41,  'name'=>'上海'),
+            array('id' =>2185,'name'=>'广州'),
+            array('id' =>2211,'name'=>'深圳'),
+            array('id' =>925, 'name'=>'南京'),
+            array('id' =>1058,'name'=>'杭州'),
+            array('id' =>972, 'name'=>'苏州'),
+        );
+        return $arrHotCity;
     }
 }

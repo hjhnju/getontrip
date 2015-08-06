@@ -34,7 +34,7 @@ class Search_Logic_Search{
         $arrCity  = $this->logicCity->queryCityPrefix($query, $page, $pageSize);
         $arrSight = $this->logicSight->search($query, $page, $pageSize,$x,$y);
         $arrTopic = $this->logicTopic->searchTopic($query, $page, $pageSize);
-        $arrTheme = array();
+        $arrTheme = $this->logicTheme->searchTheme(array('name' => $query), $page, $pageSize);
         return array(
             'city'  => $arrCity['list'],
             'sight' => $arrSight,

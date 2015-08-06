@@ -71,4 +71,16 @@ class Theme_Api{
         $logic = new Theme_Logic_Theme();
         return $logic->searchTheme($arrInfo, $page, $pageSize);
     }
+    
+    /**
+     * 接口7：Theme_Api::addLandscapeToTheme($themeId,$arrLandIds)
+     * 为主题添加景观
+     * @param integer $themeId
+     * @param array $arrLandIds
+     * @return boolean
+     */
+    public function addLandscapeToTheme($themeId,$arrLandIds){
+        $logic = new Theme_Logic_Theme();
+        return $logic->addLandscapeToTheme($themeId, $arrLandIds);
+    }
 }

@@ -101,9 +101,19 @@ class Landscape_Logic_Landscape extends Base_Logic{
      * @param integer $id
      * @return array
      */
-    public function queryLandscapeById($id){
+    public function queryLandscapeById($id,$x='',$y=''){
         $obj = new Landscape_Object_Landscape();
         $obj->fetch(array('id' => $id));
-        return $obj->toArray();
+        $ret = $obj->toArray();
+        if(empty($x) && empty($y)){
+            return $ret;
+        }     
+        $modelGis        = new GisModel();
+        $logicTopic      = new Topic_Logic_Topic();
+        $ret['dis']      = $modelGis->getEarthDistanceToPoint($x, $y, $ret['x'], $ret['y']);
+        $arrTopics       = $logicTopic->searchTopic($ret['name'],1,PHP_INT_MAX);
+        $ret['topics']   = $arrTopics;
+        $ret['topicNum'] = $arrTopics['total'];
+        return $ret;
     }
 }

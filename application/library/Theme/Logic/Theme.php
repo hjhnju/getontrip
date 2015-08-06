@@ -124,8 +124,10 @@ class Theme_Logic_Theme extends Base_Logic{
         $ret = $list->toArray();
         foreach ($ret['list'] as $val){
             $objLandscape = new Landscape_Object_Landscape();
-            $objLandscape->fetch(array('id' => $val['landscape_id']));
-            $arrRet['landscape'][] = $objLandscape->toArray();
+            $objLandscape->fetch(array('id' => $val['landscape_id'],'status' => Landscape_Type_Status::PUBLISHED));
+            if(empty($objLandscape->id)){
+                $arrRet['landscape'][] = $objLandscape->toArray();
+            }
         }
         return $arrRet;
     }
@@ -156,8 +158,10 @@ class Theme_Logic_Theme extends Base_Logic{
             $ret = $list->toArray();
             foreach ($ret['list'] as $val){
                 $objLandscape = new Landscape_Object_Landscape();
-                $objLandscape->fetch(array('id' => $val['landscape_id']));
-                $arrRet['list'][$index]['landscape'][] = $objLandscape->toArray();
+                $objLandscape->fetch(array('id' => $val['landscape_id'],'status' => Landscape_Type_Status::PUBLISHED));
+                if(!empty($objLandscape->id)){
+                    $arrRet['list'][$index]['landscape'][] = $objLandscape->toArray();
+                }
             }
         }
         return $arrRet;
@@ -196,10 +200,53 @@ class Theme_Logic_Theme extends Base_Logic{
             $ret = $list->toArray();
             foreach ($ret['list'] as $val){
                 $objLandscape = new Landscape_Object_Landscape();
-                $objLandscape->fetch(array('id' => $val['landscape_id']));
-                $arrRet['list'][$index]['landscape'][] = $objLandscape->toArray();
+                $objLandscape->fetch(array('id' => $val['landscape_id'],'status' => Landscape_Type_Status::PUBLISHED));
+                if(!empty($objLandscape->id)){
+                    $arrRet['list'][$index]['landscape'][] = $objLandscape->toArray();
+                }
             }
         }
         return $arrRet;
+    }
+    
+    /**
+     * 为主题添加景观
+     * @param integer $themeId
+     * @param array $arrLandIds
+     * @return boolean
+     */
+    public function addLandscapeToTheme($themeId,$arrLandIds){
+        $ret = true;
+        foreach ($arrLandIds as $id){
+            $obj = new Theme_Object_Landscape();
+            $obj->themeId      = $themeId;
+            $obj->landscapeId  = $id;
+            $ret = $obj->save();
+            if(!ret){
+                return $ret;
+            }
+        }
+        return $ret;
+    }
+    
+    /**
+     * 获取主题列表
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function getThemeList($page=1,$pageSize=PHP_INT_MAX){
+        $list          = new Theme_List_Theme();
+        $logicCollect  = new Collect_Logic_Collect();
+        $list->setFields(array('id','name','image'));
+        $list->setFilter(array('status' => Theme_Type_Status::PUBLISHED));
+        $list->setPage($page);
+        $list->setPagesize($pageSize);
+        $arrRet = $list->toArray();
+        foreach ($arrRet['list'] as $key => $val){
+            $collectTopicNum   = $logicCollect->getLateCollectNum(Collect_Keys::THEME,$val['id']);
+            $arrRet['list'][$key]['collect'] = $collectTopicNum;
+        }
+        return $arrRet['list'];
     }
 }

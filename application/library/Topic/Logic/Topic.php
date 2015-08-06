@@ -640,4 +640,27 @@ class Topic_Logic_Topic extends Base_Logic{
         }
         return $ret;
     }
+    
+    /**
+     * 根据话题名搜索话题，并且结果不包含标签、景点信息
+     * @param string $title
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function searchTopic($title,$page,$pageSize){
+        $listTopic     = new Topic_List_Topic();
+        $logicCollect  = new Collect_Logic_Collect();
+        $filter = "`title` like '%".$title."%'";
+        $listTopic->setFields(array('id','title','image'));
+        $listTopic->setFilterString($filter);
+        $listTopic->setPage($page);
+        $listTopic->setPagesize($pageSize);
+        $arrRet = $listTopic->toArray();
+        
+        foreach ($arrRet['list'] as $key => $val){
+            $arrRet['list'][$key]['collect'] = $logicCollect->getCollectNum(Collect_Keys::TOPIC, $val['id']);
+        }
+        return $arrRet;
+    }
 }

@@ -89,7 +89,9 @@ class Video_Logic_Video extends Base_Logic{
                 }
             }else{
                 $ele  = $e->find('li.album_item a',-1);
-                $data = $ele->getAttribute("title");
+                if(!empty($ele)){
+                    $data = $ele->getAttribute("title");
+                }                
                 if(empty($data) || stristr($data,"更多")){
                     $ele = $e->find('li.album_item a',-2);
                 }

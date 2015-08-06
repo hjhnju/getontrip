@@ -176,6 +176,7 @@ class City_Logic_City{
         $listCity = new City_List_City();
         $strFileter = "`cityid` = 0 and `provinceid` != 0 and name like '".$str."%'";
         $listCity->setFilterString("$strFileter");
+        $listCity->setFields(array('id','name','pid'));
         $listCity->setPage($page);
         $listCity->setPagesize($pageSize);
         $arrCity = $listCity->toArray();

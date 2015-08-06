@@ -4,6 +4,7 @@
  * @author huwei
  *
  */
+ini_set("max_execution_time", "180000");
 class InitDataController extends Base_Controller_Page {
     
     const PAGE_SIZE = 20;
@@ -16,7 +17,10 @@ class InitDataController extends Base_Controller_Page {
         $sightId = intval($_REQUEST['sightId']);
         $type    = trim($_REQUEST['type']);
         $num     = intval($_REQUEST['num']);
-               
+        $conf    = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
+        if($num < 0){
+            $num = intval($conf['thirddata']['initnum']);
+        }       
         //获取景点ID数组
         if($sightId < 0){
             $model = new SightModel();

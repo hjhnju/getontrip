@@ -11,12 +11,14 @@ if(count($argv) < 4){
     print "参数错误!Usage:Run.php 类型 景点ID 条数\r\n";
     return 0;
 }
-if(in_array(trim($argv[1]),$arrTypes)){
+if(!in_array(trim($argv[1]),$arrTypes)){
     print "类型错误!只有三种类型：Book Video Wiki All\r\n";
     return 0;
 }
 $type      = trim($argv[1]);
 $sightId   = intval($argv[2]);
-$num       = intval($argv[3])>0?intval($argv[3]):PHP_INT_MAX;
-$url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=$sightId&type=$type&num=$num";
+$num       = intval($argv[3]);
+
+$conf    = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
+$url  = $conf['web']['root']."/InitData?sightId=$sightId&type=$type&num=$num";
 $http = Base_Network_Http::instance()->url($url)->exec();

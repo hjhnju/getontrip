@@ -29,7 +29,7 @@ class IndexController extends Base_Controller_Api {
         $query      = isset($_POST['query'])?intval($_POST['query']):'';
         $x          = isset($_POST['x'])?(doubleval($_POST['x'])):'';
         $y          = isset($_POST['y'])?(doubleval($_POST['y'])):'';
-        $query = "标";
+        $query = "北";
         $x = 100;
         $y = 100;
         if(empty($query) || empty($x) || empty($y)){

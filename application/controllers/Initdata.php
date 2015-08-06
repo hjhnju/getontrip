@@ -51,13 +51,11 @@ class InitDataController extends Base_Controller_Page {
                 case 'All':
                     $logicBook  = new Book_Logic_Book();
                     $logicVideo = new Video_Logic_Video();
-                    $logicWiki  = new Wiki_Logic_Wiki();
                     $page       = ceil($num/self::PAGE_SIZE);
                     for( $i = 1; $i <= $page; $i++ ){
                         $logicBook->getJdBooks($id, $i,self::PAGE_SIZE);
                         $logicVideo->getAiqiyiSource($id, $i);
                     }
-                    $logicWiki->getWikiSource($id,1,$num,Wiki_Type_Status::PUBLISHED);
                     break;
                 default:
                     break;

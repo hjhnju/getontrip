@@ -1,0 +1,109 @@
+<?php
+class Landscape_Logic_Landscape extends Base_Logic{
+    
+    protected $_fields;
+    
+    public function __construct(){
+        $this->_fields = array('id','city_id','name','title','image','content','author','x','y','create_time','update_time','status');
+    }
+    
+    /**
+     * 添加景观
+     * @param array $arrInfo
+     * @return number|''
+     */
+    public function addLandscape($arrInfo){
+        $objLandscape = new Landscape_Object_Landscape();
+        $bCheck       = false;
+        foreach ($arrInfo as $key => $val){
+            if(in_array($key,$this->_fields)){
+                $key                = $this->getprop($key);
+                $objLandscape->$key = $val;
+                $bCheck             = true;
+            }
+        }
+        if($bCheck){
+            $ret = $objLandscape->save();
+        }
+        if($ret){
+            return $objLandscape->id;
+        }
+        return '';
+    }
+    
+    /**
+     * 编辑景观
+     * @param integer $id
+     * @param array $arrInfo
+     * @return number|''
+     */
+    public function editLandscape($id,$arrInfo){
+        $bCheck = false;
+        $obj    = new Landscape_Object_Landscape();
+        $obj->fetch(array('id' => $id));
+        foreach ($arrInfo as $key => $val){
+            if(in_array($key,$this->_fields)){
+                $key = $this->getprop($key);
+                $obj->$key = $val;
+                $bCheck    = true;
+            }
+        }
+        if($bCheck){
+            $ret =  $obj->save();
+        }
+        return $ret;
+    }
+    
+    /**
+     * 删除景观
+     * @param integer $id
+     * @return boolean
+     */
+    public function delLandscape($id){
+        $obj    = new Landscape_Object_Landscape();
+        $obj->fetch(array('id' => $id));        
+        $listRelation = new Theme_List_Landscape();
+        $listRelation->setFilter(array('landscape_id' => $id));
+        $listRelation->setPagesize(PHP_INT_MAX);
+        $ret = $listRelation->toArray();
+        foreach ($ret['list'] as $val){
+            $objRelation = new Theme_Object_Landscape();
+            $objRelation->fetch(array('id' => $val['id']));
+            $objRelation->remove();
+        }
+        return $obj->remove();
+    }
+    
+    /**
+     * 根据条件查询景观信息
+     * @param array $arrInfo
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function queryLandscape($arrInfo,$page,$pageSize){
+        $list = new Landscape_List_Landscape();
+        foreach ($arrInfo as $key => $val){
+            if(!in_array($key,$this->_fields)){
+                unset($arrInfo[$key]);
+            }
+        }
+        if(!empty($arrInfo)){
+            $list->setFilter($arrInfo);
+        }
+        $list->setPage($page);
+        $list->setPagesize($pageSize);
+        return $list->toArray();
+    }
+    
+    /**
+     * 根据ID查询景观
+     * @param integer $id
+     * @return array
+     */
+    public function queryLandscapeById($id){
+        $obj = new Landscape_Object_Landscape();
+        $obj->fetch(array('id' => $id));
+        return $obj->toArray();
+    }
+}

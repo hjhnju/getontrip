@@ -9,7 +9,7 @@ class Topic_Logic_Topic extends Base_Logic{
     protected $sightId = '';
     protected $size    = 2;
     protected $strTags = '';
-    protected $contentSize = 25;
+    protected $contentSize = 75;
     protected $strDate = "1 month ago";
     
     public function __construct(){

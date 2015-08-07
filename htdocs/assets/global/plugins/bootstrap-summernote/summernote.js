@@ -1,3 +1,17 @@
+/*
+  修改 fyy
+  修改1 创建图片后默认加上一个换行  这里已经用css代替
+  修改2 为只粘贴文本
+  修改3 此处增加两行恢复焦点
+  修改4 此处增加一个loading图标
+
+  新增1 插入节点
+  新增2 base64字符串数据转换成文件并创建名为基于文件的MIME类型。
+  新增3 从剪贴板粘贴图片
+  新增4 从剪贴板上传图片
+  新增5 图片拖动事件 暂未实现
+  新增6 选中图片
+ */
 /**
  * Super simple wysiwyg editor on Bootstrap v0.6.10
  * http://summernote.org/
@@ -728,7 +742,7 @@
          * blank HTML for cursor position
          * - [workaround] for MSIE IE doesn't works with bogus br
          */
-        var blankHTML = agent.isMSIE ? '&nbsp;' : '<br>';
+        var blankHTML = agent.isMSIE ? '&nbsp;' : '<br/>';
 
         /**
          * @method nodeLength
@@ -940,8 +954,8 @@
          */
         var wrap = function(node, wrapperName) {
             var parent = node.parentNode;
-            if(!parent){
-              return ;
+            if (!parent) {
+                return;
             }
             var wrapper = $('<' + wrapperName + '>')[0];
 
@@ -2433,7 +2447,7 @@
             styleWithSpan: true, // style with span (Chrome and FF only)
 
             disableLinkTarget: false, // hide link Target Checkbox
-            disableDragAndDrop: false, // disable drag and drop event
+            disableDragAndDrop: true, // disable drag and drop event
             disableResizeEditor: false, // disable resizing editor
 
             shortcuts: true, // enable keyboard shortcuts
@@ -2607,7 +2621,7 @@
             onkeydown: null, // keydown
             onImageUpload: null, // imageUpload
             onImageUploadError: null, // imageUploadError
-            onMediaDelete: null, // media delete
+            onMediaDelete: null,// media delete , 
             onToolbarClick: null,
             onsubmit: null,
 
@@ -3901,8 +3915,14 @@
                 $image.css({
                     display: '',
                     width: Math.min($editable.width(), $image.width())
-                });
-                range.create().insertNode($image[0]);
+                }); 
+
+                //修改3 此处增加两行恢复焦点
+                handler.invoke('restoreRange', $editable);
+                handler.invoke('focus', $editable);
+
+                //修改1 创建图片后默认加上一个换行 这里用css代替
+                handler.invoke('editor.insertNodeBefore', $editable, $image[0]);
                 range.createFromNodeAfter($image[0]).select();
                 afterCommand($editable);
             }).fail(function() {
@@ -3918,11 +3938,24 @@
          * insert node
          * @param {Node} $editable
          * @param {Node} node
-         */
+        */
         this.insertNode = function($editable, node) {
             beforeCommand($editable);
             range.create().insertNode(node);
             range.createFromNodeAfter(node).select();
+            afterCommand($editable);
+        };
+
+        /**新增1  插入节点
+         * @method insertNodeBefore  
+         * insert node
+         * @param {Node} $editable
+         * @param {Node} node
+         */
+        this.insertNodeBefore = function($editable, node) {
+            beforeCommand($editable);
+            range.create().insertNode(node);
+            range.createFromNodeBefore(node).select();
             afterCommand($editable);
         };
 
@@ -4789,7 +4822,10 @@
             if (styleInfo.image) {
                 var $image = $(styleInfo.image);
                 var pos = isAirMode ? $image.offset() : $image.position();
-
+                
+                //新增6 选中图片
+                range.createFromNode($image[0]).select();
+                
                 // include margin
                 var imageSize = {
                     w: $image.outerWidth(true),
@@ -5011,9 +5047,9 @@
         this.attach = function(layoutInfo, options) {
             if (options.airMode || options.disableDragAndDrop) {
                 // prevent default drop event
-                $document.on('drop', function(e) {
-                    e.preventDefault();
-                });
+                 $document.on('drop', function(e) {
+                     //e.preventDefault(); 
+                 }); 
             } else {
                 this.attachDragAndDropEvent(layoutInfo, options);
             }
@@ -5090,6 +5126,27 @@
                 }
             }).on('dragover', false); // prevent default dragover event
         };
+
+        /**
+         * 新增5 图片拖动事件  暂未实现
+         *
+         * @param {Object} layoutInfo - layout Informations
+         * @param {Object} options
+         */
+        this.attachDragAndDropEventEX = function(layoutInfo, options) {
+            var styleInfo = modules.editor.currentStyle(event.target);
+            if (!styleInfo) {
+                return;
+            }
+            var $selection = $handle.find('.note-control-selection');
+            if (styleInfo.image) {
+                var $image = $(styleInfo.image);
+                $document.on('drop', function() {
+                    alert("ad");
+                });
+            }
+
+        };
     };
 
     var Clipboard = function(handler) {
@@ -5108,7 +5165,7 @@
             $paste.on('paste', hPasteClipboardImage);
 
             layoutInfo.editable().on('keydown', function(e) {
-                if ((e.ctrlKey||e.metaKey) && e.keyCode === 86) { // CTRL+V
+                if ((e.ctrlKey || e.metaKey) && e.keyCode === 86) { // CTRL+V
                     handler.invoke('saveRange', layoutInfo.editable());
                     if ($paste) {
                         $paste.focus();
@@ -5129,7 +5186,7 @@
              $paste.empty();
            };*/
 
-        //修改为只粘贴文本
+        //修改2 为只粘贴文本
         var hPasteContent = function(handler, $paste, $editable) {
 
             var pasteContent = $('<div />').html(filterContent($paste.html()));
@@ -5138,13 +5195,13 @@
             handler.invoke('pasteHTML', $editable, pasteContent.html());
             $paste.empty();
         };
-        
+
         //去掉样式
         var filterContent = function(html) {
-            var pattern = /style=\"(.*?)\"/gi;//去掉样式 
-            var pattern2 = /data-(.*?)=\"(.*?)\"/gi;//去掉多余的属性
-            var pattern3 = /class=\"(.*?)\"/gi;//去掉class样式 
-            return html.replace(pattern, '').replace('blockquote','p').replace(pattern2,'').replace(pattern3,'');
+            var pattern = /style=\"(.*?)\"/gi; //去掉样式 
+            var pattern2 = /data-(.*?)=\"(.*?)\"/gi; //去掉多余的属性
+            var pattern3 = /class=\"(.*?)\"/gi; //去掉class样式 
+            return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern2, '').replace(pattern3, '');
         }
 
         /**
@@ -5158,65 +5215,189 @@
             var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
             var $editable = layoutInfo.editable();
 
-            //if (!clipboardData || !clipboardData.items || !clipboardData.items.length) {
+            if (!clipboardData || !clipboardData.items || !clipboardData.items.length) {
 
-            var callbacks = $editable.data('callbacks');
-            // only can run if it has onImageUpload method
-            if (!callbacks.onImageUpload) {
-                hPasteContent(handler, $paste, $editable);
-                return;
-            }
-
-            setTimeout(function() {
-                if (!$paste) {
-                    return;
-                }
-                hPasteContent(handler, $paste, $editable);
-                return;
-
-                //不要下面的了
-                var imgNode = $paste[0].firstChild;
-                if (!imgNode) {
+                var callbacks = $editable.data('callbacks');
+                // only can run if it has onImageUpload method
+                if (!callbacks.onImageUpload) {
                     hPasteContent(handler, $paste, $editable);
                     return;
                 }
 
-                if (!dom.isImg(imgNode)) {
+                setTimeout(function() {
+                    if (!$paste) {
+                        return;
+                    }
                     hPasteContent(handler, $paste, $editable);
-                } else {
-                    handler.invoke('restoreRange', $editable);
-                    var datauri = imgNode.src;
+                    return;
 
-                    /*var data = atob(datauri.split(',')[0]);
-                    var array = new Uint8Array(data.length);
-                    for (var i = 0; i < data.length; i++) {
-                        array[i] = data.charCodeAt(i);
-                    }*/
+                    //修改3 不要下面的了
+                    var imgNode = $paste[0].firstChild;
+                    if (!imgNode) {
+                        hPasteContent(handler, $paste, $editable);
+                        return;
+                    }
 
-                    var blob = new Blob([array], {
-                        type: 'image/png'
-                    });
-                    blob.name = 'clipboard.png';
-                    handler.invoke('focus', $editable);
-                    handler.insertImages(layoutInfo, [blob]);
+                    if (!dom.isImg(imgNode)) {
+                        hPasteContent(handler, $paste, $editable);
+                    } else {
+                        handler.invoke('restoreRange', $editable);
+                        var datauri = imgNode.src;
 
-                    $paste.empty();
-                }
+                        var data = atob(datauri.split(',')[0]);
+                        var array = new Uint8Array(data.length);
+                        for (var i = 0; i < data.length; i++) {
+                            array[i] = data.charCodeAt(i);
+                        }
 
-            }, 0);
+                        var blob = new Blob([array], {
+                            type: 'image/png'
+                        });
+                        blob.name = 'clipboard.png';
+                        handler.invoke('focus', $editable);
+                        handler.insertImages(layoutInfo, [blob]);
 
-            return;
-            //}
+                        $paste.empty();
+                    }
 
-            var item = list.head(clipboardData.items);
-            var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
+                }, 0);
 
-            if (isClipboardImage) {
-                handler.insertImages(layoutInfo, [item.getAsFile()]);
+                return;
             }
 
+            /*     var files = [];
+                 var item = list.head(clipboardData.items);
+                 var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
+
+                 if (isClipboardImage) {
+                     var date = new Date();
+                     var file = item.getAsFile();
+                     file.name = '' + date.getFullYear() + ('' + (date.getMonth() + 101)).substr(1) + ('' + (date.getDate() + 100)).substr(1);
+
+                     files.push(file);
+                     handler.insertImages(layoutInfo, files);
+                 }*/
+
+            //chrome情况 
+            PasteFromClipboard(clipboardData.items, $paste, $editable);
             handler.invoke('editor.afterCommand', $editable);
         };
+
+
+        //新增3 从剪贴板粘贴图片
+        /*
+          @param {clipboardData.items} items
+         */
+        var PasteFromClipboard = function(items, $paste, $editable) {
+            var item = list.head(items);
+            //$.each(items, function(key, item) {
+            var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
+            if (isClipboardImage) {
+                var blob = item.getAsFile();
+                setTimeout(function() {
+                    if (!$paste) {
+                        return;
+                    }
+                    uploadImageClipboard(blob, $editable);
+                    return;
+                }, 0);
+            } else {
+                setTimeout(function() {
+                    if (!$paste) {
+                        return;
+                    }
+                    hPasteContent(handler, $paste, $editable);
+                    return;
+                }, 0);
+            }
+            //});
+        }
+
+        /*
+            //新增4 从剪贴板上传图片
+         */
+        var uploadImageClipboard = function(blob, $editable) {
+
+            handler.invoke('restoreRange', $editable);
+            handler.invoke('focus', $editable);
+
+            //修改4 此处增加一个loading图标
+            var loading = $('<span id="loadingImg"> <i class="fa fa-spinner fa-spin"></i></span>');
+            handler.invoke('editor.insertNode', $editable, loading[0]);
+            range.createFromNodeAfter(loading[0]).select();
+            handler.invoke('editor.afterCommand', $editable);
+
+
+            var formData = new window.FormData;
+            formData.append("file", blob);
+            var xhr;
+            xhr = window.$.ajaxSettings.xhr();
+            xhr.withCredentials = !0;
+            var baseAjax = $.ajax({
+                url: '/upload/pic',
+                data: formData,
+                processData: !1,
+                contentType: !1,
+                xhr: function() {
+                    return xhr
+                },
+                type: "POST"
+            }).done(function(res) {
+                "string" === window.$.type(res) && (res = JSON.parse(res));
+                if (res.status === 0) {
+                    $('#summernote').summernote('editor.insertImage', res.data.url);
+                    $('img[src="' + res.data.url + '"]').attr('data-hash', res.data.hash);
+                    //toastr.success('图片上传成功！');
+
+                } else {
+                    alert("上传失败:" + res.statusIndo);
+                }
+                //隐藏loading
+                $('#loadingImg').remove();
+
+            }).fail(function(e) {
+                alert("上传失败！")
+            }).always(function() {
+
+
+            });
+
+         }
+
+        //新增2  base64字符串数据转换成文件并创建名为基于文件的MIME类型。
+        // Transforms Base64 string data into file and creates name for that file based on the mime type.
+        //  
+        // @private
+        // @param {String} data Base64 string data.
+        // @returns {Blob} File.
+        var dataToFile = function(data) {
+            var base64HeaderRegExp = /^data:(\S*?);base64,/;
+            var contentType = data.match(base64HeaderRegExp)[1],
+                base64Data = data.replace(base64HeaderRegExp, ''),
+                byteCharacters = atob(base64Data),
+                byteArrays = [],
+                sliceSize = 512,
+                offset, slice, byteNumbers, i, byteArray;
+
+            for (offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+                slice = byteCharacters.slice(offset, offset + sliceSize);
+
+                byteNumbers = new Array(slice.length);
+                for (i = 0; i < slice.length; i++) {
+                    byteNumbers[i] = slice.charCodeAt(i);
+                }
+
+                byteArray = new Uint8Array(byteNumbers);
+
+                byteArrays.push(byteArray);
+            }
+
+            return new Blob(byteArrays, {
+                type: contentType
+            });
+        }
+
+
     };
 
     var LinkDialog = function(handler) {
@@ -5643,6 +5824,9 @@
             hToolbarAndPopoverUpdate(event);
         };
 
+        /*
+           更新工具条、弹窗
+         */
         var hToolbarAndPopoverUpdate = function(event) {
             // delay for range after mouseup
             setTimeout(function() {
@@ -5669,6 +5853,9 @@
             modules.handle.hide(layoutInfo.handle());
         };
 
+        /*
+          清除按钮的鼠标点击事件
+         */
         var hToolbarAndPopoverMousedown = function(event) {
             // prevent default event when insertTable (FF, Webkit)
             var $btn = $(event.target).closest('[data-event]');
@@ -5677,6 +5864,9 @@
             }
         };
 
+        /*
+          按钮点击事件
+         */
         var hToolbarAndPopoverClick = function(event) {
             var $btn = $(event.target).closest('[data-event]');
 

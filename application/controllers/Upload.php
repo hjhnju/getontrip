@@ -18,8 +18,8 @@ class UploadController extends Base_Controller_Page {
         }
 
         //特殊处理剪贴板的图片 改为$_FILES['file']['type']
-        $ext = substr($_FILES['file']['type'], -3);
-        if (!in_array($ext, array('jpg', 'gif', 'png'))) {
+        $ext = explode("/",$_FILES['file']['type']);
+        if (!isset($ext[1])||!in_array($ext[1], array('jpg', 'gif', 'jpeg','png'))) {
              return $this->ajaxError(Base_RetCode::PARAM_ERROR);
         }
          

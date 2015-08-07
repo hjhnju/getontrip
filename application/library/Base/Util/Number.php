@@ -121,6 +121,21 @@ class Base_Util_Number {
             $dec = bcadd(bcmul($dec, $fromRadix), $digitValue); 
         } 
         return $dec; 
-    } 
+    }
+    
+    /**
+     * 将浮点的距离转化成字符串
+     * @param double
+     * @return string
+     */
+    public static function getDis($dis){
+        $strDis = '';
+        if($dis < 1000){
+            $strDis = strval(ceil($dis))."m";
+        }else{
+            $strDis = strval(ceil($dis/1000))."km";
+        }
+        return $strDis;
+    }
 }
 

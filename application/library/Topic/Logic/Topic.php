@@ -73,7 +73,7 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrRet[$key]['from']    = $logicSource->getSourceName($objTopic->from);
             
             if(!empty($arrRet[$key]['image'])){
-                $arrRet[$key]['image']   = "http://".$_SERVER['HTTP_HOST']."/Pic/".$arrRet[$key]['image'].".jpg";
+                $arrRet[$key]['image']  = Base_Util_Image::getUrl($arrRet[$key]['image']);
             }
                        
         }        

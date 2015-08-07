@@ -16,12 +16,14 @@ class UploadController extends Base_Controller_Page {
         if (empty($_FILES['file'])) {
             return $this->ajaxError(Base_RetCode::PARAM_ERROR);
         }
-        
-        $ext = substr($_FILES['file']['name'], -3);
+
+        //特殊处理剪贴板的图片 改为$_FILES['file']['type']
+        $ext = substr($_FILES['file']['type'], -3);
         if (!in_array($ext, array('jpg', 'gif', 'png'))) {
-            return $this->ajaxError(Base_RetCode::PARAM_ERROR);
+             return $this->ajaxError(Base_RetCode::PARAM_ERROR);
         }
-        
+         
+            
         $hash = md5(microtime(true));
         $hash = substr($hash, 8, 16);
         $filename = $hash . '.jpg';

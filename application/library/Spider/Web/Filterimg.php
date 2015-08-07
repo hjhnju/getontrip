@@ -51,7 +51,13 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
     public function uploadImgs(){
         $imgHashArray=array(); 
         foreach ($this->imgUrlArray as $picUrl){
-            $hash = $this->uploadPic($picUrl);
+            //已经上传过的图片，自己网站的图片,则不用上传
+            if($this->isOurUrl($picUrl)){  
+                preg_match('/[a-za-z0-9]{16,16}.jpg/i', $picUrl, $hashs);
+                $hash=preg_replace('/.jpg/i','',$hashs[0]); 
+            }else{
+                $hash = $this->uploadPic($picUrl); 
+            }
             array_push($imgHashArray, $hash);
         }
         $this->imgHashArray = $imgHashArray; 
@@ -106,5 +112,11 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
             '(\/[0-9a-zA-Z_!~\'
         \.;\?:@&=\+\$,%#-\/^\*\|]*)?)$/',  
             $str) == 1;  
+    }
+    
+    public function isOurUrl($str){
+        $ourUrl=parse_url(Base_Config::getConfig('web')->root);
+        $url=parse_url($str);
+        return $ourUrl['host']==$url['host'];
     }
 }

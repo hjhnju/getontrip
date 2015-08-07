@@ -7,7 +7,6 @@ class Base_Logic{
     
     const TYPE_BOOK      = 'book';
         
-    const REDIS_TIME_OUT = 86400;//一天
     
     /**
      * 将字段中带有'_'的key进行处理
@@ -44,17 +43,26 @@ class Base_Logic{
      * @param string $url
      * @return string $hash
      */
-    public function uploadPic($type,$word,$url){
-        $oss = Oss_Adapter::getInstance();
-        $content  = file_get_contents($url);
-        
-        $hash     = $type.$word;
-        $filename = $hash . '.jpg'; 
-        $oss->remove($filename);
-        $res = $oss->writeFileContent($filename, $content);
+    public function uploadPic($url){
+        $oss      = Oss_Adapter::getInstance();
+        $content  = file_get_contents($url);       
+        $hash     = md5(microtime(true));
+        $hash     = substr($hash, 8, 16);
+        $filename = $hash . '.jpg';
+        $res      = $oss->writeFileContent($filename, $content);
         if($res){
            return $hash; 
         }
         return '';
+    }
+    
+    /**
+     * 删除图片
+     * @param string $name
+     * @return boolean
+     */
+    public function delPic($name){
+        $oss  = Oss_Adapter::getInstance();
+        return $oss->remove($name);
     }
 }

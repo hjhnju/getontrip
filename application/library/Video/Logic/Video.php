@@ -74,7 +74,7 @@ class Video_Logic_Video extends Base_Logic{
             $ret               = $e->find('a.figure',0);
             $info['url']       = $ret->getAttribute("href");        
             $ret               = $e->find('a.figure img',0);
-            $info['image']     = $this->uploadPic(self::TYPE_VIDEO, $sightId.$page.$key, $ret->getAttribute("src"));
+            $info['image']     = $this->uploadPic($ret->getAttribute("src"));
             $info['status']    = Video_Type_Status::PUBLISHED;
             $info['from']      = '爱奇艺';
             $info['create_time'] = time();
@@ -106,6 +106,10 @@ class Video_Logic_Video extends Base_Logic{
        
             $redis = Base_Redis::getInstance();
             $index = ($page-1)*self::PAGE_SIZE+$key+1;
+            $picName = $redis->hget(Video_Keys::getVideoInfoName($sightId, $index),'image');
+            if(!empty($picName)){
+                $this->delPic($picName);
+            }
             $redis->delete(Video_Keys::getVideoInfoName($sightId, $index));
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'id',$index);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'title',$info['title']);
@@ -117,7 +121,6 @@ class Video_Logic_Video extends Base_Logic{
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'create_time',$info['create_time']);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'totalNum',$info['totalNum']);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'len',$info['len']);
-            $redis->setTimeout(Video_Keys::getVideoInfoName($sightId, $index),self::REDIS_TIME_OUT);
             
             $info['id']      = $index;
             $arrData[]       = $info;

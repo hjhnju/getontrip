@@ -80,7 +80,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
                     break;
                 }
             }            
-            $hash        = $this->uploadPic(self::TYPE_WIKI,$sight['name'],$image);
+            $hash        = $this->uploadPic($image);
             $content     = $html->find('div.card-summary-content div.para',0);
             if(empty($content)){
                 $content = $html->find('div[class="lemmaWgt-lemmaSummary lemmaWgt-lemmaSummary-light"]',0);
@@ -127,18 +127,20 @@ class Wiki_Logic_Wiki extends Base_Logic{
                 $redis->hset(Wiki_Keys::getWikiCatalogName($sightId, $index, $num),'name',$item['name']);
                 $redis->hset(Wiki_Keys::getWikiCatalogName($sightId, $index, $num),'url',$item['url']);
                 $redis->hset(Wiki_Keys::getWikiCatalogName($sightId, $index, $num),'create_time',time());
-                $redis->setTimeout(Wiki_Keys::getWikiCatalogName($sightId, $index,$num),self::REDIS_TIME_OUT);
                 
                 $arrItems[$id]['id'] = $num;
             }
-
+            
+            $picName = $redis->hget(Wiki_Keys::getWikiInfoName($sightId, $index),'image');
+            if(!empty($picName)){
+                $this->delPic($picName);
+            }
             $redis->delete(Wiki_Keys::getWikiInfoName($sightId, $index));
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'title',$arrTemp['title']);
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'content',$arrTemp['content']);
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'image',$arrTemp['image']);
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'status',$arrTemp['status']);
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'create_time',$arrTemp['create_time']);
-            $redis->setTimeout(Wiki_Keys::getWikiInfoName($sightId, $index),self::REDIS_TIME_OUT);
             
             $arrRet[] = $arrTemp;
             

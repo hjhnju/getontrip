@@ -169,7 +169,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrRet = $objTopic->toArray();
         $logicComment          = new Comment_Logic_Comment();
         $arrRet['commentNum']  = $logicComment->getCommentNum($topicId);
-        
+               
         //话题来源
         $logicSource = new Source_Logic_Source();
         $arrRet['from']    = $logicSource->getSourceName($objTopic->from);
@@ -180,7 +180,11 @@ class Topic_Logic_Topic extends Base_Logic{
         $logicUser = new User_Logic_User();
         $userId    = $logicUser->getUserId($device_id);
         $redis->zAdd(Topic_Keys::getTopicVisitKey($topicId),time(),$userId);
-               
+        
+        //访问数
+        $logicTopic            = new Topic_Logic_Topic();
+        $arrRet['visitNum']  = strval($this->getTopicVistPv($topicId, '10 year ago'));
+                       
         return $arrRet;
     }    
     

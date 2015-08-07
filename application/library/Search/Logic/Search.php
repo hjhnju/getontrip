@@ -39,7 +39,7 @@ class Search_Logic_Search{
             'city'  => $arrCity['list'],
             'sight' => $arrSight,
             'topic' => $arrTopic['list'],
-            'theme' => $arrTheme,
+            'theme' => $arrTheme['list'],
         );
     }
 }

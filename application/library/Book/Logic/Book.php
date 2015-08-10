@@ -87,7 +87,7 @@ class Book_Logic_Book extends Base_Logic{
                 continue;
             }
             $temp[$key]['url']       = "http://item.jd.com/".$val['skuId'].".html";
-            $temp[$key]['imageUrl']  = $this->uploadPic(self::TYPE_BOOK, $query.$page.$key,$temp[$key]['imageUrl']);
+            $temp[$key]['imageUrl']  = $this->uploadPic($temp[$key]['imageUrl']);
             $detailRequest = new WareBasebookGetRequest();
             $detailRequest->setSkuId($val['skuId']);
             $detail = $c->execute($detailRequest);
@@ -130,6 +130,12 @@ class Book_Logic_Book extends Base_Logic{
             
             $redis = Base_Redis::getInstance();
             $index = ($page-1)*$pageSize+$key+1;
+            
+            $picName = $redis->hget(Book_Keys::getBookInfoName($sightId, $index),'image');
+            if(!empty($picName)){
+                $this->delPic($picName);
+            }
+            $redis->delete(Book_Keys::getBookInfoName($sightId, $index));
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'id',$index);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'title',$temp[$key]['title']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'author',$temp[$key]['author']);
@@ -144,7 +150,6 @@ class Book_Logic_Book extends Base_Logic{
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'status',$temp[$key]['status']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'create_time',$temp[$key]['create_time']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'totalNum',$temp[$key]['totalNum']);
-            $redis->setTimeout(Book_Keys::getBookInfoName($sightId, $index),self::REDIS_TIME_OUT);
     
             $temp[$key]['id'] = $index;
         }

@@ -12,11 +12,11 @@ class Wiki_Api{
      */
     public static function getWiki($sightId,$page,$pageSize,$status=Wiki_Type_Status::ALL){
         $logicWiki = new Wiki_Logic_Wiki();
-        //$arrWiki   = $logicWiki->getWikis($sightId, $page, $pageSize,$status);
-        //if(empty($arrWiki)){
+        $arrWiki   = $logicWiki->getWikis($sightId, $page, $pageSize,$status);
+        if(empty($arrWiki)){
             return $logicWiki->getWikiSource($sightId,$page,$pageSize,$status);
-        //}
-        //return $arrWiki;
+        }
+        return $arrWiki;
     }
     
     /**

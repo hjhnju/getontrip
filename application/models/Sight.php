@@ -40,7 +40,7 @@ class SightModel extends PgBaseModel
      */
     public function getSightByCity($page,$pageSize,$cityId){
         $from = ($page-1)*$pageSize;
-        $sql = "SELECT * FROM sight WHERE city_id = $cityId  ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
+        $sql = "SELECT id,name,image FROM sight WHERE city_id = $cityId  ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
         try {
             $sth = $this->db->prepare($sql);
             $sth->execute();
@@ -176,7 +176,7 @@ class SightModel extends PgBaseModel
         if(empty($x)){
             $sql = "SELECT * FROM sight where name like '%".$query."%' limit $pageSize offset $offset";
         }else{
-            $sql = "SELECT id, city_id, name, image, describe,  earth_distance(ll_to_earth(sight.x, sight.y),ll_to_earth($x,$y)) AS dis FROM sight where name like '%".$query."%'  ORDER BY dis ASC limit $pageSize offset $offset";
+            $sql = "SELECT id, city_id, name, image, describe, earth_distance(ll_to_earth(sight.x, sight.y),ll_to_earth($x,$y)) AS dis FROM sight where name like '%".$query."%'  ORDER BY dis ASC limit $pageSize offset $offset";
         }                
         try {
             $sth = $this->db->prepare($sql);

@@ -69,16 +69,12 @@ class Home_Logic_List{
             $arr[$index]['topic'] = $this->_logicTopic->getHotTopic($val['id']);
             
             //图片用全路径
-            if(!empty($arr[$index]['image'])){
-                $arr[$index]['image']  = "http://".$_SERVER['HTTP_HOST']."/Pic/".$arr[$index]['image'].".jpg";
+            if(!empty($arr[$index]['image'])){                
+                $arr[$index]['image']  = Base_Util_Image::getUrl($arr[$index]['image']);
             }
             
-            //距离转换成KM
-            if($arr[$index]['dis'] < 1000){
-                $arr[$index]['dis'] = strval(floor($arr[$index]['dis']))."m";
-            }else{
-                $arr[$index]['dis'] = strval(floor($arr[$index]['dis']/1000))."km";
-            }            
+            //距离转换成字符串
+            $arr[$index]['dis'] = Base_Util_Number::getDis($arr[$index]['dis']);          
         }        
         return $arr; 
     }

@@ -33,13 +33,13 @@ class Search_Logic_Search{
     public function search($query, $page, $pageSize,$x,$y){
         $arrCity  = $this->logicCity->queryCityPrefix($query, $page, $pageSize);
         $arrSight = $this->logicSight->search($query, $page, $pageSize,$x,$y);
-        $arrTopic = $this->logicTopic->search(array('title' => $query), $page, $pageSize);
-        $arrTheme = array();
+        $arrTopic = $this->logicTopic->searchTopic($query, $page, $pageSize);
+        $arrTheme = $this->logicTheme->searchTheme(array('name' => $query), $page, $pageSize);
         return array(
             'city'  => $arrCity['list'],
             'sight' => $arrSight,
             'topic' => $arrTopic['list'],
-            'theme' => $arrTheme,
+            'theme' => $arrTheme['list'],
         );
     }
 }

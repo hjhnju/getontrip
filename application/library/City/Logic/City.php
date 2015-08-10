@@ -59,20 +59,31 @@ class City_Logic_City{
      * @return array
      */
     public function getCityInfo($page, $pageSize,$filter=''){
+        $arrHot = array();
+        if(($page == 1)&&(empty($filter)||(strtoupper($filter) == 'A'))){
+            $arrHot = $this->getHotCity();
+        }
         $listCity = new City_List_City();
         $strFilter = "`cityid` = 0 and `provinceid` != 0";
         if(!empty($filter)){
-            $strFilter .=" and `pinyin` like '".strtolower($filter)."%'";
+            $strFilter .=" and `pinyin` > '".strtolower($filter)."%'";
         }
         $listCity->setFilterString($strFilter);
+        $listCity->setFields(array('name','pinyin','id'));
+        $listCity->setOrder("pinyin asc");
         $listCity->setPage($page);
-        $listCity->setPagesize($pageSize);
-        $arrCity = $listCity->toArray();
+        $listCity->setPagesize($pageSize-count($arrHot));
+        $arrCity = $listCity->toArray();     
         foreach ($arrCity['list'] as $key => $val){
-            $city = City_Api::getCityById($val['pid']);
-            $arrCity['list'][$key]['pidname'] = $city['name'];
-        }
-        return $arrCity;
+            $index = strtoupper(substr($val['pinyin'],0,1));
+            unset($val['pinyin']);
+            unset($arrCity['list'][$key]);
+            $arrCity['list'][$index][] = $val;
+        } 
+        if(!empty($arrHot)){
+            $arrCity['list']['hot'] = $arrHot;
+        }       
+        return $arrCity['list'];
     }
     
     /**
@@ -176,6 +187,7 @@ class City_Logic_City{
         $listCity = new City_List_City();
         $strFileter = "`cityid` = 0 and `provinceid` != 0 and name like '".$str."%'";
         $listCity->setFilterString("$strFileter");
+        $listCity->setFields(array('id','name','pid'));
         $listCity->setPage($page);
         $listCity->setPagesize($pageSize);
         $arrCity = $listCity->toArray();
@@ -222,5 +234,22 @@ class City_Logic_City{
             $count += $redis->zSize(Sight_Keys::getSightTopicName($val['id']));
         }
         return $count;
+    }
+    
+    /**
+     * 获取热门城市信息
+     * @return array
+     */
+    public function getHotCity(){
+        $arrHotCity = array(
+            array('id' =>2,   'name'=>'北京'),
+            array('id' =>41,  'name'=>'上海'),
+            array('id' =>2185,'name'=>'广州'),
+            array('id' =>2211,'name'=>'深圳'),
+            array('id' =>925, 'name'=>'南京'),
+            array('id' =>1058,'name'=>'杭州'),
+            array('id' =>972, 'name'=>'苏州'),
+        );
+        return $arrHotCity;
     }
 }

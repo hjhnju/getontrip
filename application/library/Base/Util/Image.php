@@ -8,7 +8,7 @@ class Base_Util_Image {
      * @return string
      */
     public static function getUrl($hash, $width = 0, $height = 0) {
-        $url = "/pic/$hash";
+        $url = "http://".$_SERVER['HTTP_HOST']."/pic/$hash";
         if ($width > 0) {
             $url .= "_{$width}";
             if ($height > 0) {

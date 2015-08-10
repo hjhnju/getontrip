@@ -181,7 +181,15 @@ class Sight_Logic_Sight{
      */
     public function addSight($arrInfo){
         $ret = $this->modelSight->addNewSight($arrInfo);
-        return $ret;
+        if($ret){
+            $data = $this->modelSight->query(array('name' => $arrInfo['name']), 1, 1);
+            $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
+            $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
+            $http = Base_Network_Http::instance()->url($url);
+            $http->timeout(1);
+            $http->exec();
+        }
+        return $ret; 
     }
     
     /**

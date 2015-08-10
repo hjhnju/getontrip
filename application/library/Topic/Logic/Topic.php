@@ -9,6 +9,7 @@ class Topic_Logic_Topic extends Base_Logic{
     protected $sightId = '';
     protected $size    = 2;
     protected $strTags = '';
+    protected $contentSize = 75;
     protected $strDate = "1 month ago";
     
     public function __construct(){
@@ -52,9 +53,12 @@ class Topic_Logic_Topic extends Base_Logic{
             }              
             
             $objTopic = new Topic_Object_Topic();
-            $objTopic->setFileds(array('id', 'title', 'subtitle', 'desc', 'image', 'from', 'url'));
+            $objTopic->setFileds(array('id', 'title', 'subtitle', 'content', 'image', 'from', 'url'));
             $objTopic->fetch(array('id' => $val));
             $arrRet[] = $objTopic->toArray();
+
+            $arrRet[$key]['desc'] = Base_Util_String::getSubString($arrRet[$key]['content'],$this->contentSize);
+            unset($arrRet[$key]['content']);
                                    
             $arrHotDegree[] = $this->getTopicHotDegree($val, $period);
             
@@ -69,7 +73,7 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrRet[$key]['from']    = $logicSource->getSourceName($objTopic->from);
             
             if(!empty($arrRet[$key]['image'])){
-                $arrRet[$key]['image']   = "http://".$_SERVER['HTTP_HOST']."/Pic/".$arrRet[$key]['image'].".jpg";
+                $arrRet[$key]['image']  = Base_Util_Image::getUrl($arrRet[$key]['image']);
             }
                        
         }        
@@ -104,7 +108,7 @@ class Topic_Logic_Topic extends Base_Logic{
             $time      = strtotime($period);
             $strFileter .= " AND `update_time` > $time";
         }
-        $listTopic->setFields(array('id','title','desc','image','from'));
+        $listTopic->setFields(array('id','title','content','image','from'));
         $listTopic->setFilterString($strFileter);
         $listTopic->setOrder("update_time desc");
         $listTopic->setPage($page);
@@ -119,6 +123,9 @@ class Topic_Logic_Topic extends Base_Logic{
                     continue;
                 }
             }            
+            
+            $ret['list'][$key]['desc'] = Base_Util_String::getSubString($ret['list'][$key]['content'],$this->contentSize);
+            unset($ret['list'][$key]['content']);
 
             //话题收藏数
             $logicCollect      = new Collect_Logic_Collect();
@@ -156,13 +163,13 @@ class Topic_Logic_Topic extends Base_Logic{
      * @param integer $topicId
      * @return Topic_Object_Topic
      */
-    public function getTopicDetail($topicId,$device_id,$page,$pageSize){
+    public function getTopicDetail($topicId,$device_id){
         $objTopic = new Topic_Object_Topic();
         $objTopic->fetch(array('id' => $topicId));
         $arrRet = $objTopic->toArray();
         $logicComment          = new Comment_Logic_Comment();
         $arrRet['commentNum']  = $logicComment->getCommentNum($topicId);
-        
+               
         //话题来源
         $logicSource = new Source_Logic_Source();
         $arrRet['from']    = $logicSource->getSourceName($objTopic->from);
@@ -173,7 +180,11 @@ class Topic_Logic_Topic extends Base_Logic{
         $logicUser = new User_Logic_User();
         $userId    = $logicUser->getUserId($device_id);
         $redis->zAdd(Topic_Keys::getTopicVisitKey($topicId),time(),$userId);
-               
+        
+        //访问数
+        $logicTopic            = new Topic_Logic_Topic();
+        $arrRet['visitNum']  = strval($this->getTopicVistPv($topicId, '10 year ago'));
+                       
         return $arrRet;
     }    
     
@@ -305,7 +316,12 @@ class Topic_Logic_Topic extends Base_Logic{
         if(!empty($filter)){
             $listTopic->setFilterString($filter);
         }
-        $listTopic->setFields(array('id','title','from','url','image','status','create_time','update_time'));
+        if(isset($arrParam['id'])){
+            $listTopic->setFields(array('id','title','from','content','url','image','status','create_time','update_time'));
+        }else{
+            $listTopic->setFields(array('id','title','from','url','image','status','create_time','update_time'));
+        }
+        
         $listTopic->setPage($page);
         $listTopic->setPagesize($pageSize);
         $arrRet = $listTopic->toArray();
@@ -632,5 +648,28 @@ class Topic_Logic_Topic extends Base_Logic{
             }
         }
         return $ret;
+    }
+    
+    /**
+     * 根据话题名搜索话题，并且结果不包含标签、景点信息
+     * @param string $title
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function searchTopic($title,$page,$pageSize){
+        $listTopic     = new Topic_List_Topic();
+        $logicCollect  = new Collect_Logic_Collect();
+        $filter = "`title` like '%".$title."%'";
+        $listTopic->setFields(array('id','title','image'));
+        $listTopic->setFilterString($filter);
+        $listTopic->setPage($page);
+        $listTopic->setPagesize($pageSize);
+        $arrRet = $listTopic->toArray();
+        
+        foreach ($arrRet['list'] as $key => $val){
+            $arrRet['list'][$key]['collect'] = $logicCollect->getCollectNum(Collect_Keys::TOPIC, $val['id']);
+        }
+        return $arrRet;
     }
 }

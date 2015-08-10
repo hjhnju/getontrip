@@ -36,6 +36,8 @@ class Bootstrap extends Base_Bootstrap{
 
     public function _initPlugin(Yaf_Dispatcher $dispatcher) {
         //注册一个插件
+        $plugin = new ModulePlugin();
+        $dispatcher->registerPlugin($plugin);
     }
 
     public function _initRoute(Yaf_Dispatcher $dispatcher) {
@@ -48,5 +50,4 @@ class Bootstrap extends Base_Bootstrap{
             $routes = $router->getRoutes();
         }
     }
-
 }

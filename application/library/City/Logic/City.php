@@ -63,23 +63,25 @@ class City_Logic_City{
         if(($page == 1)&&(empty($filter)||(strtoupper($filter) == 'A'))){
             $arrHot = $this->getHotCity();
         }
-        $listCity = new City_List_City();
-        $strFilter = "`cityid` = 0 and `provinceid` != 0";
-        if(!empty($filter)){
-            $strFilter .=" and `pinyin` > '".strtolower($filter)."%'";
+        if($pageSize-count($arrHot) > 0){
+            $listCity = new City_List_City();
+            $strFilter = "`cityid` = 0 and `provinceid` != 0";
+            if(!empty($filter)){
+                $strFilter .=" and `pinyin` > '".strtolower($filter)."%'";
+            }
+            $listCity->setFilterString($strFilter);
+            $listCity->setFields(array('name','pinyin','id'));
+            $listCity->setOrder("pinyin asc");
+            $listCity->setPage($page);
+            $listCity->setPagesize($pageSize-count($arrHot));
+            $arrCity = $listCity->toArray();     
+            foreach ($arrCity['list'] as $key => $val){
+                $index = strtoupper(substr($val['pinyin'],0,1));
+                unset($val['pinyin']);
+                unset($arrCity['list'][$key]);
+                $arrCity['list'][$index][] = $val;
+            } 
         }
-        $listCity->setFilterString($strFilter);
-        $listCity->setFields(array('name','pinyin','id'));
-        $listCity->setOrder("pinyin asc");
-        $listCity->setPage($page);
-        $listCity->setPagesize($pageSize-count($arrHot));
-        $arrCity = $listCity->toArray();     
-        foreach ($arrCity['list'] as $key => $val){
-            $index = strtoupper(substr($val['pinyin'],0,1));
-            unset($val['pinyin']);
-            unset($arrCity['list'][$key]);
-            $arrCity['list'][$index][] = $val;
-        } 
         if(!empty($arrHot)){
             $arrCity['list']['hot'] = $arrHot;
         }       

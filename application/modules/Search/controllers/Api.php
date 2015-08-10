@@ -4,7 +4,7 @@
  * @author huwei
  *
  */
-class IndexController extends Base_Controller_Api {
+class ApiController extends Base_Controller_Api {
     
     const PAGESIZE = 5;
     
@@ -14,7 +14,7 @@ class IndexController extends Base_Controller_Api {
     }
     
     /**
-     * 接口1：/search/
+     * 接口1：/api/search/
      * 搜索信息接口
      * @param integer page
      * @param integer pageSize

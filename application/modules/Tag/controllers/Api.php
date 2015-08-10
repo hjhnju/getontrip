@@ -4,7 +4,7 @@
  * @author huwei
  *
  */
-class ListController extends Base_Controller_Page {
+class ApiController extends Base_Controller_Page {
     
     const PAGE_SIZE = 10;
     
@@ -17,13 +17,13 @@ class ListController extends Base_Controller_Page {
     }
     
     /**
-     * 接口1：/tag/list
+     * 接口1：/api/tag/list
      * 获取所有标签信息
      * @param integer page
      * @param integer pageSize
      * @return json
      */
-    public function indexAction(){
+    public function listAction(){
         $page     = isset($_POST['page'])?intval($_POST['page']):1;
         $pageSize = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGE_SIZE;
         $ret = $this->logic->getTagList($page, $pageSize);
@@ -34,7 +34,7 @@ class ListController extends Base_Controller_Page {
     }  
     
     /**
-     * 接口2：/tag/list/hot
+     * 接口2：/api/tag/hot
      * 获取热门标签接口
      * @param integer size，热门标签TOP 几
      * @return json

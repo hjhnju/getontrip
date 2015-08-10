@@ -18,8 +18,8 @@ class InfoController extends Base_Controller_Api {
      * @return json
      */
     public function indexAction() {
-        $deviceId      = $_POST['deviceId'];
-        $logic      = new User_Logic_Info();
+        $deviceId   = $_POST['deviceId'];
+        $logic      = new User_Logic_Third();
         $ret        = $logic->getUserInfo($deviceId);
         $this->ajax($ret);
     }   
@@ -33,7 +33,7 @@ class InfoController extends Base_Controller_Api {
     public function editAction(){
         $deviceId      = $_POST['deviceId'];
         $deviceId      = $_POST['deviceId'];
-        $logic      = new User_Logic_Info();
+        $logic      = new User_Logic_Third();
         $ret        = $logic->getUserInfo($deviceId);
         $this->ajax($ret);
     }

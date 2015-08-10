@@ -14,13 +14,13 @@ class ApiController extends Base_Controller_Api {
     }
     
     /**
-     * 接口1：/topic/api/detail
+     * 接口1：/api/topic
      * 话题详情页接口
      * @param integer topicId，话题ID
      * @param string deviceId，用户的设备ID（因为要统计UV）
      * @return json
      */
-    public function detailAction() {
+    public function indexAction() {
         $topicId    = isset($_POST['topicId'])?intval($_POST['topicId']):'';
         $deviceId   = isset($_POST['deviceId'])?trim($_POST['deviceId']):'';
         $deviceId   = 1;

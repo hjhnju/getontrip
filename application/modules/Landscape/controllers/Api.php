@@ -4,7 +4,7 @@
  * @author huwei
  *
  */
-class IndexController extends Base_Controller_Api {
+class ApiController extends Base_Controller_Api {
     
     public function init() {
         $this->setNeedLogin(false);
@@ -12,7 +12,7 @@ class IndexController extends Base_Controller_Api {
     }
     
     /**
-     * 接口1：/landscape
+     * 接口1：/api/landscape
      * 景观详情信息接口
      * @param integer id
      * @param double  x,经度

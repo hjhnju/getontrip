@@ -73,7 +73,7 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrRet[$key]['from']    = $logicSource->getSourceName($objTopic->from);
             
             if(!empty($arrRet[$key]['image'])){
-                $arrRet[$key]['image']  = Base_Util_Image::getUrl($arrRet[$key]['image']);
+                $arrRet[$key]['image']  = Base_Image::getUrlByHash($arrRet[$key]['image']);
             }
                        
         }        

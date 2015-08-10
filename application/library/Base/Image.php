@@ -52,4 +52,23 @@ class Base_Image {
         $image->resize_to($width, $height, $fit, $fill_color);
         $image->save_to($dst);
     }
+    
+    /**
+     * 获取图片的URL地址 Base_Image::getUrlByHash($hash, $width = 0, $height = 0)
+     * @param string $hash
+     * @param number $width
+     * @param number $height
+     * @return string
+     */
+    public static function getUrlByHash($hash, $width = 0, $height = 0) {
+        $url = "/pic/$hash";
+        if ($width > 0) {
+            $url .= "_{$width}";
+            if ($height > 0) {
+                $url .= "_{$height}";
+            }
+        }
+        $url .= ".jpg";
+        return $url;
+    }
 }

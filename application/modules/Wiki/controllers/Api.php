@@ -1,10 +1,10 @@
 <?php
 /**
- * 评论页接口
+ * 百科接口
  * @author huwei
  *
  */
-class ListController extends Base_Controller_Api {
+class ApiController extends Base_Controller_Api {
     
     const PAGESIZE = 6;
     
@@ -14,22 +14,22 @@ class ListController extends Base_Controller_Api {
     }
     
     /**
-     * 接口1：/comment/list
-     * 评论列表页
-     * @param integer topicId，话题ID
+     * 接口1：/api/wiki
+     * 百科详情接口
      * @param integer page
      * @param integer pageSize
+     * @param integer sightId,景点ID
      * @return json
      */
     public function indexAction() {
-        $topicId    = isset($_POST['topicId'])?intval($_POST['topicId']):'';
         $page       = isset($_POST['page'])?intval($_POST['page']):1;
-        $pageSize   = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGESIZE;
-        if(empty($topicId)){
+        $pageSize   = isset($_POST['pageSize'])?intval($_POST['page']):self::PAGESIZE;
+        $sightId    = isset($_POST['sightId'])?intval($_POST['sightId']):'';
+        if(empty($sightId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $logic      = new Comment_Logic_Comment();
-        $ret        = $logic->getCommentList($topicId, $page, $pageSize);
+        $logic      = new Wiki_Logic_Wiki();
+        $ret        = $logic->getWikis($sightId,$page,$pageSize);
         $this->ajax($ret);
-    }    
+    }   
 }

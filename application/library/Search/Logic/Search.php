@@ -32,7 +32,24 @@ class Search_Logic_Search{
      */
     public function search($query, $page, $pageSize,$x,$y){
         $arrCity  = $this->logicCity->queryCityPrefix($query, $page, $pageSize);
+        foreach ($arrCity['list'] as $key => $val){
+            $arrCity['list'][$key]['desc'] = sprintf("%d个景点，%d个话题",$val['sight_num'],$val['topic_num']);
+            unset($arrCity['list'][$key]['sight_num']);
+            unset($arrCity['list'][$key]['topic_num']);
+            unset($arrCity['list'][$key]['pidname']);
+            unset($arrCity['list'][$key]['pid']);
+        }        
+        
         $arrSight = $this->logicSight->search($query, $page, $pageSize,$x,$y);
+        foreach ($arrSight as $key => $val){
+            $arrSight[$key]['desc']  = sprintf("%d个话题",$val['topicNum']);
+            $arrSight[$key]['image'] = Base_Image::getUrlByHash($val['image']);
+            unset($arrSight[$key]['city_id']);
+            unset($arrSight[$key]['topicNum']);
+            unset($arrSight[$key]['describe']);
+            unset($arrSight[$key]['dis']);
+            unset($arrSight[$key]['city_id']);
+        }
         $arrTopic = $this->logicTopic->searchTopic($query, $page, $pageSize);
         $arrTheme = $this->logicTheme->searchTheme(array('name' => $query), $page, $pageSize);
         return array(

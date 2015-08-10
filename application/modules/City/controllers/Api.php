@@ -4,9 +4,9 @@
  * @author huwei
  *
  */
-class DetailController extends Base_Controller_Page {
+class ApiController extends Base_Controller_Page {
     
-    const PAGE_SIZE = 6;
+    const PAGE_SIZE = 10;
     
     protected $_logicCity;
     
@@ -17,12 +17,12 @@ class DetailController extends Base_Controller_Page {
     }
     
     /**
-     * 接口1：/city/detail
+     * 接口1：/api/city/detail
      * 获取城市信息
      * @param integer cityId,城市ID
      * @return json
      */
-    public function indexAction(){
+    public function detailAction(){
         $cityId   = isset($_POST['cityId'])?intval($_POST['cityId']):'';
         $page     = isset($_POST['page'])?intval($_POST['page']):1;
         $pageSize = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGE_SIZE;
@@ -35,4 +35,23 @@ class DetailController extends Base_Controller_Page {
         }
         return $this->ajaxError();
     }  
+    
+    /**
+     * 接口1：/api/city/list
+     * 获取城市列表信息
+     * @param char filter,前缀字母
+     * @param integer page,页码
+     * @param integer pageSize,页面大小
+     * @return json
+     */
+    public function listAction(){
+        $filter   = isset($_POST['filter'])?trim($_POST['filter']):'';
+        $page     = isset($_POST['page'])?intval($_POST['page']):1;
+        $pageSize = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGE_SIZE;
+        $ret = City_Api::getCityInfo($page, $pageSize,$filter);
+        if($ret){
+            return $this->ajax($ret);
+        }
+        return $this->ajaxError();
+    }
 }

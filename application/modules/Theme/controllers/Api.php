@@ -21,7 +21,7 @@ class ApiController extends Base_Controller_Page {
      * @return json
      */
     public function detailAction(){
-        $id  = isset($_POST['id'])?intval($_POST['id']):'';
+        $id  = isset($_REQUEST['id'])?intval($_REQUEST['id']):'';
         if(empty($id)){
            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         } 

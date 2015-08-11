@@ -22,10 +22,9 @@ class ApiController extends Base_Controller_Api {
      * @return json
      */
     public function indexAction() {
-        $page       = isset($_POST['page'])?intval($_POST['page']):1;
-        $pageSize   = isset($_POST['pageSize'])?intval($_POST['page']):self::PAGESIZE;
-        $sightId    = isset($_POST['sightId'])?intval($_POST['sightId']):'';
-        $sightId = 1;
+        $page       = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['page']):self::PAGESIZE;
+        $sightId    = isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
         if(empty($sightId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }

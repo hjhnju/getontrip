@@ -24,11 +24,10 @@ class AddController extends Base_Controller_Api {
      * @return json
      */
     public function addAction() {
-        $topicId    = isset($_POST['topicId'])?intval($_POST['topicId']):'';
-        $deviceId   = isset($_POST['deviceId'])?trim($_POST['deviceId']):'';
-        $toUserId   = isset($_POST['toUserId'])?intval($_POST['toUserId']):'';
-        $content    = isset($_POST['content'])?intval($_POST['content']):'';
-               
+        $topicId    = isset($_REQUEST['topicId'])?intval($_REQUEST['topicId']):'';
+        $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
+        $toUserId   = isset($_REQUEST['toUserId'])?intval($_REQUEST['toUserId']):'';
+        $content    = isset($_REQUEST['content'])?intval($_REQUEST['content']):'';               
         if(empty($topicId) || empty($deviceId)|| empty($toUserId) ||empty($content)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
@@ -46,9 +45,9 @@ class AddController extends Base_Controller_Api {
      * @return json
      */
     public function listAction() {
-        $topicId    = isset($_POST['topicId'])?intval($_POST['topicId']):'';
-        $page       = isset($_POST['page'])?intval($_POST['page']):1;
-        $pageSize   = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGESIZE;
+        $topicId    = isset($_REQUEST['topicId'])?intval($_REQUEST['topicId']):'';
+        $page       = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
         if(empty($topicId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }

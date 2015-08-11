@@ -26,7 +26,7 @@ class Topic_Object_Topic extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'title', 'subtitle', 'content', 'desc', 'image', 'user_id', 'from', 'url', 'status', 'x', 'y', 'create_time', 'update_time');
+    protected $fields = array('id', 'title', 'subtitle', 'content', 'desc', 'image', 'user_id', 'from', 'url', 'status', 'x', 'y', 'create_time', 'update_time', 'hot1', 'hot2', 'hot3');
 
     /**
      * 字段与属性隐射关系
@@ -47,6 +47,9 @@ class Topic_Object_Topic extends Base_Object {
         'y'           => 'y',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
+        'hot1'        => 'hot1',
+        'hot2'        => 'hot2',
+        'hot3'        => 'hot3',
     );
 
     /**
@@ -60,6 +63,9 @@ class Topic_Object_Topic extends Base_Object {
         'status'      => 1,
         'create_time' => 1,
         'update_time' => 1,
+        'hot1'        => 1,
+        'hot2'        => 1,
+        'hot3'        => 1,
     );
 
     /**
@@ -80,31 +86,31 @@ class Topic_Object_Topic extends Base_Object {
      * 标题
      * @var string
      */
-    public $title ='';
+    public $title;
 
     /**
      * 
      * @var string
      */
-    public $subtitle = '';
+    public $subtitle;
 
     /**
      * 话题内容
      * @var string
      */
-    public $content = '';
+    public $content;
 
     /**
      * 补充描述
      * @var string
      */
-    public $desc = '';
+    public $desc;
 
     /**
      * 话题背景图片
      * @var string
      */
-    public $image = '';
+    public $image;
 
     /**
      * 话题作者ID
@@ -122,7 +128,7 @@ class Topic_Object_Topic extends Base_Object {
      * 源链接
      * @var string
      */
-    public $url = '';
+    public $url;
 
     /**
      * 话题状态,1:未发布,2:审核中,3:审核通过,4:审核未通过,5:已发布,6:已删除
@@ -153,5 +159,23 @@ class Topic_Object_Topic extends Base_Object {
      * @var integer
      */
     public $updateTime;
+
+    /**
+     * 话题热度:7天
+     * @var integer
+     */
+    public $hot1;
+
+    /**
+     * 话题热度:30天
+     * @var integer
+     */
+    public $hot2;
+
+    /**
+     * 话题热度:xxx天
+     * @var integer
+     */
+    public $hot3;
 
 }

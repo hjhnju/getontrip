@@ -13,11 +13,7 @@ class User_Logic_Login {
     
     //需要使用默认登录后路转地址的URL
     protected static $arrUrl = array(
-        '/user/regist',
         '/user/login',
-        '/user/modifypwd',
-        '/m/regist',
-        '/m/login',
     );
 
     public function __construct(){
@@ -40,12 +36,29 @@ class User_Logic_Login {
      * 设置用户的登陆状态
      * @return boolean
      */ 
-    public function setLogin($objUser){
-        if(is_object($objUser)){
-            Yaf_Session::getInstance()->set(User_Keys::getLoginUserKey(), $objUser->userid);
-            return true;
+    public function setLogin($openId,$type,$deviceId){
+        $objLogin = new User_Object_Login();
+        
+        $intType  = User_Type_Login::getAuthType($type);
+        
+        $objLogin->fetch(array('open_id' => $openId,'auth_type' => $intType));
+        $arr = $objLogin->toArray();
+        if(empty($arr)){
+            $objUser = new User_Object_User();
+            $objUser->deviceId = $deviceId;
+            $objUser->save();
+            
+            $objLogin->openId   = $openId;
+            $objLogin->userId   = $objUser->id;
+            $objLogin->authType = $intType;
+            $userid             = $objUser->id;
+        }else{
+           $userid = $arr['user_id']; 
         }
-        return false;
+        $objLogin->loginTime = time();
+        $objLogin->save();        
+        $ret = Yaf_Session::getInstance()->set(User_Keys::getLoginUserKey(), $userid);
+        return $ret;           
     }
     
     /**

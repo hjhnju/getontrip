@@ -51,6 +51,7 @@ class Search_Logic_Search{
             unset($arrSight[$key]['city_id']);
         }
         $arrTopic = $this->logicTopic->searchTopic($query, $page, $pageSize);
+
         $arrTheme = $this->logicTheme->searchTheme(array('name' => $query), $page, $pageSize);
         return array(
             'city'  => $arrCity['list'],

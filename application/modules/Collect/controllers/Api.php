@@ -23,9 +23,9 @@ class ApiController extends Base_Controller_Page {
      * @return json
      */
     public function addAction() {
-        $type      = isset($_POST['type'])?intval($_POST['type']):Collect_Type::SIGHT;
-        $device_id = isset($_POST['device'])?trim($_POST['device']):'';
-        $obj_id  = isset($_POST['objid'])?trim($_POST['objid']):'';
+        $type      = isset($_REQUEST['type'])?intval($_REQUEST['type']):Collect_Type::SIGHT;
+        $device_id = isset($_REQUEST['device'])?trim($_REQUEST['device']):'';
+        $obj_id  = isset($_REQUEST['objid'])?trim($_REQUEST['objid']):'';
         if(empty($type) || empty($device_id) || empty($sight_id)){
             return $this->ajaxError(Collect_RetCode::PARAM_ERROR,
                 Collect_RetCode::getMsg(Collect_RetCode::PARAM_ERROR));
@@ -45,8 +45,8 @@ class ApiController extends Base_Controller_Page {
      * @return json
      */
     public function listAction() {
-        $type      = isset($_POST['type'])?intval($_POST['type']):Collect_Type::TOPIC;
-        $device_id = isset($_POST['device'])?trim($_POST['device']):'';
+        $type      = isset($_REQUEST['type'])?intval($_REQUEST['type']):Collect_Type::TOPIC;
+        $device_id = isset($_REQUEST['device'])?trim($_REQUEST['device']):'';
         if(empty($type) || empty($device_id) ){
             return $this->ajaxError(Collect_RetCode::PARAM_ERROR,
                 Collect_RetCode::getMsg(Collect_RetCode::PARAM_ERROR));

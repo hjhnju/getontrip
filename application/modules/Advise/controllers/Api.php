@@ -19,8 +19,8 @@ class ApiController extends Base_Controller_Api {
      * @return json
      */
     public function addAction() {
-        $deviceId   = isset($_POST['deviceId'])?trim($_POST['deviceId']):'';
-        $strAdvise  = isset($_POST['advise'])?trim($_POST['advise']):'';
+        $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
+        $strAdvise  = isset($_REQUEST['advise'])?trim($_REQUEST['advise']):'';
         if(empty($deviceId) || empty($strAdvise)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
@@ -36,7 +36,7 @@ class ApiController extends Base_Controller_Api {
      * @return json
      */
     public function indexAction() {
-        $deviceId   = isset($_POST['deviceId'])?trim($_POST['deviceId']):'';
+        $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
         if(empty($deviceId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }

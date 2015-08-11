@@ -16,8 +16,8 @@ class User_Logic_Third {
     
     //第三方登录需要的配置信息
     protected static $arrConfig = array(
-        'auth_code_redirect_url'    => '/user/login/third',
-        'access_token_redirect_url' => '/user/login/third',
+        'auth_code_redirect_url'    => '/user/login/auth',
+        'access_token_redirect_url' => '/user/login/auth',
         'qq'               => array(
             'host'         => 'https://graph.qq.com',
             'appid'        => '101180983',
@@ -44,8 +44,8 @@ class User_Logic_Third {
     public function __construct($userid = null){
         if(!empty($userid)){
             $this->userid = $userid;
-            $list         = new User_List_Third();
-            $filters      = array('userid' => $this->userid);
+            $list         = new User_List_User();
+            $filters      = array('id' => $this->userid);
             $list->setFilter($filters);
             foreach ($list->toArray() as $value) {
                 $this->objs[$value['authtype']] = $value;
@@ -147,14 +147,20 @@ class User_Logic_Third {
      * @return $userid || false
      */
     public function getBindUserid($openid, $authtype){
-        $objThird = new User_Object_Third();
-        $objThird->fetch(array(
-            'openid'   => $openid,
-            'authtype' => $this->getAuthType($authtype),
+        $objLogin = new User_Object_Login();
+        $objLogin->fetch(array(
+            'open_id'   => $openid,
+            'auth_type' => $this->getAuthType($authtype),
         ));
-        return isset($objThird->userid) ? $objThird->userid : false;
+        return isset($objLogin->userId) ? $objLogin->userId : false;
     }
-
+    
+    /**
+     * 获取用户昵称
+     * @param string $openid
+     * @param integer $authtype
+     * @return string
+     */
     public function getUserNickname($openid, $authtype){
         $accessToken = Base_Redis::getInstance()->get(User_Keys::getAccessTokenKey($authtype, $openid));
         if(empty($accessToken)){
@@ -164,18 +170,17 @@ class User_Logic_Third {
             ));
             return false;
         }
-        $objThird = $this->getUserInfo($accessToken, $openid, $authtype);
-        return isset($objThird->nickname) ? $objThird->nickname : false;
+        $objInfo = $this->getUserInfo($accessToken, $openid, $authtype);
+        return isset($objInfo->nickname) ? $objInfo->nickname : false;
     }
 
 
      /**
-     * 根据$intType类型获取auth code
-     * 拼接URL的操作，发给前端放在点击授权处
+     * 根据$strType类型获取第三方登录中间页授权页地址
      * @param string $strType
+     * @return string
      */
     public function getAuthCodeUrl($strType){
-
         $redirectUrl  = Base_Config::getConfig('web')->root . self::$arrConfig['auth_code_redirect_url'];
         $arrData = self::$arrConfig[$strType];
         $host    = $arrData['host'];
@@ -196,11 +201,11 @@ class User_Logic_Third {
      * 成功返回true,失败返回false
      */
     public function binding($userid, $openid, $authtype){
-
-        $objThird           = new User_Object_Third();
-        $objThird->userid   = intval($userid); 
-        $objThird->authtype = $this->getAuthType($authtype);
-        $objThird->openid   = $openid;
+        $objLogin           = new User_Object_Login();
+        $objLogin->userId   = intval($userid); 
+        $objLogin->authType = $this->getAuthType($authtype);
+        $objLogin->openId   = $openid;
+        $objLogin->save();
 
         $accessToken = Base_Redis::getInstance()->get(User_Keys::getAccessTokenKey($authtype, $openid));
         if(empty($accessToken)){
@@ -208,9 +213,12 @@ class User_Logic_Third {
                 'userid'=>$userid, 'openid'=>$openid, 'authtype'=>$authtype));
             return false;
         }
-        $thirdUser   = $this->getUserInfo($accessToken, $openid, $authtype);
-        $objThird->nickname = $thirdUser->nickname;
-        $ret = $objThird->save();
+        
+        $objUser    = new User_Object_User();
+        $userInfo   = $this->getUserInfo($accessToken, $openid, $authtype);
+        $objUser->nickname = $userInfo->nickname;
+        $objUser->image    = $userInfo->image;
+        $ret = $objUser->save();
         if(!$ret){
             Base_Log::warn(array('msg'=>'save objThrid failed',
                 'userid'=>$userid, 'openid'=>$openid, 'authtype'=>$authtype));
@@ -348,7 +356,6 @@ class User_Logic_Third {
         	    $type = self::STR_TYPE_WEIXIN;
         	    break;
         	default:
-        	    # code...
         	    break;
         }
         return $type;

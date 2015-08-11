@@ -9,6 +9,10 @@ class Collect_Keys {
     
     const REDIS_THEME_INFO_KEY   = 'collect_theme_info';
     
+    const REDIS_LATE_KEY         = '%s_late_%s';
+    
+    const REDIS_TOTAL_KEY        = '%s_total';
+    
     const TOPIC     = 1;
     
     const SIGHT     = 2;
@@ -31,6 +35,14 @@ class Collect_Keys {
    
     public static function getThemeInfoKey(){
         return self::REDIS_THEME_INFO_KEY;
+    }
+    
+    public static function getLateKeyName($id,$during){
+        return sprintf(self::REDIS_LATE_KEY,$id,$during);
+    }
+    
+    public static function getTotalKeyName($id){
+        return sprintf(self::REDIS_TOTAL_KEY,$id);
     }
     
     public static function getHashKeyByType($type){

@@ -1,31 +1,24 @@
 <?php
 class Sight_Keys {
+    
+    //景点的话题集合
+    const REDIS_SIGHT_TOPIC_KEY   = 'sight_topic_%s';
+    
+    //景点的热门话题数据缓存
+    const REDIS_SIGHT_HOT_KEY    = 'sight_hot_%s_%s';
+    
+    //景点最新话题数据缓存
+    const REDIS_SIGHT_NEW_KEY    = 'sight_new_%s_%s';
 
-    const REDIS_SIGHT_INFO_KEY   = 'sightid_%d';
-    
-    const REDIS_SIGHT_TOPIC_KEY  = 'sight_topic_%s';   
-    
-    const REDIS_SIGHT_NAME_KEY   = 'name';
-    
-    const REDIS_SIGHT_CITYID_KEY   = 'cityid';
-
-    public static function getSightName($id){
-        return sprintf(self::REDIS_SIGHT_INFO_KEY, $id);
-    }
-    
-    public static function getSightTopicName($id){
+    public static function getSightTopicKey($id){
         return sprintf(self::REDIS_SIGHT_TOPIC_KEY, $id);
+    }        
+    
+    public static function getHotTopic($sightId,$strTags=''){
+        return sprintf(self::REDIS_SIGHT_HOT_KEY,$sightId,$strTags);
     }
     
-    public static function getSightNameKey(){
-        return self::REDIS_SIGHT_NAME_KEY;
-    }
-    
-    public static function getCityIdKey(){
-        return self::REDIS_SIGHT_CITYID_KEY;
-    }
-    
-    public static function getTopicNumKey(){
-        return self::REDIS_SIGHT_TOPICNUM_KEY;
+    public static function getNewTopic($sightId,$strTags=''){
+        return sprintf(self::REDIS_SIGHT_NEW_KEY,$sightId,$strTags);
     }
 }

@@ -19,14 +19,35 @@ class Collect_Logic_Collect{
      * @return boolean 
      */
     public function addCollect($type, $device_id, $obj_id){
-        $obj = new Collect_Object_Collect();
+        $obj         = new Collect_Object_Collect();
         $obj->type   = $type;
         $obj->objId  = $obj_id;
         $obj->userId = $this->logicUser->getUserId($device_id);
-        $ret1 = $obj->save();
-        $redis = Base_Redis::getInstance();
-        $ret2 = $redis->zAdd(Collect_Keys::getHashKeyByType($type),$obj_id,time());        
-        return $ret1&&$ret2;
+        $ret         = $obj->save();
+        $redis       = Base_Redis::getInstance();
+        $redis->hDel(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateKeyName($obj_id,'*'));
+        $redis->hDel(Collect_Keys::getHashKeyByType($type),Collect_Keys::getTotalKeyName($obj_id));    
+
+        //更新下热度信息
+        return $ret;
+    }
+    
+    /**
+     * 删除收藏逻辑层,同时注意更新redis中的统计数据
+     * @param integer $type
+     * @param integer $device_id
+     * @param integer $obj_id
+     * @return boolean
+     */
+    public function delCollect($type, $device_id, $obj_id){
+        $obj         = new Collect_Object_Collect();
+        $obj->fetch(array('type' => $type,'obj_id' => $obj_id,'device_id'=> $device_id));
+        $ret         = $obj->remove();
+        $redis       = Base_Redis::getInstance();
+        $redis->hDel(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateKeyName($obj_id,'*'));
+        $redis->hDel(Collect_Keys::getHashKeyByType($type),Collect_Keys::getTotalKeyName($obj_id));    
+        //更新下热度信息
+        return $ret;
     }
     
     /**
@@ -90,13 +111,18 @@ class Collect_Logic_Collect{
      * @param integer $objId
      * @return integer
      */
-    public function getCollectNum($type,$objId){
+    public function getTotalCollectNum($type,$objId){
         $redis = Base_Redis::getInstance();
-        $ret = $redis->zRangeByScore(Collect_Keys::getHashKeyByType($type),$objId,$objId);
-        if(empty($ret)){
-            return 0;
+        $ret = $redis->hGet(Collect_Keys::getHashKeyByType($type),Collect_Keys::getTotalKeyName($objId));
+        if(!empty($ret)){
+            return $ret;
         }
-        return count($ret);
+        $list = new Collect_List_Collect();
+        $list->setPagesize(PHP_INT_MAX);
+        $list->setFilter(array('type' => $type,'obj_id' => $objId));
+        $arrRet = $list->toArray();
+        $redis->hSet(Collect_Keys::getHashKeyByType($type),Collect_Keys::getTotalKeyName($objId),$arrRet['total']);
+        return $arrRet['total'];
     }
     
     /**
@@ -111,17 +137,20 @@ class Collect_Logic_Collect{
         if(empty($periods)){
             $start = 0;
         }else{
-            $start = strtotime($periods);
+            $start = strtotime($periods.' days ago');
         }
-        $ret = $redis->zRangeByScore(Collect_Keys::getHashKeyByType($type),$objId,$objId);
-        if(empty($ret)){
-            return 0;
-        }
-        foreach ($ret as $key => $val){
-            if(($val >= $start) && ($val <= $end)){
-                $count += 1;
-            }
-        }
+        $ret = $redis->hGet(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateKeyName($objId,$periods));
+        if(!empty($ret)){
+            $count = $ret;
+        }else{
+            $list = new Collect_List_Collect();
+            $filter = "'type' = $type and 'obj_id' = $objId and 'create_time' >= $start";
+            $list->setPagesize(PHP_INT_MAX);
+            $list->setFilterString($filter);
+            $arrRet = $list->toArray();
+            $count  = $arrRet['total'];
+            $redis->hSet(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateKeyName($objId,$periods),$count);
+        }        
         return $count;
     }
 }

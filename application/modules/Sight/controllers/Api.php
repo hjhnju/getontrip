@@ -24,38 +24,32 @@ class ApiController extends Base_Controller_Api {
      * @return json
      */
     public function detailAction() {
-        $page       = isset($_POST['page'])?intval($_POST['page']):1;
-        $pageSize   = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGESIZE;
-        $sightId    = isset($_POST['sightId'])?intval($_POST['sightId']):'';
-        $strTags    = isset($_POST['tags'])?trim($_POST['tags']):'';
-        $intOrder   = isset($_POST['order'])?intval($_POST['order']):2;
-        $sightId = 1;
+        $page       = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
+        $sightId    = isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
+        $strTags    = isset($_REQUEST['tags'])?trim($_REQUEST['tags']):'';
+        $intOrder   = isset($_REQUEST['order'])?intval($_REQUEST['order']):2;
         $logic      = new Sight_Logic_Sight();
         $ret        = $logic->getSightDetail($sightId,$page,$pageSize,$intOrder,$strTags);
         $this->ajax($ret);
     }
     
     /**
-     * 接口1：获取景点列表 /api/sight/list
+     * 接口2：获取景点列表 /api/sight/list
      * @param integer $page
      * @param integer $pageSize
      * @param integer $cityId
      * @return array
      */
     public function listAction() {
-        //$page       = $_POST['page'];
-        //$pageSize   = $_POST['pageSize'];
-        //$cityId      = isset($_POST['cityId'])?$_POST['cityId']:'';
-        $page = 1;
-        $pageSize = 10;
-        $cityId = 1;
+        $page     = isset($_REQUEST['page'])?$_REQUEST['page']:1;
+        $pageSize = isset($_REQUEST['pageSize'])?$_REQUEST['pageSize']:self::PAGESIZE;
+        $cityId   = isset($_REQUEST['cityId'])?$_REQUEST['cityId']:'';
         if(!empty($cityId)){
-            $ret  =  Sight_Api::getSightList($page,$pageSize);
-        }else{
             $ret  =  Sight_Api::getSightByCity($cityId,$page,$pageSize);
-        }
-    
+        }else{           
+            $ret  =  Sight_Api::getSightList($page, $pageSize);
+        }   
         $this->ajax($ret);
     }
-    
 }

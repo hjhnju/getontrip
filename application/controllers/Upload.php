@@ -34,7 +34,7 @@ class UploadController extends Base_Controller_Page {
             @unlink($_FILES['file']['tmp_name']);
             $data = array(
                 'hash' => $hash,
-                'url'  => Base_Util_Image::getUrl($hash),
+                'url'  => Base_Image::getUrlByHash($hash),
             );
             $res = array(
                 'status' => 0,

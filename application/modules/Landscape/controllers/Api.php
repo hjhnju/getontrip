@@ -20,9 +20,9 @@ class ApiController extends Base_Controller_Api {
      * @return json
      */
     public function indexAction() {
-        $id    = isset($_POST['id'])?intval($_POST['id']):'';
-        $x     = isset($_POST['x'])?doubleval($_POST['x']):'';
-        $y     = isset($_POST['y'])?doubleval($_POST['y']):'';
+        $id    = isset($_REQUEST['id'])?intval($_REQUEST['id']):'';
+        $x     = isset($_REQUEST['x'])?doubleval($_REQUEST['x']):'';
+        $y     = isset($_REQUEST['y'])?doubleval($_REQUEST['y']):'';
         if(empty($id)||empty($x)||empty($y)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }

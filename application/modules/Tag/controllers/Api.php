@@ -24,8 +24,8 @@ class ApiController extends Base_Controller_Page {
      * @return json
      */
     public function listAction(){
-        $page     = isset($_POST['page'])?intval($_POST['page']):1;
-        $pageSize = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGE_SIZE;
+        $page     = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $pageSize = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGE_SIZE;
         $ret = $this->logic->getTagList($page, $pageSize);
         if($ret){
             return $this->ajax($ret);
@@ -40,7 +40,7 @@ class ApiController extends Base_Controller_Page {
      * @return json
      */
     public function hotAction(){
-        $size     = isset($_POST['size'])?intval($_POST['size']):self::PAGE_SIZE;
+        $size     = isset($_REQUEST['size'])?intval($_REQUEST['size']):self::PAGE_SIZE;
         $ret = $this->logic->getHotTags($size);
         return $this->ajax($ret);
     }

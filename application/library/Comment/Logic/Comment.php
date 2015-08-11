@@ -30,7 +30,7 @@ class Comment_Logic_Comment  extends Base_Logic{
     }
     
     /**
-     * 添加评论信息
+     * 添加评论信息,同时更新下redis
      * @param integer $id
      * @param array $info
      */
@@ -41,7 +41,12 @@ class Comment_Logic_Comment  extends Base_Logic{
         $objComment->toUserId   = $toUserId;
         $objComment->topicId    = $topicId;
         $objComment->content    = $content;
-        return $objComment->save();
+        $ret = $objComment->save();
+        
+        $redis = Base_Redis::getInstance();
+        $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($topicId, '*'));
+        $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($topicId));
+        return $ret;
     }
     
     /**
@@ -88,15 +93,44 @@ class Comment_Logic_Comment  extends Base_Logic{
      * @param string  $during
      * @return integer
      */
-    public function getCommentNum($topicId,$during=''){
+    public function getLateCommentNum($topicId,$during=''){
         if(empty($during)){
             $from = 0;
         }else{
-            $from = strtotime($during);
+            $from = strtotime($during.' days ago');
         }
         $redis = Base_Redis::getInstance();
-        $ret = $redis->zRangeByScore(Topic_Keys::getTopicCommentKey($topicId),$from,time());
-        return count($ret);
+        $ret = $redis->hGet(Comment_Keys::getCommentKey($topicId),Comment_Keys::getLateKey($topicId));
+        if(!empty($ret)){
+            return $ret;
+        }
+        $list   = new Comment_List_Comment();
+        $filter = "'topic_id' = $topicId and 'create_time' >= $during";
+        $list->setPagesize(PHP_INT_MAX);
+        $list->setFilterString($filter);
+        $arrRet = $list->toArray();
+        $redis->hSet(Comment_Keys::Comment_Keys($topicId),Comment_Keys::getLateKey($topicId),$arrRet['total']);
+        return $arrRet['total'];
+    }
+    
+    /**
+     * 获取话题总的评论数
+     * @param integer $topicId
+     * @param string  $during
+     * @return integer
+     */
+    public function getTotalCommentNum($topicId){        
+        $redis = Base_Redis::getInstance();
+        $ret = $redis->hGet(Comment_Keys::getCommentKey($topicId),Comment_Keys::getTotalKey($topicId));
+        if(!empty($ret)){
+            return $ret;
+        }
+        $list   = new Comment_List_Comment();
+        $list->setPagesize(PHP_INT_MAX);
+        $list->setFilter(array('topic_id' => $topicId));
+        $arrRet = $list->toArray();
+        $redis->hSet(Comment_Keys::getCommentKey($topicId),Comment_Keys::getTotalKey($topicId),$arrRet['total']);
+        return $arrRet['total'];
     }
     
     /**

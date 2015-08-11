@@ -23,9 +23,9 @@ class ApiController extends Base_Controller_Page {
      * @return json
      */
     public function detailAction(){
-        $cityId   = isset($_POST['cityId'])?intval($_POST['cityId']):'';
-        $page     = isset($_POST['page'])?intval($_POST['page']):1;
-        $pageSize = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGE_SIZE;
+        $cityId   = isset($_REQUEST['cityId'])?intval($_REQUEST['cityId']):'';
+        $page     = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $pageSize = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGE_SIZE;
         if(empty($cityId)){
            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR)); 
         }
@@ -45,9 +45,9 @@ class ApiController extends Base_Controller_Page {
      * @return json
      */
     public function listAction(){
-        $filter   = isset($_POST['filter'])?trim($_POST['filter']):'';
-        $page     = isset($_POST['page'])?intval($_POST['page']):1;
-        $pageSize = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGE_SIZE;
+        $filter   = isset($_REQUEST['filter'])?trim($_REQUEST['filter']):'';
+        $page     = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $pageSize = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGE_SIZE;
         $ret = City_Api::getCityInfo($page, $pageSize,$filter);
         if($ret){
             return $this->ajax($ret);

@@ -24,10 +24,17 @@ class ApiController extends Base_Controller_Api {
      * @return json
      */
     public function indexAction() {
-        $page       = isset($_POST['page'])?intval($_POST['page']):1;
-        $pageSize   = isset($_POST['pageSize'])?intval($_POST['pageSize']):self::PAGESIZE;
-        $x          = isset($_POST['x'])?doubleval($_POST['x']):'';
-        $y          = isset($_POST['y'])?doubleval($_POST['y']):'';
+        $x          = isset($_REQUEST['x'])?doubleval($_REQUEST['x']):'';
+        $y          = isset($_REQUEST['y'])?doubleval($_REQUEST['y']):'';
+        $city      = isset($_REQUEST['city'])?intval($_REQUEST['city']):2;
+        $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
+        if(empty($x) || empty($y)){
+            $logicCity = new City_Logic_City();
+            $arr       = $logicCity->getCityLoc($city);
+            $x         = $arr['x'];
+            $y         = $arr['y'];
+        }
         $ret        = $this->logicFind->listFind($x,$y,$page,$pageSize);
         $this->ajax($ret);
     }    

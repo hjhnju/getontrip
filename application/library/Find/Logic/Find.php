@@ -21,18 +21,18 @@ class Find_Logic_Find{
     public function listFind($x,$y,$page,$pageSize){
         $logic      = new Topic_Logic_Topic();
         $ret        = $logic->getNewTopic('','',$page,$pageSize);
-        foreach ($ret['list'] as $key => $val){
-            $ret['list'][$key]['dist']  = $this->modelGis->getEarthDistanceToTopic($x,$y,$val['id']);
-            $ret['list'][$key]['dist']  = strval(floor($ret['list'][$key]['dist']/1000));            
-            $ret['list'][$key]['sight'] = '';
-            $ret['list'][$key]['city']  = '';
+        foreach ($ret as $key => $val){
+            $ret[$key]['dist']  = $this->modelGis->getEarthDistanceToTopic($x,$y,$val['id']);
+            $ret[$key]['dist']  = strval(floor($ret[$key]['dist']/1000));            
+            $ret[$key]['sight'] = '';
+            $ret[$key]['city']  = '';
             $sight                      = $this->logicSight->getSightByTopic($val['id'],1,PHP_INT_MAX);
             if(!empty($sight['list'])){
                 $sightInfo = $this->logicSight->getSightById($sight['list'][0]['sight_id']);
-                $ret['list'][$key]['sight'] = $sightInfo['name'];
+                $ret[$key]['sight'] = $sightInfo['name'];
                 
                 $cityInfo  = $this->logicCity->getCityById($sightInfo['city_id']);
-                $ret['list'][$key]['city']  = $cityInfo['name'];
+                $ret[$key]['city']  = $cityInfo['name'];
             }
         }
         return $ret;

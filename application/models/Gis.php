@@ -13,11 +13,12 @@ class GisModel extends PgBaseModel
      * @param array $loc,点的经纬度数组          
      * @return array $ret,返回结果数组
      */
-    public function getNearSight($loc){
+    public function getNearSight($loc,$page,$pageSize){
         $x = $loc['x'];
         $y = $loc['y'];
+        $from = ($page-1)*$pageSize;
         $sql = "SELECT id, city_id, name, image, describe, earth_distance(ll_to_earth(sight.x, sight.y),ll_to_earth($x,$y))" .
-         " AS dis FROM sight ORDER BY dis ASC";
+         " AS dis FROM sight  WHERE hastopic = 1 ORDER BY dis ASC OFFSET $from limit $pageSize";
         try {
             $sth = $this->db->prepare($sql);
             $sth->execute();

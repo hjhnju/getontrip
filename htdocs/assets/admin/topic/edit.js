@@ -18,7 +18,7 @@ $(document).ready(function() {
      *  
      */
     function bindEvents() {
-      
+
         //初始化编辑器
         $('#summernote').summernote({
             lang: "zh-CN",
@@ -203,10 +203,10 @@ $(document).ready(function() {
                 toastr.warning('名称不能为空');
                 return false;
             }
-        /*    if (!$('#source-url').val()) {
-                toastr.warning('url不能为空');
-                return false;
-            }*/
+            /*    if (!$('#source-url').val()) {
+                    toastr.warning('url不能为空');
+                    return false;
+                }*/
             $.ajax({
                 "url": "/admin/Sourceapi/addAndReturn",
                 "data": {
@@ -273,17 +273,31 @@ $(document).ready(function() {
                 },
                 "success": function(response) {
                     if (response.status == 0) {
-                        var data= response.data;
+                        var data = response.data;
                         $('#div-tag label:last').after('<label class="checkbox-inline"><input type="checkbox" name="form-tag" data-name="form-tag" id="" value="' + data.id + '" >' + data.name + '</label>');
                         $('input[data-name="form-tag"]').attr('checked', false);
-                        $('#div-tag input:last').attr('checked', 'ture'); 
+                        $('#div-tag input:last').attr('checked', 'ture');
                         //绑定Uniform
                         Metronic.initUniform($('input[data-name="form-tag"]'));
 
                         //隐藏输入框
-                         $('#addTag').hide();
+                        $('#addTag').hide();
                     }
                 }
+            });
+        });
+
+        //复制链接 
+        var client = new ZeroClipboard(document.getElementById("copy-button"));
+
+        client.on("ready", function(readyEvent) {
+            // alert( "ZeroClipboard SWF is ready!" ); 
+            client.on("aftercopy", function(event) {
+                // `this` === `client`
+                // `event.target` === the element that was clicked
+                /*event.target.style.display = "none";
+                alert("Copied text to clipboard: " + event.data["text/plain"]);*/
+                alert('复制成功！');
             });
         });
     }
@@ -292,7 +306,7 @@ $(document).ready(function() {
        表单验证
      */
     function validations() {
-          //表单提交事件
+        //表单提交事件
         $.validator.setDefaults({
             submitHandler: function(data) {
                 //序列化表单  
@@ -311,7 +325,7 @@ $(document).ready(function() {
 
                 tag_id_array = [];
                 $('input[data-name="form-tag"]:checked').each(function() {
-                    tag_id_array.push(Number($(this).val())); 
+                    tag_id_array.push(Number($(this).val()));
                 });
                 //处理来源
                 var from = "";
@@ -351,7 +365,7 @@ $(document).ready(function() {
                             toastr.success('保存成功');
                             if (url.indexOf('add') >= 0) {
                                 //resetForm();
-                                window.location.href='/admin/topic/edit?action=edit&id='+response.data;
+                                window.location.href = '/admin/topic/edit?action=edit&id=' + response.data;
                             } else {
                                 window.location.reload();
                             }
@@ -390,7 +404,7 @@ $(document).ready(function() {
      * @param  {[type]} file      [description] 
      * @return {[type]}           [description]
      */
-    function sendFile(file) { 
+    function sendFile(file) {
         var filename = false;
         try {
             filename = file['name'];
@@ -398,7 +412,7 @@ $(document).ready(function() {
             filename = false;
         }
         if (!filename) {
-           return;
+            return;
         }
         //以上防止在图片在编辑器内拖拽引发第二次上传导致的提示错误 
         // $('#summernote').summernote('editor.insertImage', 'http://res.cloudinary.com/demo/image/upload/butterfly.jpg'); 

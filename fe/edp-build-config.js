@@ -13,12 +13,14 @@ exports.output = path.resolve( __dirname, '../htdocs/v1', time + 'x2' );
 exports.getProcessors = function () {
     var lessProcessor = new LessCompiler({
         files: [
-            
+            'src/topic/css/detail.less',
+            'src/topic/css/mdetail.less'
         ]
     });
     var cssProcessor = new CssCompressor({
         files: [
-            
+             'src/topic/css/detail.less',
+             'src/topic/css/mdetail.less'
         ]
     });
     var moduleProcessor = new ModuleCompiler({
@@ -33,7 +35,8 @@ exports.getProcessors = function () {
     });
     var jsProcessor = new JsCompressor({
         files: [
-            'src/home/index.js'
+            'src/home/index.js',
+            'src/topic/detail.js'
         ]
     });
     var html2JsProcessor = new Html2JsCompiler({

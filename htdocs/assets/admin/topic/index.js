@@ -6,7 +6,7 @@ $(document).ready(function() {
         "processing": true, //载入数据的时候是否显示“载入中”
         "pageLength": 10, //首次加载的数据条数  
         "searching": false, //是否开启本地分页
-        "ordering":false,
+        "ordering": false,
         "ajax": {
             "url": "/admin/topicapi/list",
             "type": "POST",
@@ -32,16 +32,16 @@ $(document).ready(function() {
             "visible": true,
             "searchable": false
         }, {
-            "targets": [0], 
+            "targets": [0],
             "width": 20
         }, {
-            "targets": [2], 
+            "targets": [2],
             "width": 250
         }, {
-            "targets": [7], 
+            "targets": [7],
             "width": 50
         }, {
-            "targets": [9], 
+            "targets": [9],
             "width": 80
         }],
         "columns": [{
@@ -57,7 +57,7 @@ $(document).ready(function() {
         }, {
             "data": function(e) {
                 if (e.url) {
-                    return '<a href="' + e.url + '" target="_blank" title="' + e.url + '">' + (e.url.length > 20 ? e.url.substr(0, 20)+'...' : e.url) + '</a>';
+                    return '<a href="' + e.url + '" target="_blank" title="' + e.url + '">' + (e.url.length > 20 ? e.url.substr(0, 20) + '...' : e.url) + '</a>';
                 }
                 return '暂无';
             }
@@ -81,13 +81,13 @@ $(document).ready(function() {
             }
         }, {
             "data": function(e) {
-                return e.collect + '/' + e.comment ;
+                return e.collect + '/' + e.comment;
             }
         }, {
             "data": "statusName"
         }, {
             "data": function(e) {
-                return '<a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/topic/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/topic/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
+                return '<button type="button" class="btn btn-success btn-xs copy-button" title="复制链接" data-toggle="tooltip" data-clipboard-text="'+$('#webroot').html()+'/topic/detail/preview?id=' + e.id + '"><i class="fa fa-eye"></i></button><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/topic/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
             }
         }],
         "initComplete": function(setting, json) {
@@ -112,6 +112,14 @@ $(document).ready(function() {
         $('#editable').on('draw.dt', function() {
             //工具提示框
             $('[data-toggle="tooltip"]').tooltip();
+
+            //复制链接 
+            var client = new ZeroClipboard($(".copy-button")); 
+            client.on("ready", function(readyEvent) {
+                client.on("aftercopy", function(event) { 
+                     toastr.success('预览链接复制成功！');
+                });
+            });
         });
 
         //删除操作
@@ -132,7 +140,7 @@ $(document).ready(function() {
                 "success": function(response) {
                     if (response.status == 0) {
                         toastr.success('删除成功');
-                        oTable.fnDeleteRow(nRow); 
+                        oTable.fnDeleteRow(nRow);
                     }
                 }
             });

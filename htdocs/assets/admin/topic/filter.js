@@ -261,7 +261,7 @@ $(document).ready(function() {
                 "url": "/admin/topicapi/addByFilter",
                 "data": params,
                 "type": "post",
-                "dataType": 'json',
+                "dataType": 'json', 
                 "error": function(XMLHttpRequest, textStatus, errorThrown) {
                     $('#addTopic-btn').attr('disabled', false);
                     $('#addTopic-btn').html('添加并创建话题');

@@ -92,6 +92,23 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
         return $this->replaceImg();
     }
 
+
+
+    /**
+    * 处理正文中的图片 [用于客户端详情显示] 
+    * @return [type] [description]
+    */
+    public function getContentToDis(){ 
+       foreach ($this->objDom->find('img') as $img){
+            $oldSrc = $img->src; 
+            //去掉url 后面的参数
+            $web =Base_Config::getConfig('web');
+            $img->src = $web->stroot . '/v1/' . $web->version . '/asset/common/img/imgloading.gif'; 
+            $img->setAttribute('data-actualsrc',$web->root . $oldSrc); 
+          } 
+        return $this->objDom->__toString();
+    }
+
     
     
     /**
@@ -114,6 +131,9 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
             $str) == 1;  
     }
     
+    /*
+     是否是本站图片
+     */
     public function isOurUrl($str){
         $ourUrl=parse_url(Base_Config::getConfig('web')->root);
         $url=parse_url($str);

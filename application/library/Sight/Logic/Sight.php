@@ -145,7 +145,7 @@ class Sight_Logic_Sight{
         $redis = Base_Redis::getInstance();
         $ret = $this->modelSight->search($query, $page, $pageSize,$x,$y);
         foreach ($ret as $key => $val){
-            $ret[$key]['topicNum'] = $redis->zSize(Sight_Keys::getSightTopicName($val['id']));
+            $ret[$key]['topicNum'] = $redis->zSize(Sight_Keys::getSightTopicKey($val['id']));
         }
         return $ret;
     }

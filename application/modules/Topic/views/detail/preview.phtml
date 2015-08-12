@@ -10,8 +10,13 @@
 {%block name="content"%}
 <div class="container">
  <!--  <div class="top-bar"></div> -->
-   <div class="bg-img"> 
+   <div class="bg-img">
+    {%if empty($post.image)%} 
+    <img src="{%$feroot%}/common/img/imgloading.gif" alt="" class="topic-bg"> 
+    {%else%}
     <img src="{%$webroot%}/pic/{%$post.image%}.jpg" alt="" class="topic-bg">
+    {%/if%} 
+   
     <div class="title">{%$post.title%} </div>
   </div>
   <div class="main-content">

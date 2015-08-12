@@ -327,7 +327,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $sight_id  = '';
         if(isset($arrParam['sight_id'])){
             $logic = new Topic_Logic_Topic();
-            $arrTopics = $logic->getTopicBySight($arrParam['sight_id'],$page,$pageSize);
+            $arrTopics = $logic->getTopicBySight($arrParam['sight_id']);
             $sight_id  = $arrParam['sight_id'];
             unset($arrParam['sight_id']);
         }
@@ -360,7 +360,6 @@ class Topic_Logic_Topic extends Base_Logic{
         }else{
             $listTopic->setFields(array('id','title','from','url','image','status','create_time','update_time'));
         }
-        
         $listTopic->setPage($page);
         $listTopic->setPagesize($pageSize);
         $arrRet = $listTopic->toArray();

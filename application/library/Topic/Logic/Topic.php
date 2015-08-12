@@ -100,7 +100,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrRet     = $model->getNewTopics($strTopicId, $strTags, $page, $pageSize);
 
         foreach($arrRet as $key => $val){         
-            $arrRet[$key]['desc'] = Base_Util_String::getSubString($val['content'],$this->contentSize);
+            $arrRet[$key]['desc'] = Base_Util_String::getSubString($val['content'],self::CONTENT_LEN);
             unset($arrRet[$key]['content']);
 
             //话题收藏数

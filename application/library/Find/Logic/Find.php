@@ -6,6 +6,11 @@
  */
 class Find_Logic_Find{
     
+    //默认的最近天数
+    const DEFAULT_DURING = 7;
+    
+    const REDIS_TIMEOUT  = 3600;
+    
     protected $modelGis;
     
     protected $logicSight;
@@ -20,7 +25,15 @@ class Find_Logic_Find{
     
     public function listFind($x,$y,$page,$pageSize){
         $logic      = new Topic_Logic_Topic();
-        $ret        = $logic->getNewTopic('','',$page,$pageSize);
+        $redis      = Base_Redis::getInstance();
+        $ret   = $redis->get(Find_Keys::getFindKey($page));
+        if(!empty($ret)){
+            $ret = json_decode($ret,true);
+        }else{
+            $ret  = $logic->getNewTopic('',self::DEFAULT_DURING,$page,$pageSize);
+            $data = json_encode($ret);
+            $redis->setex(Find_Keys::getFindKey($page),self::REDIS_TIMEOUT,$data);
+        }        
         foreach ($ret as $key => $val){
             $ret[$key]['dist']  = $this->modelGis->getEarthDistanceToTopic($x,$y,$val['id']);
             $ret[$key]['dist']  = strval(floor($ret[$key]['dist']/1000));            
@@ -29,8 +42,7 @@ class Find_Logic_Find{
             $sight                      = $this->logicSight->getSightByTopic($val['id'],1,PHP_INT_MAX);
             if(!empty($sight['list'])){
                 $sightInfo = $this->logicSight->getSightById($sight['list'][0]['sight_id']);
-                $ret[$key]['sight'] = $sightInfo['name'];
-                
+                $ret[$key]['sight'] = $sightInfo['name'];                
                 $cityInfo  = $this->logicCity->getCityById($sightInfo['city_id']);
                 $ret[$key]['city']  = $cityInfo['name'];
             }

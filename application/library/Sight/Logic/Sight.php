@@ -5,7 +5,9 @@ class Sight_Logic_Sight{
     
     protected $logicTopic;
     
-    const DEFAULT_HOT_PERIOD = "1 year ago";
+    const DEFAULT_HOT_PERIOD = 30;
+    
+    const REDIS_TIMEOUT = 3600;
     
     const ORDER_HOT = 1;
     
@@ -38,10 +40,33 @@ class Sight_Logic_Sight{
         $arrRet  = array();
         $redis   = Base_Redis::getInstance();
         if(self::ORDER_NEW == $order){
-            $arrRet =  $this->logicTopic->getNewTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
+            if(empty($strTags)){
+                $ret   = $redis->get(Sight_Keys::getNewTopicKey($sightId,$page));
+                if(!empty($ret)){
+                    $arrRet = json_decode($ret,true);
+                }else{
+                    $arrRet =  $this->logicTopic->getNewTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
+                    $data = json_encode($arrRet);
+                    $redis->setex(Sight_Keys::getNewTopicKey($sightId,$page),self::REDIS_TIMEOUT,$data);
+                }                
+            }else{
+                $arrRet =  $this->logicTopic->getNewTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
+            }            
         }else{
-            $arrTopic =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,PHP_INT_MAX,$strTags);
-            $arrRet = array_slice($arrTopic,($page-1)*$pageSize,$pageSize);
+            if(empty($strTags)){
+                $ret   = $redis->get(Sight_Keys::getHotTopicKey($sightId,$page));
+                if(!empty($ret)){
+                    $arrRet = json_decode($ret,true);
+                }else{
+                    $arrTopic =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,PHP_INT_MAX,$strTags);
+                    $arrRet = array_slice($arrTopic,($page-1)*$pageSize,$pageSize);
+                    $data = json_encode($arrRet);
+                    $redis->setex(Sight_Keys::getHotTopicKey($sightId,$page),self::REDIS_TIMEOUT,$data);
+                }
+            }else{
+                $arrTopic =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,PHP_INT_MAX,$strTags);
+                $arrRet = array_slice($arrTopic,($page-1)*$pageSize,$pageSize);
+            }            
         }
 
         foreach ($arrRet as $key => $val){

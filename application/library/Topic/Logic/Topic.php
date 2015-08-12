@@ -10,10 +10,7 @@ class Topic_Logic_Topic extends Base_Logic{
     
     const CONTENT_LEN   = 75;
     
-    const DEFAULT_DAYS  = 30;
-    
-    const REDIS_TIMEOUT = 3600;
-    
+    const DEFAULT_DAYS  = 30;    
     
     public function __construct(){
         
@@ -54,12 +51,6 @@ class Topic_Logic_Topic extends Base_Logic{
      * @return array
      */
     public function getHotTopic($sightId,$period=self::DEFAULT_DAYS,$size=self::DEFAULT_SIZE,$strTags=''){
-        $redis = Base_Redis::getInstance();
-        $ret   = $redis->get(Sight_Keys::getHotTopic($sightId,$strTags));
-        if(!empty($ret)){
-            $arrRet = json_decode($ret,true);
-            return $arrRet;            
-        }
         $strTopicId = $this->getTopicIdBySight($sightId);
         $model      = new TopicModel();
         $arrRet     = $model->getHotTopics($strTopicId,$strTags,$size,$period);
@@ -83,8 +74,6 @@ class Topic_Logic_Topic extends Base_Logic{
                 $arrRet[$key]['image']  = Base_Image::getUrlByHash($val['image']);
             }                       
         }
-        $ret = json_encode($arrRet);
-        $redis->setex(Sight_Keys::getHotTopic($sightId,$strTags),self::REDIS_TIMEOUT,$ret);
         return $arrRet;
     }
     

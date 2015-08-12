@@ -21,9 +21,9 @@ class TopicModel{
     public function getHotTopics($strTopicId,$strTags,$size,$during){
         if(empty($strTags)){
             if($during == self::MONTH){
-                $sql = "SELECT a.id,a.title,a.subtitle,a.image,a.from,a.desc,a.content FROM `topic`  a,`topic_tag`  b WHERE a.status = 5 and a.id=b.topic_id AND a.id in(".$strTopicId.") ORDER by a.hot2 desc, a.update_time desc limit 0,$size";
+                $sql = "SELECT `id`,`title`,`subtitle`,`image`,`from`,`desc`,`content` FROM `topic`   WHERE  `id` in(".$strTopicId.") ORDER BY `hot2` desc,`update_time` desc limit 0,$size";
             }elseif($during == self::WEEK){
-                $sql = "SELECT a.id,a.title,a.subtitle,a.image,a.from,a.desc,a.content FROM `topic`  a,`topic_tag`  b WHERE a.status = 5 and a.id=b.topic_id AND a.id in(".$strTopicId.") ORDER by a.hot1 desc, a.update_time desc limit 0,$size";
+                $sql = "SELECT `id`,`title`,`subtitle`,`image`,`from`,`desc`,`content` FROM `topic`   WHERE  `id` in(".$strTopicId.") ORDER BY `hot1` desc,`update_time` desc limit 0,$size";
             }
         }else{
             if($during == self::MONTH){

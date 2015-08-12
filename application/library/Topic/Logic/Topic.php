@@ -45,7 +45,7 @@ class Topic_Logic_Topic extends Base_Logic{
                 $redis->sAdd(Sight_Keys::getSightTopicKey($sightId),$val['topic_id']);
             }
         }
-        $strTopicId = implode(",", $ret);       
+        $strTopicId = implode(",", $ret);      
         return $strTopicId;
     }
     
@@ -122,23 +122,53 @@ class Topic_Logic_Topic extends Base_Logic{
      */
     public function getTopicDetail($topicId,$device_id){
         $objTopic = new Topic_Object_Topic();
+        $objTopic->setFileds(array('id','title','content','from','image','x','y'));
         $objTopic->fetch(array('id' => $topicId));
-        $arrRet = $objTopic->toArray();
+        $arrRet                = $objTopic->toArray();
         $logicComment          = new Comment_Logic_Comment();
         $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
-               
+        $arrRet['dis']         = '';
+        $gis                   = new GisModel();
+        $x                     = $_SESSION[Home_Keys::SESSION_USER_X_NAME];
+        $y                     = $_SESSION[Home_Keys::SESSION_USER_Y_NAME];
+        if(!empty($arrRet['x']) && !empty($arrRet['y'])){
+            $arrRet['dis'] = $gis->getEarthDistanceToPoint($x, $y, $arrRet['x'], $arrRet['y']);
+            $arrRet['dis'] = Base_Util_Number::getDis($arrRet['dis']);
+        }else{
+            $listSightTopic = new Sight_List_Topic();
+            $listSightTopic->setPagesize(1);
+            $listSightTopic->setFilter(array('topic_id' => $arrRet['id']));
+            $ret = $listSightTopic->toArray();
+            if(isset($ret['list'][0]['sight_id'])){
+                $sightId = $ret['list'][0]['sight_id'];
+                $arrRet['dis'] = $gis->getEarthDistanceToSight($x, $y, $sightId);
+                $arrRet['dis'] = Base_Util_Number::getDis($arrRet['dis']);
+            }
+        }        
         //话题来源
-        $logicSource = new Source_Logic_Source();
-        $arrRet['from']    = $logicSource->getSourceName($objTopic->from);
-               
-        //访问数
-        $logicTopic            = new Topic_Logic_Topic();
-        $arrRet['visitNum']  = strval($this->getTotalTopicVistPv($topicId)+1);
+        $logicSource     = new Source_Logic_Source();
+        $arrRet['from']  = $logicSource->getSourceName($objTopic->from);
+        $arrRet['image'] = Base_Image::getUrlByHash($arrRet['image']);
         
+        //话题访问人数
+        $arrRet['visit']   = strval($this->getTotalTopicVistUv($arrRet['id']));
+        
+        //话题收藏数
+        $logicCollect            = new Collect_Logic_Collect();
+        $arrRet['collect'] = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $arrRet['id']));
+        
+        unset($arrRet['x']);
+        unset($arrRet['y']);
         //添加redis中话题访问次数统计，直接让其失效，下次从数据库中获取
         $redis = Base_Redis::getInstance();
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getTotalKey($topicId));
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateKey($topicId,'*'));
+        
+        $objVisit           = new Visit_Object_Visit();
+        $objVisit->type     = Visit_Type::TOPIC;
+        $objVisit->deviceId = $device_id;
+        $objVisit->objId    = $topicId;
+        $objVisit->save();
         
         //这里需要更新一下热度
         return $arrRet;

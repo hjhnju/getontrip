@@ -81,7 +81,7 @@ class Sight_Logic_Sight{
                 }                
             }
             $arrRet[$key]['tags'] = $arrTags;
-        }
+        }      
         return $arrRet;
     }
     

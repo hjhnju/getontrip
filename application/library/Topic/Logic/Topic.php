@@ -659,6 +659,11 @@ class Topic_Logic_Topic extends Base_Logic{
             foreach($arrList['list'] as $key => $val){
                 if($arrInfo['status'] == Topic_Type_Status::PUBLISHED){
                     $redis->sAdd(Sight_Keys::getSightTopicKey($val['sight_id']),$topicId);
+                    $num = $redis->sCard(Sight_Keys::getSightTopicKey($val['sight_id']));
+                    if($num == 1){
+                        $model = new SightModel();
+                        $model->eddSight($val['sight_id'], array('hastopic' => 1));
+                    }
                 }else{
                     $redis->sRemove(Sight_Keys::getSightTopicKey($val['sight_id']),$topicId);
                 }

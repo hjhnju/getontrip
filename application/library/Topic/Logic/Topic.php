@@ -57,7 +57,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $ret   = $redis->get(Sight_Keys::getHotTopic($sightId,$strTags));
         if(!empty($ret)){
             $arrRet = json_decode($ret,true);
-            return $arrRet;            
+            //return $arrRet;            
         }
         $strTopicId = $this->getTopicIdBySight($sightId);
         $model      = new TopicModel();
@@ -382,10 +382,10 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrRet['list'][$key]['sights'] = $arrSighttopic['list'];
              
             $logicCollect      = new Collect_Logic_Collect();           
-            $arrRet['list'][$key]['collect'] = $logicCollect->getCollectNum(Collect_Keys::TOPIC, $val['id']);
+            $arrRet['list'][$key]['collect'] = $logicCollect->getTotalCollectNum(Collect_Keys::TOPIC, $val['id']);
             
             $logicComment      = new Comment_Logic_Comment();
-            $arrRet['list'][$key]['comment'] = $logicComment->getCommentNum($val['id']);
+            $arrRet['list'][$key]['comment'] = $logicComment->getTotalCommentNum($val['id']);
         }
         return $arrRet;
     }
@@ -409,10 +409,10 @@ class Topic_Logic_Topic extends Base_Logic{
         $ret['sights'] = $arrSighttopic['list'];
          
         $logicCollect      = new Collect_Logic_Collect();
-        $ret['collect'] = $logicCollect->getCollectNum(Collect_Keys::TOPIC, $id);
+        $ret['collect'] = $logicCollect->getTotalCollectNum(Collect_Keys::TOPIC, $id);
         
         $logicComment      = new Comment_Logic_Comment();
-        $ret['comment'] = $logicComment->getCommentNum($id);
+        $ret['comment'] = $logicComment->getTotalCommentNum($id);
         return $ret;
     }
     

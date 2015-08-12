@@ -227,14 +227,14 @@ class Topic_Logic_Topic extends Base_Logic{
         }
         $list   = new Visit_List_Visit();
         $list->setFields(array('device_id'));
-        $filter = "'obj_id' = $topicId and 'create_time' >= $from and type = ".Visit_Type::TOPIC; 
+        $filter = "`obj_id` = $topicId and `create_time` >= $from and `type` = ".Visit_Type::TOPIC; 
         $list->setPagesize(PHP_INT_MAX);
         $list->setFilterString($filter);
         $arrRet = $list->toArray();
         $arrTotal = array();
         foreach($arrRet['list'] as $val){
-            if(!in_array($val,$arrTotal)){
-                $arrTotal[] = $val;
+            if(!in_array($val['device_id'],$arrTotal)){
+                $arrTotal[] = $val['device_id'];
             }
         }
         $redis->hSet(Topic_Keys::getTopicVisitKey($topicId),Topic_Keys::getLateKey($topicId,$during),count($arrTotal));
@@ -255,7 +255,7 @@ class Topic_Logic_Topic extends Base_Logic{
             return $ret;
         }
         $list   = new Visit_List_Visit();
-        $filter = "'obj_id' = $topicId and 'create_time' >= $from and type = ".Visit_Type::TOPIC;
+        $filter = "`obj_id` = $topicId and `create_time` >= $from and `type` = ".Visit_Type::TOPIC;
         $list->setPagesize(PHP_INT_MAX);
         $list->setFilterString($filter);
         $arrRet = $list->toArray();

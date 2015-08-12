@@ -50,6 +50,6 @@ class ApiController extends Base_Controller_Api {
         }else{           
             $ret  =  Sight_Api::getSightList($page, $pageSize);
         }   
-        $this->ajax($ret);
+        $this->ajax($ret['list']);
     }
 }

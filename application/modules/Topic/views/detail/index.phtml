@@ -1,0 +1,34 @@
+{%extends file="../../../views/common/page.phtml"%}
+{%block name="link"%}
+{%if $isMobile%}
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/topic/css/mdetail.css" />
+{%else%}
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/topic/css/detail.css" />
+{%/if%} 
+ 
+{%/block%} 
+{%block name="content"%}
+<div class="container">
+   <div class="bg-img"> 
+    <img src="{%$webroot%}/pic/{%$post.image%}.jpg" alt="" class="topic-bg">
+    <div class="title">{%$post.title%} </div>
+  </div>
+  <div class="main-content">
+    <div class="main-content-inner rich-text">
+       {%$post.content%} 
+    </div>
+    <div class="text-from">
+       内容来自{%$post.from_name%}<a href="{%$post.url%}" target="_blank">查看原网页</a>
+    </div>
+  </div>
+</div>
+ 
+
+{%/block%}
+{%block name="script"%}
+<script>
+    require(['topic/detail'], function (main) {
+        main.init('{%$feroot%}');
+    }); 
+</script>
+{%/block%}

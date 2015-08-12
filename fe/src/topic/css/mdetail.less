@@ -1,0 +1,71 @@
+@import "../../common/css/mcommon.less";
+.topic-bg {
+    width: 100%;
+}
+
+.bg-img {
+    position: relative;
+    z-index: 2;
+    .title {
+        color: #fff;
+        position: absolute;
+        z-index: 100;
+        text-align: center;
+        left: 0px;
+        top: 40%;
+        width: 100%;
+        font-size: 20px;
+        vertical-align: middle;
+        padding: 0px 15px;
+        line-height: 1.2;
+    }
+    img {
+        width: 100%;
+        height: 268px;
+    }
+}
+
+.main-content {
+    width: 100%;
+    float: none;
+    img {
+        width: 100%; 
+    }
+    .main-content-inner {
+        margin: 10px 10px 0px;
+        &.rich-text {
+            .table {
+                width: 100%;
+                max-width: 100%;
+                margin-bottom: 20px;
+            }
+            .table-bordered {
+                border: 1px solid #ddd;
+            }
+            .table>tbody>tr>td,
+            .table>tbody>tr>th,
+            .table>tfoot>tr>td,
+            .table>tfoot>tr>th,
+            .table>thead>tr>td,
+            .table>thead>tr>th {
+                padding: 8px;
+                line-height: 1.42857143;
+                vertical-align: middle;
+                border-top: 1px solid #ddd;
+            }
+            .table-bordered>tbody>tr>td,
+            .table-bordered>tbody>tr>th,
+            .table-bordered>tfoot>tr>td,
+            .table-bordered>tfoot>tr>th,
+            .table-bordered>thead>tr>td,
+            .table-bordered>thead>tr>th {
+                border: 1px solid #ddd;
+            }
+        }
+    }
+    .text-from {
+        margin: 50px 10px 40px;
+        text-align: center;
+        font-size: 12px;
+    }
+}

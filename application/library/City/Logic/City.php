@@ -45,7 +45,10 @@ class City_Logic_City{
             foreach ($ret as $topicId){
                 $hot += $logicTopic->getTopicHotDegree($topicId, self::HOTPERIOD);
             }
-            $arrHot[] = $hot;            
+            $arrHot[] = $hot;     
+            if(!empty($val['image'])){
+                $arrSight[$key]['image']  = Base_Image::getUrlByHash($val['image']);
+            }
             $arrSight[$key]['topics'] = count($redis->zRange(Sight_Keys::getSightTopicKey($val['id']),0,-1));
         }
         array_multisort($arrHot, SORT_DESC , $arrSight);

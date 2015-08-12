@@ -29,7 +29,8 @@ class Topic_Logic_Topic extends Base_Logic{
         $redis = Base_Redis::getInstance();
         $ret   = $redis->sMembers(Sight_Keys::getSightTopicKey($sightId));
         if(!empty($ret)){
-            return $ret;
+            $strTopicId = implode(",", $ret);
+            return $strTopicId;
         }
         //获取景点的所有话题
         $listTopic = new Sight_List_Topic();
@@ -57,7 +58,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $ret   = $redis->get(Sight_Keys::getHotTopic($sightId,$strTags));
         if(!empty($ret)){
             $arrRet = json_decode($ret,true);
-            //return $arrRet;            
+            return $arrRet;            
         }
         $strTopicId = $this->getTopicIdBySight($sightId);
         $model      = new TopicModel();

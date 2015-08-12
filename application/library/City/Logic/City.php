@@ -233,7 +233,7 @@ class City_Logic_City{
         $redis = Base_Redis::getInstance();
         $ret   = $this->_modeSight->getSightByCity(1,PHP_INT_MAX,$cityId);
         foreach ($ret as $val){
-            $count += $redis->zSize(Sight_Keys::getSightTopicName($val['id']));
+            $count += $redis->zSize(Sight_Keys::getSightTopicKey($val['id']));
         }
         return $count;
     }

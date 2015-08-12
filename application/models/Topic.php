@@ -31,7 +31,7 @@ class TopicModel{
             }elseif($during == self::WEEK){
                 $sql = "SELECT a.id,a.title,a.subtitle,a.image,a.from,a.desc,a.content FROM `topic`  a,`topic_tag`  b WHERE a.status = 5 a.id=b.topic_id AND a.id in(".$strTopicId.") AND b.tag_id in(".$strTags.") ORDER by a.ho1 desc, a.update_time desc limit 0,$size";
             }
-        }        
+        }       
         try {                 	
             $data = $this->db->fetchAll($sql);          
         } catch (Exception $ex) {

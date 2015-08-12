@@ -48,13 +48,13 @@ class Home_Logic_List{
             $objCity->fetch(array('id' => $val['city_id']));
             $arr[$index]['city']  = $objCity->name;            
             $ret   = $redis->get(Sight_Keys::getIndexTopicKey($val['id']));
-            if(!empty($ret)){
-                $arr[$index]['topic'] = json_decode($ret,true);
-            }else{
+           // if(!empty($ret)){
+            //    $arr[$index]['topic'] = json_decode($ret,true);
+            //}else{
                 $arr[$index]['topic'] = $this->_logicTopic->getHotTopic($val['id']);
                 $data = json_encode($arr[$index]['topic']);
                 $redis->setex(Sight_Keys::getIndexTopicKey($val['id']),self::REDIS_TIMEOUT,$data);
-            }
+           // }
             
             
             //图片用全路径

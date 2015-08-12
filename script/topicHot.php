@@ -8,7 +8,7 @@ if(isset($argv[1])){
     $list->setPagesize(PHP_INT_MAX);
     $arrRet = $list->toArray();
     foreach ($arrRet['list'] as $val){
-        $arrTopic[] = $val['topic_id'];
+        $arrTopic[] = $val['id'];
     }
 }
 foreach ($arrTopic as $topic){

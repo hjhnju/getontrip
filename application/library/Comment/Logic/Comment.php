@@ -100,7 +100,7 @@ class Comment_Logic_Comment  extends Base_Logic{
             $from = strtotime($during.' days ago');
         }
         $redis = Base_Redis::getInstance();
-        $ret = $redis->hGet(Comment_Keys::getCommentKey($topicId),Comment_Keys::getLateKey($topicId));
+        $ret = $redis->hGet(Comment_Keys::getCommentKey($topicId),Comment_Keys::getLateKey($topicId,$during));
         if(!empty($ret)){
             return $ret;
         }
@@ -109,7 +109,7 @@ class Comment_Logic_Comment  extends Base_Logic{
         $list->setPagesize(PHP_INT_MAX);
         $list->setFilterString($filter);
         $arrRet = $list->toArray();
-        $redis->hSet(Comment_Keys::Comment_Keys($topicId),Comment_Keys::getLateKey($topicId),$arrRet['total']);
+        $redis->hSet(Comment_Keys::getCommentKey($topicId),Comment_Keys::getLateKey($topicId,$during),$arrRet['total']);
         return $arrRet['total'];
     }
     

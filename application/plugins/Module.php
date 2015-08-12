@@ -16,16 +16,6 @@ class ModulePlugin extends Yaf_Plugin_Abstract {
             $request->setControllerName(ucfirst($request->getActionName()));
             $request->setActionName('index');
         }
-        
-        if (strtolower($request->getControllerName()) == 'api') {
-            $key = key($request->getParams());
-            $request->setModuleName(ucfirst($request->getActionName()));
-            $request->setControllerName('Api');
-            $request->setActionName('Index');
-            if(!empty($key)){
-                $request->setActionName(ucfirst($key));
-            }
-        }
     }
 
     public function dispatchLoopStartup(Yaf_Request_Abstract $request, Yaf_Response_Abstract $response) {

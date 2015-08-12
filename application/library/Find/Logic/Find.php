@@ -9,6 +9,7 @@ class Find_Logic_Find{
     //默认的最近天数
     const DEFAULT_DURING = 7;
     
+    //缓存过期时间一小时
     const REDIS_TIMEOUT  = 3600;
     
     protected $modelGis;
@@ -39,13 +40,16 @@ class Find_Logic_Find{
             $ret[$key]['dist']  = strval(floor($ret[$key]['dist']/1000));            
             $ret[$key]['sight'] = '';
             $ret[$key]['city']  = '';
-            $sight                      = $this->logicSight->getSightByTopic($val['id'],1,PHP_INT_MAX);
+            $sight              = $this->logicSight->getSightByTopic($val['id'],1,PHP_INT_MAX);
             if(!empty($sight['list'])){
                 $sightInfo = $this->logicSight->getSightById($sight['list'][0]['sight_id']);
                 $ret[$key]['sight'] = $sightInfo['name'];                
                 $cityInfo  = $this->logicCity->getCityById($sightInfo['city_id']);
                 $ret[$key]['city']  = $cityInfo['name'];
             }
+            $logicComment          = new Comment_Logic_Comment();
+            $ret[$key]['comment']  = $logicComment->getTotalCommentNum($val['id']);
+            unset($ret[$key]['visit']);
         }
         return $ret;
     }

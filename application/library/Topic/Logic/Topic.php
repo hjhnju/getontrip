@@ -30,6 +30,7 @@ class Topic_Logic_Topic extends Base_Logic{
             return $strTopicId;
         }
         //获取景点的所有话题
+        $redis->delete(Sight_Keys::getSightTopicKey($sightId));
         $listTopic = new Sight_List_Topic();
         $listTopic->setPagesize(PHP_INT_MAX);
         if(!empty($sightId)){
@@ -37,8 +38,12 @@ class Topic_Logic_Topic extends Base_Logic{
         }
         $arrRet = $listTopic->toArray();
         foreach ($arrRet['list'] as $val){
-            $ret[] = $val['topic_id'];
-            $redis->sAdd(Sight_Keys::getSightTopicKey($sightId),$val['topic_id']);
+            $objTopic = new Topic_Object_Topic();
+            $objTopic->fetch(array('id' => $val['topic_id']));
+            if($objTopic->status == Topic_Type_Status::PUBLISHED){
+                $ret[] = $val['topic_id'];
+                $redis->sAdd(Sight_Keys::getSightTopicKey($sightId),$val['topic_id']);
+            }
         }
         $strTopicId = implode(",", $ret);       
         return $strTopicId;

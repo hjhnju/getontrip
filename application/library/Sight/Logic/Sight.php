@@ -69,18 +69,9 @@ class Sight_Logic_Sight{
             }            
         }
 
-        foreach ($arrRet as $key => $val){
-            $arrTags = array();
-            $arrTemp = $redis->sGetMembers(Topic_Keys::getTopicTagKey($val['id']));
-            foreach ($arrTemp as $id){
-                $ret = $redis->hGet(Tag_Keys::getTagInfoKey($id),'name');
-                if(!$ret){
-                   $redis->sRem(Topic_Keys::getTopicTagKey($val['id']),$id); 
-                }else{
-                    $arrTags[] = $ret;
-                }                
-            }
-            $arrRet[$key]['tags'] = $arrTags;
+        $logicTag = new Tag_Logic_Tag();
+        foreach ($arrRet as $key => $val){            
+            $arrRet[$key]['tags'] = $logicTag->getTopicTags($val['id']);
         }      
         return $arrRet;
     }

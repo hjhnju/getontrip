@@ -29,6 +29,9 @@ class ApiController extends Base_Controller_Api {
         $sightId    = isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
         $strTags    = isset($_REQUEST['tags'])?trim($_REQUEST['tags']):'';
         $intOrder   = isset($_REQUEST['order'])?intval($_REQUEST['order']):2;
+        if(empty($sightId)){
+            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
+        }
         $logic      = new Sight_Logic_Sight();
         $ret        = $logic->getSightDetail($sightId,$page,$pageSize,$intOrder,$strTags);
         $this->ajax($ret);

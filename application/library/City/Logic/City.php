@@ -40,13 +40,13 @@ class City_Logic_City{
         $ret        = City_Api::getCityById($cityId);
         $arrSight   = $this->_modeSight->getSightByCity($page, $pageSize, $cityId);
         foreach ($arrSight as $key => $val){
-            $ret    = $redis->zRange(Sight_Keys::getSightTopicName($val['id']),0,-1);
+            $ret    = $redis->zRange(Sight_Keys::getSightTopicKey($val['id']),0,-1);
             $hot    = 0;
             foreach ($ret as $topicId){
                 $hot += $logicTopic->getTopicHotDegree($topicId, self::HOTPERIOD);
             }
             $arrHot[] = $hot;            
-            $arrSight[$key]['topics'] = count($redis->zRange(Sight_Keys::getSightTopicName($val['id']),0,-1));
+            $arrSight[$key]['topics'] = count($redis->zRange(Sight_Keys::getSightTopicKey($val['id']),0,-1));
         }
         array_multisort($arrHot, SORT_DESC , $arrSight);
         return $arrSight;

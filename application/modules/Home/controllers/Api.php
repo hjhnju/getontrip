@@ -30,6 +30,7 @@ class ApiController extends Base_Controller_Api {
         $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
         if(empty($x) || empty($y)){
+            $_SESSION[Home_Keys::SESSION_USER_CITY] = $city;
             $logicCity = new City_Logic_City();
             $arr       = $logicCity->getCityLoc($city);
             $x         = $arr['x'];

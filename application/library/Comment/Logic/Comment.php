@@ -68,7 +68,7 @@ class Comment_Logic_Comment  extends Base_Logic{
             $ret['list'][$key]['from_name'] = $logicUser->getUserName($val['from_user_id']);
             $ret['list'][$key]['to_name'] = $logicUser->getUserName($val['to_user_id']);
         }
-        return $listComment->toArray();
+        return $ret['list'];
     }
     
     /**

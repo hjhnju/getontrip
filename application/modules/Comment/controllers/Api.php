@@ -4,7 +4,7 @@
  * @author huwei
  *
  */
-class AddController extends Base_Controller_Api {
+class ApiController extends Base_Controller_Api {
     
     const PAGESIZE = 6;
     

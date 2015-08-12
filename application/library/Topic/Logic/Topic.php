@@ -125,7 +125,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $objTopic->fetch(array('id' => $topicId));
         $arrRet = $objTopic->toArray();
         $logicComment          = new Comment_Logic_Comment();
-        $arrRet['commentNum']  = $logicComment->getCommentNum($topicId);
+        $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
                
         //话题来源
         $logicSource = new Source_Logic_Source();

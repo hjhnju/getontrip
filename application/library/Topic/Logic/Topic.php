@@ -659,7 +659,7 @@ class Topic_Logic_Topic extends Base_Logic{
                 if($arrInfo['status'] == Topic_Type_Status::PUBLISHED){
                     $this->updateTopicRedis(self::ADD_TOPIC, $val['sight_id'], $topicId);
                 }else{
-                    $this->updateTopicRedis(self::DEl_TOPIC, $val['sight_id'], $topicId);
+                    $this->updateTopicRedis(self::DEL_TOPIC, $val['sight_id'], $topicId);
                 }
             }
         }
@@ -777,7 +777,7 @@ class Topic_Logic_Topic extends Base_Logic{
             $redis->sRemove(Sight_Keys::getSightTopicKey($sightId),$topicId);
             $num = $redis->sCard(Sight_Keys::getSightTopicKey($sightId));
             if($num == 0){
-                $model->eddSight($objSightTopic->sightId, array('hastopic' => 0));
+                $model->eddSight($sightId, array('hastopic' => 0));
             }
         }
     }

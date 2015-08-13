@@ -15,7 +15,7 @@ $(document).ready(function() {
 
         xsize = $pcnt.width(),
         ysize = $pcnt.height(),
-        ratio = 138 / 89;
+        ratio = 133 / 93;
 
   
 

@@ -31,7 +31,7 @@ class Find_Logic_Find{
         if(!empty($ret)){
             $ret = json_decode($ret,true);
         }else{
-            $ret  = $logic->getNewTopic('',self::DEFAULT_DURING,$page,$pageSize);
+            $ret  = $logic->getHotTopic('',self::DEFAULT_DURING,$page,$pageSize);
             $data = json_encode($ret);
             $redis->setex(Find_Keys::getFindKey($page),self::REDIS_TIMEOUT,$data);
         }        

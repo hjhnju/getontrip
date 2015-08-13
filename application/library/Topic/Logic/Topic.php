@@ -55,10 +55,10 @@ class Topic_Logic_Topic extends Base_Logic{
      * @param integer $size
      * @return array
      */
-    public function getHotTopic($sightId,$period=self::DEFAULT_DAYS,$size=self::DEFAULT_SIZE,$strTags=''){
+    public function getHotTopic($sightId,$period=self::DEFAULT_DAYS,$page=1,$pageSize=self::DEFAULT_SIZE,$strTags=''){
         $strTopicId = $this->getTopicIdBySight($sightId);
         $model      = new TopicModel();
-        $arrRet     = $model->getHotTopics($strTopicId,$strTags,$size,$period);
+        $arrRet     = $model->getHotTopics($strTopicId,$strTags,$page,$pageSize,$period);
 
         foreach($arrRet as $key => $val){
             $arrRet[$key]['desc'] = Base_Util_String::getSubString($arrRet[$key]['content'],self::CONTENT_LEN);

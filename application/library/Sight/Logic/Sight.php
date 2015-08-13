@@ -58,14 +58,12 @@ class Sight_Logic_Sight{
                 if(!empty($ret)){
                     $arrRet = json_decode($ret,true);
                 }else{
-                    $arrTopic =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,PHP_INT_MAX,$strTags);
-                    $arrRet = array_slice($arrTopic,($page-1)*$pageSize,$pageSize);
-                    $data = json_encode($arrRet);
+                    $arrRet =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
+                    $data   = json_encode($arrRet);
                     $redis->setex(Sight_Keys::getHotTopicKey($sightId,$page),self::REDIS_TIMEOUT,$data);
                 }
             }else{
-                $arrTopic =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,PHP_INT_MAX,$strTags);
-                $arrRet = array_slice($arrTopic,($page-1)*$pageSize,$pageSize);
+                $arrRet =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
             }            
         }
 

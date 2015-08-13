@@ -59,10 +59,9 @@ class UploadController extends Base_Controller_Page {
      * @return [type] [description]
      */
     public function delPicAction(){ 
-       $oss = Oss_Adapter::getInstance();
-       $filename = $_REQUEST['hash'].'.jpg';  
-       //$filename='2a0a53495cd589fd.jpg';
-       $res = $oss->remove($filename);
+       $oss      = Oss_Adapter::getInstance();
+       $filename = $_REQUEST['hash'].'.jpg';
+       $res      = $oss->remove($filename);
        if ($res) {
           return  $this->ajax();
        }

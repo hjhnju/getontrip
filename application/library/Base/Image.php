@@ -30,7 +30,7 @@ class Base_Image {
     }
 
     /**
-     * 改变突变的大小
+     * 改变图片的大小
      * @param  $src 图片路径
      * @param  $width 期望图片宽度
      * @param  $height 期望图片高度
@@ -70,5 +70,58 @@ class Base_Image {
         }
         $url .= ".jpg";
         return $url;
+    }
+
+
+     /**
+     * 获取图片的完整URL地址 Base_Image::getUrlByHash($hash, $width = 0, $height = 0)
+     * @param string $hash
+     * @param number $width
+     * @param number $height
+     * @return string
+     */
+    public static function getWholeUrlByHash($hash, $width = 0, $height = 0) {
+        $url = Base_Config::getConfig('web')->root . Base_Image::getUrlByHash($hash, $width, $height);
+        return $url;
+    }
+
+
+    /**
+     * 裁剪图片并替换原有图片
+     * @return [type] [description]
+     */
+    public static function cropPic($oldhash,$x=0, $y=0, $width=100, $height=100){  
+        if(empty($oldhash)){
+          return false;
+        }
+        
+        $wholeUrl=Base_Image::getWholeUrlByHash($oldhash);
+         
+        $imagick = new Base_Image_Imagick();
+        $image = $imagick->open($wholeUrl);
+        //裁剪 
+        $imagick->crop($x, $y, $width, $height); 
+        //获取图片的二进制信息
+        $imageBlob = $image->getImagesBlob();  
+
+
+        $hash = md5(microtime(true));
+        $hash = substr($hash, 8, 16);
+        $filename = $hash . '.jpg';
+        
+        $oss = Oss_Adapter::getInstance();
+        $res = $oss->writeFileContent($filename, $imageBlob);
+        if ($res) {
+            //删除原来的文件
+            $oss = Oss_Adapter::getInstance(); 
+            $oss->remove($oldhash.'.jpg');
+
+            $data = array(
+                'hash' => $hash,
+                'url'  => Base_Image::getUrlByHash($hash),
+            );  
+            return $data;
+        } 
+        return false; 
     }
 }

@@ -116,14 +116,19 @@ $(document).ready(function() {
                 dataType: 'json',
                 success: function(res, status) { //当文件上传成功后，需要向数据库中插入数据
                     $('#image').val(res.data.hash);
-                    $('#imageView').html('<img src="' + res.data.url + '" style="width:186px;height:140px;"/>');
+                    $('#imageView').html('<img src="/pic/' + res.data.hash + '_190_140.jpg"  alt=""/>');
                     $('#imageView').removeClass('imageView');
+                    $('#crop-img').removeClass('hidden');
                 },
                 error: function(data, status, e) {
                     alert(status.statusInfo);
                 }
             })
         });
+
+
+
+
 
         //搜索来源下拉列表 
         // $('#form-from').selectpicker();
@@ -141,20 +146,20 @@ $(document).ready(function() {
         //定位地图模态框
         $('#position').click(function(e) {
             //打开模态框
-            $('#myModal').modal({
+            $('#mapModal').modal({
                 remote: '/admin/utils/map'
             });
         });
 
         // 模态框从远端的数据源加载完数据之后触发该事件
-        $('#myModal').on('loaded.bs.modal', function(e) {
+        $('#mapModal').on('loaded.bs.modal', function(e) {
             $("#txtSearch").val($.trim($("#name").val()));
             $("#cityName").val($.trim($("#city_name").val()));
-            $('#myModal .btn-search').click();
+            $('#mapModal .btn-search').click();
         });
 
         //模态框 点击确定之后立即触发该事件。
-        $('#myModal').delegate('.btn-submit', 'click', function(event) {
+        $('#mapModal').delegate('.btn-submit', 'click', function(event) {
             var valXY = $.trim($("#txtCoordinate").val());
             if (!valXY) {
                 alert('还没有选定坐标呢');
@@ -167,7 +172,7 @@ $(document).ready(function() {
 
 
             //手工关闭模态框
-            $('#myModal').modal('hide');
+            $('#mapModal').modal('hide');
         });
 
         //点击发布或者保存按钮
@@ -289,7 +294,6 @@ $(document).ready(function() {
 
         //复制链接 
         var client = new ZeroClipboard(document.getElementById("copy-button"));
-
         client.on("ready", function(readyEvent) {
             // alert( "ZeroClipboard SWF is ready!" ); 
             client.on("aftercopy", function(event) {
@@ -300,6 +304,8 @@ $(document).ready(function() {
                 alert('复制成功！');
             });
         });
+
+
     }
 
     /*

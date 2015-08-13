@@ -292,7 +292,7 @@ class Base_Image_Imagick {
     }
 
     // 输出图像
-    public function output($header = true) {
+    public function output($header = true) { 
         if($header) header('Content-type: '.$this->type);
         echo $this->image->getImagesBlob();   
     }

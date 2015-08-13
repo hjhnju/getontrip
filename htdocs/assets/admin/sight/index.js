@@ -105,6 +105,8 @@ $(document).ready(function() {
         $("#editable button.addKeyword").live('click', function(event) {
             var nRow = $(this).parents('tr')[0];
             var data = oTable.api().row(nRow).data();
+            $('#name').val('');
+            $('#url').val('');
             $('#sight_name').val(data.name);
             $('#sight_id').val(data.id);
             $('#Form input').removeClass('error');
@@ -112,7 +114,21 @@ $(document).ready(function() {
             //打开模态框 
             $('#myModal').modal({});
         });
+
+        //输入词条名称生成url
+        $('#name').blur(function(event) {
+            var name= $.trim($(this).val());
+            if(name){ 
+               $('#url').val('http://baike.baidu.com/item/'+name);
+               $('#view-link').attr('href',$('#url').val());
+            }
+        });
+         //点击保存词条或者确认并保存按钮
+        $('#Form button[type="submit"]').click(function(event) {
+             $('#status').val($(this).attr('data-status'));
+        });
     }
+
 
     function filter(){
          //景点输入框自动完成
@@ -179,7 +195,7 @@ $(document).ready(function() {
         $.validator.setDefaults({
             submitHandler: function(data) {
                 //序列化表单  
-                var param = $("#Form").serializeObject();
+                var param = $("#Form").serializeObject(); 
                 $.ajax({
                     "url": "/admin/keywordapi/add",
                     "data": param,

@@ -10,46 +10,54 @@
  <body>
   </body>
 </html> --> 
-
-<div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="exampleModalLabel">坐标拾取工具</h4>
-</div>
-<div class="modal-body"> 
-   	 <!--  <div id="divCoordinate" class="" style="top: 249px; left: 576px;"> </div> -->
-        <div id="hd" class="barn clearfix">
-            <div id="myPageTop">
-                <table>
-                    <tbody><tr class="tr-radio">
-                        <td colSpan="2">
-                        	按关键字搜索(注：城市一般定位到人民政府，如果有误差，请自行搜索,或者鼠标选择合适的坐标。)
-                        </td> 
-                    </tr>
-                    <tr class="tr-text">
-                        <td>
-                            所在城市：
-                          <input type="text"  name="cityName" id="cityName" placeholder="选择城市"/>
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr class="tr-text">
-                    	<td> 
-                            <input type="text" name="search" id="txtSearch" placeholder="请输入关键字进行搜索"> 
-                            <button type="button" class="btn btn-default btn-search" >搜索</button> 
-                        </td> 
-                        <td>
-                            <input type="text" id="txtCoordinate" name="coordinate" readonly=""> 
-                            <button type="button" class="btn btn-default btn-submit">确定</button> 
-                        </td>
-                    </tr>
-                </tbody></table>
-            </div>
+<!-- <div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-lg">
+     <div class="modal-content"> 
+       </div>
+    /.modal-content
+  </div>
+  /.modal-dialog
+</div> -->
+        <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">坐标拾取工具</h4>
         </div>
-        <div id="hr"></div>
-        <div id="myPage">
-	       <div id="map" class="amap-container amap-fade-anim"> </div> 
-        </div>
- </div>
+        <div class="modal-body"> 
+           	 <!--  <div id="divCoordinate" class="" style="top: 249px; left: 576px;"> </div> -->
+                <div id="hd" class="barn clearfix">
+                    <div id="myPageTop">
+                        <table>
+                            <tbody><tr class="tr-radio">
+                                <td colSpan="2">
+                                	按关键字搜索(注：城市一般定位到人民政府，如果有误差，请自行搜索,或者鼠标选择合适的坐标。)
+                                </td> 
+                            </tr>
+                            <tr class="tr-text">
+                                <td>
+                                    所在城市：
+                                  <input type="text"  name="cityName" id="cityName" placeholder="选择城市"/>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr class="tr-text">
+                            	<td> 
+                                    <input type="text" name="search" id="txtSearch" placeholder="请输入关键字进行搜索"> 
+                                    <button type="button" class="btn btn-default btn-search" >搜索</button> 
+                                </td> 
+                                <td>
+                                    <input type="text" id="txtCoordinate" name="coordinate" readonly=""> 
+                                    <button type="button" class="btn btn-default btn-submit">确定</button> 
+                                </td>
+                            </tr>
+                        </tbody></table>
+                    </div>
+                </div>
+                <div id="hr"></div>
+                <div id="myPage">
+        	       <div id="map" class="amap-container amap-fade-anim"> </div> 
+                </div>
+         </div>
+  
 
 <link href="{%$feroot%}s/admin/utils/map/index.css" rel="stylesheet" type="text/css"/> 
 <script src="{%$feroot%}s/admin/utils/map/index.js" type="text/javascript"></script> 

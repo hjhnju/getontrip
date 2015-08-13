@@ -8,12 +8,9 @@ class User_Keys {
     const SESSION_LOGINUSER_KEY= 'login_user';
 
     const ACCESS_TOKEN_KEY     = 'user_openid_%s';
-
-    const SESSION_LOGINFAIL_KEY= 'login_fails';
     
     const OPEN_INFO_KEY        = 'openinfo_%s_%s';
-    
-    const LOGIN_REFER          = 'user_login_refer_url';
+   
 
     public static function getOpenidKey(){
         return self::SESSION_OPENID_KEY;
@@ -29,10 +26,6 @@ class User_Keys {
 
     public static function getAccessTokenKey($openid){
         return sprintf(self::ACCESS_TOKEN_KEY, $openid);
-    }
-
-    public static function getFailTimesKey(){
-        return self::SESSION_LOGINFAIL_KEY;
     }
 
     public static function getOpenInfoKey($authtype, $openid){

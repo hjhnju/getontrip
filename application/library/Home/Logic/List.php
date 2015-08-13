@@ -37,8 +37,8 @@ class Home_Logic_List{
     public function getNearSight($x,$y,$page,$pageSize){
         $arr   = array();
         $redis = Base_Redis::getInstance();
-        $_SESSION[Home_Keys::SESSION_USER_X_NAME] = $x;
-        $_SESSION[Home_Keys::SESSION_USER_Y_NAME] = $y;
+        Yaf_Session::getInstance()->set(Home_Keys::SESSION_USER_X_NAME,$x);
+        Yaf_Session::getInstance()->set(Home_Keys::SESSION_USER_Y_NAME,$y);
         //找出所有由近到远的景点
         $arr = $this->_model->getNearSight(array(
             'x'=>$x,

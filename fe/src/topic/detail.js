@@ -16,7 +16,7 @@ define(function(require) {
             threshold: 400, 
             container:'.rich-text' 
         });
-        //$('.rich-text').imgSize();
+        $('.bg-img').imgSize({rate:(89/138)});
     }
     return {
         init: init

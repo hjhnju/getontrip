@@ -67,4 +67,7 @@ class UploadController extends Base_Controller_Page {
        }
        return  $this->ajaxError();
     }
+
+
+  
 }

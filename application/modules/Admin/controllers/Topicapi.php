@@ -90,9 +90,9 @@ class  TopicapiController extends Base_Controller_Api{
           $spider = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
           $_REQUEST['content'] = $spider->getReplacedContent();
        }
-
+       
        $bRet=Topic_Api::editTopic($postid,$_REQUEST);
-       if($bRet){
+       if($bRet){  
             return $this->ajax();
        }
        return $this->ajaxError(); 
@@ -193,7 +193,54 @@ class  TopicapiController extends Base_Controller_Api{
         return $this->ajaxError();
     }
      
-   public function getimgHashArray($content){ 
+    /*
+      修改话题状态
+     */
+    public function changeStatusAction(){
+       $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0; 
+       if($postid <= 0){
+            $this->ajaxError();
+       }  
+       $bRet=Topic_Api::editTopic($postid,$_REQUEST);
+       if($bRet){ 
+            return $this->ajax();
+       }
+       return $this->ajaxError(); 
+    }
+
+    /**
+     * 裁剪话题背景图片
+     * @return [type] [description]
+     */
+    public function cropPicAction(){
+        $postid=isset($_REQUEST['id'])?intval($_REQUEST['id']):''; 
+        $oldhash=$_REQUEST['hash'];
+        $x=$_REQUEST['x'];
+        $y=$_REQUEST['y']; 
+        $width=$_REQUEST['width'];
+        $height=$_REQUEST['height']; 
+        $ret=Base_Image::cropPic($oldhash,$x,$y,$width,$height); 
+        if($ret){
+          if(!empty($postid)){
+            $params = array('image'=>$ret['hash']);
+            //修改话题的图片hash
+            $bRet=Topic_Api::editTopic($postid,$params);
+            if($bRet){
+               return $this->ajax($ret); 
+            }
+            return $this->ajaxError(); 
+          }
+          return $this->ajax($ret); 
+        }
+        return $this->ajaxError(); 
+    }
+
+    /**
+     * 获取图片hash数组
+     * @param  [type] $content [description]
+     * @return [type]          [description]
+     */
+    public function getimgHashArray($content){ 
        $pat='/data-hash=\"(.){16,16}\"/';
        //将匹配成功的参数写入数组中 
        preg_match_all($pat, $content, $matches); 
@@ -203,7 +250,7 @@ class  TopicapiController extends Base_Controller_Api{
             $matches[0][$i]=preg_replace('/\"/i','',$matches[0][$i]); 
           } 
       return $matches[0];
-   }
+    }
 
 
 

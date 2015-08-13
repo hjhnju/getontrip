@@ -27,3 +27,51 @@
 .jcrop-dark .jcrop-handle{-moz-border-radius:3px;-webkit-border-radius:3px;background-color:#FFF;border-color:#000;border-radius:3px;}
 .solid-line .jcrop-vline,.solid-line .jcrop-hline{background:#FFF;}
 .jcrop-holder img,img.jcrop-preview{max-width:none;}
+#preview-pane {
+  display: block;
+  position: absolute;
+  z-index: 2000;
+  top: 10px;
+  right: -280px;
+  padding: 6px;
+  border: 1px rgba(0,0,0,.4) solid;
+  background-color: white;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+   width: 262px;
+  height: 174px;
+}
+#preview-pane .preview-container{
+   width:250px;
+   height: 162px;
+   overflow: hidden;
+}
+.jcrop-keymgr{
+	opacity: 0;
+}
+.jcrop-holder { 
+  max-width: 500px;
+  max-height: 375px;
+}
+.jcrop-tracker{
+  max-width: 500px;
+  max-height: 375px;
+}
+.corp-labels{
+  position: absolute;
+  right: 100px;
+  top: 250px;
+  width: 250px;
+}
+.corp-labels label {
+  margin-right: 1em;
+  font-weight: bold;
+  color: #900;
+  display:none;
+}
+
+

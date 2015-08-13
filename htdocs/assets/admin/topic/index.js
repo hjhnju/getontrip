@@ -84,10 +84,17 @@ $(document).ready(function() {
                 return e.collect + '/' + e.comment;
             }
         }, {
-            "data": "statusName"
+            "data": function(e) {
+                if (e.statusName == '未发布') {
+                    return e.statusName + '<button type="button" class="btn btn-primary btn-xs publish" title="发布" data-toggle="tooltip" ><i class="fa fa-check-square-o"></i></button>';
+                } else {
+                    return e.statusName + '<button type="button" class="btn btn-warning btn-xs cel-publish" title="取消发布" data-toggle="tooltip" ><i class="fa fa-close"></i></button>';
+                }
+
+            }
         }, {
             "data": function(e) {
-                return '<button type="button" class="btn btn-success btn-xs copy-button" title="复制链接" data-toggle="tooltip" data-clipboard-text="'+$('#webroot').html()+'/topic/detail/preview?id=' + e.id + '"><i class="fa fa-eye"></i></button><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/topic/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
+                return '<button type="button" class="btn btn-success btn-xs copy-button" title="复制链接" data-toggle="tooltip" data-clipboard-text="' + $('#webroot').html() + '/topic/detail/preview?id=' + e.id + '"><i class="fa fa-eye"></i></button><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/topic/edit?action=edit&id=' + e.id + '" target="_blank"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
             }
         }],
         "initComplete": function(setting, json) {
@@ -114,10 +121,10 @@ $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip();
 
             //复制链接 
-            var client = new ZeroClipboard($(".copy-button")); 
+            var client = new ZeroClipboard($(".copy-button"));
             client.on("ready", function(readyEvent) {
-                client.on("aftercopy", function(event) { 
-                     toastr.success('预览链接复制成功！');
+                client.on("aftercopy", function(event) {
+                    toastr.success('预览链接复制成功！');
                 });
             });
         });
@@ -145,6 +152,38 @@ $(document).ready(function() {
                 }
             });
         });
+
+
+        //发布操作
+        $('#editable button.publish,#editable button.cel-publish').live('click', function(e) {
+            e.preventDefault();
+            var nRow = $(this).parents('tr')[0];
+            var data = oTable.api().row(nRow).data();
+            var status = data.status;
+            if ($(this).hasClass('publish')) {
+                status = 5;
+            } else {
+                status = 1;
+            }
+            $.ajax({
+                "url": "/admin/topicapi/changeStatus",
+                "data": {
+                    id: data.id,
+                    status: status
+                },
+                "type": "post",
+                "error": function(e) {
+                    alert("服务器未正常响应，请重试");
+                },
+                "success": function(response) {
+                    if (response.status == 0) {
+                        //刷新当前页
+                        oTable.fnRefresh();  
+                    }
+                }
+            });
+        });
+
 
         //打开关闭详情
         $('#editable').delegate('tbody td a[for="details"]', 'click', function(event) {

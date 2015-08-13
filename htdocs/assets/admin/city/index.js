@@ -1,7 +1,7 @@
 (function(window, document, undefined) {
     var newBtn = '<button type="button" class="btn btn-success btn-xs save"  title="保存" data-toggle="tooltip"><i class="fa fa-save"></i></button>' + '<button type="button" class="btn btn-danger btn-xs cancel"  title="取消" data-toggle="tooltip" data-mode="new"><i class="fa fa-remove"></i></button>';
     var saveBtn = '<button type="button" class="btn btn-success btn-xs save"  title="保存" data-toggle="tooltip"><i class="fa fa-save"></i></button>' + '<button type="button" class="btn btn-danger btn-xs cancel"  title="取消" data-toggle="tooltip"><i class="fa fa-remove"></i></button>';
-    var editBtn = '<button type="button" class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" data-toggle="modal"  data-target="#map-modal" href="/admin/utils/map" ><i class="fa fa-pencil"></i></button>';
+    var editBtn = '<button type="button" class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" data-toggle="modal"  data-target="#mapModal" href="/admin/utils/map" ><i class="fa fa-pencil"></i></button>';
     var currentRow = null;
     var oldXY = {};
     var oTable = $('#editable').dataTable({
@@ -52,17 +52,17 @@
     });
 
     // 模态框从远端的数据源加载完数据之后触发该事件
-    $('#map-modal').on('loaded.bs.modal', function(e) {
+    $('#mapModal').on('loaded.bs.modal', function(e) {
         var data = oTable.api().row(currentRow).data();
         oldXY.x = data.x;
         oldXY.y = data.y;
         $("#txtSearch").val(data.name);
         $("#cityName").val(data.name);
-        $('#map-modal .btn-search').click();
+        $('#mapModal .btn-search').click();
     });
 
     //模态框 点击确定之后立即触发该事件。
-    $('#map-modal').delegate('.btn-submit', 'click', function(event) {
+    $('#mapModal').delegate('.btn-submit', 'click', function(event) {
         var valXY = $.trim($("#txtCoordinate").val());
         if (!valXY) {
             alert('还没有选定坐标呢');
@@ -78,13 +78,13 @@
         $('[data-toggle="tooltip"]').tooltip();
         
         //手工关闭模态框
-        $('#map-modal').modal('hide');
+        $('#mapModal').modal('hide');
     });
 
     $('#editable').delegate('button.edit', 'click', function(event) {
         currentRow = $(this).parents('tr')[0];
         //打开模态框
-        $('#map-modal').modal({
+        $('#mapModal').modal({
             remote: '/admin/utils/map'
         });
     });

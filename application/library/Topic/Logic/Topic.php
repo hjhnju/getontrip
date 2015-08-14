@@ -615,7 +615,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $logicUser = new User_Logic_Login();
         $userId = $logicUser->checkLogin();
         if(!empty($userId)){
-            $objTopic->userId = $userId;
+            $objTopic->createUser = $userId;
         }
         
         $ret = $objTopic->save();

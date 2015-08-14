@@ -10,9 +10,9 @@ class  TopicapiController extends Base_Controller_Api{
     }
      
     /**
-     * 标签list
-     *  
-     */    
+     * 话题list
+     * @return [type] [description]
+     */
     public function listAction(){  
 
         //第一条数据的起始位置，比如0代表第一条数据
@@ -133,12 +133,8 @@ class  TopicapiController extends Base_Controller_Api{
     public function addByFilterAction(){
         
        //1、调用相应的采集器
-       //判断是否是知乎
-       if(stripos($_REQUEST['url'],'zhihu.com')>0){  
-            $spider = Spider_Factory::getInstance("Zhihu",$_REQUEST['url'],Spider_Type_Source::URL);
-       }else{
-            $spider = Spider_Factory::getInstance("Auto",$_REQUEST['url'],Spider_Type_Source::URL);
-       }
+       $spiderType = $this->getSpider($_REQUEST['url']);
+       $spider = Spider_Factory::getInstance($spiderType,$_REQUEST['url'],Spider_Type_Source::URL);
 
        //2、获取title 解析title 去掉-后面的内容
        $title = $spider->getTitle();
@@ -245,19 +241,24 @@ class  TopicapiController extends Base_Controller_Api{
  
 
      /**
-     * 获取图片name数组
-     * @param  [type] $content [description]
-     * @return [type]          [description]
+     * 选择数据采集器
+     * @param  [string] $url [原文链接]
+     * @return [string]      [description]
      */
-    public function getimgNameArray($content){ 
-       $pat='/src=\"\/pic\/[a-za-z0-9]{16,16}.[jpg|gif]{3,3}/i';
-
-       //将匹配成功的参数写入数组中 
-       preg_match_all($pat, $content, $matches);  
-       for($i=0;$i<count($matches[0]);$i++) {  
-            $matches[0][$i]=preg_replace('/src=\"\/pic\//i','',$matches[0][$i]); 
-          } 
-       return $matches[0];
+    public function getSpider($url){ 
+        $url=parse_url($url);
+        $host=strtolower($url['host']);
+        switch ($host) {
+            case 'www.zhihu.com':
+              return 'Zhihu';
+              break;
+            case 'blog.sina.com.cn':
+              return 'SinaBlog';
+              break;
+            default:
+              return 'Auto';
+              break;
+        }
     }
 
 

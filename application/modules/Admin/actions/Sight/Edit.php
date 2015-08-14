@@ -7,13 +7,13 @@
 class EditAction extends Yaf_Action_Abstract {
     
     public function execute() {
-    	$actionArray = array(
-               "add"=>"新建",
-               "edit"=>"编辑",
-               "view"=>"查看"
-    	);
+      	$actionArray = array(
+                 "add"=>"新建",
+                 "edit"=>"编辑",
+                 "view"=>"查看"
+      	);
         $levelArray = array(
-              "5A","4A","3A","2A","1A"
+              "","5A","4A","3A","2A","1A"
         );
         $action = isset($_REQUEST['action'])?$_REQUEST['action']:'add';  
 

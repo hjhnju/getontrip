@@ -26,7 +26,7 @@ class Source_Object_Source extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'url', 'create_time', 'update_time', 'type');
+    protected $fields = array('id', 'name', 'url', 'type', 'create_user', 'update_user', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -36,9 +36,11 @@ class Source_Object_Source extends Base_Object {
         'id'          => 'id',
         'name'        => 'name',
         'url'         => 'url',
+        'type'        => 'type',
+        'create_user' => 'createUser',
+        'update_user' => 'updateUser',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
-        'type'        => 'type',
     );
 
     /**
@@ -47,9 +49,11 @@ class Source_Object_Source extends Base_Object {
      */
     protected $intProps = array(
         'id'          => 1,
+        'type'        => 1,
+        'create_user' => 1,
+        'update_user' => 1,
         'create_time' => 1,
         'update_time' => 1,
-        'type'        => 1,
     );
 
     /**
@@ -79,6 +83,24 @@ class Source_Object_Source extends Base_Object {
     public $url;
 
     /**
+     * 来源类型
+     * @var integer
+     */
+    public $type;
+
+    /**
+     * 
+     * @var integer
+     */
+    public $createUser;
+
+    /**
+     * 
+     * @var integer
+     */
+    public $updateUser;
+
+    /**
      * 创建时间
      * @var integer
      */
@@ -89,11 +111,5 @@ class Source_Object_Source extends Base_Object {
      * @var integer
      */
     public $updateTime;
-
-    /**
-     * 
-     * @var integer
-     */
-    public $type;
 
 }

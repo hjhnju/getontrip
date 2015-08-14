@@ -1,16 +1,22 @@
 <?php
 class Topic_Keys {
-
+    
+    //话题访问信息
     const REDIS_TOPIC_VISIT_KEY   = 'topic_visit_info';
     
+    //话题标签ID集合，参数为话题ID
     const REDIS_TOPIC_TAG_KEY     = 'topic_tag_%s';
     
     const REDIS_LATE_KEY  = '%s_late_%s';
     
     const REDIS_TOTAL_KEY    = '%s_total';
     
+    //话题热度信息
     const REDIS_TOPIC_HOT_KEY = 'topic_hot_info';
 
+    //根据话题ID，缓存话题内容，不包含统计数据
+    const REDIS_TOPIC_CONTENT = 'topic_%s';
+    
     public static function getTopicVisitKey(){
         return self::REDIS_TOPIC_VISIT_KEY;
     }
@@ -29,5 +35,9 @@ class Topic_Keys {
     
     public static function getTopicHotKey(){
         return self::REDIS_TOPIC_HOT_KEY;
+    }
+    
+    public static function getTopicContentKey($topicId){
+        return sprintf(self::REDIS_TOPIC_CONTENT,$topicId);
     }
 }

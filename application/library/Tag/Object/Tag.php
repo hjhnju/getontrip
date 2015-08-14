@@ -26,7 +26,7 @@ class Tag_Object_Tag extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'create_time', 'update_time');
+    protected $fields = array('id', 'name', 'create_user', 'update_user', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -35,6 +35,8 @@ class Tag_Object_Tag extends Base_Object {
     public $properties = array(
         'id'          => 'id',
         'name'        => 'name',
+        'create_user' => 'createUser',
+        'update_user' => 'updateUser',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
     );
@@ -45,6 +47,8 @@ class Tag_Object_Tag extends Base_Object {
      */
     protected $intProps = array(
         'id'          => 1,
+        'create_user' => 1,
+        'update_user' => 1,
         'create_time' => 1,
         'update_time' => 1,
     );
@@ -68,6 +72,18 @@ class Tag_Object_Tag extends Base_Object {
      * @var string
      */
     public $name;
+
+    /**
+     * 
+     * @var integer
+     */
+    public $createUser;
+
+    /**
+     * 
+     * @var integer
+     */
+    public $updateUser;
 
     /**
      * 创建时间

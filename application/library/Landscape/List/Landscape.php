@@ -20,7 +20,7 @@ class Landscape_List_Landscape extends Base_List {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'title', 'image', 'content', 'author', 'x', 'y', 'status', 'create_time', 'update_time');
+    protected $fields = array('id', 'city_id', 'name', 'title', 'image', 'content', 'author', 'x', 'y', 'status', 'create_user', 'update_user', 'create_time', 'update_time');
 
     /**
      * 整数类型的字段
@@ -28,7 +28,10 @@ class Landscape_List_Landscape extends Base_List {
      */
     protected $intProps = array(
         'id'          => 1,
+        'city_id'     => 1,
         'status'      => 1,
+        'create_user' => 1,
+        'update_user' => 1,
         'create_time' => 1,
         'update_time' => 1,
     );

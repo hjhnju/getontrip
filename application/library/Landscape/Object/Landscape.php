@@ -26,7 +26,7 @@ class Landscape_Object_Landscape extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'title', 'image', 'content', 'author', 'x', 'y', 'status', 'create_time', 'update_time');
+    protected $fields = array('id', 'city_id', 'name', 'title', 'image', 'content', 'author', 'x', 'y', 'status', 'create_user', 'update_user', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -34,6 +34,7 @@ class Landscape_Object_Landscape extends Base_Object {
      */
     public $properties = array(
         'id'          => 'id',
+        'city_id'     => 'cityId',
         'name'        => 'name',
         'title'       => 'title',
         'image'       => 'image',
@@ -42,6 +43,8 @@ class Landscape_Object_Landscape extends Base_Object {
         'x'           => 'x',
         'y'           => 'y',
         'status'      => 'status',
+        'create_user' => 'createUser',
+        'update_user' => 'updateUser',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
     );
@@ -52,7 +55,10 @@ class Landscape_Object_Landscape extends Base_Object {
      */
     protected $intProps = array(
         'id'          => 1,
+        'city_id'     => 1,
         'status'      => 1,
+        'create_user' => 1,
+        'update_user' => 1,
         'create_time' => 1,
         'update_time' => 1,
     );
@@ -72,13 +78,19 @@ class Landscape_Object_Landscape extends Base_Object {
     public $id;
 
     /**
+     * 城市id
+     * @var integer
+     */
+    public $cityId;
+
+    /**
      * 景观名称
      * @var string
      */
     public $name;
 
     /**
-     * 景观副标题
+     * 景观标题
      * @var string
      */
     public $title;
@@ -118,6 +130,18 @@ class Landscape_Object_Landscape extends Base_Object {
      * @var integer
      */
     public $status;
+
+    /**
+     * 
+     * @var integer
+     */
+    public $createUser;
+
+    /**
+     * 
+     * @var integer
+     */
+    public $updateUser;
 
     /**
      * 创建时间

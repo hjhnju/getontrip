@@ -60,7 +60,9 @@ class Home_Logic_List{
             
             //图片用全路径
             if(!empty($val['image'])){                
-                $arr[$index]['image']  = Base_Image::getUrlByHash($val['image']);
+                $arr[$index]['image']  = Base_Image::getUrlByName($val['image']);
+            }else{
+                $arr[$index]['image']  = '';
             }
             
             //距离转换成字符串

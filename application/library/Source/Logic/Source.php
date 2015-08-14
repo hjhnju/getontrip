@@ -105,4 +105,18 @@ class Source_Logic_Source extends Base_Logic{
         $obj->fetch(array('name' => $name));
         return $obj->toArray();
     }
+    
+    /**
+     * 获取热门来源
+     * @return array
+     */
+    public function getHotSource(){
+        $arrHotSource = array(
+            array('id' =>1,   'name'=>'知乎'),
+            array('id' =>6,  'name'=>'豆瓣'),
+            array('id' =>14,'name'=>'网易博客'),
+        );
+        return $arrHotSource;
+        
+    }
 }

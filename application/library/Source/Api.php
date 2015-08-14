@@ -58,4 +58,14 @@ class Source_Api{
         $logicSource = new Source_Logic_Source();
         return $logicSource->getSourceByName($name);
     }
+    
+    /**
+     * 接口6：Source_Api::getHotSource()
+     * 获取热门来源
+     * @return array
+     */
+    public static function getHotSource(){
+        $logicSource = new Source_Logic_Source();
+        return $logicSource->getHotSource();
+    }
 }

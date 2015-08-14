@@ -6163,12 +6163,21 @@ define('topic/detail', [
     var $ = require('jquery');
     require('common/extra/jquery.lazyload');
     require('common/imgSize');
+    var rate = 93 / 133;
     function init() {
+        var width = $('.bg-img').width();
+        var height = Math.ceil(rate * width);
+        var img = $('#topic-bg');
+        var imgUrl = img.attr('data-webroot') + '/pic/' + img.attr('data-hash') + '_' + width + '_' + height + '.' + img.attr('data-img_type');
+        img.attr('src', imgUrl);
+        img.css({
+            width: width + 'px',
+            height: height + 'px'
+        });
         $('.rich-text img').css('display', 'block').lazyload({
             threshold: 400,
             container: '.rich-text'
         });
-        $('.bg-img').imgSize({ rate: 89 / 138 });
     }
     return { init: init };
 });

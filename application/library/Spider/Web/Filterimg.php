@@ -21,7 +21,8 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
     }
     
     /**
-     * 获取图片的src url 数组 
+     * 获取图片的src url 数组 imgUrlArray
+     * imgDomArray 图片dom 对象数组
      * @return [array] [url 字符数组]
      */
     public function getImgUrlArray(){ 
@@ -35,8 +36,11 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
                 $src= preg_replace("/\?(.)*/", '', $oldSrc);
                 $img->src = $src;
                 array_push($imgUrlArray, $src);
-                array_push($imgDomArray, $img);
-
+                array_push($imgDomArray, $img); 
+            }else if($img->hasAttribute('data-hash')){
+                //如果有data-hash属性，替换为data-image属性
+                $img->setAttribute('data-image',Base_Image::getImgNameBySrc($img->getAttribute('src')));
+                $img->removeAttribute('data-hash');
             }
          } 
         $this->imgUrlArray = $imgUrlArray;
@@ -49,19 +53,23 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
      * @return [type] [description]
      */
     public function uploadImgs(){
-        $imgHashArray=array(); 
+        $imgNameArray=array(); 
         foreach ($this->imgUrlArray as $picUrl){
             //已经上传过的图片，自己网站的图片,则不用上传
+            //在这里处理是为了  如果从页面复制本站图片，没有data-image属性 
+            //而且 src默认添加上域名了， 在下一步 需要过滤掉
             if($this->isOurUrl($picUrl)){  
-                preg_match('/[a-za-z0-9]{16,16}.jpg/i', $picUrl, $hashs);
-                $hash=preg_replace('/.jpg/i','',$hashs[0]); 
+                preg_match('/[a-za-z0-9]{16,16}.[jpg|gif]{3,3}/i', $picUrl, $hashs);
+                //$hash=preg_replace('/.[jpg|gif]{3,3}/i','',$hashs[0]); 
+                $name = $hashs[0]; 
             }else{
-                $hash = $this->uploadPic($picUrl); 
+              //其他站图片则根据url上传到云
+                $name = $this->uploadPic($picUrl); 
             }
-            array_push($imgHashArray, $hash);
+            array_push($imgNameArray, $name);
         }
-        $this->imgHashArray = $imgHashArray; 
-        return $imgHashArray;
+        $this->imgNameArray = $imgNameArray; 
+        return $imgNameArray;
     }
    
    /**
@@ -70,12 +78,12 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
     */
     public function replaceImg(){
         $strData = '';
-        $imgHashArray=$this->imgHashArray; 
+        $imgNameArray=$this->imgNameArray; 
         $imgDomArray = $this->imgDomArray;
-        for($i=0;$i<count($imgHashArray);$i++){ 
+        for($i=0;$i<count($imgNameArray);$i++){ 
             if($this->isUrl($imgDomArray[$i]->src)){  
-              $imgDomArray[$i] ->setAttribute('data-hash',$imgHashArray[$i]);
-              $imgDomArray[$i]->src = '/pic/'.$imgHashArray[$i].'.jpg';
+              $imgDomArray[$i] ->setAttribute('data-image',$imgNameArray[$i]);
+              $imgDomArray[$i]->src = Base_Image::getUrlByName($imgNameArray[$i]);
             } 
         }  
         return $this->objDom->__toString();
@@ -101,10 +109,12 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
     public function getContentToDis(){ 
        foreach ($this->objDom->find('img') as $img){
             $oldSrc = $img->src; 
-            //去掉url 后面的参数
             $web =Base_Config::getConfig('web');
+
+            //定义默认占位图片
             $img->src = $web->stroot . '/v1/' . $web->version . '/asset/common/img/imgloading.gif'; 
-            $img->setAttribute('data-actualsrc',$web->root . $oldSrc); 
+            $img->setAttribute('data-actualsrc',$web->root . $oldSrc);  
+            
           } 
         return $this->objDom->__toString();
     }

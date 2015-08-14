@@ -64,6 +64,16 @@ class  TopicapiController extends Base_Controller_Api{
             $fromInfo = Source_Api::getSourceInfo($tmpList[$i]["from"]);
             $tmpList[$i]["fromName"] = isset($fromInfo['name'])?$fromInfo['name']:'';  
         }
+
+        //处理图片名称 分割为 img_hash 和 img_type
+        for($i=0; $i<count($tmpList); $i++) {
+           if(!empty($tmpList[$i]["image"])){
+              $img=Base_Image::getImgParams($tmpList[$i]["image"]);
+              $tmpList[$i]["img_hash"] = $img['img_hash'];
+              $tmpList[$i]["img_type"] = $img['img_type'];
+           } 
+        }
+
           
         $List['list']=$tmpList;
         
@@ -176,16 +186,14 @@ class  TopicapiController extends Base_Controller_Api{
         //正则提取出hash
         $content=$topicInfo['content'];
         if(!empty($content)&&$content!=''){
-           $imgHashArray=$this->getimgHashArray($content);  
+           $imgNameArray=Base_Image::getimgNameArray($content);  
            $oss = Oss_Adapter::getInstance();  
            //循环删除图片
-           foreach ($imgHashArray as $key => $value) {
-              $filename = $value.'.jpg';   
+           foreach ($imgNameArray as $key => $filename) { 
               $res = $oss->remove($filename);
            }   
         }
-        
-
+         
         $bRet =Topic_Api::delTopic($postid);
         if($bRet){
             return $this->ajax($postid);
@@ -214,7 +222,7 @@ class  TopicapiController extends Base_Controller_Api{
      */
     public function cropPicAction(){
         $postid=isset($_REQUEST['id'])?intval($_REQUEST['id']):''; 
-        $oldhash=$_REQUEST['hash'];
+        $oldhash=$_REQUEST['image'];
         $x=$_REQUEST['x'];
         $y=$_REQUEST['y']; 
         $width=$_REQUEST['width'];
@@ -222,7 +230,7 @@ class  TopicapiController extends Base_Controller_Api{
         $ret=Base_Image::cropPic($oldhash,$x,$y,$width,$height); 
         if($ret){
           if(!empty($postid)){
-            $params = array('image'=>$ret['hash']);
+            $params = array('image'=>$ret['image']);
             //修改话题的图片hash
             $bRet=Topic_Api::editTopic($postid,$params);
             if($bRet){
@@ -234,25 +242,23 @@ class  TopicapiController extends Base_Controller_Api{
         }
         return $this->ajaxError(); 
     }
+ 
 
-    /**
-     * 获取图片hash数组
+     /**
+     * 获取图片name数组
      * @param  [type] $content [description]
      * @return [type]          [description]
      */
-    public function getimgHashArray($content){ 
-       $pat='/data-hash=\"(.){16,16}\"/';
+    public function getimgNameArray($content){ 
+       $pat='/src=\"\/pic\/[a-za-z0-9]{16,16}.[jpg|gif]{3,3}/i';
+
        //将匹配成功的参数写入数组中 
-       preg_match_all($pat, $content, $matches); 
-       preg_match_all('/data-hash=\"?(.){16,16}\"?/i',$content,$matches);
+       preg_match_all($pat, $content, $matches);  
        for($i=0;$i<count($matches[0]);$i++) {  
-            $matches[0][$i]=preg_replace('/data-hash=\"/i','',$matches[0][$i]);
-            $matches[0][$i]=preg_replace('/\"/i','',$matches[0][$i]); 
+            $matches[0][$i]=preg_replace('/src=\"\/pic\//i','',$matches[0][$i]); 
           } 
-      return $matches[0];
+       return $matches[0];
     }
-
-
 
 
 

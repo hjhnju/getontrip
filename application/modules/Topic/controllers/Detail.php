@@ -41,18 +41,27 @@ class DetailController extends Base_Controller_Page {
     
 
     /**
-     *  
+     *  预览页面
     */
     public function previewAction() {             
        $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0;  
        $postInfo = Topic_Api::getTopicById($postid);
-       if(!empty($postInfo)){
+       if(!isset($postInfo['id'])){
+          $this->getView()->assign('post', array()); 
+       }else{
            //处理状态值  
            $postInfo["statusName"] = Topic_Type_Status::getTypeName($postInfo["status"]);  
            
            //处理来源
            $sourceInfo = Source_Api::getSourceInfo($postInfo['from']);
            $postInfo['from_name'] = $sourceInfo['name'];
+
+           //处理背景图片
+           if(!empty($postInfo["image"])){
+             $imgParams = Base_Image::getImgParams($postInfo["image"]);
+             $postInfo["img_hash"] = $imgParams['img_hash'];
+             $postInfo["img_type"] = $imgParams['img_type'];
+           }
 
            //处理正文图片
            $content = $postInfo['content'];  
@@ -63,11 +72,11 @@ class DetailController extends Base_Controller_Page {
 
            $this->getView()->assign('post', $postInfo); 
        } 
-
+       
        //判断是否来自移动端
        $isMobile = Base_Util_Mobile::isMobile();
        //判断是否来自app
-       $isApp = isset($_REQUEST['fromapp'])? (bool)$_REQUEST['fromapp'] : false; 
+       $isApp = isset($_REQUEST['isApp'])? (bool)$_REQUEST['isApp'] : false; 
        $this->getView()->assign('isMobile', $isMobile); 
        $this->getView()->assign('isApp', $isApp);   
     }

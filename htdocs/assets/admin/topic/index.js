@@ -23,7 +23,7 @@ $(document).ready(function() {
                     d.params.status = $.trim($("#form-status").val());
                 }
                 if ($('#form-user_id').attr("checked")) {
-                    d.params.user_id = $('#form-user_id').val();
+                    d.params.create_user = $('#form-user_id').val();
                 }
             }
         },
@@ -38,7 +38,7 @@ $(document).ready(function() {
             "targets": [2],
             "width": 250
         }, {
-            "targets": [7],
+            "targets": [6,7],
             "width": 50
         }, {
             "targets": [9],
@@ -75,7 +75,7 @@ $(document).ready(function() {
         }, {
             "data": function(e) {
                 if (e.image) {
-                    return '<a href="/pic/' + e.image + '.jpg" target="_blank"><img alt="" src="/pic/' + e.image + '_80_22.jpg"/></a>';
+                    return '<a href="/pic/' + e.image + '" target="_blank"><img alt="" src="/pic/' + e.img_hash + '_80_22.' + e.img_type + '"/></a>';
                 }
                 return "未上传";
             }

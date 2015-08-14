@@ -64,13 +64,14 @@ abstract class Spider_Web_Base{
         $arrName  = explode(".",$picUrl);
         $size     = count($arrName);
         if(strtolower($arrName[$size-1]) == "gif"){
-            $filename = $hash . '.jpg';
+            $filename = $hash . '.gif';
         }else{
             $filename = $hash . '.jpg';
         }
         $res = $oss->writeFileContent($filename, $content);
         if($res){
-            return array('hash'=>$hash,'name'=>$filename,'url'=>Base_Image::getUrlByName($filename));
+            return $filename;
+            //return array('hash'=>$hash,'name'=>$filename,'url'=>Base_Image::getUrlByName($filename));
         }
         return '';
     }

@@ -25,6 +25,11 @@ class Theme_Logic_Theme extends Base_Logic{
             }
         }
         if($bCheck){
+            $logicUser = new User_Logic_Login();
+            $userId    = $logicUser->checkLogin();
+            if(!empty($userId)){
+                $objTheme->createUser = $userId;
+            }
             $ret = $objTheme->save();
         }
         if($ret){
@@ -238,14 +243,13 @@ class Theme_Logic_Theme extends Base_Logic{
     public function getThemeList($page=1,$pageSize=PHP_INT_MAX){
         $list          = new Theme_List_Theme();
         $logicCollect  = new Collect_Logic_Collect();
-        $list->setFields(array('id','name','image'));
+        $list->setFields(array('id','name','image','period'));
         $list->setFilter(array('status' => Theme_Type_Status::PUBLISHED));
         $list->setPage($page);
         $list->setPagesize($pageSize);
         $arrRet = $list->toArray();
         foreach ($arrRet['list'] as $key => $val){
-            $collectTopicNum   = $logicCollect->getLateCollectNum(Collect_Keys::THEME,$val['id']);
-            $arrRet['list'][$key]['collect'] = $collectTopicNum;
+            $arrRet['list'][$key]['collect'] = $logicCollect->getTotalCollectNum(Collect_Keys::THEME,$val['id']);
         }
         return $arrRet['list'];
     }

@@ -6,6 +6,8 @@
  */
 class ApiController extends Base_Controller_Page {
     
+    const PAGE_SIZE = 6;
+    
     protected $logic;
     
     public function init() {
@@ -38,7 +40,9 @@ class ApiController extends Base_Controller_Page {
      * @return json
      */
     public function listAction(){
-        $ret = $this->logic->getThemeList();
+        $page     = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $pageSize = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGE_SIZE;
+        $ret      = $this->logic->getThemeList($page,$pageSize);
         return $this->ajax($ret);
     }
 }

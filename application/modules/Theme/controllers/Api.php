@@ -39,9 +39,6 @@ class ApiController extends Base_Controller_Page {
      */
     public function listAction(){
         $ret = $this->logic->getThemeList();
-        if($ret){
-            return $this->ajax($ret);
-        }
-        return $this->ajaxError();
+        return $this->ajax($ret);
     }
 }

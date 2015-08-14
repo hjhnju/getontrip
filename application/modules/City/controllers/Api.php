@@ -1,12 +1,12 @@
 <?php
 /**
- * 城市中间页
+ * 城市信息
  * @author huwei
  *
  */
 class ApiController extends Base_Controller_Page {
     
-    const PAGE_SIZE = 10;
+    const PAGE_SIZE = 8;
     
     protected $_logicCity;
     
@@ -18,7 +18,7 @@ class ApiController extends Base_Controller_Page {
     
     /**
      * 接口1：/api/city/detail
-     * 获取城市信息
+     * 获取城市信息,供城市中间页使用
      * @param integer cityId,城市ID
      * @return json
      */
@@ -38,7 +38,7 @@ class ApiController extends Base_Controller_Page {
     
     /**
      * 接口1：/api/city/list
-     * 获取城市列表信息
+     * 获取城市列表信息，切换城市时使用
      * @param char filter,前缀字母
      * @param integer page,页码
      * @param integer pageSize,页面大小

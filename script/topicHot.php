@@ -8,7 +8,7 @@ if(isset($argv[1])){
     $list->setPagesize(PHP_INT_MAX);
     $arrRet = $list->toArray();
     foreach ($arrRet['list'] as $val){
-        $arrTopic[] = $val['topic_id'];
+        $arrTopic[] = $val['id'];
     }
 }
 foreach ($arrTopic as $topic){
@@ -36,7 +36,7 @@ foreach ($arrTopic as $topic){
     $topicUv         = $logicTopic->getLateTopicVistUv($topic,7);
     
     $hot1            = $collectTopicNum + $commentNum + $topicUv;
-    
+
     $obj = new Topic_Object_Topic();
     $obj->fetch(array('id' => $topic));
     $obj->hot1 = $hot1; 

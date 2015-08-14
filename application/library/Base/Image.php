@@ -54,34 +54,35 @@ class Base_Image {
     }
     
     /**
-     * 获取图片的URL地址 Base_Image::getUrlByHash($hash, $width = 0, $height = 0)
-     * @param string $hash
+     * 获取图片的URL地址 Base_Image::getUrlByName($name, $width = 0, $height = 0)
+     * @param string $name
      * @param number $width
      * @param number $height
      * @return string
      */
-    public static function getUrlByHash($hash, $width = 0, $height = 0) {
-        $url = "/pic/$hash";
+    public static function getUrlByName($name, $width = 0, $height = 0) {
+        $arrName = explode(".",$name);
+        $url     = "/pic/".$arrName[0];
         if ($width > 0) {
             $url .= "_{$width}";
             if ($height > 0) {
                 $url .= "_{$height}";
             }
         }
-        $url .= ".jpg";
+        $url .= ".".$arrName[1];
         return $url;
     }
 
 
      /**
-     * 获取图片的完整URL地址 Base_Image::getUrlByHash($hash, $width = 0, $height = 0)
-     * @param string $hash
+     * 获取图片的完整URL地址 Base_Image::getUrlByHash($name, $width = 0, $height = 0)
+     * @param string $name
      * @param number $width
      * @param number $height
      * @return string
      */
-    public static function getWholeUrlByHash($hash, $width = 0, $height = 0) {
-        $url = Base_Config::getConfig('web')->root . Base_Image::getUrlByHash($hash, $width, $height);
+    public static function getWholeUrlByHash($name, $width = 0, $height = 0) {
+        $url = Base_Config::getConfig('web')->root . Base_Image::getUrlByName($name, $width, $height);
         return $url;
     }
 

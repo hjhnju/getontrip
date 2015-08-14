@@ -18,20 +18,21 @@ class TopicModel{
      * @param integer $size
      * @return array
      */
-    public function getHotTopics($strTopicId,$strTags,$size,$during){
+    public function getHotTopics($strTopicId,$strTags,$page,$pageSize,$during){
+        $from = ($page-1)*$pageSize;
         if(empty($strTags)){
             if($during == self::MONTH){
-                $sql = "SELECT a.id,a.title,a.subtitle,a.image,a.from,a.desc,a.content FROM `topic`  a,`topic_tag`  b WHERE a.status = 5 and a.id=b.topic_id AND a.id in(".$strTopicId.") ORDER by a.hot2 desc, a.update_time desc limit 0,$size";
+                $sql = "SELECT `id`,`title`,`subtitle`,`image`,`from`,`desc`,`content` FROM `topic`   WHERE  `id` in(".$strTopicId.") ORDER BY `hot2` desc,`update_time` desc limit $from,$pageSize";
             }elseif($during == self::WEEK){
-                $sql = "SELECT a.id,a.title,a.subtitle,a.image,a.from,a.desc,a.content FROM `topic`  a,`topic_tag`  b WHERE a.status = 5 and a.id=b.topic_id AND a.id in(".$strTopicId.") ORDER by a.hot1 desc, a.update_time desc limit 0,$size";
+                $sql = "SELECT `id`,`title`,`subtitle`,`image`,`from`,`desc`,`content` FROM `topic`   WHERE  `id` in(".$strTopicId.") ORDER BY `hot1` desc,`update_time` desc limit $from,$pageSize";
             }
         }else{
             if($during == self::MONTH){
-                $sql = "SELECT a.id,a.title,a.subtitle,a.image,a.from,a.desc,a.content FROM `topic`  a,`topic_tag`  b WHERE a.status = 5 a.id=b.topic_id AND a.id in(".$strTopicId.") AND b.tag_id in(".$strTags.") ORDER by a.hot2 desc, a.update_time desc limit 0,$size";
+                $sql = "SELECT a.id,a.title,a.subtitle,a.image,a.from,a.desc,a.content FROM `topic`  a,`topic_tag`  b WHERE a.status = 5 a.id=b.topic_id AND a.id in(".$strTopicId.") AND b.tag_id in(".$strTags.") ORDER by a.hot2 desc, a.update_time desc limit $from,$pageSize";
             }elseif($during == self::WEEK){
-                $sql = "SELECT a.id,a.title,a.subtitle,a.image,a.from,a.desc,a.content FROM `topic`  a,`topic_tag`  b WHERE a.status = 5 a.id=b.topic_id AND a.id in(".$strTopicId.") AND b.tag_id in(".$strTags.") ORDER by a.ho1 desc, a.update_time desc limit 0,$size";
+                $sql = "SELECT a.id,a.title,a.subtitle,a.image,a.from,a.desc,a.content FROM `topic`  a,`topic_tag`  b WHERE a.status = 5 a.id=b.topic_id AND a.id in(".$strTopicId.") AND b.tag_id in(".$strTags.") ORDER by a.ho1 desc, a.update_time desc limit $from,$pageSize";
             }
-        }        
+        }       
         try {                 	
             $data = $this->db->fetchAll($sql);          
         } catch (Exception $ex) {
@@ -51,9 +52,9 @@ class TopicModel{
     public function getNewTopics($strTopicId,$strTags,$page,$pageSize){
         $from = ($page-1)*$pageSize;
         if(empty($strTags)){
-            $sql = "SELECT a.id,a.title,a.subtitle,a.image,a.from,a.desc,a.content FROM `topic`  a,`topic_tag`  b WHERE a.status = 5 and a.id=b.topic_id AND a.id in(".$strTopicId.") ORDER BY a.update_time desc limit $from,$pageSize";
+            $sql = "SELECT `id`,`title`,`subtitle`,`image`,`from`,`desc`,`content` FROM `topic`   WHERE  `id` in(".$strTopicId.") ORDER BY `update_time` desc limit $from,$pageSize";
         }else{
-            $sql = "SELECT a.id,a.title,a.subtitle,a.image,a.from,a.desc,a.content FROM `topic`  a,`topic_tag`  b WHERE a.status = 5 and a.id=b.topic_id AND a.id in(".$strTopicId.") AND b.tag_id in(".$strTags.") ORDER by a.update_time desc limit $from,$pageSize";
+            $sql = "SELECT a.id,a.title,a.subtitle,a.image,a.from,a.desc,a.content FROM `topic`  a,`topic_tag`  b WHERE a.id=b.topic_id AND a.id in(".$strTopicId.") AND b.tag_id in(".$strTags.") ORDER by a.update_time desc limit $from,$pageSize";
         }
         try {
             $data = $this->db->fetchAll($sql);

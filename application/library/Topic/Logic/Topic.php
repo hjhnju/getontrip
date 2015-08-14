@@ -10,10 +10,11 @@ class Topic_Logic_Topic extends Base_Logic{
     
     const CONTENT_LEN   = 75;
     
-    const DEFAULT_DAYS  = 30;
+    const DEFAULT_DAYS  = 30;    
     
-    const REDIS_TIMEOUT = 3600;
+    const ADD_TOPIC     = 1;
     
+    const DEL_TOPIC     = 2;
     
     public function __construct(){
         
@@ -29,9 +30,11 @@ class Topic_Logic_Topic extends Base_Logic{
         $redis = Base_Redis::getInstance();
         $ret   = $redis->sMembers(Sight_Keys::getSightTopicKey($sightId));
         if(!empty($ret)){
-            return $ret;
+            $strTopicId = implode(",", $ret);
+            return $strTopicId;
         }
         //获取景点的所有话题
+        $redis->delete(Sight_Keys::getSightTopicKey($sightId));
         $listTopic = new Sight_List_Topic();
         $listTopic->setPagesize(PHP_INT_MAX);
         if(!empty($sightId)){
@@ -39,10 +42,14 @@ class Topic_Logic_Topic extends Base_Logic{
         }
         $arrRet = $listTopic->toArray();
         foreach ($arrRet['list'] as $val){
-            $ret[] = $val['topic_id'];
-            $redis->sAdd(Sight_Keys::getSightTopicKey($sightId),$val['topic_id']);
+            $objTopic = new Topic_Object_Topic();
+            $objTopic->fetch(array('id' => $val['topic_id']));
+            if($objTopic->status == Topic_Type_Status::PUBLISHED){
+                $ret[] = $val['topic_id'];
+                $redis->sAdd(Sight_Keys::getSightTopicKey($sightId),$val['topic_id']);
+            }
         }
-        $strTopicId = implode(",", $ret);       
+        $strTopicId = implode(",", $ret);      
         return $strTopicId;
     }
     
@@ -52,16 +59,10 @@ class Topic_Logic_Topic extends Base_Logic{
      * @param integer $size
      * @return array
      */
-    public function getHotTopic($sightId,$period=self::DEFAULT_DAYS,$size=self::DEFAULT_SIZE,$strTags=''){
-        $redis = Base_Redis::getInstance();
-        $ret   = $redis->get(Sight_Keys::getHotTopic($sightId,$strTags));
-        if(!empty($ret)){
-            $arrRet = json_decode($ret,true);
-            //return $arrRet;            
-        }
+    public function getHotTopic($sightId,$period=self::DEFAULT_DAYS,$page=1,$pageSize=self::DEFAULT_SIZE,$strTags=''){
         $strTopicId = $this->getTopicIdBySight($sightId);
         $model      = new TopicModel();
-        $arrRet     = $model->getHotTopics($strTopicId,$strTags,$size,$period);
+        $arrRet     = $model->getHotTopics($strTopicId,$strTags,$page,$pageSize,$period);
 
         foreach($arrRet as $key => $val){
             $arrRet[$key]['desc'] = Base_Util_String::getSubString($arrRet[$key]['content'],self::CONTENT_LEN);
@@ -82,8 +83,6 @@ class Topic_Logic_Topic extends Base_Logic{
                 $arrRet[$key]['image']  = Base_Image::getUrlByHash($val['image']);
             }                       
         }
-        $ret = json_encode($arrRet);
-        $redis->setex(Sight_Keys::getHotTopic($sightId,$strTags),self::REDIS_TIMEOUT,$ret);
         return $arrRet;
     }
     
@@ -99,7 +98,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrRet     = $model->getNewTopics($strTopicId, $strTags, $page, $pageSize);
 
         foreach($arrRet as $key => $val){         
-            $arrRet[$key]['desc'] = Base_Util_String::getSubString($val['content'],$this->contentSize);
+            $arrRet[$key]['desc'] = Base_Util_String::getSubString($val['content'],self::CONTENT_LEN);
             unset($arrRet[$key]['content']);
 
             //话题收藏数
@@ -127,23 +126,53 @@ class Topic_Logic_Topic extends Base_Logic{
      */
     public function getTopicDetail($topicId,$device_id){
         $objTopic = new Topic_Object_Topic();
+        $objTopic->setFileds(array('id','title','content','from','image','x','y'));
         $objTopic->fetch(array('id' => $topicId));
-        $arrRet = $objTopic->toArray();
+        $arrRet                = $objTopic->toArray();
         $logicComment          = new Comment_Logic_Comment();
-        $arrRet['commentNum']  = $logicComment->getCommentNum($topicId);
-               
+        $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
+        $arrRet['dis']         = '';
+        $gis                   = new GisModel();
+        $x                     = Yaf_Session::getInstance()->get(Home_Keys::SESSION_USER_X_NAME);
+        $y                     = Yaf_Session::getInstance()->get(Home_Keys::SESSION_USER_Y_NAME);
+        if(!empty($arrRet['x']) && !empty($arrRet['y'])){
+            $arrRet['dis'] = $gis->getEarthDistanceToPoint($x, $y, $arrRet['x'], $arrRet['y']);
+            $arrRet['dis'] = Base_Util_Number::getDis($arrRet['dis']);
+        }else{
+            $listSightTopic = new Sight_List_Topic();
+            $listSightTopic->setPagesize(1);
+            $listSightTopic->setFilter(array('topic_id' => $arrRet['id']));
+            $ret = $listSightTopic->toArray();
+            if(isset($ret['list'][0]['sight_id'])){
+                $sightId = $ret['list'][0]['sight_id'];
+                $arrRet['dis'] = $gis->getEarthDistanceToSight($x, $y, $sightId);
+                $arrRet['dis'] = Base_Util_Number::getDis($arrRet['dis']);
+            }
+        }        
         //话题来源
-        $logicSource = new Source_Logic_Source();
-        $arrRet['from']    = $logicSource->getSourceName($objTopic->from);
-               
-        //访问数
-        $logicTopic            = new Topic_Logic_Topic();
-        $arrRet['visitNum']  = strval($this->getTotalTopicVistPv($topicId)+1);
+        $logicSource     = new Source_Logic_Source();
+        $arrRet['from']  = $logicSource->getSourceName($objTopic->from);
+        $arrRet['image'] = Base_Image::getUrlByHash($arrRet['image']);
         
+        //话题访问人数
+        $arrRet['visit']   = strval($this->getTotalTopicVistUv($arrRet['id']));
+        
+        //话题收藏数
+        $logicCollect            = new Collect_Logic_Collect();
+        $arrRet['collect'] = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $arrRet['id']));
+        
+        unset($arrRet['x']);
+        unset($arrRet['y']);
         //添加redis中话题访问次数统计，直接让其失效，下次从数据库中获取
         $redis = Base_Redis::getInstance();
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getTotalKey($topicId));
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateKey($topicId,'*'));
+        
+        $objVisit           = new Visit_Object_Visit();
+        $objVisit->type     = Visit_Type::TOPIC;
+        $objVisit->deviceId = $device_id;
+        $objVisit->objId    = $topicId;
+        $objVisit->save();
         
         //这里需要更新一下热度
         return $arrRet;
@@ -202,14 +231,14 @@ class Topic_Logic_Topic extends Base_Logic{
         }
         $list   = new Visit_List_Visit();
         $list->setFields(array('device_id'));
-        $filter = "'obj_id' = $topicId and 'create_time' >= $from and type = ".Visit_Type::TOPIC; 
+        $filter = "`obj_id` = $topicId and `create_time` >= $from and `type` = ".Visit_Type::TOPIC; 
         $list->setPagesize(PHP_INT_MAX);
         $list->setFilterString($filter);
         $arrRet = $list->toArray();
         $arrTotal = array();
         foreach($arrRet['list'] as $val){
-            if(!in_array($val,$arrTotal)){
-                $arrTotal[] = $val;
+            if(!in_array($val['device_id'],$arrTotal)){
+                $arrTotal[] = $val['device_id'];
             }
         }
         $redis->hSet(Topic_Keys::getTopicVisitKey($topicId),Topic_Keys::getLateKey($topicId,$during),count($arrTotal));
@@ -230,7 +259,7 @@ class Topic_Logic_Topic extends Base_Logic{
             return $ret;
         }
         $list   = new Visit_List_Visit();
-        $filter = "'obj_id' = $topicId and 'create_time' >= $from and type = ".Visit_Type::TOPIC;
+        $filter = "`obj_id` = $topicId and `create_time` >= $from and `type` = ".Visit_Type::TOPIC;
         $list->setPagesize(PHP_INT_MAX);
         $list->setFilterString($filter);
         $arrRet = $list->toArray();
@@ -327,7 +356,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $sight_id  = '';
         if(isset($arrParam['sight_id'])){
             $logic = new Topic_Logic_Topic();
-            $arrTopics = $logic->getTopicBySight($arrParam['sight_id'],$page,$pageSize);
+            $arrTopics = $logic->getTopicBySight($arrParam['sight_id']);
             $sight_id  = $arrParam['sight_id'];
             unset($arrParam['sight_id']);
         }
@@ -360,7 +389,6 @@ class Topic_Logic_Topic extends Base_Logic{
         }else{
             $listTopic->setFields(array('id','title','from','url','image','status','create_time','update_time'));
         }
-        
         $listTopic->setPage($page);
         $listTopic->setPagesize($pageSize);
         $arrRet = $listTopic->toArray();
@@ -602,12 +630,7 @@ class Topic_Logic_Topic extends Base_Logic{
                 $objSightTopic->sightId = $val;
                 $objSightTopic->save();
                 if($objTopic->status == Topic_Type_Status::PUBLISHED){
-                    $redis->sAdd(Sight_Keys::getSightTopicKey($val),$objTopic->id);
-                    $num = $redis->sCard(Sight_Keys::getSightTopicKey($val));
-                    if($num == 1){
-                        $model = new SightModel();
-                        $model->eddSight($val, array('hastopic' => 1));
-                    }
+                    $this->updateTopicRedis(self::ADD_TOPIC, $val['sight_id'], $objTopic->id);                    
                 }                
             }
         }
@@ -634,9 +657,9 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrList = $listSightTopic->toArray();
             foreach($arrList['list'] as $key => $val){
                 if($arrInfo['status'] == Topic_Type_Status::PUBLISHED){
-                    $redis->sAdd(Sight_Keys::getSightTopicKey($val['sight_id']),$topicId);
+                    $this->updateTopicRedis(self::ADD_TOPIC, $val['sight_id'], $topicId);
                 }else{
-                    $redis->sRemove(Sight_Keys::getSightTopicKey($val['sight_id']),$topicId);
+                    $this->updateTopicRedis(self::DEL_TOPIC, $val['sight_id'], $topicId);
                 }
             }
         }
@@ -676,12 +699,7 @@ class Topic_Logic_Topic extends Base_Logic{
                 $objSightTopic = new Sight_Object_Topic();
                 $objSightTopic->fetch(array('id' => $val['id']));
                 if(!in_array($objSightTopic->sightId,$arrInfo['sights'])){
-                    $redis->sRemove(Sight_Keys::getSightTopicKey($objSightTopic->sightId),$topicId);
-                    $num = $redis->sCard(Sight_Keys::getSightTopicKey($objSightTopic->sightId));
-                    if($num == 0){
-                        $model = new SightModel();
-                        $model->eddSight($objSightTopic->sightId, array('hastopic' => 0));
-                    }
+                    $this->updateTopicRedis(self::DEL_TOPIC, $objSightTopic->sightId, $topicId);
                     $objSightTopic->remove();
                 }
             }
@@ -694,12 +712,7 @@ class Topic_Logic_Topic extends Base_Logic{
                     $objSightTopic->topicId = $topicId;
                     $objSightTopic->save();
                     if($objTopic->status == Topic_Type_Status::PUBLISHED){
-                       $redis->sAdd(Sight_Keys::getSightTopicKey($objSightTopic->sightId),$topicId);
-                       $num = $redis->sCard(Sight_Keys::getSightTopicKey($objSightTopic->sightId));
-                       if($num == 1){
-                           $model = new SightModel();
-                           $model->eddSight($objSightTopic->sightId, array('hastopic' => 1));
-                       }
+                       $this->updateTopicRedis(self::ADD_TOPIC, $sight, $topicId);
                     }                    
                 }
             }
@@ -729,5 +742,43 @@ class Topic_Logic_Topic extends Base_Logic{
             unset($arrRet['list'][$key]['title']);
         }
         return $arrRet;
+    }
+    
+    /**
+     * 有新话题发布时更新redis
+     * @param integer $type,1:新增，2：删除
+     * @param integer $sightId
+     */
+    public function updateTopicRedis($type,$sightId,$topicId){
+        //让缓存话题数据失效
+        $redis = Base_Redis::getInstance();
+        $model = new SightModel();
+        $redis->delete(Sight_Keys::getIndexTopicKey($sightId));
+        $arrKeys = $redis->keys(Sight_Keys::getHotTopicKey($sightId, "*"));
+        foreach ($arrKeys as $key){
+            $redis->delete($key);
+        }
+        $arrKeys = $redis->keys(Sight_Keys::getNewTopicKey($sightId, "*"));
+        foreach ($arrKeys as $key){
+            $redis->delete($key);
+        }
+        $arrKeys = $redis->keys(Find_Keys::getFindKey("*"));
+        foreach ($arrKeys as $key){
+            $redis->delete($key);
+        }
+        
+        if(self::ADD_TOPIC == $type){            
+            $redis->sAdd(Sight_Keys::getSightTopicKey($sightId),$topicId);
+            $num = $redis->sCard(Sight_Keys::getSightTopicKey($sightId));
+            if($num == 1){
+                $model->eddSight($sightId, array('hastopic' => 1));
+            }
+        }else{
+            $redis->sRemove(Sight_Keys::getSightTopicKey($sightId),$topicId);
+            $num = $redis->sCard(Sight_Keys::getSightTopicKey($sightId));
+            if($num == 0){
+                $model->eddSight($sightId, array('hastopic' => 0));
+            }
+        }
     }
 }

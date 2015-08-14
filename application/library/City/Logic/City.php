@@ -40,13 +40,16 @@ class City_Logic_City{
         $ret        = City_Api::getCityById($cityId);
         $arrSight   = $this->_modeSight->getSightByCity($page, $pageSize, $cityId);
         foreach ($arrSight as $key => $val){
-            $ret    = $redis->zRange(Sight_Keys::getSightTopicName($val['id']),0,-1);
+            $ret    = $redis->zRange(Sight_Keys::getSightTopicKey($val['id']),0,-1);
             $hot    = 0;
             foreach ($ret as $topicId){
                 $hot += $logicTopic->getTopicHotDegree($topicId, self::HOTPERIOD);
             }
-            $arrHot[] = $hot;            
-            $arrSight[$key]['topics'] = count($redis->zRange(Sight_Keys::getSightTopicName($val['id']),0,-1));
+            $arrHot[] = $hot;     
+            if(!empty($val['image'])){
+                $arrSight[$key]['image']  = Base_Image::getUrlByHash($val['image']);
+            }
+            $arrSight[$key]['topics'] = count($redis->zRange(Sight_Keys::getSightTopicKey($val['id']),0,-1));
         }
         array_multisort($arrHot, SORT_DESC , $arrSight);
         return $arrSight;
@@ -233,7 +236,7 @@ class City_Logic_City{
         $redis = Base_Redis::getInstance();
         $ret   = $this->_modeSight->getSightByCity(1,PHP_INT_MAX,$cityId);
         foreach ($ret as $val){
-            $count += $redis->zSize(Sight_Keys::getSightTopicName($val['id']));
+            $count += $redis->zSize(Sight_Keys::getSightTopicKey($val['id']));
         }
         return $count;
     }

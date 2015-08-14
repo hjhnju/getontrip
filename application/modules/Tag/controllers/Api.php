@@ -27,8 +27,8 @@ class ApiController extends Base_Controller_Page {
         $page     = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGE_SIZE;
         $ret = $this->logic->getTagList($page, $pageSize);
-        if($ret){
-            return $this->ajax($ret);
+        if($ret['list']){
+            return $this->ajax($ret['list']);
         }
         return $this->ajaxError();
     }  

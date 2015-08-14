@@ -102,4 +102,37 @@ class Tag_Logic_Tag{
         $objTag->fetch(array('name' => $name));
         return $objTag->toArray();
     }
+    
+    /**
+     * 根据话题ID获取话题标签名
+     * @param integer $topicId
+     */
+    public function getTopicTags($topicId){
+        $redis   = Base_Redis::getInstance();
+        $arrTags = array();
+        $arrTemp = $redis->sGetMembers(Topic_Keys::getTopicTagKey($topicId));
+        foreach ($arrTemp as $id){
+            $ret = $redis->hGet(Tag_Keys::getTagInfoKey($id),'name');
+            if(!$ret){
+                $redis->sRem(Topic_Keys::getTopicTagKey($topicId),$id);
+            }else{
+                $arrTags[] = $ret;
+            }
+        }
+        if(empty($arrTags)){
+            $listTopicTag = new Topic_List_Tag();
+            $listTopicTag->setFields(array('tag_id'));
+            $listTopicTag->setFilter(array('topic_id' => $topicId));
+            $listTopicTag->setPagesize(PHP_INT_MAX);
+            $ret = $listTopicTag->toArray();
+            foreach ($ret['list'] as $val){
+                $redis->sAdd(Topic_Keys::getTopicTagKey($topicId),$val['tag_id']);
+                $objTag = new Tag_Object_Tag();
+                $objTag->fetch(array('id' => $val['tag_id']));
+                $arrTags[] = $objTag->name;
+                $ret = $redis->hSet(Tag_Keys::getTagInfoKey($val['tag_id']),'name',$objTag->name);
+            }
+        }
+        return $arrTags;
+    }
 }

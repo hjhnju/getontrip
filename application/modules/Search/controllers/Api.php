@@ -26,11 +26,19 @@ class ApiController extends Base_Controller_Api {
     public function indexAction() {
         $page       = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['page']):self::PAGESIZE;
-        $query      = isset($_REQUEST['query'])?intval($_REQUEST['query']):'';
+        $query      = isset($_REQUEST['query'])?strval($_REQUEST['query']):'';
         $x          = isset($_REQUEST['x'])?(doubleval($_REQUEST['x'])):'';
         $y          = isset($_REQUEST['y'])?(doubleval($_REQUEST['y'])):'';
-        if(empty($query) || empty($x) || empty($y)){
+        $city       = isset($_REQUEST['city'])?intval($_REQUEST['city']):2;
+        if(empty($query)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
+        }
+        if(empty($x) || empty($y)){
+            $_SESSION[Home_Keys::SESSION_USER_CITY] = $city;
+            $logicCity = new City_Logic_City();
+            $arr       = $logicCity->getCityLoc($city);
+            $x         = $arr['x'];
+            $y         = $arr['y'];
         }
         $logic      = new Search_Logic_Search();
         $ret        = $logic->search($query, $page, $pageSize, $x, $y);

@@ -35,7 +35,7 @@ class ApiController extends Base_Controller_Api {
      * @param string deviceId，设备ID
      * @return json
      */
-    public function indexAction() {
+    public function listAction() {
         $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
         if(empty($deviceId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));

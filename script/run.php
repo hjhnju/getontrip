@@ -9,8 +9,8 @@ foreach ($arrRet['list'] as $val){
     $objTopic->fetch(array('id' => $val['id']));
     if(!empty($objTopic->image)){
         $objTopic->image = $objTopic->image.".jpg";
+        $objTopic->save();
     }
-    $objTopic->save();
 }
 
 $model  = new SightModel();

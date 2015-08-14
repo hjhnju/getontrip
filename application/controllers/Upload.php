@@ -38,6 +38,7 @@ class UploadController extends Base_Controller_Page {
             @unlink($_FILES['file']['tmp_name']);
             $data = array(
                 'hash' => $hash,
+                'image' => $filename,
                 'url'  => Base_Image::getUrlByName($filename),
             );
             $res = array(
@@ -64,7 +65,7 @@ class UploadController extends Base_Controller_Page {
      */
     public function delPicAction(){ 
        $oss      = Oss_Adapter::getInstance();
-       $filename = $_REQUEST['hash'].'.jpg';
+       $filename = $_REQUEST['image'];
        $res      = $oss->remove($filename);
        if ($res) {
           return  $this->ajax();

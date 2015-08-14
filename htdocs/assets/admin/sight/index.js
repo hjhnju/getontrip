@@ -42,7 +42,12 @@ $(document).ready(function() {
                         }
                     }*/
             {
-                "data": 'level'
+                "data": 'level'function(e) {
+                    if(e.level){
+                        return e.level;
+                    }
+                    return '未评级';  
+                }
             }, {
                 "data": 'x'
             }, {

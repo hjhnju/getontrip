@@ -5201,7 +5201,8 @@
             var pattern = /style=\"(.*?)\"/gi; //去掉样式 
             var pattern2 = /data-(.*?)=\"(.*?)\"/gi; //去掉多余的属性
             var pattern3 = /class=\"(.*?)\"/gi; //去掉class样式 
-            return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern2, '').replace(pattern3, '');
+            var pattern4 = /id=\"(.*?)\"/gi; //去掉id属性 
+            return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern2, '').replace(pattern3, '').replace(pattern4, '');
         }
 
         /**
@@ -5346,7 +5347,7 @@
                 "string" === window.$.type(res) && (res = JSON.parse(res));
                 if (res.status === 0) {
                     $('#summernote').summernote('editor.insertImage', res.data.url);
-                    $('img[src="' + res.data.url + '"]').attr('data-hash', res.data.hash);
+                    $('img[src="' + res.data.url + '"]').attr('data-image', res.data.image);
                     //toastr.success('图片上传成功！');
 
                 } else {

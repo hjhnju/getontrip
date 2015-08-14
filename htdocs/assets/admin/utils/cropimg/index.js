@@ -20,12 +20,13 @@ $(document).ready(function() {
   
 
     $('#crop-img').click(function(event) { 
-        var hash = $('#image').val(),
-        url = '/pic/' + hash + '.jpg' ;
+        var image = $('#image').val(),
+        //hash =image.split('.')[0],
+        url = '/pic/' + image;
 
         $('#target').attr('src', url);
-        $('#target').attr('data-hash', hash);
-        $('#jcrop-preview').attr('src', '/pic/' + hash + '.jpg').css('width', '250px');
+        $('#target').attr('data-image', image);
+        $('#jcrop-preview').attr('src', url).css('width', '250px');
   
     
         $('#target').Jcrop({ 
@@ -58,7 +59,7 @@ $(document).ready(function() {
             "url": "/admin/topicapi/cropPic",
             "data": {
                 id: $('#id').val(),
-                hash: $('#target').attr('data-hash'),
+                image: $('#target').attr('data-image'),
                 x: $('#x1').val(),
                 y: $('#y1').val(),
                 width: $('#w').val(),
@@ -73,7 +74,7 @@ $(document).ready(function() {
                     alert(response.statusInfo);
                 } else {
                     var data = response.data;
-                    $('#image').val(data.hash);
+                    $('#image').val(data.image);
                     $('#imageView').html('<img src="/pic/' + data.hash + '_190_140.jpg" alt=""/>');
                     $('#imageView').removeClass('imageView');
                     //手工关闭模态框

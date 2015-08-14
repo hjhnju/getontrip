@@ -41,12 +41,15 @@ $(document).ready(function() {
             onImageUpload: function(files) {
                 sendFile(files[0]);
             },
-            onMediaDelete: function(files) {
-                if (confirm("会从服务器删除图片，确定删除么 ?") == false) {
-                    return false;
+            onMediaDelete: function(files) { 
+                var file=files[0]; 
+                if($(file).attr("data-image")||$(file).attr("data-hash")){
+                    if (confirm("会从服务器删除图片，确定删除么 ?") == false) {
+                        return false;
+                    }
+                    //删除图片
+                    deleteImage(files);
                 }
-                //删除图片
-                deleteImage(files[0]);
             },
             onChange: function(characters, editor, $editable) {
                     //alert(characters);
@@ -115,7 +118,7 @@ $(document).ready(function() {
                 fileElementId: 'imageBtn',
                 dataType: 'json',
                 success: function(res, status) { //当文件上传成功后，需要向数据库中插入数据
-                    $('#image').val(res.data.hash);
+                    $('#image').val(res.data.image);
                     $('#imageView').html('<img src="/pic/' + res.data.hash + '_190_140.jpg"  alt=""/>');
                     $('#imageView').removeClass('imageView');
                     $('#crop-img').removeClass('hidden');
@@ -431,7 +434,7 @@ $(document).ready(function() {
                 //把图片放到编辑框中。editor.insertImage 是参数，写死。后面的http是网上的图片资源路径。  
                 //网上很多就是这一步出错。  
                 $('#summernote').summernote('editor.insertImage', res.data.url);
-                $('img[src="' + res.data.url + '"]').attr('data-hash', res.data.hash);
+                $('img[src="' + res.data.url + '"]').attr('data-image', res.data.image);
                 toastr.success('图片上传成功！');
             },
             error: function(data, status, e) {
@@ -443,9 +446,9 @@ $(document).ready(function() {
      * 删除图片
      * @return {[type]} [description]
      */
-    function deleteImage(file, editor, $editable) {
+    function deleteImage(file, editor, $editable) { 
         var data = {
-            hash: $(file).attr("data-hash")
+            image: getImgNameBySrc($(file).attr("src"))
         };
         $.ajax({
             "url": '/upload/delpic',
@@ -461,5 +464,10 @@ $(document).ready(function() {
                 }
             }
         });
+    }
+
+    function getImgNameBySrc(src){
+          var name = src.replace('/pic/','');
+          return name;
     }
 });

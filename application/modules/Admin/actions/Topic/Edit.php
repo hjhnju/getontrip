@@ -53,12 +53,19 @@ class EditAction extends Yaf_Action_Abstract {
                 $sight=Sight_Api::getSightById($sightSelected[$i]['sight_id']);
                 array_push($sightList,$sight);
             } 
-            //处理来源
+            //处理来源名称、类型
             $sourceInfo = Source_Api::getSourceInfo($postInfo['from']);
             $postInfo["fromName"]=$sourceInfo['name'];
             $postInfo["fromType"]=$sourceInfo['type'];
 
-             $this->getView()->assign('post', $postInfo);
+            //处理图片名称 分割为hash 和 img_type 
+            if(!empty($postInfo["image"])){
+               $img=Base_Image::getImgParams($postInfo["image"]);
+               $postInfo["img_hash"] = $img['img_hash'];
+               $postInfo["img_type"] = $img['img_type'];
+            }  
+
+            $this->getView()->assign('post', $postInfo);
            
 
          }

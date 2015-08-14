@@ -75,13 +75,13 @@ class Base_Image {
 
 
      /**
-     * 获取图片的完整URL地址 Base_Image::getUrlByHash($name, $width = 0, $height = 0)
+     * 获取图片的完整URL地址 Base_Image::getWholeUrlByName($name, $width = 0, $height = 0)
      * @param string $name
      * @param number $width
      * @param number $height
      * @return string
      */
-    public static function getWholeUrlByHash($name, $width = 0, $height = 0) {
+    public static function getWholeUrlByName($name, $width = 0, $height = 0) {
         $url = Base_Config::getConfig('web')->root . Base_Image::getUrlByName($name, $width, $height);
         return $url;
     }
@@ -91,12 +91,13 @@ class Base_Image {
      * 裁剪图片并替换原有图片
      * @return [type] [description]
      */
-    public static function cropPic($oldhash,$x=0, $y=0, $width=100, $height=100){  
-        if(empty($oldhash)){
+    public static function cropPic($oldname,$x=0, $y=0, $width=100, $height=100){  
+        if(empty($oldname)){
           return false;
         }
+        $imgParams = Base_Image::getImgParams($oldname);
         
-        $wholeUrl=Base_Image::getWholeUrlByHash($oldhash);
+        $wholeUrl=Base_Image::getWholeUrlByName($oldname);
          
         $imagick = new Base_Image_Imagick();
         $image = $imagick->open($wholeUrl);
@@ -108,21 +109,88 @@ class Base_Image {
 
         $hash = md5(microtime(true));
         $hash = substr($hash, 8, 16);
-        $filename = $hash . '.jpg';
+        $filename = $hash . '.' .  $imgParams['img_type'];
+
         
         $oss = Oss_Adapter::getInstance();
         $res = $oss->writeFileContent($filename, $imageBlob);
         if ($res) {
             //删除原来的文件
             $oss = Oss_Adapter::getInstance(); 
-            $oss->remove($oldhash.'.jpg');
+            $oss->remove($oldname);
 
             $data = array(
                 'hash' => $hash,
-                'url'  => Base_Image::getUrlByHash($hash),
+                'image' => $filename,
+                'url'  => Base_Image::getUrlByName($filename),
             );  
             return $data;
         } 
         return false; 
     }
+
+   /**
+    * 获取图片的参数 
+    * @param  string $name [description]
+    * @return array      [图片的名称和类型]
+    */
+    public static function getImgParams($name){
+        $arrName = explode(".",$name);
+        return array(
+             'img_hash'=>$arrName[0],
+             'img_type'=>$arrName[1]
+            );
+    }
+
+     /**
+    * 获取图片的hash 
+    * @param  string $name [description]
+    * @return string      [图片的名称]
+    */
+    public static function getImgHash($name){
+        $arrName = explode(".",$name);
+        return $arrName[0];
+    }
+
+    /**
+    * 获取图片的类型
+    * @param  string $name [description]
+    * @return string      [图片的类型]
+    */
+    public static function getImgType($name){
+        $arrName = explode(".",$name);
+        return $arrName[1];
+    }
+    
+    /**
+    * 根据src获取图片名字获取图片的类型
+    * @param  string $name [description]
+    * @return string      [图片的类型]
+    */
+    public static function getImgNameBySrc($src){
+        $pat='/\/pic\/[a-za-z0-9]{16,16}.[jpg|gif]{3,3}/i'; 
+        preg_match($pat, $src, $name);
+        $name=preg_replace('/\/pic\//i','',$name); 
+        if(count($name)==0){
+            return '';
+        }
+        return $name[0];
+    }
+
+     /**
+     * 根据content 获取图片name数组
+     * @param  [string] $content [正文]
+     * @return [array]          [图片name数组]
+     */
+    public static function getimgNameArray($content){ 
+        $pat='/src=\"\/pic\/[a-za-z0-9]{16,16}.[jpg|gif]{3,3}/i';
+
+        //将匹配成功的参数写入数组中 
+        preg_match_all($pat, $content, $matches);  
+        for($i=0;$i<count($matches[0]);$i++) {  
+            $matches[0][$i]=preg_replace('/src=\"\/pic\//i','',$matches[0][$i]); 
+          } 
+        return $matches[0];
+    }
+
 }

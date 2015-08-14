@@ -107,12 +107,12 @@ class Sight_Api{
     
     /**
      * 接口9：Sight_Api::getTopicNum($sightId,$arrInfo=array())
-     * 获取景点的话题数
+     * 获取景点的话题数,如果不传景点ID，则表示查询所有话题数
      * @param integer $sightId
      * @param array $arrInfo,过滤条件，话题的一些属性
      * @return integer 
      */
-    public static function getTopicNum($sightId,$arrInfo=array()){
+    public static function getTopicNum($sightId='',$arrInfo=array()){
         $logicSight = new Sight_Logic_Sight();
         return $logicSight->getTopicNum($sightId,$arrInfo);
     }
@@ -126,5 +126,16 @@ class Sight_Api{
     public static function getKeywordNum($sightId,$arrInfo=array()){
         $logicSight = new Sight_Logic_Sight();
         return $logicSight->getKeywordNum($sightId);
+    }
+    
+    /**
+     * 接口11：Sight_Api::getSightNum($arrInfo)
+     * 根据条件获取景点数量
+     * @param array $arrInfo
+     * @return integer
+     */
+    public static function getSightNum($arrInfo){
+        $logicSight = new Sight_Logic_Sight();
+        return $logicSight->getSightsNum($arrInfo);
     }
 }

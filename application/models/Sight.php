@@ -214,4 +214,27 @@ class SightModel extends PgBaseModel
         }
         return $ret;
     }
+    
+    /**
+     * 根据where条件查询景点数
+     * @param unknown $arrWhere
+     * @return boolean|multitype:
+     */
+    public function getSightNumByWhere($arrWhere){
+        $where = "where ";
+        foreach ($arrWhere as $key => $val){
+            $where .= "$key = '".$val."' and";
+        }
+        $where = substr($where, 0,-4);
+        $sql = "SELECT count(*) FROM sight $where";
+        try {
+            $sth = $this->db->prepare($sql);
+            $sth->execute();
+            $ret = $sth->fetchColumn();
+        } catch (Exception $ex) {
+            Base_Log::error($ex->getMessage());
+            return 0;
+        }
+        return $ret;
+    }
 }

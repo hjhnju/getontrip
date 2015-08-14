@@ -154,13 +154,13 @@ class Topic_Logic_Topic extends Base_Logic{
         //话题来源
         $logicSource     = new Source_Logic_Source();
         $arrRet['from']  = $logicSource->getSourceName($objTopic->from);
-        $arrRet['image'] = Base_Image::getUrlByHash($arrRet['image']);
+        $arrRet['image'] = Base_Image::getUrlByName($arrRet['image']);
         
         //话题访问人数
         $arrRet['visit']   = strval($this->getTotalTopicVistUv($arrRet['id']));
         
         //话题收藏数
-        $logicCollect            = new Collect_Logic_Collect();
+        $logicCollect      = new Collect_Logic_Collect();
         $arrRet['collect'] = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $arrRet['id']));
         
         unset($arrRet['x']);
@@ -423,6 +423,7 @@ class Topic_Logic_Topic extends Base_Logic{
     
     public function getTopicById($id){
         $objTopic = new Topic_Object_Topic();
+        $objTopic->setFileds(array('id','title','subtitle','content','desc','image','create_user','update_user','from','url','status','create_time','update_time'));
         $objTopic->fetch(array('id' => $id));
         $ret = $objTopic->toArray();
         
@@ -443,6 +444,8 @@ class Topic_Logic_Topic extends Base_Logic{
         
         $logicComment      = new Comment_Logic_Comment();
         $ret['comment'] = $logicComment->getTotalCommentNum($id);
+        
+        $ret['visit']   = strval($this->getTotalTopicVistUv($id));
         return $ret;
     }
     

@@ -25,6 +25,11 @@ class Theme_Logic_Theme extends Base_Logic{
             }
         }
         if($bCheck){
+            $logicUser = new User_Logic_Login();
+            $userId    = $logicUser->checkLogin();
+            if(!empty($userId)){
+                $objTheme->createUser = $userId;
+            }
             $ret = $objTheme->save();
         }
         if($ret){

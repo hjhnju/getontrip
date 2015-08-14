@@ -5,7 +5,7 @@ class SightModel extends PgBaseModel
 
     private $table = 'sight';
     
-    private $_fileds = array('id','name','describe','level','city_id','x','y','image','hastopic','create_time','update_time');
+    private $_fileds = array('id','name','describe','level','city_id','x','y','image','hastopic','create_user','create_time','update_user','update_time');
 
     public function __construct(){
         parent::__construct();
@@ -82,6 +82,12 @@ class SightModel extends PgBaseModel
                 $_addFields[] = $_key;
                 $_addValues[] = $_value;
             }
+        }
+        $logicUser = new User_Logic_Login();
+        $userId = $logicUser->checkLogin();
+        if(!empty($userId)){
+            $_addFields[] = 'create_user';
+            $_addValues[] = $userId;
         }
         if(!in_array('create_time',$_addFields)){
             $_addFields[] = 'create_time';

@@ -20,8 +20,8 @@ class PicController extends Base_Controller_Page {
             header("HTTP/1.1 404 Not Found");
             exit;
         }
-        $hash = substr($hash, 0, -4);
-        $ary = explode('_', $hash);
+        $arrName = explode(".",$hash);
+        $ary = explode('_', $arrName[0]);
         $hash = $ary[0];
         $cnt = count($ary);
         if ($cnt > 1) {
@@ -34,8 +34,7 @@ class PicController extends Base_Controller_Page {
         if (!empty($width) && empty($height)) {
             $height = $width;
         }
-        
-        $filename = $hash . '.jpg';
+        $filename = $hash ."." .$arrName[1];
         $oss = Oss_Adapter::getInstance();
         $image = $oss->getContent($filename);
         if (empty($image)) {
@@ -53,6 +52,7 @@ class PicController extends Base_Controller_Page {
         }
         $imagick->setimagecompressionquality(75);
         $mime = $imagick->getimagemimetype();
+        
         header("content-type: " . $mime);
         ob_clean();
         $this->setBrowserCache(3600 * 24);

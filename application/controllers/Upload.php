@@ -26,7 +26,11 @@ class UploadController extends Base_Controller_Page {
             
         $hash = md5(microtime(true));
         $hash = substr($hash, 8, 16);
-        $filename = $hash . '.jpg';
+        if(trim($ext[1]) == 'gif'){
+            $filename = $hash . '.gif';
+        }else{
+            $filename = $hash . '.jpg';
+        }        
         
         $oss = Oss_Adapter::getInstance();
         $res = $oss->writeFile($filename, $_FILES['file']['tmp_name']);
@@ -34,7 +38,7 @@ class UploadController extends Base_Controller_Page {
             @unlink($_FILES['file']['tmp_name']);
             $data = array(
                 'hash' => $hash,
-                'url'  => Base_Image::getUrlByHash($hash),
+                'url'  => Base_Image::getUrlByName($filename),
             );
             $res = array(
                 'status' => 0,
@@ -67,7 +71,4 @@ class UploadController extends Base_Controller_Page {
        }
        return  $this->ajaxError();
     }
-
-
-  
 }

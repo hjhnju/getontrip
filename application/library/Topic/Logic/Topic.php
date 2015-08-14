@@ -80,7 +80,9 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrRet[$key]['from']    = $logicSource->getSourceName($val['from']);
             
             if(!empty($val['image'])){
-                $arrRet[$key]['image']  = Base_Image::getUrlByHash($val['image']);
+                $arrRet[$key]['image']  = Base_Image::getUrlByName($val['image']);
+            }else{
+                $arrRet[$key]['image']  = '';
             }                       
         }
         return $arrRet;
@@ -112,7 +114,7 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrRet[$key]['from']    = $logicSource->getSourceName($val['from']);
             
             if(!empty($val['image'])){
-                $arrRet[$key]['image']  = Base_Image::getUrlByHash($val['image']);
+                $arrRet[$key]['image']  = Base_Image::getUrlByName($val['image']);
             }
         }        
         return $arrRet;
@@ -501,7 +503,7 @@ class Topic_Logic_Topic extends Base_Logic{
         //更新redis统计数据
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateKey($id, '*'));
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getTotalKey($id));
-        $redis->delete(Topic_Keys::getTopicTagKey(),$id);
+        $redis->delete(Topic_Keys::getTopicTagKey($id));
         $redis->hDel(Topic_Keys::getTopicHotKey(),Topic_Keys::getLateKey($id, '*'));
         $redis->hDel(Topic_Keys::getTopicHotKey(),Topic_Keys::getTotalKey($id));
         return $ret;

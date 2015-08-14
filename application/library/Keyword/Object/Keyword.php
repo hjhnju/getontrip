@@ -1,6 +1,6 @@
 <?php
 /**
- * 词条信息表
+ * 景点的相关词条信息表
  * @author huwei
  */
 class Keyword_Object_Keyword extends Base_Object {
@@ -26,7 +26,7 @@ class Keyword_Object_Keyword extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'sight_id', 'name', 'url', 'create_time', 'update_time', 'status');
+    protected $fields = array('id', 'sight_id', 'name', 'url', 'status', 'create_user', 'update_user', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -37,9 +37,11 @@ class Keyword_Object_Keyword extends Base_Object {
         'sight_id'    => 'sightId',
         'name'        => 'name',
         'url'         => 'url',
+        'status'      => 'status',
+        'create_user' => 'createUser',
+        'update_user' => 'updateUser',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
-        'status'      => 'status',
     );
 
     /**
@@ -49,9 +51,11 @@ class Keyword_Object_Keyword extends Base_Object {
     protected $intProps = array(
         'id'          => 1,
         'sight_id'    => 1,
+        'status'      => 1,
+        'create_user' => 1,
+        'update_user' => 1,
         'create_time' => 1,
         'update_time' => 1,
-        'status'      => 1,
     );
 
     /**
@@ -69,7 +73,7 @@ class Keyword_Object_Keyword extends Base_Object {
     public $id;
 
     /**
-     * 景点名称
+     * 来源名称
      * @var integer
      */
     public $sightId;
@@ -87,6 +91,24 @@ class Keyword_Object_Keyword extends Base_Object {
     public $url;
 
     /**
+     * 状态 1未确认 2已确认
+     * @var integer
+     */
+    public $status;
+
+    /**
+     * 
+     * @var integer
+     */
+    public $createUser;
+
+    /**
+     * 
+     * @var integer
+     */
+    public $updateUser;
+
+    /**
      * 创建时间
      * @var integer
      */
@@ -97,11 +119,5 @@ class Keyword_Object_Keyword extends Base_Object {
      * @var integer
      */
     public $updateTime;
-
-    /**
-     * 状态 1未确认 2已确认
-     * @var integer
-     */
-    public $status;
 
 }

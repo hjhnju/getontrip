@@ -20,7 +20,7 @@ class Source_List_Source extends Base_List {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'url', 'create_time', 'update_time', 'type');
+    protected $fields = array('id', 'name', 'url', 'type', 'create_user', 'update_user', 'create_time', 'update_time');
 
     /**
      * 整数类型的字段
@@ -28,9 +28,11 @@ class Source_List_Source extends Base_List {
      */
     protected $intProps = array(
         'id'          => 1,
+        'type'        => 1,
+        'create_user' => 1,
+        'update_user' => 1,
         'create_time' => 1,
         'update_time' => 1,
-        'type'        => 1,
     );
 
     /**

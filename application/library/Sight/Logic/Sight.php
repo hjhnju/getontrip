@@ -221,11 +221,13 @@ class Sight_Logic_Sight{
      * @param integer $sightId
      * @return integer
      */
-    public function getTopicNum($sightId,$arrConf){
+    public function getTopicNum($sightId='',$arrConf){
         $count = 0;
         $listSightTopic = new Sight_List_Topic();
+        if(!empty($sightId)){
+            $listSightTopic->setFilter(array('sight_id' => $sightId));
+        }
         $listSightTopic->setFields(array('topic_id'));
-        $listSightTopic->setFilter(array('sight_id' => $sightId));
         $listSightTopic->setPagesize(PHP_INT_MAX);
         $arr = $listSightTopic->toArray();
         foreach ($arr['list'] as $topicId){
@@ -248,5 +250,14 @@ class Sight_Logic_Sight{
         $listKeyword = new Keyword_List_Keyword();
         $listKeyword->setFilter(array('sight_id' => $sightId));
         return intval($listKeyword->getTotal());
+    }
+    
+    /**
+     * 根据条件获取景点数量
+     * @param array $arrInfo
+     * @return integer
+     */
+    public function getSightsNum($arrInfo){
+        return $this->modelSight->getSightNumByWhere($arrInfo);
     }
 }

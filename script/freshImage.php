@@ -20,8 +20,8 @@ function addImage(){
      foreach ($arrTopic['list'] as $val){
          if(!empty($val['image'])){
              $image = $val['image'];
-             $content  = file_get_contents("http://123.57.67.165:8301/Pic/".$image.".jpg");
-             $filename = $image . '.jpg';
+             $content  = file_get_contents("http://123.57.67.165:8301/Pic/".$image);
+             $filename = $image ;
              $res = $oss->writeFileContent($filename, $content);
          }
      }
@@ -31,8 +31,8 @@ function addImage(){
      foreach ($ret as $val){
          if(!empty($val['image'])){
              $image = $val['image'];
-             $content  = file_get_contents("http://123.57.67.165:8301/Pic/".$image.".jpg");
-             $filename = $image . '.jpg';
+             $content  = file_get_contents("http://123.57.67.165:8301/Pic/".$image);
+             $filename = $image ;
              $res = $oss->writeFileContent($filename, $content);
          }
      }
@@ -45,7 +45,7 @@ function delImage(){
     $arrTopic = $listTopic->toArray();
     foreach ($arrTopic['list'] as $val){
         if(!empty($val['image'])){
-            $filename = $val['image'].'.jpg';
+            $filename = $val['image'];
             $res = $oss->remove($filename);           
         }
     }
@@ -54,7 +54,7 @@ function delImage(){
     $ret = $model->getSightList(1, PHP_INT_MAX);
     foreach ($ret as $val){
         if(!empty($val['image'])){
-            $filename = $val['image'].'.jpg';
+            $filename = $val['image'];
             $res = $oss->remove($filename);  
         }
     }

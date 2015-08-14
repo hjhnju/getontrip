@@ -60,10 +60,17 @@ abstract class Spider_Web_Base{
         $content  = file_get_contents($picUrl);
         $hash     = md5(microtime(true));
         $hash     = substr($hash, 8, 16);
-        $filename = $hash . '.jpg';
+        
+        $arrName  = explode(".",$picUrl);
+        $size     = count($arrName);
+        if(strtolower($arrName[$size-1]) == "gif"){
+            $filename = $hash . '.jpg';
+        }else{
+            $filename = $hash . '.jpg';
+        }
         $res = $oss->writeFileContent($filename, $content);
         if($res){
-            return $hash;
+            return array('hash'=>$hash,'name'=>$filename,'url'=>Base_Image::getUrlByName($filename));
         }
         return '';
     }
@@ -83,7 +90,7 @@ abstract class Spider_Web_Base{
      */
     protected function preProcess($url,$content) {
         $obj   = new Base_Extract($url,$content);
-        $data  = $obj->preProcess();    
+        $data  = $obj->preProcess();  
         return $obj->dataClean($data); 
     }
 }

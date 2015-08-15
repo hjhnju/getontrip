@@ -8,8 +8,6 @@ class Topic_Logic_Topic extends Base_Logic{
     
     const DEFAULT_SIZE  = 2;
     
-    const CONTENT_LEN   = 75;
-    
     const DEFAULT_DAYS  = 30;    
     
     const ADD_TOPIC     = 1;
@@ -65,9 +63,9 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrRet     = $this->model->getHotTopicIds($sightId,$strTags,$page,$pageSize,$period);
         foreach($arrRet as $key => $val){
             $topicDetail = $this->model->getTopicDetail($val['id'],$page);          
-            $arrRet[$key]['desc']    = Base_Util_String::getSubString($topicDetail['content'],self::CONTENT_LEN);
             $arrRet[$key]['title']   = $topicDetail['title'];
             $arrRet[$key]['desc']    = $topicDetail['subtitle'];
+            $arrRet[$key]['desc']    = $topicDetail['desc'];
             //话题访问人数            
             $arrRet[$key]['visit']   = strval($this->getTotalTopicVistUv($val['id']));
             

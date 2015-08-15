@@ -9,6 +9,8 @@ class TopicModel{
     
     const REDIS_TIMEOUT = 3600;
     
+    const CONTENT_LEN   = 75;
+    
     protected $db;
     
     public function __construct(){
@@ -121,8 +123,10 @@ class TopicModel{
         $ret   = $redis->get(Topic_Keys::getTopicContentKey($topicId));
         if(empty($ret)){
            $objTopic = new Topic_Object_Topic();
-           $objTopic->fetch(array('id' => $topicId));
+           $objTopic->fetch(array('id' => $topicId));           
            $arrData  = $objTopic->toArray();
+           $arrData['desc'] = Base_Util_String::getSubString($arrData['content'],self::CONTENT_LEN);
+           unset($arrData['content']);
            $redis->setex(Topic_Keys::getTopicContentKey($topicId),self::REDIS_TIMEOUT,json_encode($arrData)); 
            return $arrData;
         }

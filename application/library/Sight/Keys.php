@@ -4,14 +4,14 @@ class Sight_Keys {
     //景点的话题集合
     const REDIS_SIGHT_TOPIC_KEY   = 'sight_topic_%s';
     
-    //景点的热门话题数据缓存,后面参数分别为景点id、时间段、页码，默认只缓存不带tags的
+    //景点的热门话题ID集合缓存,后面参数分别为景点id、时间段、页码，默认只缓存不带tags的
     const REDIS_SIGHT_HOT_KEY    = 'sight_hot_%s_%s';
     
-    //景点最新话题数据缓存,后面参数分别为景点id、时间段、页码，默认只缓存不带tags的
+    //景点最新话题ID集合缓存,后面参数分别为景点id、时间段、页码，默认只缓存不带tags的
     const REDIS_SIGHT_NEW_KEY    = 'sight_new_%s_%s';
     
-    //首页景点话题数据缓存，后面参数为景点id
-    const REDIS_SIGHT_KEY        = 'sight_%s';
+    //首页景点的话题ID的集合缓存，参数为景点ID
+    const REDIS_SIGHT_INDEX_KEY  = 'sight_index_%s';    
 
     public static function getSightTopicKey($id){
         return sprintf(self::REDIS_SIGHT_TOPIC_KEY, $id);
@@ -26,6 +26,6 @@ class Sight_Keys {
     }
     
     public static function getIndexTopicKey($sightId){
-        return sprintf(self::REDIS_SIGHT_KEY,$sightId);
+        return sprintf(self::REDIS_SIGHT_INDEX_KEY,$sightId);
     }
 }

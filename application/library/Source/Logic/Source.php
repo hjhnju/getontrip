@@ -113,10 +113,9 @@ class Source_Logic_Source extends Base_Logic{
     public function getHotSource(){
         $arrHotSource = array(
             array('id' =>1,   'name'=>'知乎'),
-            array('id' =>6,  'name'=>'豆瓣'),
-            array('id' =>14,'name'=>'网易博客'),
+            array('id' =>6,   'name'=>'豆瓣'),
+            array('id' =>14,  'name'=>'网易博客'),
         );
-        return $arrHotSource;
-        
+        return $arrHotSource;       
     }
 }

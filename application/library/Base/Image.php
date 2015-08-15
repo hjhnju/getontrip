@@ -61,6 +61,9 @@ class Base_Image {
      * @return string
      */
     public static function getUrlByName($name, $width = 0, $height = 0) {
+        if(empty($name)){
+            return '';  
+        }
         $arrName = explode(".",$name);
         $url     = "/pic/".$arrName[0];
         if ($width > 0) {

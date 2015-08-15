@@ -37,6 +37,7 @@ class Home_Logic_List{
     public function getNearSight($x,$y,$page,$pageSize){
         $arr   = array();
         $redis = Base_Redis::getInstance();
+        $model = new TopicModel();
         Yaf_Session::getInstance()->set(Home_Keys::SESSION_USER_X_NAME,$x);
         Yaf_Session::getInstance()->set(Home_Keys::SESSION_USER_Y_NAME,$y);
         //找出所有由近到远的景点
@@ -48,23 +49,11 @@ class Home_Logic_List{
         foreach ($arr as $index => $val){
             $objCity = new City_Object_City();
             $objCity->fetch(array('id' => $val['city_id']));
-            $arr[$index]['city']  = $objCity->name;            
-            $ret   = $redis->get(Sight_Keys::getIndexTopicKey($val['id']));
-            if(!empty($ret)){
-                $arr[$index]['topic'] = json_decode($ret,true);
-            }else{
-                $arr[$index]['topic'] = $this->_logicTopic->getHotTopic($val['id']);
-                $data = json_encode($arr[$index]['topic']);
-                $redis->setex(Sight_Keys::getIndexTopicKey($val['id']),self::REDIS_TIMEOUT,$data);
-            }            
-            
-            //图片用全路径
-            if(!empty($val['image'])){                
-                $arr[$index]['image']  = Base_Image::getUrlByName($val['image']);
-            }else{
-                $arr[$index]['image']  = '';
-            }
-            
+            $arr[$index]['city']  = $objCity->name;                     
+            $arr[$index]['topic'] = $this->_logicTopic->getHotTopic($val['id']);                                
+            //图片用全路径               
+            $arr[$index]['image']  = Base_Image::getUrlByName($val['image']);
+                     
             //距离转换成字符串
             $arr[$index]['dis'] = Base_Util_Number::getDis($val['dis']);          
         }        

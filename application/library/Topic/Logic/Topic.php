@@ -63,11 +63,11 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrRet     = $this->model->getHotTopicIds($sightId,$strTags,$page,$pageSize,$period);
         foreach($arrRet as $key => $val){
             $topicDetail = $this->model->getTopicDetail($val['id'],$page);          
-            $arrRet[$key]['title']   = $topicDetail['title'];
-            $arrRet[$key]['desc']    = $topicDetail['subtitle'];
-            $arrRet[$key]['desc']    = $topicDetail['desc'];
+            $arrRet[$key]['title']     = trim($topicDetail['title']);
+            $arrRet[$key]['subtitle']  = trim($topicDetail['subtitle']);
+            $arrRet[$key]['desc']      = trim($topicDetail['desc']);
             //话题访问人数            
-            $arrRet[$key]['visit']   = strval($this->getTotalTopicVistUv($val['id']));
+            $arrRet[$key]['visit']     = strval($this->getTotalTopicVistUv($val['id']));
             
             //话题收藏数
             $logicCollect            = new Collect_Logic_Collect();
@@ -92,10 +92,10 @@ class Topic_Logic_Topic extends Base_Logic{
     public function getNewTopic($sightId,$period=self::DEFAULT_DAYS,$page,$pageSize,$strTags=''){ 
         $arrRet     = $this->model->getNewTopicIds($sightId, $strTags, $page, $pageSize);
         foreach($arrRet as $key => $val){    
-            $topicDetail             = $this->model->getTopicDetail($val['id'],$page);
-            $arrRet[$key]['desc']    = Base_Util_String::getSubString($topicDetail['content'],self::CONTENT_LEN);
-            $arrRet[$key]['title']   = $topicDetail['title'];
-            $arrRet[$key]['desc']    = $topicDetail['subtitle'];
+            $topicDetail               = $this->model->getTopicDetail($val['id'],$page);
+            $arrRet[$key]['title']     = trim($topicDetail['title']);
+            $arrRet[$key]['subtitle']  = trim($topicDetail['subtitle']);
+            $arrRet[$key]['desc']      = trim($topicDetail['desc']);
 
             //话题收藏数
             $logicCollect      = new Collect_Logic_Collect();        
@@ -126,6 +126,8 @@ class Topic_Logic_Topic extends Base_Logic{
         $logicComment          = new Comment_Logic_Comment();
         $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
         $arrRet['dis']         = '';
+        $arrRet['title']       = trim($arrRet['title']);
+        $arrRet['content']     = trim($arrRet['content']);
         $gis                   = new GisModel();
         $x                     = Yaf_Session::getInstance()->get(Home_Keys::SESSION_USER_X_NAME);
         $y                     = Yaf_Session::getInstance()->get(Home_Keys::SESSION_USER_Y_NAME);

@@ -6168,7 +6168,7 @@ define('topic/detail', [
         var width = $('.bg-img').width();
         var height = Math.ceil(rate * width);
         var img = $('#topic-bg');
-        var imgUrl = img.attr('data-webroot') + '/pic/' + img.attr('data-hash') + '_' + width + '_' + height + '.' + img.attr('data-img_type');
+        var imgUrl = img.attr('data-webroot') + '/pic/' + img.attr('data-img_hash') + '_' + width + '_' + height + '.' + img.attr('data-img_type');
         img.attr('src', imgUrl);
         img.css({
             width: width + 'px',

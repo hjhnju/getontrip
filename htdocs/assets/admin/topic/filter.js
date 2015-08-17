@@ -125,31 +125,39 @@ $(document).ready(function() {
             if ($(this).val() == "weixin") {
                 $("#Form").attr('action', sogou);
                 $('#weixin-from-input').show();
+                $('#from_name').parent().parent().parent().hide();
             } else {
                 $("#Form").attr('action', baidu);
                 $('#weixin-from-input').hide();
+                $('#from_name').val($(this).attr('data-from_name'));
+                $('#from_name').attr('data-url',$('input[data-name="form-from"]:checked').val());
+                $('#from_name').attr('data-id',$('input[data-name="form-from"]:checked').attr('data-id'));
+                $('#from_name').parent().parent().parent().show();
+
             }
             setQuery();
         });
 
 
         //搜索事件
-        $('#search-btn').click(function(event) {
-
+        $('#search-btn').click(function(event) { 
             $("#Form").submit();
         });
 
         //微信公众号自动完成 
-        $('#weixin-from').typeahead({
+        $('#weixin-from,#from_name').typeahead({
             display: 'name',
-            val: 'id',
+            val: 'url',
+            data:['id'],
             ajax: {
                 url: '/admin/sourceapi/getSourceList',
                 triggerLength: 1
             },
-            itemSelected: function(item, val, text) {
-                $("#weixin-from").val(text);
-                $("#weixin-from_id").val(val);
+            itemSelected: function(item, val, text, element) {
+                element.attr('data-url',val);
+                element.attr('data-id',item.attr('data-id'));
+                element.val(text); 
+                setQuery(); 
             }
         });
 
@@ -204,15 +212,27 @@ $(document).ready(function() {
                         var data = response.data;
                         if (data.type == 1) {
                             //公众号
-                            $('#weixin-from_id').val(data.id);
+                            $('#weixin-from').attr('data-id',data.id);
                             $('#weixin-from').val(data.name);
                         } else {
-                            $('#div-from label:last').after('<label class="radio-inline"><input type="radio" name="form-from" data-name="form-from" id="" value="' + data.url + '" data-id="' + data.id + '" data-type="' + data.type + '">' + data.name + '</label>');
+                           /* $('#div-from label:last').after('<label class="radio-inline"><input type="radio" name="form-from" data-name="form-from" id="" value="' + data.url + '" >' + data.name + '</label>');
                             $('input[data-name="form-from"]').attr('checked', false);
-                            $('#div-from input:last').attr('checked', 'ture');
-                            $('#div-from input:last').click();
+                            var last=$('#div-from input:last');
+                            last.attr('checked', 'ture');
+                            last.attr({
+                                'checked': 'ture',
+                                'data-from_name': data.name,
+                                'data-type':  data.type ,
+                                'data-id':  data.id 
+                            });
+                            last.click();
                             //绑定Uniform
-                            Metronic.initUniform($('input[data-name="form-from"]'));
+                            Metronic.initUniform($('input[data-name="form-from"]'));*/
+
+                            $('#from_name').attr('data-id',data.id );
+                            $('#from_name').attr('data-url',data.url);
+                            $('#from_name').val(data.name);
+                            
 
                         }
                         //手工关闭模态框
@@ -237,13 +257,13 @@ $(document).ready(function() {
             }
             var from = "";
             if ($('input[data-name="form-from"]:checked').val() == "weixin") {
-                from = $('#weixin-from_id').val();
+                from = $('#weixin-from').attr('data-id');
                 if (!from) {
                     toastr.warning('请填写微信公众号！');
                     return false;
                 }
             } else {
-                from = $('input[data-name="form-from"]:checked').attr('data-id');
+                from = $('#from_name').attr('data-id');
             }
             //组装话题参数
             var params = {
@@ -261,7 +281,7 @@ $(document).ready(function() {
                 "url": "/admin/topicapi/addByFilter",
                 "data": params,
                 "type": "post",
-                "dataType": 'json', 
+                "dataType": 'json',
                 "error": function(XMLHttpRequest, textStatus, errorThrown) {
                     $('#addTopic-btn').attr('disabled', false);
                     $('#addTopic-btn').html('添加并创建话题');
@@ -297,7 +317,7 @@ $(document).ready(function() {
             $('#Type').attr('name', "tn");
             $('#Type').val('baidu');
             $('#query').attr('name', 'wd');
-            $('#query').val('site:' + $('input[data-name="form-from"]:checked').val() + ' ' + query + '-日游');
+            $('#query').val('site:' + $('#from_name').attr('data-url') + ' ' + query + '-日游');
 
             if ($('#query').val().getBytes() > 76) {
                 alert('请控制关键词在38个汉字以内(一个汉字相当于两个字母或数字)');

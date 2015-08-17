@@ -58,6 +58,7 @@ class EditAction extends Yaf_Action_Abstract {
             $postInfo["fromName"]=$sourceInfo['name'];
             $postInfo["fromType"]=$sourceInfo['type'];
 
+
             //处理图片名称 分割为hash 和 img_type 
             if(!empty($postInfo["image"])){
                $img=Base_Image::getImgParams($postInfo["image"]);
@@ -71,8 +72,10 @@ class EditAction extends Yaf_Action_Abstract {
          }
          
         
-        $sourceList = Source_Api::searchSource(array("type"=>2),1, PHP_INT_MAX);
-        $sourceList=$sourceList['list']; 
+        /*$sourceList = Source_Api::searchSource(array("type"=>2),1, PHP_INT_MAX);
+        $sourceList=$sourceList['list']; */
+        $sourceList =  Source_Api::getHotSource();
+
 
         if($action==Admin_Type_Action::ACTION_VIEW){
             $this->getView()->assign('disabled', 'disabled');

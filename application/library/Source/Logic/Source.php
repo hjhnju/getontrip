@@ -47,6 +47,28 @@ class Source_Logic_Source extends Base_Logic{
     }
     
     /**
+     * 编辑一个来源
+     * @param array $arrInfo
+     * @return boolean
+     */
+    public function editSource($sourceId,$arrInfo){
+        $obj    = new Source_Object_Source();
+        $obj->fetch(array('id' => $sourceId));
+        $bCheck = false;
+        foreach ($arrInfo as $key => $val){
+            if(in_array($key,$this->_fields)){
+                $key = $this->getprop($key);
+                $obj->$key = $val;
+                $bCheck    = true;
+            }
+        }
+        if($bCheck){
+            return $obj->save();
+        }
+        return false;
+    }
+    
+    /**
      * 获取来源的名称
      * @param integer $id
      * @return string
@@ -119,5 +141,23 @@ class Source_Logic_Source extends Base_Logic{
             $arrHotSource[] = $objSource->toArray();
         }      
         return $arrHotSource;       
+    }
+    
+    /**
+     * 删除来源
+     * @param integer $sourceId
+     * @return boolean
+     */
+    public function delSource($sourceId){
+        $listTopic = new Topic_List_Topic();
+        $listTopic->setFilter(array('from' => $sourceId));
+        $listTopic->setPagesize(PHP_INT_MAX);
+        $arrTopics = $listTopic->toArray();
+        if(!empty($arrTopics['list'])){
+            return false;
+        }
+        $obj = new Source_Object_Source();        
+        $obj->fetch(array('id' => $sourceId));
+        return $obj->remove();
     }
 }

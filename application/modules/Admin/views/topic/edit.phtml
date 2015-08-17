@@ -191,15 +191,27 @@
                               </label>   
                                {%foreach $sourceList as $key=>$item%} 
                               <label class="radio-inline">
-                                <input type="radio" name="" data-name="form-from" id="" value="{%$item.url%}" data-id="{%$item.id%}" data-type="{%$item.type%}" {%if $item.id eq $post.from%}checked{%/if%}>{%$item.name%}
+                                <input type="radio" name="" data-name="form-from" id="" value="{%$item.url%}" data-id="{%$item.id%}" data-type="{%$item.type%}" data-from_name="{%$item.name%}" {%if $item.id eq $post.from%}checked{%/if%}>{%$item.name%}
                               </label>
-                              {%/foreach%}
-                               <span class="help-inline">
-                                  没有想要的来源？<a href="#" class="openSource" data-type="2">创建</a>一个
-                               </span> 
+                              {%/foreach%} 
                               <span for="from" class="error"></span>
                           </div>
                       </div>
+                      <div class="form-group " style="{%if $post.fromType neq 2%}display:none;{%/if%}">
+                        <label for="form-from" class="control-label col-lg-2">指定搜索源*</label>
+                         <div class="col-lg-3">
+                          <div class="input-group">
+                            <input class="form-control" id="from_name" type="text"  autocomplete="off"  placeholder="输入后请在下拉框选择" value="{%$post.fromName%}" data-id="{%$post.from%}" />
+                            <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" id="clear-from"><i class="fa fa-remove"></i></button>
+                            </span> 
+                          </div>
+                         </div>
+                          <span class="help-inline">
+                                没有想要的来源？<a href="#" class="openSource" data-type="2">创建</a>一个
+                          </span> 
+                          <span for="form-from" class="error"></span> 
+                     </div>
                        <div class="form-group" id="weixin-from-input"  style="{%if $post.fromType neq 1%}display:none;{%/if%}">
                           <label for="url" class="control-label col-lg-2">微信公众号：</label>
                           <div class="col-lg-3">

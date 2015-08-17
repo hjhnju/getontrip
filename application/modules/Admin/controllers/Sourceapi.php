@@ -22,8 +22,9 @@ class SourceapiController extends Base_Controller_Api{
 
         $page=($start/$pageSize)+1;
          
+        $arrParam = isset($_REQUEST['params'])?$_REQUEST['params']:array();
        
-        $List=Tag_Api::getTagList($page, $pageSize);
+        $List=Source_Api::searchSource($arrParam,$page, $pageSize);
     
         $retList['recordsFiltered'] =$List['total'];
         $retList['recordsTotal'] = $List['total']; 
@@ -38,11 +39,15 @@ class SourceapiController extends Base_Controller_Api{
 
     public function addAction()
     {    
+        $oldInfo=Source_Api::getSourceByName($_REQUEST['name']);
+        if(isset($oldInfo['id'])){ 
+            return $this->ajaxError(100,'该来源已经存在'); 
+        }
         $bRet = Source_Api::addSource($_REQUEST);
-        if($bRet){
+        if($bRet){ 
             return $this->ajax();
         }
-        return $this->ajaxError();
+        return $this->ajaxError(); 
     }
     
     public function addAndReturnAction()
@@ -58,15 +63,25 @@ class SourceapiController extends Base_Controller_Api{
         }
         return $this->ajaxError(); 
     }
+    
 
+     public function editAction()
+    {    
+        $sourceId = $_REQUEST['id']; 
+        $bRet = Source_Api::editSource($sourceId,$_REQUEST);
+        if($bRet){ 
+            return $this->ajax();
+        }
+        return $this->ajaxError(); 
+    }
     public function delAction(){
         //判断是否有ID
-       /* $id=isset($_REQUEST['id'])?$_REQUEST['id']:''; 
-        $bRet =Tag_Api::delTag($id);
+        $sourceId=isset($_REQUEST['id'])?$_REQUEST['id']:0; 
+        $bRet =Source_Api::delSource($sourceId);
         if($bRet){
             return $this->ajax();
         }
-        return $this->ajaxError();*/
+         return $this->ajaxError(100,'来源已经被引用'); 
     }
      
 

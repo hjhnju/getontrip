@@ -47,6 +47,28 @@ class Source_Logic_Source extends Base_Logic{
     }
     
     /**
+     * 编辑一个来源
+     * @param array $arrInfo
+     * @return boolean
+     */
+    public function editSource($sourceId,$arrInfo){
+        $obj    = new Source_Object_Source();
+        $obj->fetch(array('id' => $sourceId));
+        $bCheck = false;
+        foreach ($arrInfo as $key => $val){
+            if(in_array($key,$this->_fields)){
+                $key = $this->getprop($key);
+                $obj->$key = $val;
+                $bCheck    = true;
+            }
+        }
+        if($bCheck){
+            return $obj->save();
+        }
+        return false;
+    }
+    
+    /**
      * 获取来源的名称
      * @param integer $id
      * @return string

@@ -85,19 +85,29 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
               $imgDomArray[$i] ->setAttribute('data-image',$imgNameArray[$i]);
               $imgDomArray[$i]->src = Base_Image::getUrlByName($imgNameArray[$i]);
             } 
-        }  
-        return $this->objDom->__toString();
+        }   
+    }
+
+    /**
+     * 替换掉多余的回车等
+     * @return [type] [description]
+     */
+    public function replaceBrs(){
+       $content=$this->objDom->__toString();
+       $content = $this->replaceByPattern('/<br><br>/','<br>',$content);
+       $content = $this->replaceByPattern('/<p><br><\/p><p><br><\/p>/','<p><br></p>',$content);
+       return $content;
     }
 
     /**
     * 综合上述操作 [用于编辑话题，上传图片] 
     * @return [type] [description]
     */
-    public function getReplacedContent(){ 
-
+    public function getReplacedContent(){  
         $this->getImgUrlArray(); 
         $this->uploadImgs(); 
-        return $this->replaceImg();
+        $this->replaceImg();
+        return $this->replaceBrs();
     }
 
 
@@ -116,7 +126,29 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
             $img->setAttribute('data-actualsrc',$web->root . $oldSrc);  
             
           } 
-        return $this->objDom->__toString();
+        //return $this->objDom->__toString();
+        return $this->replaceBrs();
+    }
+
+    
+   
+    /**
+     * 过滤掉多余的回车
+     * @param  [string] $pattern    [正则表达式]
+     * @param  [string] $replaceStr [替换成]
+     * @param  [string] $subject    [转换的对象]
+     * @return [string]             [description]
+     */
+    public function replaceByPattern($pattern,$replaceStr,$subject){
+       preg_match_all($pattern, $subject, $matches);  
+       for ($i=0; $i < count($matches[0]); $i++) {  
+           $subject = preg_replace($pattern, $replaceStr, $subject);
+           preg_match_all($pattern, $subject, $matches_tmp);  
+           if(count($matches_tmp[0])==0){
+               break;
+           }
+       } 
+       return $subject;
     }
 
     

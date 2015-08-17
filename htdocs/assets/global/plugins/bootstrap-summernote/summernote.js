@@ -2641,6 +2641,7 @@
             keyMap: {
                 pc: {
                     'ENTER': 'insertParagraph',
+                    //'ENTER':'insertBr',
                     'CTRL+Z': 'undo',
                     'CTRL+Y': 'redo',
                     'TAB': 'tab',
@@ -2670,7 +2671,8 @@
                 },
 
                 mac: {
-                    'ENTER': 'insertParagraph',
+                   'ENTER': 'insertParagraph',
+                   // 'ENTER':'insertBr',
                     'CMD+Z': 'undo',
                     'CMD+SHIFT+Z': 'redo',
                     'TAB': 'tab',
@@ -3479,6 +3481,21 @@
 
         };
 
+        /**
+         * insert Br 
+         */
+        this.insertBr = function(){
+            var rng = range.create();
+
+            // deleteContents on range.
+            rng = rng.deleteContents();
+            
+            $br=$('<br>');
+            //handler.invoke('editor.insertNodeBefore', $editable, $br[0]);
+            rng.sc.appendChild($br[0]); 
+            rng = range.createFromNodeAfter($br[0]).select(); 
+        }
+
     };
 
     /**
@@ -3864,6 +3881,12 @@
             typing.insertParagraph($editable);
             afterCommand($editable);
         };
+
+        this.insertBr = function($editable){
+            beforeCommand($editable);
+            typing.insertBr($editable);
+            afterCommand($editable);
+        } 
 
         /**
          * @method insertOrderedList

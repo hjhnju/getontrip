@@ -42,7 +42,7 @@ $(document).ready(function() {
                         }
                     }*/
             {
-                "data": 'level'function(e) {
+                "data": function(e) {
                     if(e.level){
                         return e.level;
                     }

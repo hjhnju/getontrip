@@ -83,7 +83,7 @@ class Base_Util_String {
 	 * @return string
 	 */
 	public static function getSubString($str,$length){
-	    $str = strip_tags($str);
+	    $str = trim(strip_tags($str));
 	    if(mb_strlen($str) > $length){
 	        return mb_substr($str,0,$length,'utf-8')."..";
 	    }

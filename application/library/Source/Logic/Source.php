@@ -111,12 +111,13 @@ class Source_Logic_Source extends Base_Logic{
      * @return array
      */
     public function getHotSource(){
-        $arrHotSource = array(
-            array('id' =>1,   'name'=>'知乎'),
-            array('id' =>6,  'name'=>'豆瓣'),
-            array('id' =>14,'name'=>'网易博客'),
-        );
-        return $arrHotSource;
-        
+        $arrHotSource    = array();
+        $arrHotSourceIds = array(1,6,14);
+        foreach ($arrHotSourceIds as $id){
+            $objSource = new Source_Object_Source();
+            $objSource->fetch(array('id' => $id));
+            $arrHotSource[] = $objSource->toArray();
+        }      
+        return $arrHotSource;       
     }
 }

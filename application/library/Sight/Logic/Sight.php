@@ -40,33 +40,10 @@ class Sight_Logic_Sight{
         $arrRet  = array();
         $redis   = Base_Redis::getInstance();
         if(self::ORDER_NEW == $order){
-            if(empty($strTags)){
-                $ret   = $redis->get(Sight_Keys::getNewTopicKey($sightId,$page));
-                if(!empty($ret)){
-                    $arrRet = json_decode($ret,true);
-                }else{
-                    $arrRet =  $this->logicTopic->getNewTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
-                    $data = json_encode($arrRet);
-                    $redis->setex(Sight_Keys::getNewTopicKey($sightId,$page),self::REDIS_TIMEOUT,$data);
-                }                
-            }else{
-                $arrRet =  $this->logicTopic->getNewTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
-            }            
+             $arrRet =  $this->logicTopic->getNewTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);                                          
         }else{
-            if(empty($strTags)){
-                $ret   = $redis->get(Sight_Keys::getHotTopicKey($sightId,$page));
-                if(!empty($ret)){
-                    $arrRet = json_decode($ret,true);
-                }else{
-                    $arrRet =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
-                    $data   = json_encode($arrRet);
-                    $redis->setex(Sight_Keys::getHotTopicKey($sightId,$page),self::REDIS_TIMEOUT,$data);
-                }
-            }else{
-                $arrRet =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
-            }            
+             $arrRet =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);                     
         }
-
         $logicTag = new Tag_Logic_Tag();
         foreach ($arrRet as $key => $val){            
             $arrRet[$key]['tags'] = $logicTag->getTopicTags($val['id']);

@@ -116,6 +116,10 @@ class Base_Extract {
 		$replacement = "\"";
 		$content = preg_replace( $pattern, $replacement, $content );
 		
+		$pattern = '/&amp;/';
+		$replacement = "\"";
+		$content = preg_replace( $pattern, $replacement, $content );
+		
 		// 5. HTML TAGs
 		/*$pattern = '/<[^(img|p|br)].*?>/s';*/
 		$pattern = '/<(?!img|p|br).*?>/s';
@@ -127,12 +131,13 @@ class Base_Extract {
 		$replacement = '';
 		$content = preg_replace( $pattern, $replacement, $content );
 		
-		// 6. some special charcaters
-		$pattern = '/&.{1,5};|&#.{1,5};/';
+		// 6. some special charcaters		
+		
+		$pattern = '/&[a-zA-Z].{0,4};|&#(\d){1,5};/';
 		$replacement = '';
 		$content = preg_replace( $pattern, $replacement, $content );
 		
-		$content = html_entity_decode($content);
+		//$content = html_entity_decode($content);
 		
 		return $content;
 	}

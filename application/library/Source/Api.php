@@ -70,7 +70,7 @@ class Source_Api{
     }
     
     /**
-     * 接口7：Source_Api::getHotSource($sourceId,$arrInfo)
+     * 接口7：Source_Api::editSource($sourceId,$arrInfo)
      * 编辑一个来源
      * @param integer $sourceId
      * @param array $arrInfo
@@ -80,4 +80,16 @@ class Source_Api{
         $logicSource = new Source_Logic_Source();
         return $logicSource->editSource($sourceId, $arrInfo);
     }
+    
+    /**
+     * 接口8：Source_Api::delSource($sourceId)
+     * 删除来源，当来源已经有相关话题时不允许删除
+     * @param integer $sourceId
+     * @return boolean
+     */
+    public static function delSource($sourceId){
+        $logicSource = new Source_Logic_Source();
+        return $logicSource->delSource($sourceId);
+    }
+    
 }

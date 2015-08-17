@@ -142,4 +142,22 @@ class Source_Logic_Source extends Base_Logic{
         }      
         return $arrHotSource;       
     }
+    
+    /**
+     * 删除来源
+     * @param integer $sourceId
+     * @return boolean
+     */
+    public function delSource($sourceId){
+        $listTopic = new Topic_List_Topic();
+        $listTopic->setFilter(array('from' => $sourceId));
+        $listTopic->setPagesize(PHP_INT_MAX);
+        $arrTopics = $listTopic->toArray();
+        if(!empty($arrTopics['list'])){
+            return false;
+        }
+        $obj = new Source_Object_Source();        
+        $obj->fetch(array('id' => $sourceId));
+        return $obj->remove();
+    }
 }

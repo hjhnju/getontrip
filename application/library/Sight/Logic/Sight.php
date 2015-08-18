@@ -160,7 +160,7 @@ class Sight_Logic_Sight{
             $objSightTopic->remove();
         }
         //删除redis缓存
-        $redis->delete(Sight_Keys::getSightTopicName($id));
+        $redis->delete(Sight_Keys::getSightTopicKey($id));
         return $ret;
     }
     

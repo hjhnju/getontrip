@@ -75,4 +75,15 @@ class Topic_Api{
         $logic = new Topic_Logic_Topic();
         return $logic->delTopic($id);
     }
+    
+    /**
+     * 接口6：Topic_Api::getTopicNum($arrInfo)
+     * 根据条件获取话题数量
+     * @param array $arrInfo
+     * @param integer
+     */
+    public function getTopicNum($arrInfo){
+        $logic = new Topic_Logic_Topic();
+        return $logic->getTopicNum($arrInfo);
+    }
 }

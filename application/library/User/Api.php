@@ -7,4 +7,8 @@ class User_Api{
     public static function getUserList(){
         
     }
+    
+    public static function getLoginUser(){
+        
+    }
 }

@@ -209,7 +209,7 @@
                           </div> 
                          <div class="col-lg-3 from_name" style="{%if $post.fromType neq 2%}display:none;{%/if%}">
                           <div class="input-group">
-                            <input class="form-control" id="from_name" type="text"  autocomplete="off"  placeholder="输入后请在下拉框选择" value="{%$post.fromName%}" data-id="{%$post.from%}" />
+                            <input class="form-control" id="from_name" type="text"  autocomplete="off"  placeholder="输入后请在下拉框选择" value="{%if $post.fromType eq 2%}{%$post.fromName%}{%/if%}" data-id="{%$post.from%}" />
                             <span class="input-group-btn">
                             <button class="btn btn-default" type="button" id="clear-from"><i class="fa fa-remove"></i></button>
                             </span> 
@@ -220,7 +220,7 @@
                           </span> 
                           <div class="col-lg-3 weixin-from-input"   style="{%if $post.fromType neq 1%}display:none;{%/if%}">
                               <input class="form-control" id="weixin-from_id" name="" type="hidden" value="{%if $post.fromType eq 1%}{%$post.from%}{%/if%}" /> 
-                                <input class="form-control" id="weixin-from" type="text" name="" autocomplete="off"  placeholder="输入后请在下拉框选择" value="{%if $post.fromType eq 1%}{%$post.fromName%}{%/if%}"/>
+                                <input class="form-control" id="weixin-from" type="text" name="" autocomplete="off"  placeholder="输入后请在下拉框选择" value="{%if $post.fromType eq 1%}{%$post.fromName%}{%/if%}"  data-id="{%$post.from%}" />
                           </div>
                           <div class="col-lg-3 weixin-from-input"   style="{%if $post.fromType neq 1%}display:none;{%/if%}">
                             <p class="help-block">

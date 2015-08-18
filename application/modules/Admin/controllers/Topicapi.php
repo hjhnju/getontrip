@@ -137,17 +137,16 @@ class  TopicapiController extends Base_Controller_Api{
        $spider = Spider_Factory::getInstance($spiderType,$_REQUEST['url'],Spider_Type_Source::URL);
 
        //2、获取title 解析title 去掉-后面的内容
-       $title = $spider->getTitle();
-       $title = trim(preg_replace('/-(.)*/i','',$title));
+       $title = $spider->getTitle(); 
        $_REQUEST['title'] = $title;
          
        
        //3、获取content
        $content = $spider->getBody();
       
-       //4、content中剔除多余的图片属性
+     /*  //4、content中剔除多余的图片属性  
        $content = preg_replace('/data-(.)*\"/', '', $content);
-       $content = preg_replace('/style=(.)*\"/', '', $content);
+       $content = preg_replace('/style=(.)*\"/', '', $content);*/
       
        //5、批量上传图片，得到最终的content 
        if($content != ""){

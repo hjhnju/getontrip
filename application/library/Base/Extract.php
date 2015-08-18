@@ -117,7 +117,7 @@ class Base_Extract {
 		$content = preg_replace( $pattern, $replacement, $content );
 		
 		$pattern = '/&amp;/';
-		$replacement = "\"";
+		$replacement = "&";
 		$content = preg_replace( $pattern, $replacement, $content );
 		
 		$pattern = '/&nbsp;/';

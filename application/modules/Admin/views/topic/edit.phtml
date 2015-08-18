@@ -184,11 +184,11 @@
                           </div>
                       </div>
                        <div class="form-group ">
-                          <label for="from" class="control-label col-lg-2">来源*：</label>
-                          <div class="col-lg-10" id="div-from">  
-                              <label class="radio">
-                                <input type="radio" name="" data-name="form-from" id="" value="weixin" data-id="" data-type="1" {%if $post.fromType eq 1%}checked{%/if%}>微信公众号
-                              </label>   
+                          <label for="from" class="control-label col-lg-2">常用来源*：</label> 
+                          <div class="col-lg-8" id="div-from">  
+                            <!--   <label class="radio">
+                               <input type="radio" name="" data-name="form-from" id="" value="weixin" data-id="" data-type="1" {%if $post.fromType eq 1%}checked{%/if%}>微信公众号
+                             </label>   --> 
                                {%foreach $sourceList as $key=>$item%} 
                               <label class="radio-inline">
                                 <input type="radio" name="" data-name="form-from" id="" value="{%$item.url%}" data-id="{%$item.id%}" data-type="{%$item.type%}" data-from_name="{%$item.name%}" {%if $item.id eq $post.from%}checked{%/if%}>{%$item.name%}
@@ -197,9 +197,17 @@
                               <span for="from" class="error"></span>
                           </div>
                       </div>
-                      <div class="form-group " style="{%if $post.fromType neq 2%}display:none;{%/if%}">
-                        <label for="form-from" class="control-label col-lg-2">指定搜索源*</label>
-                         <div class="col-lg-3">
+                      <div class="form-group ">
+                        <label for="form-from" class="control-label col-lg-2">指定搜索源*</label> 
+                        <div class="col-xs-1">   
+                              <div class="input-group ">
+                                <select name="" id="from-type">  
+                                     <option value="1" {%if $post.fromType eq 1%}selected{%/if%}>公众号</option>  
+                                     <option value="2"  {%if $post.fromType eq 2%}selected{%/if%}>其他</option>
+                                </select>
+                             </div>
+                          </div> 
+                         <div class="col-lg-3 from_name" style="{%if $post.fromType neq 2%}display:none;{%/if%}">
                           <div class="input-group">
                             <input class="form-control" id="from_name" type="text"  autocomplete="off"  placeholder="输入后请在下拉框选择" value="{%$post.fromName%}" data-id="{%$post.from%}" />
                             <span class="input-group-btn">
@@ -207,23 +215,24 @@
                             </span> 
                           </div>
                          </div>
-                          <span class="help-inline">
+                          <span class="help-inline from_name" style="{%if $post.fromType neq 2%}display:none;{%/if%}">
                                 没有想要的来源？<a href="#" class="openSource" data-type="2">创建</a>一个
                           </span> 
-                          <span for="form-from" class="error"></span> 
-                     </div>
-                       <div class="form-group" id="weixin-from-input"  style="{%if $post.fromType neq 1%}display:none;{%/if%}">
-                          <label for="url" class="control-label col-lg-2">微信公众号：</label>
-                          <div class="col-lg-3">
+                          <div class="col-lg-3 weixin-from-input"   style="{%if $post.fromType neq 1%}display:none;{%/if%}">
                               <input class="form-control" id="weixin-from_id" name="" type="hidden" value="{%if $post.fromType eq 1%}{%$post.from%}{%/if%}" /> 
                                 <input class="form-control" id="weixin-from" type="text" name="" autocomplete="off"  placeholder="输入后请在下拉框选择" value="{%if $post.fromType eq 1%}{%$post.fromName%}{%/if%}"/>
                           </div>
-                          <div class="col-lg-3">
-                          <p class="help-block">
-                             没有想要的公众号？<a href="#" class="openSource" data-type="1">创建</a>一个
-                          </p>
+                          <div class="col-lg-3 weixin-from-input"   style="{%if $post.fromType neq 1%}display:none;{%/if%}">
+                            <p class="help-block">
+                               没有想要的公众号？<a href="#" class="openSource" data-type="1">创建</a>一个
+                            </p>
                         </div>
-                      </div>
+                          <span for="form-from" class="error"></span> 
+                     </div>
+                   <!--     <div class="form-group" id="weixin-from-input">
+                      <label for="url" class="control-label col-lg-2">微信公众号：</label>
+                                         
+                                         </div> -->
                       <div class="form-group ">
                           <label for="url" class="control-label col-lg-2">原文链接：</label>
                           <div class="col-lg-5">

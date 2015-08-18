@@ -252,7 +252,7 @@ class Base_Extract {
 	 * @param string $content
 	 * @return string
 	 */
-	public function dataClean($content){
+	public function dataClean($content,$bSourceOther=true){
 	    $content = preg_replace( '/<p.*?>/', '<p>', $content );
 	    $content = preg_replace( '/<br.*?>/', '<br>', $content );	
 	    $content = preg_replace( '/<P.*?>/', '<p>', $content );
@@ -260,7 +260,7 @@ class Base_Extract {
 	    $content = preg_replace( '/<B.*?>/', '<b>', $content );
 	    $num = preg_match_all('/img.*?src=\"(.*?)\".*?>/si',$content,$match);
 	    for($i=0;$i<$num;$i++){
-	        if($this->isFullPath($match[1][$i])){
+	        if(!$bSourceOther || $this->isFullPath($match[1][$i])){
 	            $content = str_replace($match[0][$i],"img src=\"".$match[1][$i]."\">",$content);
 	        }else{
 	            if(stristr($match[1][$i],"//")){

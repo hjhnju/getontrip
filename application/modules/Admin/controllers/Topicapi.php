@@ -100,7 +100,7 @@ class  TopicapiController extends Base_Controller_Api{
           $spider = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
           $_REQUEST['content'] = $spider->getReplacedContent();
        }
-       
+        
        $bRet=Topic_Api::editTopic($postid,$_REQUEST);
        if($bRet){  
             return $this->ajax();

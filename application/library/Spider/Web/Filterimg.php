@@ -96,7 +96,8 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
        $content=$this->objDom->__toString();
        //只保留img br p  
        $obj   = new Base_Extract('',$content);
-       $content  = $obj->preProcess();  
+       $content  =  $obj->preProcess(); 
+       $content  =  $obj->dataClean($content,false);  
        //去掉多余的回车
        $content = $this->replaceByPattern('/<br><br>/','<br>',$content);
        $content = $this->replaceByPattern('/<p><br><\/p><p><br><\/p>/','<p><br></p>',$content);

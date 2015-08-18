@@ -20,6 +20,9 @@ $(document).ready(function() {
                 }else if ($("#form-city").attr('data-city_id')) {
                     d.params.city_id = $("#form-city").attr('data-city_id');
                 }
+                if ($('#form-user_id').attr("checked")) {
+                    d.params.create_user = $('#form-user_id').val();
+                }
             }
         },
         "columnDefs": [{
@@ -182,6 +185,12 @@ $(document).ready(function() {
             $("#form-city").val('');
             $("#form-city").attr('data-city_id', '');
             //触发dt的重新加载数据的方法
+            api.ajax.reload();
+        });
+
+        
+        //只看我自己发布的
+        $('#form-user_id').click(function(event) {
             api.ajax.reload();
         });
     }

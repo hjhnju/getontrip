@@ -19,6 +19,12 @@ $(document).ready(function() {
                 if ($('#form-type').val()) {
                     d.params.type = $('#form-type').val();
                 }
+                if ($("#form-title").val()) {
+                    d.params.name = $.trim($("#form-title").val());
+                }
+                if ($('#form-user_id').attr("checked")) {
+                    d.params.create_user = $('#form-user_id').val();
+                }
             }
         },
         "columnDefs": [{
@@ -196,8 +202,18 @@ $(document).ready(function() {
       过滤事件
      */
     function filters() {
+         //输入内容点击回车查询
+        $("#form-title").keydown(function(event) {
+            if (event.keyCode == 13) {
+                api.ajax.reload();
+            }
+        });
         $('#form-type').change(function(event) {
             //触发dt的重新加载数据的方法
+            api.ajax.reload();
+        });
+        //只看我自己发布的
+        $('#form-user_id').click(function(event) {
             api.ajax.reload();
         });
     }

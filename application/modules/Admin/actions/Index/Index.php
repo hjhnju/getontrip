@@ -10,33 +10,24 @@ class IndexAction extends Yaf_Action_Abstract {
 	 * @author yibing
 	 *
 	 */
-	public function execute() {
-    		
-    /*	$list = new User_List_Login();
-    	$list = $list->toArray();
-    	//注册用户数统计
-    	$userCnt  = $list['total'];
-        $this->getView()->assign('userCnt', $userCnt);
-            
-        $loan = new Loan_List_Loan();
-        $status1 = Loan_Type_LoanStatus::FINISHED;
-        $status2 = Loan_Type_LoanStatus::REFUNDING;
-        //构造where条件
-        $loan->setFilterString("status in($status1,$status2)");
-        //查询总借款额度
-        $loanAmount = $loan->sumField('amount');
-        //单位：万元
-        $loanAmount =  $loanAmount/10000;
-        $this->getView()->assign('loanAmount', $loanAmount);
-        //查询借款客户总数
-        $cusCnt = $loan->distinCount('user_id');
-        $this->getView()->assign('cusCnt', $cusCnt); 
+	public function execute() { 
 
-        $invest = new Invest_List_Invest();
-        //查询投资者总数
-        $investCnt = $invest->distinCount('user_id');
-        $this->getView()->assign('investCnt', $investCnt);*/
-    	}
+          //查询景点总数
+          $sightNum = Sight_Api::getSightNum(array());
+          $this->getView()->assign('sightNum', $sightNum); 
+
+          //查询已经发布话题总数
+          $arrInfo = array(
+             'status'=>Topic_Type_Status::PUBLISHED
+          );
+          $topicNum = Topic_Api::getTopicNum($arrInfo);
+          $this->getView()->assign('topicNum', $topicNum); 
+
+         /*   //查询用户总数
+          $sightNum = Sight_Api::getSightNum($arrInfo);
+          $this->getView()->assign('sightNum', $sightNum); */
+
+   }
 }
 
 

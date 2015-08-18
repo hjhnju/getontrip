@@ -64,6 +64,7 @@ class InitDataController extends Base_Controller_Page {
                 default:
                     break;
             }
-        }  
+        }
+        exit;  
     }
 }

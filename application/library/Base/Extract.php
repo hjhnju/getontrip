@@ -120,6 +120,10 @@ class Base_Extract {
 		$replacement = "\"";
 		$content = preg_replace( $pattern, $replacement, $content );
 		
+		$pattern = '/&nbsp;/';
+		$replacement = "";
+		$content = preg_replace( $pattern, $replacement, $content );
+		
 		// 5. HTML TAGs
 		/*$pattern = '/<[^(img|p|br)].*?>/s';*/
 		$pattern = '/<(?!img|p|br).*?>/s';

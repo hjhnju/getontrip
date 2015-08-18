@@ -23,10 +23,9 @@ class Spider_Web_SinaBlog extends Spider_Web_Base{
         $content  = preg_replace( '/<br.*?>/', '<br>', $content );
         $num      = preg_match_all('/img.*?real_src\s=\"(.*?)\".*?>/si',$content,$match);
         for($i=0;$i<$num;$i++){
-            $url = explode("&",$match[1][$i]);
+            $url     = explode("&",$match[1][$i]);
             $content = str_replace($match[0][$i],"img src=\"".$url[0]."\">",$content);
         }
-        $content = html_entity_decode($content);
         return $content;      
     }    
 }

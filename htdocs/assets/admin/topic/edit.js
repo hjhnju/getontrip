@@ -89,7 +89,7 @@ $(document).ready(function() {
             sight_id_array.splice($.inArray(val, sight_id_array), 1);
             $(this).parent().remove();
         });
-
+ 
         //微信公众号自动完成 
         $('#weixin-from,#from_name').typeahead({
             display: 'name',
@@ -129,29 +129,7 @@ $(document).ready(function() {
                     alert(status.statusInfo);
                 }
             })
-        });
-
-
-
-
-
-        //搜索来源下拉列表 
-        // $('#form-from').selectpicker();
-        //选择不同的搜索来源
-        $('#Form').delegate('input[data-name="form-from"]', 'click touchend', function(event) {
-            $('input[data-name="form-from"]').attr('checked', false);
-            $(this).attr('checked', 'ture');
-            if ($(this).val() == "weixin") {
-                $('#weixin-from-input').show();
-                $('#from_name').parent().parent().parent().hide();
-            } else {
-                $('#weixin-from-input').hide();
-                $('#from_name').parent().parent().parent().show();
-                $('#from_name').val($(this).attr('data-from_name'));
-                $('#from_name').attr('data-url',$('input[data-name="form-from"]:checked').val());
-                $('#from_name').attr('data-id',$('input[data-name="form-from"]:checked').attr('data-id'));
-            }
-        });
+        }); 
 
         //定位地图模态框
         $('#position').click(function(e) {
@@ -188,6 +166,38 @@ $(document).ready(function() {
         //点击发布或者保存按钮
         $('#Form button[type="submit"]').click(function(event) {
             status = $(this).attr('data-status');
+        });
+
+          //搜索来源下拉列表 
+        // $('#form-from').selectpicker();
+        //选择不同的搜索来源
+        $('#Form').delegate('input[data-name="form-from"]', 'click touchend', function(event) {
+            $('input[data-name="form-from"]').attr('checked', false);
+            $(this).attr('checked', 'ture');
+            if ($(this).val() == "weixin") {
+                $('.weixin-from-input').show();
+                $('.from_name').hide();
+            } else {
+                $('.weixin-from-input').hide();
+                $('.from_name').show();
+                $('#from-type').next().find('.dropdown-menu li[data-original-index="1"] a').click();
+                //$('#from-type').selectpicker();
+                $('#from_name').val($(this).attr('data-from_name'));
+                $('#from_name').attr('data-url',$('input[data-name="form-from"]:checked').val());
+                $('#from_name').attr('data-id',$('input[data-name="form-from"]:checked').attr('data-id'));
+            }
+        });
+        //状态下拉列表 
+        $('#from-type').selectpicker();
+        $('#from-type').change(function(event) {
+             var val = $(this).val();
+             if(val==='1'){
+                $('.weixin-from-input').show();
+                $('.from_name').hide();
+             }else{
+                 $('.weixin-from-input').hide();
+                  $('.from_name').show();
+             }
         });
 
         //点击打开来源创建模态框
@@ -347,14 +357,14 @@ $(document).ready(function() {
                 });
                 //处理来源
                 var from = "";
-                if ($('input[data-name="form-from"]:checked').val() == "weixin") {
+                if ($('#from-type').val() == "1") {
                     from = $('#weixin-from').attr('data-id');
                     if (!from) {
                         toastr.warning('请填写微信公众号！');
                         return false;
                     }
                 } else {
-                    from = $('input[data-name="form-from"]:checked').attr('data-id');
+                    from = $('#from_name').attr('data-id');
                 }
                 param.tags = tag_id_array;
                 param.sights = sight_id_array;

@@ -126,7 +126,7 @@ class Base_Extract {
 		
 		// 5. HTML TAGs
 		/*$pattern = '/<[^(img|p|br)].*?>/s';*/
-		$pattern = '/<(?!img|p|br).*?>/s';
+		$pattern = '/<(?!img|p|br|P|BR).*?>/s';
 		$replacement = '';
 		$content = preg_replace( $pattern, $replacement, $content );
 		
@@ -255,7 +255,9 @@ class Base_Extract {
 	 */
 	public function dataClean($content){
 	    $content = preg_replace( '/<p.*?>/', '<p>', $content );
-	    $content = preg_replace( '/<br.*?>/', '<br>', $content );	    
+	    $content = preg_replace( '/<br.*?>/', '<br>', $content );	
+	    $content = preg_replace( '/<P.*?>/', '<p>', $content );
+	    $content = preg_replace( '/<BR.*?>/', '<br>', $content );
 	    $num = preg_match_all('/img.*?src=\"(.*?)\".*?>/si',$content,$match);
 	    for($i=0;$i<$num;$i++){
 	        if($this->isFullPath($match[1][$i])){

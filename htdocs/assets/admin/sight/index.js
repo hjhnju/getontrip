@@ -8,16 +8,16 @@ $(document).ready(function() {
         "processing": true, //载入数据的时候是否显示“载入中”
         "pageLength": 10, //首次加载的数据条数  
         "searching": false, //是否开启本地分页
-        "ordering":false,
+        "ordering": false,
         "ajax": {
             "url": "/admin/sightapi/list",
             "type": "POST",
             "data": function(d) {
                 //添加额外的参数传给服务器
-                d.params = {}; 
+                d.params = {};
                 if ($("#form-sight").attr('data-sight_id')) {
                     d.params.id = $("#form-sight").attr('data-sight_id');
-                }else if ($("#form-city").attr('data-city_id')) {
+                } else if ($("#form-city").attr('data-city_id')) {
                     d.params.city_id = $("#form-city").attr('data-city_id');
                 }
                 if ($('#form-user_id').attr("checked")) {
@@ -29,38 +29,41 @@ $(document).ready(function() {
             "targets": [0, 1],
             "visible": false,
             "searchable": false
+        },{
+            "targets": [3,4,5,6,7],
+            "width": 80
         }],
         "columns": [{
-                "data": "id"
-            }, {
-                "data": 'city_id'
-            }, {
-                "data": "name"
-            }, {
-                "data": 'city_name'
-            },
-            /* {
-                        "data": function(e) {
-                            return getCityNameById(e.city_id);
-                        }
-                    }*/
-            {
-                "data": function(e) {
-                    if(e.level){
-                        return e.level;
-                    }
-                    return '未评级';  
+            "data": "id"
+        }, {
+            "data": 'city_id'
+        }, {
+            "data": "name"
+        }, {
+            "data": function(e) {
+                if(e.image){
+                   return '<a href="/pic/' + e.image + '" target="_blank"><img alt="" src="/pic/' + e.image.getNewImgByImg(80,22) + '"/></a>';
                 }
-            }, {
-                "data": 'x'
-            }, {
-                "data": 'y'
-            }, {
-                "data": function(e) {
-                    return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/sight/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-success btn-xs addKeyword"  title="添加词条" data-toggle="tooltip"><i class="fa fa-buysellads"></i></button>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
-                }
+                 return "未上传";
             }
-        ],
+        }, {
+            "data": 'city_name'
+        }, {
+            "data": function(e) {
+                if (e.level) {
+                    return e.level;
+                }
+                return '未评级';
+            }
+        }, {
+            "data": 'x'
+        }, {
+            "data": 'y'
+        }, {
+            "data": function(e) {
+                return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/sight/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-success btn-xs addKeyword"  title="添加词条" data-toggle="tooltip"><i class="fa fa-buysellads"></i></button>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
+            }
+        }],
         "initComplete": function(setting, json) {
             //工具提示框
             //$('[data-toggle="tooltip"]').tooltip();
@@ -125,21 +128,21 @@ $(document).ready(function() {
 
         //输入词条名称生成url
         $('#name').blur(function(event) {
-            var name= $.trim($(this).val());
-            if(name){ 
-               $('#url').val('http://baike.baidu.com/item/'+name);
-               $('#view-link').attr('href',$('#url').val());
+            var name = $.trim($(this).val());
+            if (name) {
+                $('#url').val('http://baike.baidu.com/item/' + name);
+                $('#view-link').attr('href', $('#url').val());
             }
         });
-         //点击保存词条或者确认并保存按钮
+        //点击保存词条或者确认并保存按钮
         $('#Form button[type="submit"]').click(function(event) {
-             $('#status').val($(this).attr('data-status'));
+            $('#status').val($(this).attr('data-status'));
         });
     }
 
 
-    function filter(){
-         //景点输入框自动完成
+    function filter() {
+        //景点输入框自动完成
         $('#form-sight').typeahead({
             display: 'name',
             val: 'id',
@@ -180,7 +183,7 @@ $(document).ready(function() {
             }
         });
 
-         //景点框后的清除按钮，清除所选的景点
+        //景点框后的清除按钮，清除所选的景点
         $('#clear-city').click(function(event) {
             $("#form-city").val('');
             $("#form-city").attr('data-city_id', '');
@@ -188,7 +191,7 @@ $(document).ready(function() {
             api.ajax.reload();
         });
 
-        
+
         //只看我自己发布的
         $('#form-user_id').click(function(event) {
             api.ajax.reload();
@@ -209,7 +212,7 @@ $(document).ready(function() {
         $.validator.setDefaults({
             submitHandler: function(data) {
                 //序列化表单  
-                var param = $("#Form").serializeObject(); 
+                var param = $("#Form").serializeObject();
                 $.ajax({
                     "url": "/admin/keywordapi/add",
                     "data": param,

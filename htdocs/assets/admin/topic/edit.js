@@ -328,6 +328,19 @@ $(document).ready(function() {
             });
         });
 
+         //标题字数统计
+        $('#title').limitTextarea({
+            maxNumber: 30,
+            theme:'tips',
+            infoStr:'推荐30字以内，' 
+        });
+         //副标题字数统计
+        $('#subtitle').limitTextarea({
+            maxNumber: 20,
+            theme:'tips',
+            infoStr:'推荐20字以内，' ,
+            infoId:'subtitleinfo' 
+        });
 
     }
 
@@ -381,6 +394,7 @@ $(document).ready(function() {
                 } else {
                     url = "/admin/topicapi/save"
                 }
+                
                 $.ajax({
                     "url": url,
                     "data": param,

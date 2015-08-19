@@ -276,7 +276,7 @@ $(document).ready(function() {
                 }
                 //按钮disabled
             $(this).attr('disabled', 'disabled');
-            $(this).html('<i class="fa fa-spinner fa-pulse"></i>保存中，请稍后')
+            $(this).html('<i class="fa fa-spinner fa-pulse"></i>保存中，请稍后');
             $.ajax({
                 "url": "/admin/topicapi/addByFilter",
                 "data": params,

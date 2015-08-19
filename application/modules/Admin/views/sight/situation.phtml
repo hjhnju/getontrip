@@ -40,6 +40,14 @@
 		      							  <input type="text" class="form-control" placeholder="输入城市" aria-describedby="cityName" id="form-city" autocomplete="off">
 		      						   </div>
 		      					</div> -->
+		      		
+                  <div class="col-xs-2 pull-right">   
+                      <div class="checkbox"> 
+                        <label>
+                           <input type="checkbox" id="form-user_id" value="{%$userid%}" checked="">只看我发布的
+                          </label>
+                       </div> 
+                   </div>  
 					<div class="col-xs-3 pull-right">   
                             <div class="input-group "> 
                               <input type="text" class="form-control" placeholder="输入并选择景点" aria-describedby="sightName" id="form-sight" autocomplete="off">
@@ -47,7 +55,7 @@
                               <button type="button" class="btn btn-white" id="clear-sight"><i class="fa fa-remove"></i></button>
                             </span>
                            </div>
-                    </div>  
+                    </div> 
 				</div>  
                <table class="table table-striped table-hover table-bordered dataTable" id="editable">
                      <thead>

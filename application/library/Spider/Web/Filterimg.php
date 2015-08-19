@@ -107,10 +107,15 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
      * @param  [string] $content [description]
      * @return [type] [description]
      */
-    public function replaceBrs($content){  
+    public function replaceBrs($content){ 
+       //去掉空的段落 
+       $content = preg_replace('/<p>[\s|\n|\r]*<\/p>/','',$content); 
        //去掉多余的回车
-       $content = $this->replaceByPattern('/<br><br>/','<br>',$content);
-       $content = $this->replaceByPattern('/<p><br><\/p><p><br><\/p>/','<p><br></p>',$content);
+       $content = $this->replaceByPattern('/<br>[\s|\n|\r]*<br>/','<p><br></p>',$content);
+       $content = $this->replaceByPattern('/<p>[\s|\n|\r]*<br>[\s|\n|\r]*<\/p>[\s|\n|\r]*<br>/','<p><br></p>',$content);
+       $content = $this->replaceByPattern('/<br>[\s|\n|\r]*<p>[\s|\n|\r]*<br>[\s|\n|\r]*<\/p>/','<p><br></p>',$content); 
+       $content = $this->replaceByPattern('/<p>[\s|\n|\r]*<br>[\s|\n|\r]*<\/p>[\s|\n|\r]*<p>[\s|\n|\r]*<br>[\s|\n|\r]*<\/p>/','<p><br></p>',$content);
+       
        return $content;
     }
 

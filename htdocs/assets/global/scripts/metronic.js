@@ -444,6 +444,26 @@ var Metronic = function() {
 
     //新增1 函数拓展
     var fnExtend = function() {
+        String.prototype.getImgByUrl = function() {
+            var name = this.replace('/pic/','');
+              return name;
+        }
+        String.prototype.getImgHashByUrl = function() {
+            var hash = this.replace('/pic/','').split('.')[0];
+            return hash;
+        }
+        String.prototype.getImgTypeByUrl = function() {
+            var type = this.replace('/pic/','').split('.')[1];
+            return type;
+        }
+        String.prototype.getNewUrlByUrl = function(width,height) {
+            var array = this.split('.');
+            return array[0]+'_'+width+'_'+height+'.'+array[1];
+        }
+        String.prototype.getNewImgByImg = function(width,height) {
+            var array = this.split('.');
+            return array[0]+'_'+width+'_'+height+'.'+array[1];
+        }
         String.prototype.getBytes = function() {
             var cArr = this.match(/[^\x00-\xff]/ig);
             return this.length + (cArr == null ? 0 : cArr.length);
@@ -468,7 +488,10 @@ var Metronic = function() {
                 maxNumber: 140, //允许输入的最大字数  
                 position: 'top', //提示文字的位置，top：文本框上方，bottom：文本框下方  
                 onOk: function() {}, //输入后，字数未超出时调用的函数  
-                onOver: function() {} //输入后，字数超出时调用的函数     
+                onOver: function() {} ,//输入后，字数超出时调用的函数 
+                theme:'limit' ,
+                infoStr:'',
+                infoId:'info'   
             }
             var option = $.extend(defaults, opts);
             //处理输入的内容是文字还是字母的函数
@@ -477,16 +500,41 @@ var Metronic = function() {
             };
             this.each(function() {
                 var _this = $(this);
-                var info = '<div id="info" style="text-align:right;">还可以输入<b>'+(option.maxNumber - Math.ceil(getLength(_this.val())/2))+'</b>字</div>';  
+                var info = '';  
+                switch(option.theme){
+                    case 'limit':
+                       info = '<div id="'+option.infoId+'" style="text-align:right;">还可以输入<b>'+(option.maxNumber - Math.ceil(getLength(_this.val())/2))+'</b>字</div>';
+                       break;
+                    case 'tips':
+                        info = '<div id="'+option.infoId+'" style="text-align:right;">已经输入<b>'+Math.ceil(getLength(_this.val())/2)+'</b>字</div>';
+                      break;
+                }
                 var fn = function() { 
                     //Math函数向上取值
-                    var extraNumber=option.maxNumber - Math.ceil(getLength(_this.val())/2); 
-                    var $info = $('#info');
+                    var alredyNumber = Math.ceil(getLength(_this.val())/2);
+                    var extraNumber = option.maxNumber - alredyNumber; 
+                    var $info = $('#'+option.infoId);
                     if (extraNumber >= 0) {
-                        $info.html('还可以输入<b>'+extraNumber+'</b>个字');     
+                        switch(option.theme){
+                            case 'limit':
+                             $info.html(option.infoStr+'还可以输入<b>'+extraNumber+'</b>个字');  
+                             break;
+                            case 'tips':
+                              $info.html(option.infoStr+'已经输入<b>'+alredyNumber+'</b>个字');  
+                              break;
+                        }
+                           
                         option.onOk();
                     } else {
-                        $info.html('已经超出<b style="color:red;">' + (-extraNumber) + '</b>个字');
+                        switch(option.theme){
+                            case 'limit':
+                             $info.html('已经超出<b style="color:red;">' + (-extraNumber) + '</b>个字'); 
+                             break;
+                            case 'tips':
+                              $info.html(option.infoStr+'已经输入<b>'+alredyNumber+'</b>个字');  
+                              break;
+                        }
+                        
                         option.onOver();
                     }
                 };

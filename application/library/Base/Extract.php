@@ -126,7 +126,7 @@ class Base_Extract {
 		
 		// 5. HTML TAGs
 		/*$pattern = '/<[^(img|p|br)].*?>/s';*/
-		$pattern = '/<(?!img|p|br|P|BR|b|B|hr).*?>/s';
+		$pattern = '/<(?!img|p|\/p|br|P|\/P|BR|b|B|\/b|\/B|hr).*?>/s';
 		$replacement = '';
 		$content = preg_replace( $pattern, $replacement, $content );
 		

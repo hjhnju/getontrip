@@ -65,7 +65,6 @@ class Wiki_Logic_Wiki extends Base_Logic{
         $hash      = '';
         require_once(APP_PATH."/application/library/Base/HtmlDom.php");
         $arrsight     = Keyword_Api::queryKeywords($page,$pageSize,Keyword_Type_Status::PUBLISHED,$sightId);
-        $arrsight['list'][] = array('name'=>'朱元璋');
         foreach ($arrsight['list'] as $key  => $sight){
             $redis       = Base_Redis::getInstance();
             $index       = ($page-1)*$pageSize+$key+1;    

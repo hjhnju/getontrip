@@ -67,6 +67,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
         require_once(APP_PATH."/application/library/Base/HtmlDom.php");
         $arrsight     = Keyword_Api::queryKeywords($page,$pageSize,Keyword_Type_Status::PUBLISHED,$sightId);
         foreach ($arrsight['list'] as $key  => $sight){
+            $arrItems    = array();
             $redis       = Base_Redis::getInstance();
             $index       = ($page-1)*$pageSize+$key+1;    
             $word        = urlencode(trim($sight['name']));

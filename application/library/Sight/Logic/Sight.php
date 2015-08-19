@@ -90,7 +90,7 @@ class Sight_Logic_Sight{
     }
     
     /**
-     * 根据话题ID获取景点信息
+     * 根据话题ID获取景点id数组
      * @param integer $topicId
      * @param integer $page
      * @param integer $pageSize

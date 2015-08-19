@@ -14,15 +14,13 @@ class InitDataController extends Base_Controller_Page {
         parent::init();
     }
     public function indexAction() {
-        $sightId = intval($_REQUEST['sightId']);
-        $type    = trim($_REQUEST['type']);
-        $num     = intval($_REQUEST['num']);
         $conf    = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
-        if($num < 0){
-            $num = intval($conf['thirddata']['initnum']);
-        }       
+        $sightId = isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
+        $type    = isset($_REQUEST['type'])?trim($_REQUEST['type']):'';
+        $num     = isset($_REQUEST['num'])?intval($_REQUEST['num']):intval($conf['thirddata']['initnum']);
+     
         //获取景点ID数组
-        if($sightId < 0){
+        if(empty($sightId)){
             $model = new SightModel();
             $arr   = $model->getSightList(1, PHP_INT_MAX);
             foreach ($arr as $val){

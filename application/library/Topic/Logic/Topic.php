@@ -784,7 +784,7 @@ class Topic_Logic_Topic extends Base_Logic{
         //让缓存话题数据失效
         $redis = Base_Redis::getInstance();
         $model = new SightModel();
-        $redis->delete(Sight_Keys::getIndexTopicKey($sightId));
+        $redis->delete(Sight_Keys::getHotTopicKey($sightId));
         $arrKeys = $redis->keys(Sight_Keys::getHotTopicKey($sightId, "*"));
         foreach ($arrKeys as $key){
             $redis->delete($key);

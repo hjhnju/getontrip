@@ -1,4 +1,4 @@
-/*
+ /*
 
  京东书籍列表
   author:fyy
@@ -32,10 +32,10 @@ $(document).ready(function() {
             "data": 'title'
         }, {
             "data": function(e) {
-                if (e.image) {
-                    return '<a href="/pic/' + e.image + '.jpg" target="_blank"><img alt="" src="/pic/' + e.image + '_80_22.jpg"/></a>';
+                if (e.image) { 
+                    return '<a href="' + e.image + '" target="_blank"><img alt="" src="' + e.image.getNewUrlByUrl(80,22) + '"/></a>';
                 }
-                return "空";
+                return '暂无';
             }
         }, {
             "data": 'from'

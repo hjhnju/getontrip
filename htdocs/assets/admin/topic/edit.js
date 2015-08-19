@@ -25,13 +25,14 @@ $(document).ready(function() {
             height: 300,
             toolbar: [
                 //[groupname, [button list]] 
-                ['style', ['bold', 'italic', 'underline', 'clear']],
-                ['font', ['strikethrough']],
+                //['style', ['bold', 'italic', 'underline', 'clear']],
+                //['font', ['strikethrough']],
                 //['fontsize', ['fontsize']],
                 //['color', ['color']],
                 //['para', ['ul', 'ol', 'paragraph']],
                 //['table', ['table']],
                 //['height', ['height']],
+                 ['style', ['bold', 'clear']],
                 ['insert', ['hr', 'link', 'picture']],
                 ['view', ['codeview']]
             ],

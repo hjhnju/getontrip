@@ -2444,7 +2444,7 @@
             focus: false, // set focus to editable area after initializing summernote
 
             tabsize: 4, // size of tab ex) 2 or 4
-            styleWithSpan: true, // style with span (Chrome and FF only)
+            styleWithSpan: false, // style with span (Chrome and FF only)
 
             disableLinkTarget: false, // hide link Target Checkbox
             disableDragAndDrop: true, // disable drag and drop event
@@ -5196,8 +5196,14 @@
                 }
             });
             //}
-
-            layoutInfo.editable().on('paste', hPasteClipboardImage);
+            layoutInfo.editable().on('paste', function(event){
+                handler.invoke('saveRange', layoutInfo.editable());
+                    if ($paste) {
+                        $paste.focus();
+                    }
+                    hPasteClipboardImage(event);
+            });
+            //layoutInfo.editable().on('paste', hPasteClipboardImage);
         };
 
         /*   var hPasteContent = function (handler, $paste, $editable) {
@@ -5225,7 +5231,12 @@
             var pattern2 = /data-(.*?)=\"(.*?)\"/gi; //去掉多余的属性
             var pattern3 = /class=\"(.*?)\"/gi; //去掉class样式 
             var pattern4 = /id=\"(.*?)\"/gi; //去掉id属性 
-            return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern2, '').replace(pattern3, '').replace(pattern4, '');
+            var pattern5 = /\<p(.*?)\>/gi;//去掉p多余的属性
+            var pattern6 = /div/gi;//div替换为p
+            /*var htmlstr  = html;
+            html.replace(pattern, '')
+            return htmlstr;*/
+            return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern2, '').replace(pattern3, '').replace(pattern4, '').replace(pattern6,'p');
         }
 
         /**

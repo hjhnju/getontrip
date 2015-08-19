@@ -37,8 +37,9 @@ class Wiki_Logic_Wiki extends Base_Logic{
         }else{
             $arrWikiKeys = $redis->keys(Wiki_Keys::getWikiInfoName($sightId, "*"));
             foreach ($arrWikiKeys as $index => $wikiKey){
-                $ret = $redis->hGetAll($wikiKey);
-                $num = $index + 1;
+                $ret     = $redis->hGetAll($wikiKey);
+                $num     = $index + 1;
+                $arrItem = array();
                 if(($ret['status'] == $status)&&($num >= $from)&&($num <= $to)){
                     $arrKeys = $redis->keys(Wiki_Keys::getWikiCatalogName($sightId, $num, "*"));
                     foreach ($arrKeys as $key){

@@ -87,7 +87,8 @@ class Book_Logic_Book extends Base_Logic{
                 continue;
             }
             $temp[$key]['url']       = "http://item.jd.com/".$val['skuId'].".html";
-            $temp[$key]['imageUrl']  = $this->uploadPic($temp[$key]['imageUrl']);
+            //$temp[$key]['imageUrl']  = $this->uploadPic($temp[$key]['imageUrl']);
+            $temp[$key]['imageUrl']    = $temp[$key]['imageUrl'];
             $detailRequest = new WareBasebookGetRequest();
             $detailRequest->setSkuId($val['skuId']);
             $detail = $c->execute($detailRequest);

@@ -79,7 +79,7 @@ class Topic_Api{
     /**
      * 接口6：Topic_Api::getTopicNum($arrInfo)
      * 根据条件获取话题数量
-     * @param array $arrInfo
+     * @param array $arrInfo,eg:array('sightId'=>1,'status'=>xxx);
      * @param integer
      */
     public function getTopicNum($arrInfo){

@@ -119,7 +119,8 @@ class Theme_Logic_Theme extends Base_Logic{
      * @return array
      */
     public function queryThemeById($id){
-        $obj = new Theme_Object_Theme();
+        $obj          = new Theme_Object_Theme();
+        $arrLandscape = array();
         $obj->fetch(array('id' => $id));
         $arrRet = $obj->toArray();
         
@@ -128,12 +129,13 @@ class Theme_Logic_Theme extends Base_Logic{
         $list->setPagesize(PHP_INT_MAX);
         $ret = $list->toArray();
         foreach ($ret['list'] as $val){
-            $objLandscape = new Landscape_Object_Landscape();
-            $objLandscape->fetch(array('id' => $val['landscape_id'],'status' => Landscape_Type_Status::PUBLISHED));
-            if(empty($objLandscape->id)){
-                $arrRet['landscape'][] = $objLandscape->toArray();
+            $logicLandscape = new Landscape_Logic_Landscape();
+            $objLandscape   = $logicLandscape->queryLandscapeById($val['landscape_id']);
+            if($objLandscape['status'] == Landscape_Type_Status::PUBLISHED){
+                $arrLandscape[] = $objLandscape;
             }
         }
+        $arrRet['landscape'] = $arrLandscape;
         return $arrRet;
     }
     

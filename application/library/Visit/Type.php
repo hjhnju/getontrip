@@ -20,6 +20,11 @@ class Visit_Type extends Base_Type {
      * @var integer
      */
     const THEME = 3;
+    /**
+     * 4 访问景观
+     * @var integer
+     */
+    const LANDSCAPE = 4;
    
     /**
      * 状态名
@@ -29,5 +34,6 @@ class Visit_Type extends Base_Type {
         self::TOPIC      => '访问话题',
         self::SIGHT      => '访问景点',
         self::THEME      => '访问主题',
+        self::LANDSCAPE  => '访问景观',
     );
 }

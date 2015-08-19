@@ -79,7 +79,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
                     $val = $e->getAttribute('src');
                 }
                 if(!empty($val)){
-                    $image  = $val;
+                     $image  = $val;
                     break;
                 }
             }          

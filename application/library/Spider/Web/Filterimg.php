@@ -89,15 +89,25 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
     }
 
     /**
-     * 替换掉多余的回车等
-     * @return [type] [description]
+     * 只保留img br p
+     * @param  [string] $content [description]
+     * @return [string]          [description]
      */
-    public function replaceBrs(){
+    public function dataClean(){
        $content=$this->objDom->__toString();
-       //只保留img br p  
+        //只保留img br p  
        $obj   = new Base_Extract('',$content);
        $content  =  $obj->preProcess(); 
        $content  =  $obj->dataClean($content,false);  
+       return $content;
+    }
+
+    /**
+     * 替换掉多余的回车等
+     * @param  [string] $content [description]
+     * @return [type] [description]
+     */
+    public function replaceBrs($content){  
        //去掉多余的回车
        $content = $this->replaceByPattern('/<br><br>/','<br>',$content);
        $content = $this->replaceByPattern('/<p><br><\/p><p><br><\/p>/','<p><br></p>',$content);
@@ -112,7 +122,8 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
         $this->getImgUrlArray(); 
         $this->uploadImgs(); 
         $this->replaceImg();
-        return $this->replaceBrs();
+        $content=$this->dataClean();
+        return $this->replaceBrs($content);
     }
 
 
@@ -152,8 +163,8 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
             $img->setAttribute('data-actualsrc',$web->root . $oldSrc);  
             
           } 
-        //return $this->objDom->__toString();
-        return $this->replaceBrs();
+        $content = $this->objDom->__toString();
+        return $this->replaceBrs($content);
     }
 
     

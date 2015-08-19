@@ -27,11 +27,11 @@ $(document).ready(function() {
                 //[groupname, [button list]] 
                 ['style', ['bold', 'italic', 'underline', 'clear']],
                 ['font', ['strikethrough']],
-                ['fontsize', ['fontsize']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['table', ['table']],
-                ['height', ['height']],
+                //['fontsize', ['fontsize']],
+                //['color', ['color']],
+                //['para', ['ul', 'ol', 'paragraph']],
+                //['table', ['table']],
+                //['height', ['height']],
                 ['insert', ['hr', 'link', 'picture']],
                 ['view', ['codeview']]
             ],

@@ -75,11 +75,14 @@ class Wiki_Logic_Wiki extends Base_Logic{
             $image       = $html->find('img');
             foreach ($image as $e){
                 $val = $e->getAttribute('data-src');
+                if(empty($val)){
+                    $val = $e->getAttribute('src');
+                }
                 if(!empty($val)){
                     $image  = $val;
                     break;
                 }
-            }            
+            }          
             $hash        = $this->uploadPic($image);
             $content     = $html->find('div.card-summary-content div.para',0);
             if(empty($content)){

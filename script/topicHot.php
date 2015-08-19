@@ -47,9 +47,13 @@ foreach ($arrTopic as $topic){
     
     $listSightTopic = new Sight_List_Topic();
     $listSightTopic->setPagesize(PHP_INT_MAX);
-    $listSightTopic->setFilter(array('topic_id' => $arrRet['id']));
+    $listSightTopic->setFilter(array('topic_id' => $topic));
     $ret = $listSightTopic->toArray();
     foreach ($ret['list'] as $val){
+        $arrKeys = $redis->keys(Sight_Keys::getHotTopicKey($val['sight_id'], '*'));
+        foreach ($arrKeys as $key){
+            $redis->delete($key);
+        }
         $arrKeys = $redis->keys(Sight_Keys::getHotTopicKey($val['sight_id'], '*'));
         foreach ($arrKeys as $key){
             $redis->delete($key);

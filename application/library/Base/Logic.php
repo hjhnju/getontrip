@@ -48,10 +48,18 @@ class Base_Logic{
         $content  = file_get_contents($url);       
         $hash     = md5(microtime(true));
         $hash     = substr($hash, 8, 16);
+        $ext      = explode(".",$url);
+        $count    = count($ext);
+        $name     = trim($ext[$count-1]);
+        if($name == 'gif'){
+            $filename = $hash . '.gif';
+        }else{
+            $filename = $hash . '.jpg';
+        }
         $filename = $hash . '.jpg';
         $res      = $oss->writeFileContent($filename, $content);
         if($res){
-           return $hash; 
+           return $filename; 
         }
         return '';
     }

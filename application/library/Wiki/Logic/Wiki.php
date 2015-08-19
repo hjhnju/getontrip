@@ -65,6 +65,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
         $hash      = '';
         require_once(APP_PATH."/application/library/Base/HtmlDom.php");
         $arrsight     = Keyword_Api::queryKeywords($page,$pageSize,Keyword_Type_Status::PUBLISHED,$sightId);
+        $arrsight['list'][] = array('name'=>'朱元璋');
         foreach ($arrsight['list'] as $key  => $sight){
             $redis       = Base_Redis::getInstance();
             $index       = ($page-1)*$pageSize+$key+1;    
@@ -84,6 +85,10 @@ class Wiki_Logic_Wiki extends Base_Logic{
             $content     = $html->find('div.card-summary-content div.para',0);
             if(empty($content)){
                 $content = $html->find('div[class="lemmaWgt-lemmaSummary lemmaWgt-lemmaSummary-light"]',0);
+                if(empty($content)){
+                    $content = $html->find('div.lemma-summary div.para',0);
+                    $content     = strip_tags($content->innertext);
+                }
                 foreach($html->find('li[class^="title level1 column-"]') as $e){
                     $ret  = $e->find("a",0);
                     $url  = $ret->getAttribute("href")."\t";
@@ -111,15 +116,13 @@ class Wiki_Logic_Wiki extends Base_Logic{
                         break;
                     }
                 }
-            }
-                        
+            }         
             $arrTemp['title']       = $sight['name'];
-            $arrTemp['content']     = html_entity_decode($content);
-            $arrTemp['image']       = $hash;
+            $arrTemp['content']     = $content;
+            $arrTemp['image']       = Base_Image::getUrlByName($hash);
             $arrTemp['items']       = $arrItems;
             $arrTemp['status']      = Wiki_Type_Status::PUBLISHED;
             $arrTemp['create_time'] = time();
-            
             foreach ($arrItems as $id => $item){
                 $num  = $id + 1;
                 $redis->delete(Wiki_Keys::getWikiCatalogName($sightId, $index, $num));

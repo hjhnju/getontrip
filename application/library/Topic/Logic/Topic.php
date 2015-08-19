@@ -801,13 +801,13 @@ class Topic_Logic_Topic extends Base_Logic{
         if(self::ADD_TOPIC == $type){            
             $redis->sAdd(Sight_Keys::getSightTopicKey($sightId),$topicId);
             $num = $redis->sCard(Sight_Keys::getSightTopicKey($sightId));
-            if($num == 1){
+            if ($num == 1) {
                 $model->eddSight($sightId, array('hastopic' => 1));
             }
         }else{
             $redis->sRemove(Sight_Keys::getSightTopicKey($sightId),$topicId);
             $num = $redis->sCard(Sight_Keys::getSightTopicKey($sightId));
-            if($num == 0){
+            if ($num == 0) {
                 $model->eddSight($sightId, array('hastopic' => 0));
             }
         }

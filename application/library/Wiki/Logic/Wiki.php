@@ -73,18 +73,33 @@ class Wiki_Logic_Wiki extends Base_Logic{
             $url         = "http://baike.baidu.com/search/word?word=".$word;
             $html        = file_get_html($url);
             $image       = $html->find('img');
+            $name        = '';
             foreach ($image as $e){
                 $val = $e->getAttribute('data-src');
-                if(empty($val)){
-                    $val = $e->getAttribute('src');
-                }
                 if(!empty($val)){
-                     $image  = $val;
+                    $name  = $val;
                     break;
                 }
-            }          
-            $hash        = $this->uploadPic($image);
-            $content     = $html->find('div.card-summary-content div.para',0);
+            }
+            if(empty($name)){
+                foreach ($image as $index => $e){
+                    if ($index <= 1) {
+                        continue;
+                    }
+                    $val = $e->getAttribute('src');
+                    if(!empty($val)){
+                        $name  = $val;
+                        break;
+                    }
+                }
+            }
+            if(!empty($name)){
+                $hash  = $this->uploadPic($name);
+            }else{
+                $hash  = $name;
+            }
+            
+            $content   = $html->find('div.card-summary-content div.para',0);
             if(empty($content)){
                 $content = $html->find('div[class="lemmaWgt-lemmaSummary lemmaWgt-lemmaSummary-light"]',0);
                 if(empty($content)){

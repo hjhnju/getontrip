@@ -106,6 +106,22 @@ class Keyword_Logic_Keyword extends Base_Logic{
      * @return boolean
      */
     public function delKeyword($id){
+        $redis     = Base_Redis::getInstance();
+        $wordInfo  = $this->queryById($id);
+        $sightId   = $this->getSightId($id);
+        $arrKeys   = $redis->keys(Wiki_Keys::getWikiInfoName($sightId, "*"));
+        foreach ($arrKeys as $key){
+            $data = $redis->hGetAll($key);
+            if($data['title'] == $wordInfo['name']){
+                $arrTemp = explode("_",$key);
+                $id      = $arrTemp[2];
+                $redis->delete($key);
+            }
+        }
+        $arrKeys = $redis->keys(Wiki_Keys::getWikiCatalogName($sightId, $id,"*"));
+        foreach ($arrKeys as $key){
+            $redis->delete($key);
+        }
         $obj    = new Keyword_Object_Keyword();
         $obj->fetch(array('id' => $id));
         return $obj->remove();
@@ -131,5 +147,16 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $obj = new Keyword_Object_Keyword();
         $obj->fetch(array('id' => $keywordId));
         return $obj->sightId;
+    }
+    
+    /**
+     * 根据词条名称获取ID
+     * @param string $name
+     * @return integer
+     */
+    public function getWordIdByName($name){
+        $objKeyword = new Keyword_Object_Keyword();
+        $objKeyword->fetch(array('name' => $name));
+        return $objKeyword->id;
     }
 }

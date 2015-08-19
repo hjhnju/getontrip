@@ -45,7 +45,10 @@ class Base_Logic{
      */
     public function uploadPic($url){
         $oss      = Oss_Adapter::getInstance();
-        $content  = file_get_contents($url);       
+        $content  = file_get_contents($url);  
+        if(empty($url) || empty($content)){
+            return '';
+        }   
         $hash     = md5(microtime(true));
         $hash     = substr($hash, 8, 16);
         $ext      = explode(".",$url);

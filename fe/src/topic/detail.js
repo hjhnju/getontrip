@@ -16,15 +16,24 @@ define(function(require) {
         //话题背景图片显示缩略图
         
         //获取容器的宽度,高度
-        var width = $('.bg-img').width();
+        var imgBox = $('#bg-img'); 
+        var width = imgBox.width();
         var height = Math.ceil(rate * width);
-        var img = $('#topic-bg'); 
+        var imgUrl = imgBox.attr('data-webroot') + '/pic/' + imgBox.attr('data-img_hash') + '.' + imgBox.attr('data-img_type');
+
+        // var imgUrl=imgBox.attr('data-webroot') + '/pic/' + imgBox.attr('data-img_hash') + '_' + width + '_' + height + '.'+imgBox.attr('data-img_type');
+        imgBox.css({
+           'background-image': 'url('+imgUrl+')',
+           'height': height + 'px'
+        });
+        /*
+         var img = $('#topic-bg'); 
         var imgUrl=img.attr('data-webroot') + '/pic/' + img.attr('data-img_hash') + '_' + width + '_' + height + '.'+img.attr('data-img_type');
         img.attr('src', imgUrl);
         img.css({
             width: width + 'px',
             height: height + 'px'
-        }); 
+        }); */
 
         $(".rich-text img").css('display', 'block').lazyload({
             threshold: 400,

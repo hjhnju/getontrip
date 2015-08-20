@@ -11,11 +11,16 @@
 <div class="container"> 
  <!--  <div class="top-bar"></div> -->
  {%if isset($post.id)%} 
-   <div class="bg-img">
+  <!--  <div class="bg-img"> -->
+   <!--  {%if empty($post.image)%} 
+   <img src="{%$feroot%}/common/img/imgloading.gif" alt="" class="topic-bg"> 
+   {%else%}
+   <img src="{%$feroot%}/common/img/imgloading.gif" data-webroot="{%$webroot%}" data-img_hash="{%$post.img_hash%}" data-img_type="{%$post.img_type%}" alt="" class="topic-bg" id="topic-bg">
+   {%/if%}   -->
     {%if empty($post.image)%} 
-    <img src="{%$feroot%}/common/img/imgloading.gif" alt="" class="topic-bg"> 
-    {%else%}
-    <img src="{%$feroot%}/common/img/imgloading.gif" data-webroot="{%$webroot%}" data-img_hash="{%$post.img_hash%}" data-img_type="{%$post.img_type%}" alt="" class="topic-bg" id="topic-bg">
+      <div class="bg-img"  style="background-image:url('{%$feroot%}/common/img/imgloading.gif');"> 
+    {%else%} 
+      <div class="bg-img" id="bg-img" style="background-image:url('{%$feroot%}/common/img/imgloading.gif'); " data-webroot="{%$webroot%}" data-img_hash="{%$post.img_hash%}" data-img_type="{%$post.img_type%}"> 
     {%/if%}  
     <div class="title-box">
         <div class="title">

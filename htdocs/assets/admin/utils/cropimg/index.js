@@ -12,7 +12,8 @@ $(document).ready(function() {
         $preview = $('#preview-pane'),
         $pcnt = $('#preview-pane .preview-container'),
         $pimg = $('#preview-pane .preview-container img'),
-
+        
+        $pimgBox = $('#jcrop-preview');
         xsize = $pcnt.width(),
         ysize = $pcnt.height(),
         ratio = 133 / 93;
@@ -26,12 +27,14 @@ $(document).ready(function() {
 
         $('#target').attr('src', url);
         $('#target').attr('data-image', image);
-        $('#jcrop-preview').attr('src', url).css('width', '250px');
-  
+        //$('#jcrop-preview').attr('src', url).css('width', '250px');
+        $('#jcrop-preview').css({
+            'background-image': 'url('+url+')',
+        });
     
         $('#target').Jcrop({ 
         	imgUrl:url,
-            aspectRatio: ratio,
+            //aspectRatio: ratio,
             onChange: updatePreview,
             onSelect: updatePreview
         }, function() {
@@ -93,11 +96,17 @@ $(document).ready(function() {
             var rx = xsize / c.w;
             var ry = ysize / c.h;
 
-            $pimg.css({
+           /* $pimg.css({
                 width: Math.round(rx * boundx) + 'px',
                 height: Math.round(ry * boundy) + 'px',
                 marginLeft: '-' + Math.round(rx * c.x) + 'px',
                 marginTop: '-' + Math.round(ry * c.y) + 'px'
+            });*/
+            $pimgBox.css({
+                'width': Math.round(rx * boundx) + 'px',
+                'height': Math.round(ry * boundy) + 'px',
+                'margin-left': '-' + Math.round(rx * c.x) + 'px',
+                'margin-top':  '-' + Math.round(ry * c.y) + 'px'
             });
             $('#x1').val(c.x);
             $('#y1').val(c.y);

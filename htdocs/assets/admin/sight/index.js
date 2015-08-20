@@ -26,7 +26,7 @@ $(document).ready(function() {
             }
         },
         "columnDefs": [{
-            "targets": [0, 1],
+            "targets": [1],
             "visible": false,
             "searchable": false
         },{

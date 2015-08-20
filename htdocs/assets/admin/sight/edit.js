@@ -74,9 +74,10 @@ $(document).ready(function() {
                 fileElementId: 'imageBtn',
                 dataType: 'json',
                 success: function(res, status) { //当文件上传成功后，需要向数据库中插入数据
-                    $('#image').val(res.data.hash);
-                    $('#imageView').html('<img src="' + res.data.url + '" style="width:186px;height:140px;"/>');
+                    $('#image').val(res.data.image);
+                    $('#imageView').html('<img src="/pic/' + res.data.hash + '_190_140.jpg"  alt=""/>');
                     $('#imageView').removeClass('imageView');
+                    $('#crop-img').removeClass('hidden');
                 },
                 error: function(data, status, e) {
                     alert(status.statusInfo);
@@ -128,9 +129,7 @@ $(document).ready(function() {
                 "success": function(response) {
                     if (response.status == 0) {
                         alert('保存成功');
-                        $("button[name='reset']").click();
-                        $('#imageView').html('');
-                        $('#imageView').addClass('imageView');
+                        $("button[name='reset']").click(); 
                     }
                 }
             });

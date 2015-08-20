@@ -23,6 +23,9 @@ $(document).ready(function() {
                 if ($('#form-user_id').attr("checked")) {
                     d.params.create_user = $('#form-user_id').val();
                 }
+                if ($("#form-status").val()) {
+                    d.params.status = $.trim($("#form-status").val());
+                }
             }
         },
         "columnDefs": [{
@@ -60,6 +63,15 @@ $(document).ready(function() {
         }, {
             "data": 'y'
         }, {
+            "data": function(e){
+                if (e.statusName == '未发布') {
+                    return e.statusName + '<button type="button" class="btn btn-primary btn-xs publish" title="发布" data-toggle="tooltip" ><i class="fa fa-check-square-o"></i></button>';
+                } else {
+                    return e.statusName + '<button type="button" class="btn btn-warning btn-xs cel-publish" title="取消发布" data-toggle="tooltip" ><i class="fa fa-close"></i></button>';
+                }
+                
+            }
+        }, {
             "data": function(e) {
                 return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/sight/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-success btn-xs addKeyword"  title="添加词条" data-toggle="tooltip"><i class="fa fa-buysellads"></i></button>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
             }
@@ -86,6 +98,9 @@ $(document).ready(function() {
             //工具提示框
             $('[data-toggle="tooltip"]').tooltip();
         });
+
+        //状态下拉列表 
+        $('#form-status').selectpicker();
 
         $('#editable button.delete').live('click', function(e) {
             e.preventDefault();
@@ -137,6 +152,34 @@ $(document).ready(function() {
         //点击保存词条或者确认并保存按钮
         $('#Form button[type="submit"]').click(function(event) {
             $('#status').val($(this).attr('data-status'));
+        });
+
+        //发布操作
+        $('#editable button.publish,#editable button.cel-publish').live('click', function(e) {
+            e.preventDefault();
+            var nRow = $(this).parents('tr')[0];
+            var data = oTable.api().row(nRow).data(); 
+            if ($(this).hasClass('publish')) {
+                url = '/admin/sightapi/publish';
+            } else {
+                url = '/admin/sightapi/cancelpublish';
+            }
+            $.ajax({
+                "url": url,
+                "data": {
+                    id: data.id 
+                },
+                "type": "post",
+                "error": function(e) {
+                    alert("服务器未正常响应，请重试");
+                },
+                "success": function(response) {
+                    if (response.status == 0) {
+                        //刷新当前页
+                        oTable.fnRefresh();  
+                    }
+                }
+            });
         });
     }
 
@@ -194,6 +237,11 @@ $(document).ready(function() {
 
         //只看我自己发布的
         $('#form-user_id').click(function(event) {
+            api.ajax.reload();
+        });
+
+        $('#form-status').change(function(event) {
+            //触发dt的重新加载数据的方法
             api.ajax.reload();
         });
     }

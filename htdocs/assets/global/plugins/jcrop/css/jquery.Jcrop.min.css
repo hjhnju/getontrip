@@ -46,8 +46,8 @@
   height: 174px;
 }
 #preview-pane .preview-container{
-   width:250px;
-   height: 162px;
+   width:100%;
+   height: 100%;
    overflow: hidden;
 }
 .jcrop-keymgr{

@@ -468,6 +468,7 @@ var Metronic = function() {
             var cArr = this.match(/[^\x00-\xff]/ig);
             return this.length + (cArr == null ? 0 : cArr.length);
         }
+        //表单序列化json
         $.fn.serializeObject = function() {
             var o = {};
             var a = this.serializeArray();
@@ -483,6 +484,7 @@ var Metronic = function() {
             });
             return o;
         };
+        //字数限制
         $.fn.limitTextarea = function(opts) {
             var defaults = {
                 maxNumber: 140, //允许输入的最大字数  
@@ -565,6 +567,28 @@ var Metronic = function() {
 
             
         }
+        //按钮可用
+        $.fn.btnEnable = function(opts) { 
+            var defaults = {
+                text_attr: 'data-btn_text', //允许输入的最大字数    
+            }
+            var option = $.extend(defaults, opts);
+            $.each(this,function() { 
+                $(this).attr('disabled', false);
+                $(this).html($(this).attr(option.text_attr));
+            }); 
+        };
+        //按钮不可用
+        $.fn.btnDisable = function(opts) { 
+            var defaults = {
+                text: '<i class="fa fa-spinner fa-pulse"></i>保存中，请稍后', //允许输入的最大字数    
+            }
+            var option = $.extend(defaults, opts);
+            $.each(this,function() { 
+                $(this).attr('disabled', 'disabled');
+                $(this).html(option.text);
+            }); 
+        };
     }
 
     //* END:CORE HANDLERS *//

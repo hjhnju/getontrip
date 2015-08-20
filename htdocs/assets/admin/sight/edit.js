@@ -92,14 +92,24 @@ $(document).ready(function() {
 
         //描述字数统计
         $('#describe').limitTextarea({
-            maxNumber: 75,   
+            maxNumber: 75,
             onOk: function() {
-                $('#describe').css('background-color','transparent');
-                $('#Form #submitBtn').attr('disabled',false);
+                $('#describe').css('background-color', 'transparent');
+                $('#Form #submitBtn').attr('disabled', false);
             },
-            onOver:function(){
-                $('#describe').css('background-color','lightpink');
-                $('#Form #submitBtn').attr('disabled','disabled');
+            onOver: function() {
+                $('#describe').css('background-color', 'lightpink');
+                $('#Form #submitBtn').attr('disabled', 'disabled');
+            }
+        });
+
+        //点击发布或者保存按钮
+        $('#Form button[type="submit"]').click(function(event) {
+            //先判断图片 
+            action = $(this).attr('data-action'); 
+            if(action==='publish'&&!$('#image').val()){
+                alert('发布之前必须上传图片');
+                return false;
             }
         });
     }
@@ -109,33 +119,38 @@ $(document).ready(function() {
      */
     function validations() {
         $.validator.setDefaults({
-        submitHandler: function(data) {
-            //序列化表单  
-            var param = $("#Form").serializeObject();
-            var url;
-            if(!$('#id').val()){
-                url="/admin/sightapi/add";
-            }else{
-                 url="/admin/sightapi/save"
-            }
-            $.ajax({
-                "url": url,
-                "data": param,
-                "type": "post",
-                "dataType":"json",
-                "error": function(e) {
-                    alert("服务器未正常响应，请重试");
-                },
-                "success": function(response) {
-                    if (response.status == 0) {
-                        alert('保存成功');
-                        $("button[name='reset']").click(); 
-                    }
+            submitHandler: function(data) {
+                //序列化表单  
+                var param = $("#Form").serializeObject();
+                param.action = action;
+                var url = '';
+                if (!$('#id').val()) {
+                    url = '/admin/sightapi/add';
+                } else {
+                    url = "/admin/sightapi/save"
                 }
-            });
+                //按钮disabled
+                $('#Form button[type="submit"]').btnDisable(); 
+                $.ajax({
+                    "url": url,
+                    "data": param,
+                    "type": "post",
+                    "dataType": "json",
+                    "error": function(e) {
+                        alert("服务器未正常响应，请重试");
+                        $('#Form button[type="submit"]').btnEnable(); 
+                    },
+                    "success": function(response) {
+                        if (response.status == 0) {
+                            alert('保存成功');
+                            //$("button[name='reset']").click();
+                            $('#Form button[type="submit"]').btnEnable(); 
+                        }
+                    }
+                });
 
-        }
-    });
+            }
+        });
         // validate signup form on keyup and submit
         validate = $("#Form").validate({
             rules: {
@@ -151,5 +166,9 @@ $(document).ready(function() {
                 xy: "坐标不能为空"
             }
         });
+
+        function btnStatus(){
+
+        }
     }
 });

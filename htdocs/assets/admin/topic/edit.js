@@ -167,6 +167,12 @@ $(document).ready(function() {
         //点击发布或者保存按钮
         $('#Form button[type="submit"]').click(function(event) {
             status = $(this).attr('data-status');
+            action = $(this).attr('data-action'); 
+            //先判断图片 
+            if(action==='publish'&&!$('#image').val()){
+                alert('发布之前必须上传图片');
+                return false;
+            }
         });
 
           //搜索来源下拉列表 
@@ -353,7 +359,7 @@ $(document).ready(function() {
             submitHandler: function(data) {
                 //序列化表单  
                 var param = $("#Form").serializeObject();
-
+               
                 //特殊处理景点和标签 
                 sight_id_array = [];
                 $('#sight_alert span button').each(function() {
@@ -386,7 +392,8 @@ $(document).ready(function() {
                 param.content = $("#summernote").code();
 
                 //发布的状态
-                param.status = status;
+                //param.status = status;
+                 param.action = action;
 
                 var url;
                 if (!$('#id').val()) {
@@ -394,7 +401,8 @@ $(document).ready(function() {
                 } else {
                     url = "/admin/topicapi/save"
                 }
-                
+                 //按钮disabled
+                $('#Form button[type="submit"]').btnDisable(); 
                 $.ajax({
                     "url": url,
                     "data": param,
@@ -402,6 +410,7 @@ $(document).ready(function() {
                     "dataType": "json",
                     "error": function(e) {
                         alert("服务器未正常响应，请重试");
+                        $('#Form button[type="submit"]').btnEnable(); 
                     },
                     "success": function(response) {
                         if (response.status == 0) {

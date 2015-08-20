@@ -23,14 +23,16 @@ class  SightapiController extends Base_Controller_Api{
          
         $arrInfo =isset($_REQUEST['params'])?$_REQUEST['params']:array();
         
-     
+    
         $List =Sight_Api::querySights($arrInfo,$page, $pageSize);
     
     
         
+        
+        $tmpList=$List['list'];
+
         //添加城市名称
         $cityArray=array(); 
-        $tmpList=$List['list'];
         foreach($tmpList as $key=>$item){   
            $city_id=$item['city_id']; 
             if (!array_key_exists($city_id,$cityArray)) {  
@@ -45,6 +47,11 @@ class  SightapiController extends Base_Controller_Api{
                  $tmpList[$key]['city_name']  = $cityArray[$item['city_id']];
             }
         } 
+
+         //处理状态值 
+        for($i=0; $i<count($tmpList); $i++) { 
+            $tmpList[$i]["statusName"] = Sight_Type_Status::getTypeName($tmpList[$i]["status"]);  
+         }
         $List['list']=$tmpList;
 
         $retList['recordsFiltered'] =$List['total'];
@@ -54,14 +61,20 @@ class  SightapiController extends Base_Controller_Api{
          
     }
 
+    /**
+     * 编辑
+     * @return [type] [description]
+     */
     public function saveAction()
     {   
        $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0; 
-        if($postid <= 0){
+       if($postid <= 0){
             $this->ajaxError();
-       }
+       } 
+       $_REQUEST['status'] = $this->getStatusByActionStr($_REQUEST['action']);
        
-       $bRet=Sight_Api::editSight($postid,$_REQUEST);  
+
+       $bRet=Sight_Api::editSight($postid,$_REQUEST);   
        if($bRet){
             return $this->ajax();
        }
@@ -72,6 +85,7 @@ class  SightapiController extends Base_Controller_Api{
     * 添加景点信息
     */
     public function addAction(){ 
+       $_REQUEST['status'] = $this->getStatusByActionStr($_REQUEST['action']);
        $bRet=Sight_Api::addSight($_REQUEST);   
        if($bRet){
             return $this->ajax();
@@ -144,5 +158,56 @@ class  SightapiController extends Base_Controller_Api{
         $retList['data'] =$List['list']; 
         return $this->ajax($retList);
          
+    }
+
+    /*
+      发布  
+    */
+    public function publishAction(){
+       $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0; 
+       if($postid <= 0){
+            $this->ajaxError();
+       }  
+       $bRet=Sight_Api::editSight($postid,array('status'=>Sight_Type_Status::PUBLISHED));
+       if($bRet){ 
+            return $this->ajax();
+       }
+       return $this->ajaxError(); 
+    }
+
+    /*
+      取消发布 
+    */
+    public function cancelpublishAction(){
+       $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0; 
+       if($postid <= 0){
+            $this->ajaxError();
+       }  
+       $bRet=Sight_Api::editSight($postid,array('status'=>Sight_Type_Status::NOTPUBLISHED));
+       if($bRet){ 
+            return $this->ajax();
+       }
+       return $this->ajaxError(); 
+    }
+
+
+    /**
+     * 获取保存的状态
+     * @param  [type] $action [description]
+     * @return [type]         [description]
+     */
+    public function getStatusByActionStr($action){
+        switch ($action) {
+         case 'save':
+           $status = Sight_Type_Status::NOTPUBLISHED;
+           break;
+         case 'publish':
+           $status = Sight_Type_Status::PUBLISHED;
+           break;
+         default:
+           $status = Sight_Type_Status::NOTPUBLISHED;
+           break;
+       } 
+       return   $status;
     }
 }

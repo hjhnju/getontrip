@@ -82,7 +82,16 @@
                            <input type="checkbox" id="form-user_id" value="{%$userid%}" checked="">只看我发布的
                           </label>
                        </div> 
-                   </div>   
+                   </div>
+                   <div class="col-xs-2 pull-right">   
+                        <div class="input-group ">
+                          <select name="" id="form-status">  
+                             {%foreach $statusTypeArray as $key=>$item%} 
+                                  <option value="{%$key%}">{%$item%}</option> 
+                             {%/foreach%}  
+                          </select>
+                       </div>
+                    </div>
 		             <div class="col-xs-3 pull-right">   
 		                  	<div class="input-group " >
 							  <input type="text" class="form-control" placeholder="输入并选择城市" aria-describedby="cityName" id="form-city" autocomplete="off"/>
@@ -111,6 +120,7 @@
 			                <th class="">等级</th>
 			                <th class="">坐标X</th>
 			                <th class="">坐标Y</th>
+			                <th class="">状态</th>
 			                <th class="">操作</th>  
 		                  </tr>
                       </thead>
@@ -123,13 +133,16 @@
 	</div>
 
 {%/block%}
-{%block name='script'%} 
-<!--  <link href="{%$feroot%}s/global/plugins/datatables/media/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/> -->
+{%block name='link'%}  
+<link href="{%$feroot%}s/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css" rel="stylesheet" type="text/css"/> 
+<link href="{%$feroot%}s/global/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" type="text/css"/> 
+{%/block%}
+{%block name='script'%}  
 <script src="{%$feroot%}s/global/plugins/datatables/media/js/jquery.dataTables.js" type="text/javascript"></script> 
- <link href="{%$feroot%}s/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css" rel="stylesheet" type="text/css"/> 
 <script src="{%$feroot%}s/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js" type="text/javascript"></script> 
 <script src="{%$feroot%}s/global/plugins/typeahead/bootstrap-typeahead.js" type="text/javascript"></script> 
 <script src="{%$feroot%}s/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script> 
+<script src="{%$feroot%}s/global/plugins/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
 <script src="{%$feroot%}s/admin/sight/index.js" type="text/javascript"></script> 
  
 {%/block%}

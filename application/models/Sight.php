@@ -56,9 +56,13 @@ class SightModel extends PgBaseModel
      * 获取取景列表
      * @return boolean|mixed
      */
-    public function getSightList($page,$pageSize){
+    public function getSightList($page,$pageSize,$status = Sight_Type_Status::PUBLISHED){
         $from = ($page-1)*$pageSize;
-        $sql = "SELECT * FROM sight ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
+        if ($status == Sight_Type_Status::ALL) {
+            $sql = "SELECT * FROM sight ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
+        }else{
+            $sql = "SELECT * FROM sight WHERE status = $status ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
+        }        
         try {
             $sth = $this->db->prepare($sql);
             $sth->execute();

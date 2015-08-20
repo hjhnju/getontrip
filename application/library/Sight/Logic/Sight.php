@@ -78,9 +78,9 @@ class Sight_Logic_Sight{
      * @param integer $pageSize
      * @return array
      */
-    public function getSightList($page,$pageSize){
-        $arr = $this->modelSight->getSightList($page,$pageSize);
-        $num = $this->modelSight->getSightNum();
+    public function getSightList($page,$pageSize,$status){
+        $arr = $this->modelSight->getSightList($page,$pageSize,$status);
+        $num = $this->modelSight->getSightNum($status);
         $arrRet['page']     = $page;
         $arrRet['pagesize'] = $pageSize;
         $arrRet['pageall']  = ceil($num/$pageSize);
@@ -171,7 +171,7 @@ class Sight_Logic_Sight{
      */
     public function addSight($arrInfo){
         $ret = $this->modelSight->addNewSight($arrInfo);
-        if($ret){
+        if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
             $data = $this->modelSight->query(array('name' => $arrInfo['name']), 1, 1);
             $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
             $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
@@ -190,6 +190,14 @@ class Sight_Logic_Sight{
      */
     public function editSight($sightId,$_updateData){
         $ret = $this->modelSight->eddSight($sightId, $_updateData);
+        if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
+            $data = $this->modelSight->query(array('name' => $arrInfo['name']), 1, 1);
+            $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
+            $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
+            $http = Base_Network_Http::instance()->url($url);
+            $http->timeout(1);
+            $http->exec();
+        }
         return $ret;
     }
     

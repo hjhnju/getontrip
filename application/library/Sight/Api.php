@@ -8,9 +8,9 @@ class Sight_Api{
      * @param integer $pageSize
      * @return array
      */
-    public static function getSightList($page,$pageSize){
+    public static function getSightList($page,$pageSize,$status=Sight_Type_Status::ALL){
         $logicSight = new Sight_Logic_Sight();
-        return $logicSight->getSightList($page, $pageSize);
+        return $logicSight->getSightList($page, $pageSize,$status);
     }
     
     /**

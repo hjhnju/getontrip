@@ -18,7 +18,7 @@ class GisModel extends PgBaseModel
         $y = $loc['y'];
         $from = ($page-1)*$pageSize;
         $sql = "SELECT id, city_id, name, image, describe, earth_distance(ll_to_earth(sight.x, sight.y),ll_to_earth($x,$y))" .
-         " AS dis FROM sight  WHERE hastopic = 1 ORDER BY dis ASC OFFSET $from limit $pageSize";
+         " AS dis FROM sight  WHERE hastopic = 1  AND status = 2 ORDER BY dis ASC OFFSET $from limit $pageSize";
         try {
             $sth = $this->db->prepare($sql);
             $sth->execute();

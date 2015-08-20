@@ -5,7 +5,7 @@ class SightModel extends PgBaseModel
 
     private $table = 'sight';
     
-    private $_fileds = array('id','name','describe','level','city_id','x','y','image','hastopic','create_user','create_time','update_user','update_time');
+    private $_fileds = array('id','name','describe','level','city_id','x','y','image','hastopic','create_user','create_time','update_user','update_time','status');
 
     public function __construct(){
         parent::__construct();

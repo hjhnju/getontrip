@@ -190,8 +190,8 @@ class Sight_Logic_Sight{
      */
     public function editSight($sightId,$_updateData){
         $ret = $this->modelSight->eddSight($sightId, $_updateData);
-        if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
-            $data = $this->modelSight->query(array('name' => $arrInfo['name']), 1, 1);
+        if($ret && isset($_updateData['status']) && ($_updateData['status'] == Sight_Type_Status::PUBLISHED)){
+            $data = $this->modelSight->query(array('name' => $_updateData['name']), 1, 1);
             $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
             $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
             $http = Base_Network_Http::instance()->url($url);

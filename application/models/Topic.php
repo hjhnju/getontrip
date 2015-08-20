@@ -91,7 +91,7 @@ class TopicModel{
         }
         $from = ($page-1)*$pageSize;
         if(empty($strTags)){
-            $sql = "SELECT a.id FROM `topic` a, `sight_topic` b   WHERE  a.id = b.topic_id and b.sight_id = $sightId ORDER BY `update_time` desc limit $from,$pageSize";
+            $sql = "SELECT a.id FROM `topic` a, `sight_topic` b   WHERE  a.id = b.topic_id and b.sight_id = $sightId ORDER BY a.update_time desc limit $from,$pageSize";
         }else{
             $sql = "SELECT a.id FROM `topic`  a,`topic_tag`  b, `sight_topic` c WHERE a.id=b.topic_id=c.topic_id AND c.sight_id = $sightId AND b.tag_id in(".$strTags.") ORDER by a.update_time desc limit $from,$pageSize";
         }

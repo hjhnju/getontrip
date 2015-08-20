@@ -13,17 +13,22 @@ $(document).ready(function() {
         $pcnt = $('#preview-pane .preview-container'),
         $pimg = $('#preview-pane .preview-container img'),
         
-        $pimgBox = $('#jcrop-preview');
-        xsize = $pcnt.width(),
-        ysize = $pcnt.height(),
-        ratio = 133 / 93;
-
+        $pimgBox = $('#jcrop-preview'); 
+        var ratio = 133 / 93;
+        if($('#jcrop-ratio')){
+             ratio =(Number($('#jcrop-ratio').attr('data-width'))/Number($('#jcrop-ratio').attr('data-height')));
+        }
+        $preview = $preview.css({ 
+            'height': ($preview.width()/ratio)+'px'
+        });
+        xsize = $preview.width();
+        ysize = $preview.height();
   
 
     $('#crop-img').click(function(event) { 
         var image = $('#image').val(),
         //hash =image.split('.')[0],
-        url = '/pic/' + image;
+        url = '/pic/' + image; 
 
         $('#target').attr('src', url);
         $('#target').attr('data-image', image);

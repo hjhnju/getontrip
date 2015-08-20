@@ -100,7 +100,7 @@ class  TopicapiController extends Base_Controller_Api{
           $spider = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
           $_REQUEST['content'] = $spider->getReplacedContent();
        }
-        
+       $_REQUEST['status'] = $this->getStatusByActionStr($_REQUEST['action']);
        $bRet=Topic_Api::editTopic($postid,$_REQUEST);
        if($bRet){  
             return $this->ajax();
@@ -118,7 +118,7 @@ class  TopicapiController extends Base_Controller_Api{
           $spider = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
           $_REQUEST['content'] = $spider->getReplacedContent();
        }
-      
+       $_REQUEST['status'] = $this->getStatusByActionStr($_REQUEST['action']);
        //添加到数据库
        $bRet=Topic_Api::addTopic($_REQUEST);   
        if(!empty($bRet)){
@@ -260,7 +260,25 @@ class  TopicapiController extends Base_Controller_Api{
         }
     }
 
-
+    /**
+     * 获取保存的状态
+     * @param  [type] $action [description]
+     * @return [type]         [description]
+    */
+    public function getStatusByActionStr($action){
+        switch ($action) {
+         case 'save':
+           $status = Topic_Type_Status::NOTPUBLISHED;
+           break;
+         case 'publish':
+           $status = Topic_Type_Status::PUBLISHED;
+           break;
+         default:
+           $status = Topic_Type_Status::NOTPUBLISHED;
+           break;
+       } 
+       return   $status;
+    }
 
    
 }

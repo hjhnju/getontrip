@@ -1,5 +1,6 @@
 <?php
 class Base_Image_Imagick {
+    //Imagick类实例
     private $image = null;
     //图片的类型
     private $type = null;
@@ -11,7 +12,7 @@ class Base_Image_Imagick {
     // 析构函数
     public function __destruct(){
         if($this->image!==null) {
-            $this->image->destroy(); 
+            $this->image->destroy();
         }
     }
 
@@ -27,7 +28,13 @@ class Base_Image_Imagick {
       }
       return $this->image;
     }
-    
+
+    public function read($blob){
+        $this->image = new Imagick();
+        $this->image->readimageblob($blob);
+        return $this->image;
+    }
+
     /**
      * 修剪图片
      * @param  integer $x      [description]
@@ -67,7 +74,7 @@ class Base_Image_Imagick {
      * 'scale_fill': 按比例在安全框 $width X $height 内缩放图片，安全框内没有像素的地方填充色, 使用此参数时可设置背景填充色 $bg_color = array(255,255,255)(红,绿,蓝, 透明度) 透明度(0不透明-127完全透明))
      * 其它: 智能模能 缩放图像并载取图像的中间部分 $width X $height 像素大小
      * $fit = 'force','scale','scale_fill' 时： 输出完整图像
-     * $fit = 图像方位值 时, 输出指定位置部分图像 
+     * $fit = 图像方位值 时, 输出指定位置部分图像
      * 字母与图像的对应关系如下:
      * north_west   north   north_east
      * west         center        east
@@ -112,7 +119,7 @@ class Base_Image_Imagick {
                 }
                 break;
             case 'scale_fill':
-                $size = $this->image->getImagePage(); 
+                $size = $this->image->getImagePage();
                 $src_width = $size['width'];
                 $src_height = $size['height'];
                 $x = 0;
@@ -155,7 +162,7 @@ class Base_Image_Imagick {
                 $this->image = $canvas;
                 break;
             default:
-                $size = $this->image->getImagePage(); 
+                $size = $this->image->getImagePage();
                 $src_width = $size['width'];
                 $src_height = $size['height'];
                 $crop_x = 0;
@@ -249,7 +256,7 @@ class Base_Image_Imagick {
             foreach($image as $frame) {
                 $img = new Imagick();
                 $img->readImageBlob($frame);
-                $img->drawImage($draw); 
+                $img->drawImage($draw);
                 $canvas->addImage( $img );
                 $canvas->setImageDelay( $img->getImageDelay() );
             }
@@ -260,7 +267,7 @@ class Base_Image_Imagick {
         }
     }
 
-    
+
     /**
      * 添加水印图片
      * @param [type]  $path [路径]
@@ -277,11 +284,11 @@ class Base_Image_Imagick {
             foreach($this->image as $frame) {
                 $frame->annotateImage($draw, $x, $y, $angle, $text);
             }
-        }else { 
+        }else {
             $this->image->annotateimage($draw, $x, $y, $angle, $text);
         }
     }
-    
+
     // 保存到指定路径
     public function save_to($path) {
         if($this->type=='gif') {
@@ -292,18 +299,18 @@ class Base_Image_Imagick {
     }
 
     // 输出图像
-    public function output($header = true) { 
+    public function output($header = true) {
         if($header) header('Content-type: '.$this->type);
-        echo $this->image->getImagesBlob();   
+        echo $this->image->getImagesBlob();
     }
-    
+
     public function get_width() {
-        $size = $this->image->getImagePage(); 
+        $size = $this->image->getImagePage();
         return $size['width'];
     }
-    
+
     public function get_height() {
-        $size = $this->image->getImagePage(); 
+        $size = $this->image->getImagePage();
         return $size['height'];
     }
 
@@ -326,11 +333,11 @@ class Base_Image_Imagick {
           return false;
       }
     }
-    
+
     // 生成缩略图 $fit为真时将保持比例并在安全框 $width X $height 内生成缩略图片
-    public function thumbnail($width = 100, $height = 100, $fit = true){ 
+    public function thumbnail($width = 100, $height = 100, $fit = true){
         $this->image->thumbnailImage( $width, $height, $fit );
-    } 
+    }
 
     /**
      * 添加一个边框
@@ -343,21 +350,21 @@ class Base_Image_Imagick {
       $color->setColor($color);
       $this->image->borderImage($color, $width, $height);
     }
-    
+
     // 模糊
     public function blur($radius, $sigma) {
         $this->image->blurImage($radius, $sigma);
-    } 
+    }
 
     // 高斯模糊
     public function gaussian_blur($radius, $sigma) {
         $this->image->gaussianBlurImage($radius, $sigma);
-    } 
+    }
 
     // 运动模糊
     public function motion_blur($radius, $sigma, $angle) {
         $this->image->motionBlurImage($radius, $sigma, $angle);
-    } 
+    }
 
     // 径向模糊
     public function radial_blur($radius) {
@@ -367,35 +374,35 @@ class Base_Image_Imagick {
     // 添加噪点
     public function add_noise($type=null){
         $this->image->addNoiseImage($type==null?imagick::NOISE_IMPULSE:$type);
-    } 
-    
+    }
+
     // 调整色阶
     public function level($black_point, $gamma, $white_point) {
         $this->image->levelImage($black_point, $gamma, $white_point);
-    } 
+    }
 
     // 调整亮度、饱和度、色调
     public function modulate($brightness, $saturation, $hue) {
         $this->image->modulateImage($brightness, $saturation, $hue);
-    } 
+    }
 
     // 素描
     public function charcoal($radius, $sigma){
         $this->image->charcoalImage($radius, $sigma);
-    } 
+    }
 
     // 油画效果
     public function oil_paint($radius){
         $this->image->oilPaintImage($radius);
-    } 
-    
+    }
+
     // 水平翻转
     public function flop(){
         $this->image->flopImage();
-    } 
+    }
 
     // 垂直翻转
     public function flip(){
         $this->image->flipImage();
-    } 
+    }
 }

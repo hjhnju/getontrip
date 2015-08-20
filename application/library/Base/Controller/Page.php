@@ -15,7 +15,7 @@ class Base_Controller_Page extends Base_Controller_Abstract {
         $feversion = Base_Config::getConfig('web')->version;
         $this->getView()->assign('feroot', Base_Config::getConfig('web')->stroot . '/v1/'. $feversion . '/asset');
         $this->getView()->assign('tongji', Base_Config::getConfig('web')->tongji);
-        
+
         //set csrf token
         $token = Yaf_Session::getInstance()->get(Base_Keys::getCsrfTokenKey());
         if(empty($token)){
@@ -26,7 +26,7 @@ class Base_Controller_Page extends Base_Controller_Abstract {
         }
         $this->getView()->assign('token', $token);
     }
-    
+
     protected function isAjax(){
         return false;
     }
@@ -35,16 +35,19 @@ class Base_Controller_Page extends Base_Controller_Abstract {
         parent::redirect($url);
         exit;
     }
-    
+
     /**
      * 设置在浏览器端的缓存时间
      * @param number $lifetime
      */
-    public function setBrowserCache($lifetime = 3600) {
+    public function setBrowserCache($md5 = null, $lifetime = 3600) {
         $ts = gmdate("D, d M Y H:i:s", time() + $lifetime) . " GMT";
         header("Expires: $ts");
         header("Pragma: cache");
         header("Cache-Control: max-age=$lifetime");
+        if(!is_null($md5)){
+            header("ETag: $md5");
+        }
         return true;
     }
 }

@@ -209,6 +209,9 @@ class SightModel extends PgBaseModel
     public function query($arrInfo,$page,$pageSize){
         $offset = ($page-1)*$pageSize;
         $where = "where ";
+        if(isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::ALL)){
+            unset($arrInfo['status']);
+        }
         foreach ($arrInfo as $key => $val){
             $where .= "$key = '".$val."' and";
         }

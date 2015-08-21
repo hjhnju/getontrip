@@ -191,7 +191,6 @@ class Base_Object {
         $cols = implode("`, `", $this->fields);
         $sql = "select `$cols` from `{$this->dbname}`.`{$this->table}` where $where limit 1";
         $data = $this->db->fetchRow($sql);
-        
         if (!empty($data)) {
             $this->setData($data);
             $this->fetched = 1;
@@ -248,6 +247,14 @@ class Base_Object {
         }
         if (isset($this->properties['update_time'])) {
             $data['update_time'] = time();
+        }
+        if ($this->properties['create_user'] && empty($data['create_user'])) {
+            $logicUser            = new User_Logic_Login();
+            $data['create_user']  = $logicUser->checkLogin();
+        }
+        if (isset($this->properties['update_user'])) {
+            $logicUser           = new User_Logic_Login();
+            $data['update_user'] = $logicUser->checkLogin();
         }
         return $data;
     }
@@ -352,7 +359,7 @@ class Base_Object {
             $prop       = $this->properties[$key];
             if(isset($this->$prop)){
                 $data[$key] = $this->$prop;
-            }            
+            }           
         }
         return $data;
     }

@@ -61,12 +61,7 @@ class Tag_Logic_Tag{
     public static function saveTag($name){
         $objTag       = new Tag_Object_Tag();
         $objTag->name = $name;
-        
-        $logicUser = new User_Logic_Login();
-        $userId = $logicUser->checkLogin();
-        if(!empty($userId)){
-            $objTag->createUser = $userId;
-        }
+     
         $ret1 = $objTag->save();
     
         $redis = Base_Redis::getInstance();

@@ -23,11 +23,6 @@ class Landscape_Logic_Landscape extends Base_Logic{
             }
         }
         if($bCheck){
-            $logicUser = new User_Logic_Login();
-            $userId    = $logicUser->checkLogin();
-            if(!empty($userId)){
-                $objLandscape->createUser = $userId;
-            }
             $ret = $objLandscape->save();
         }
         if($ret){

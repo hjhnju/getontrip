@@ -36,11 +36,6 @@ class Source_Logic_Source extends Base_Logic{
             }
         }
         if($bCheck){
-            $logicUser = new User_Logic_Login();
-            $userId    = $logicUser->checkLogin();
-            if(!empty($userId)){
-                $obj->createUser = $userId;
-            }
             return $obj->save();
         }
         return false;

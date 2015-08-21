@@ -92,6 +92,9 @@ class SightModel extends PgBaseModel
         if(!empty($userId)){
             $_addFields[] = 'create_user';
             $_addValues[] = $userId;
+            
+            $_addFields[] = 'update_user';
+            $_addValues[] = $userId;
         }
         if(!in_array('create_time',$_addFields)){
             $_addFields[] = 'create_time';
@@ -123,6 +126,11 @@ class SightModel extends PgBaseModel
     public function eddSight($sightId, $_updateData){
         $_setData = '';  
         $_where = "WHERE id = $sightId"; 
+        $logicUser = new User_Logic_Login();
+        $userId = $logicUser->checkLogin();
+        if(!empty($userId)){
+            $_updateData['update_user'] = $userId;
+        }
         foreach ($_updateData as $_key=>$_value) { 
             if(in_array($_key,$this->_fileds)){
                 $_setData .= "$_key='$_value',"; 

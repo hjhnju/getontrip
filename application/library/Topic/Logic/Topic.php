@@ -603,13 +603,7 @@ class Topic_Logic_Topic extends Base_Logic{
         foreach ($arrInfo as $key => $val){
             $key  = $this->getprop($key);
             $objTopic->$key = $val;
-        }
-        $logicUser = new User_Logic_Login();
-        $userId = $logicUser->checkLogin();
-        if(!empty($userId)){
-            $objTopic->createUser = $userId;
-        }
-        
+        }        
         $ret = $objTopic->save();
         if(isset($arrInfo['tags'])){
             foreach($arrInfo['tags'] as $val){

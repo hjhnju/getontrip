@@ -157,7 +157,7 @@ class Theme_Logic_Theme extends Base_Logic{
             $listRelation = new Theme_List_Landscape();
             $listRelation->setFilter(array('theme_id' => $data['id']));
             $listRelation->setPagesize(PHP_INT_MAX);
-            $ret = $list->toArray();
+            $ret = $listRelation->toArray();
             foreach ($ret['list'] as $val){
                 $objLandscape = new Landscape_Object_Landscape();
                 $objLandscape->fetch(array('id' => $val['landscape_id'],'status' => Landscape_Type_Status::PUBLISHED));
@@ -199,7 +199,7 @@ class Theme_Logic_Theme extends Base_Logic{
             $listRelation = new Theme_List_Landscape();
             $listRelation->setFilter(array('theme_id' => $data['id']));
             $listRelation->setPagesize(PHP_INT_MAX);
-            $ret = $list->toArray();
+            $ret = $listRelation->toArray();
             foreach ($ret['list'] as $val){
                 $objLandscape = new Landscape_Object_Landscape();
                 $objLandscape->fetch(array('id' => $val['landscape_id'],'status' => Landscape_Type_Status::PUBLISHED));

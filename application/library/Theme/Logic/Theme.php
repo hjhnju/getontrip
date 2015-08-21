@@ -145,6 +145,9 @@ class Theme_Logic_Theme extends Base_Logic{
             if(!in_array($key,$this->_fields)){
                 unset($arrInfo[$key]);
             }
+            if(isset($arrInfo['status'])&&($arrInfo['status'] == Theme_Type_Status::ALL)){
+                unset($arrInfo['status']);
+            }
         }
         if(!empty($arrInfo)){
             $list->setFilter($arrInfo);
@@ -179,6 +182,9 @@ class Theme_Logic_Theme extends Base_Logic{
         foreach ($arrInfo as $key => $val){
             if(!in_array($key,$this->_fields)){
                 unset($arrInfo[$key]);
+            }
+            if(isset($arrInfo['status'])&&($arrInfo['status'] == Theme_Type_Status::ALL)){
+                unset($arrInfo['status']);
             }
         }
         if(!empty($arrInfo)){

@@ -39,7 +39,7 @@ class GisModel extends PgBaseModel
      */
     public function getEarthDistanceToSight($x,$y,$sightId){
         $sql = "SELECT earth_distance(ll_to_earth(sight.x, sight.y),ll_to_earth($x,$y))" .
-        " AS dis FROM sight WHERE sight_id = $sightId";
+        " AS dis FROM sight WHERE id = $sightId";
         try {
             $sth = $this->db->prepare($sql);
             $sth->execute();

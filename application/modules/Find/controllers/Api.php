@@ -21,6 +21,9 @@ class ApiController extends Base_Controller_Api {
      * 推荐发现列表页
      * @param integer page
      * @param integer pageSize
+     * @param double x
+     * @param double y 
+     * @param integer city，若获取不了经纬度则传城市ID，城市ID不传默认是北京
      * @return json
      */
     public function indexAction() {

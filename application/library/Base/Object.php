@@ -248,7 +248,7 @@ class Base_Object {
         if (isset($this->properties['update_time'])) {
             $data['update_time'] = time();
         }
-        if ($this->properties['create_user'] && empty($data['create_user'])) {
+        if (isset($this->properties['create_user']) && empty($data['create_user'])) {
             $logicUser            = new User_Logic_Login();
             $data['create_user']  = $logicUser->checkLogin();
         }

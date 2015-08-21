@@ -87,8 +87,18 @@ class Landscape_Logic_Landscape extends Base_Logic{
             if(!in_array($key,$this->_fields)){
                 unset($arrInfo[$key]);
             }
+            if(isset($arrInfo['status']) &&($arrInfo['status'] == Landscape_Type_Status::ALL)){
+                unset($arrInfo['status']);
+            }
         }
-        if(!empty($arrInfo)){
+        if(isset($arrInfo['name'])){
+            $filter = "`name` like '%".$arrInfo['name']."%' ";
+            unset($arrInfo['name']);
+            foreach ($arrInfo as $key => $val){
+                $filter .=" and `".$key."` = $val";
+            }
+            $list->setFilterString($filter);
+        }elseif(!empty($arrInfo)){
             $list->setFilter($arrInfo);
         }
         $list->setPage($page);

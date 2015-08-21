@@ -261,11 +261,16 @@
 			<!-- END content STATS -->
 		</div>
 	</div>
-{%if isset($post.content)%}
 <div id="content-text" style="display:none;"> 
+  {%if isset($post.content)%}
   {%$post.content%} 
+  {%/if%} 
 </div>
-{%/if%}
+ {%if isset($post.id) eq 0%}
+    <script type="text/javascript"> 
+        $('#content-text').html(localStorage.topicContent);
+     </script>
+  {%/if%} 
 {%/block%}
 
 {%block name='link'%}

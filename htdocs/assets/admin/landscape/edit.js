@@ -83,15 +83,10 @@ $(document).ready(function() {
                     alert(status.statusInfo);
                 }
             })
-        });
-
-        //提交表单
-        /* $("#submitBtn").click(function(event) {
-            $("#Form").submit();
-         });*/
+        }); 
 
         //描述字数统计
-        $('#describe').limitTextarea({
+      /*  $('#content').limitTextarea({
             maxNumber: 75,
             onOk: function() {
                 $('#describe').css('background-color', 'transparent');
@@ -101,7 +96,7 @@ $(document).ready(function() {
                 $('#describe').css('background-color', 'lightpink');
                 $('#Form #submitBtn').attr('disabled', 'disabled');
             }
-        });
+        });*/
 
         //点击发布或者保存按钮
         $('#Form button[type="submit"]').click(function(event) {
@@ -126,9 +121,9 @@ $(document).ready(function() {
                 param.action = action;
                 var url = '';
                 if (!$('#id').val()) {
-                    url = '/admin/sightapi/add';
+                    url = '/admin/landscapeapi/add';
                 } else {
-                    url = "/admin/sightapi/save"
+                    url = "/admin/landscapeapi/save"
                 }
                 //按钮disabled
                 $('#Form button[type="submit"]').btnDisable(); 

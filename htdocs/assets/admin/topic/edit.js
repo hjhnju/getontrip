@@ -32,7 +32,7 @@ $(document).ready(function() {
                 //['para', ['ul', 'ol', 'paragraph']],
                 //['table', ['table']],
                 //['height', ['height']],
-                 ['style', ['bold', 'clear']],
+                ['style', ['bold', 'clear']],
                 ['insert', ['hr', 'link', 'picture']],
                 ['view', ['codeview']]
             ],
@@ -42,9 +42,9 @@ $(document).ready(function() {
             onImageUpload: function(files) {
                 sendFile(files[0]);
             },
-            onMediaDelete: function(files) { 
-                var file=files[0]; 
-                if($(file).attr("data-image")||$(file).attr("data-hash")){
+            onMediaDelete: function(files) {
+                var file = files[0];
+                if ($(file).attr("data-image") || $(file).attr("data-hash")) {
                     if (confirm("会从服务器删除图片，确定删除么 ?") == false) {
                         return false;
                     }
@@ -53,19 +53,14 @@ $(document).ready(function() {
                 }
             },
             onChange: function(characters, editor, $editable) {
-                    //alert(characters);
-                    /* if ($(characters).is('img') || $(characters).find('img').is('img')) {
-                         deleteImage(characters, editor, $editable);
-                     } */
+                if (!$('#id').val()) {
+                    localStorage.topicContent = $('#summernote').code();
+                } else {
+                    $(window).bind('beforeunload', function() {
+                        return '您输入的内容尚未保存';
+                    });
                 }
-                /*  ,
-                  onPaste: function(event) { 
-                     var layoutInfo = $.summernote.core.dom.makeLayoutInfo(event.currentTarget || event.target);
-                     var clipboardData = event.originalEvent.clipboardData;
-                     var content = clipboardData.getData(clipboardData.types[0]);
-                     layoutInfo.holder().summernote('pasteHTML', content);
-                     return;
-                  }*/
+            }
         });
 
         //景点输入框自动完成
@@ -90,7 +85,7 @@ $(document).ready(function() {
             sight_id_array.splice($.inArray(val, sight_id_array), 1);
             $(this).parent().remove();
         });
- 
+
         //微信公众号自动完成 
         $('#weixin-from,#from_name').typeahead({
             display: 'name',
@@ -101,9 +96,9 @@ $(document).ready(function() {
             },
             itemSelected: function(item, val, text, element) {
                 /*$("#weixin-from").val(text);
-                $("#weixin-from_id").val(val);*/ 
-                element.attr('data-id',val);
-                element.val(text); 
+                $("#weixin-from_id").val(val);*/
+                element.attr('data-id', val);
+                element.val(text);
             }
         });
 
@@ -130,7 +125,7 @@ $(document).ready(function() {
                     alert(status.statusInfo);
                 }
             })
-        }); 
+        });
 
         //定位地图模态框
         $('#position').click(function(e) {
@@ -167,15 +162,15 @@ $(document).ready(function() {
         //点击发布或者保存按钮
         $('#Form button[type="submit"]').click(function(event) {
             status = $(this).attr('data-status');
-            action = $(this).attr('data-action'); 
+            action = $(this).attr('data-action');
             //先判断图片 
-            if(action==='publish'&&!$('#image').val()){
+            if (action === 'publish' && !$('#image').val()) {
                 alert('发布之前必须上传图片');
                 return false;
             }
         });
 
-          //搜索来源下拉列表 
+        //搜索来源下拉列表 
         // $('#form-from').selectpicker();
         //选择不同的搜索来源
         $('#Form').delegate('input[data-name="form-from"]', 'click touchend', function(event) {
@@ -190,21 +185,21 @@ $(document).ready(function() {
                 $('#from-type').next().find('.dropdown-menu li[data-original-index="1"] a').click();
                 //$('#from-type').selectpicker();
                 $('#from_name').val($(this).attr('data-from_name'));
-                $('#from_name').attr('data-url',$('input[data-name="form-from"]:checked').val());
-                $('#from_name').attr('data-id',$('input[data-name="form-from"]:checked').attr('data-id'));
+                $('#from_name').attr('data-url', $('input[data-name="form-from"]:checked').val());
+                $('#from_name').attr('data-id', $('input[data-name="form-from"]:checked').attr('data-id'));
             }
         });
         //状态下拉列表 
         $('#from-type').selectpicker();
         $('#from-type').change(function(event) {
-             var val = $(this).val();
-             if(val==='1'){
+            var val = $(this).val();
+            if (val === '1') {
                 $('.weixin-from-input').show();
                 $('.from_name').hide();
-             }else{
-                 $('.weixin-from-input').hide();
-                  $('.from_name').show();
-             }
+            } else {
+                $('.weixin-from-input').hide();
+                $('.from_name').show();
+            }
         });
 
         //点击打开来源创建模态框
@@ -258,17 +253,17 @@ $(document).ready(function() {
                         var data = response.data;
                         if (data.type == 1) {
                             //公众号 
-                             $('#weixin-from').attr('data-id',data.id);
+                            $('#weixin-from').attr('data-id', data.id);
                             $('#weixin-from').val(data.name);
                         } else {
-                           /* $('#div-from label:last').after('<label class="radio-inline"><input type="radio" name="form-from" data-name="form-from" id="" value="' + data.url + '" data-id="' + data.id + '" data-type="' + data.type + '">' + data.name + '</label>');
-                            $('input[data-name="form-from"]').attr('checked', false);
-                            $('#div-from input:last').attr('checked', 'ture');
-                            $('#div-from input:last').click();
-                            //绑定Uniform
-                            Metronic.initUniform($('input[data-name="form-from"]'));*/
-                            $('#from_name').attr('data-id',data.id );
-                            $('#from_name').attr('data-url',data.url);
+                            /* $('#div-from label:last').after('<label class="radio-inline"><input type="radio" name="form-from" data-name="form-from" id="" value="' + data.url + '" data-id="' + data.id + '" data-type="' + data.type + '">' + data.name + '</label>');
+                             $('input[data-name="form-from"]').attr('checked', false);
+                             $('#div-from input:last').attr('checked', 'ture');
+                             $('#div-from input:last').click();
+                             //绑定Uniform
+                             Metronic.initUniform($('input[data-name="form-from"]'));*/
+                            $('#from_name').attr('data-id', data.id);
+                            $('#from_name').attr('data-url', data.url);
                             $('#from_name').val(data.name);
                         }
                         //手工关闭模态框
@@ -334,18 +329,18 @@ $(document).ready(function() {
             });
         });
 
-         //标题字数统计
+        //标题字数统计
         $('#title').limitTextarea({
             maxNumber: 30,
-            theme:'tips',
-            infoStr:'推荐30字以内，' 
+            theme: 'tips',
+            infoStr: '推荐30字以内，'
         });
-         //副标题字数统计
+        //副标题字数统计
         $('#subtitle').limitTextarea({
             maxNumber: 20,
-            theme:'tips',
-            infoStr:'推荐20字以内，' ,
-            infoId:'subtitleinfo' 
+            theme: 'tips',
+            infoStr: '推荐20字以内，',
+            infoId: 'subtitleinfo'
         });
 
     }
@@ -359,7 +354,7 @@ $(document).ready(function() {
             submitHandler: function(data) {
                 //序列化表单  
                 var param = $("#Form").serializeObject();
-               
+
                 //特殊处理景点和标签 
                 sight_id_array = [];
                 $('#sight_alert span button').each(function() {
@@ -393,7 +388,7 @@ $(document).ready(function() {
 
                 //发布的状态
                 //param.status = status;
-                 param.action = action;
+                param.action = action;
 
                 var url;
                 if (!$('#id').val()) {
@@ -401,8 +396,11 @@ $(document).ready(function() {
                 } else {
                     url = "/admin/topicapi/save"
                 }
-                 //按钮disabled
-                $('#Form button[type="submit"]').btnDisable(); 
+                //按钮disabled
+                $('#Form button[type="submit"]').btnDisable();
+                //解除绑定
+                $(window).unbind('beforeunload');
+                window.onbeforeunload = null;
                 $.ajax({
                     "url": url,
                     "data": param,
@@ -410,7 +408,7 @@ $(document).ready(function() {
                     "dataType": "json",
                     "error": function(e) {
                         alert("服务器未正常响应，请重试");
-                        $('#Form button[type="submit"]').btnEnable(); 
+                        $('#Form button[type="submit"]').btnEnable();
                     },
                     "success": function(response) {
                         if (response.status == 0) {
@@ -489,7 +487,7 @@ $(document).ready(function() {
      * 删除图片
      * @return {[type]} [description]
      */
-    function deleteImage(file, editor, $editable) { 
+    function deleteImage(file, editor, $editable) {
         var data = {
             image: getImgNameBySrc($(file).attr("src"))
         };
@@ -509,8 +507,8 @@ $(document).ready(function() {
         });
     }
 
-    function getImgNameBySrc(src){
-          var name = src.replace('/pic/','');
-          return name;
+    function getImgNameBySrc(src) {
+        var name = src.replace('/pic/', '');
+        return name;
     }
 });

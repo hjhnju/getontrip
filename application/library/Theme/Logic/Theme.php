@@ -59,9 +59,9 @@ class Theme_Logic_Theme extends Base_Logic{
             }
         }
         if($bCheck){
-            $ret =  $obj->save();
+            $ret1 =  $obj->save();
         }
-        if($ret){
+        if($ret1){
             if(isset($arrInfo['landscape'])){
                 $listRelation = new Theme_List_Landscape();
                 $listRelation->setFilter(array('theme_id' => $obj->id));
@@ -80,12 +80,12 @@ class Theme_Logic_Theme extends Base_Logic{
                         $objRelation = new Theme_Object_Landscape();
                         $objRelation->landscapeId = $landscape_id;
                         $objRelation->themeId = $id;
-                        $arrInfo->save();
+                        $objRelation->save();
                     }
                 }
             }
         }
-        return $ret;
+        return $ret1;
     }
     
     /**

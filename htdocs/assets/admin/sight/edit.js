@@ -1,6 +1,7 @@
 $(document).ready(function() {
     var validate = null;
-
+    var action = 'save';
+    var oldname = $("#name").val();
     validations();
     bindEvents();
 
@@ -105,14 +106,41 @@ $(document).ready(function() {
 
         //点击发布或者保存按钮
         $('#Form button[type="submit"]').click(function(event) {
-
-            action = $(this).attr('data-action'); 
+             
+            action = $(this).attr('data-action');
             //先判断图片 
-            if(action==='publish'&&!$('#image').val()){
-                alert('发布之前必须上传图片');
+             if (action === 'publish' && !$('#image').val()) {
+                 alert('发布之前必须上传图片');
+                 return false;
+             }
+        });
+
+        //验证景点名称是否可用
+     /*   $('#name1').blur(function(event) {
+            var name = $('#name').val();
+            if (!name) {
                 return false;
             }
-        });
+            $.ajax({
+                "url": '/admin/sightapi/checkSightName',
+                "data": {
+                    name: name
+                },
+                "type": "post",
+                "dataType": "json",
+                "async": false,
+                "error": function(e) {
+                    alert("服务器未正常响应，请重试");
+                },
+                "success": function(response) {
+                    if (response.status !== 0) {
+                        alert('景点名称不能重复');
+                        //按钮disabled
+                        $('#Form button[type="submit"]').attr('disabled', false);
+                    }
+                }
+            });
+        });*/
     }
 
     /*
@@ -121,6 +149,7 @@ $(document).ready(function() {
     function validations() {
         $.validator.setDefaults({
             submitHandler: function(data) {
+
                 //序列化表单  
                 var param = $("#Form").serializeObject();
                 param.action = action;
@@ -131,7 +160,7 @@ $(document).ready(function() {
                     url = "/admin/sightapi/save"
                 }
                 //按钮disabled
-                $('#Form button[type="submit"]').btnDisable(); 
+                $('#Form button[type="submit"]').btnDisable();
                 $.ajax({
                     "url": url,
                     "data": param,
@@ -139,14 +168,17 @@ $(document).ready(function() {
                     "dataType": "json",
                     "error": function(e) {
                         alert("服务器未正常响应，请重试");
-                        $('#Form button[type="submit"]').btnEnable(); 
+                        $('#Form button[type="submit"]').btnEnable();
                     },
                     "success": function(response) {
                         if (response.status == 0) {
                             alert('保存成功');
                             //$("button[name='reset']").click();
-                            $('#Form button[type="submit"]').btnEnable(); 
+
+                        } else {
+                            alert(response.statusInfo);
                         }
+                        $('#Form button[type="submit"]').btnEnable();
                     }
                 });
 
@@ -155,20 +187,50 @@ $(document).ready(function() {
         // validate signup form on keyup and submit
         validate = $("#Form").validate({
             rules: {
-                name: "required",
+                name: {
+                    "required": true,
+                    'remote': {
+                        url: '/admin/sightapi/checkSightName', //后台处理程序
+                        type: "post", //数据发送方式
+                        dataType: "json", //接受数据格式   
+                        data: { //要传递的数据
+                            name: function() {
+                                if(oldname===$("#name").val()){
+                                    return '';
+                                }
+                                return $("#name").val();
+                            }
+                        },
+                        dataFilter: function(response) {　　　　 //判断控制器返回的内容
+                            var data =JSON.parse(response);
+                            if (data.status !== 0) {
+                                return false;
+                            }
+                            return true;
+
+                        }
+                    }
+                },
                 city_name: "required",
                 xy: {
                     required: true
+                },
+                image: {
+                    required: (action === 'publish')
                 }
             },
             messages: {
-                name: "景点名称不能为空！",
+                name: {
+                    "required": '景点名称不能为空！',
+                    'remote': '景点名称不能重复'
+                },
                 city_name: "城市名称不能为空哦！",
-                xy: "坐标不能为空"
+                xy: "坐标不能为空",
+                image: '发布之前必须上传图片'
             }
         });
 
-        function btnStatus(){
+        function btnStatus() {
 
         }
     }

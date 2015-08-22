@@ -190,6 +190,22 @@ class  SightapiController extends Base_Controller_Api{
        return $this->ajaxError(); 
     }
 
+    /**
+     * 检查景点名称是否可用
+     * @return [type] [description]
+     */
+    public function checkSightNameAction(){
+       $name = isset($_REQUEST['name'])? $_REQUEST['name'] : '';
+       if(empty($name)){
+          return $this->ajax();
+       }
+       $bRet=Sight_Api::checkSightName($name);
+       if($bRet){ 
+            return $this->ajaxError(); 
+       }
+        return $this->ajax();
+    }
+
 
     /**
      * 获取保存的状态

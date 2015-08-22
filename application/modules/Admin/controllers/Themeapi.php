@@ -29,14 +29,15 @@ class  ThemeapiController extends Base_Controller_Api{
 
         //处理状态值 
         $tmpList = $List['list'];
+        
         for($i=0; $i<count($tmpList); $i++) { 
             $tmpList[$i]["statusName"] = Theme_Type_Status::getTypeName($tmpList[$i]["status"]);  
-         }  
+        }  
         $List['list']=$tmpList;
         
         $retList['recordsFiltered'] =$List['total'];
-        $retList['recordsTotal'] = $List['total']; 
-        $retList['data'] =$List['list'];  
+        $retList['recordsTotal'] = $List['total'];  
+        $retList['data'] = $List['list'];  
 		    return $this->ajax($retList);
          
     }

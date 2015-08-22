@@ -138,4 +138,15 @@ class Sight_Api{
         $logicSight = new Sight_Logic_Sight();
         return $logicSight->getSightsNum($arrInfo);
     }
+    
+    /**
+     * 接口12：Sight_Api::checkSightName($name)
+     * 检验所给景点名称是否存在
+     * @param string $name
+     * @return boolean 存在：true,不存在：false
+     */
+    public static function checkSightName($name){
+        $logicSight = new Sight_Logic_Sight();
+        return $logicSight->checkSightName($name);
+    }
 }

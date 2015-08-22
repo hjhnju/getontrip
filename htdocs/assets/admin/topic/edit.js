@@ -63,6 +63,11 @@ $(document).ready(function() {
             }
         });
 
+        sight_id_array = [];
+        $('#sight_alert span button').each(function() {
+            sight_id_array.push(Number($(this).attr('data-id')));
+        });
+
         //景点输入框自动完成
         $('#sight_name').typeahead({
             display: 'name',
@@ -73,9 +78,13 @@ $(document).ready(function() {
             },
             itemSelected: function(item, val, text) {
                 $("#sight_name").val('');
-                sight_id_array.push(Number(val));
-                //添加到右侧选框中 
-                $('#sight_alert').append('<span class="badge badge-sm label-danger" role="badge">' + text + '<button type="button" class="close" data-id="' + val + '"><span class="fa fa-remove"></span></button></span>');
+                //先判断是否已经选择
+                var valnum = Number(val);
+                if (!sight_id_array.in_array(valnum)) {
+                    sight_id_array.push(valnum);
+                    //添加到右侧选框中 
+                    $('#sight_alert').append('<span class="badge badge-sm label-danger" role="badge">' + text + '<button type="button" class="close" data-id="' + val + '"><span class="fa fa-remove"></span></button></span>');
+                }
             }
         });
 

@@ -64,14 +64,13 @@ abstract class Spider_Web_Base{
         $arrName  = explode(".",$picUrl);
         $size     = count($arrName);
         if(strtolower($arrName[$size-1]) == "gif"){
-            $filename = $hash . '.gif';
+            $filename = $hash . '.jpg';
         }else{
             $filename = $hash . '.jpg';
         }
         $res = $oss->writeFileContent($filename, $content);
         if($res){
-            return $filename;
-            //return array('hash'=>$hash,'name'=>$filename,'url'=>Base_Image::getUrlByName($filename));
+            return array('hash'=>$hash,'name'=>$filename,'url'=>Base_Image::getUrlByName($filename));
         }
         return '';
     }
@@ -89,9 +88,9 @@ abstract class Spider_Web_Base{
      * @param string $content
      * @return string
      */
-    protected function preProcess($url,$content) {
+    protected function preProcess($url,$content,$imageName='src') {
         $obj   = new Base_Extract($url,$content);
         $data  = $obj->preProcess();  
-        return $obj->dataClean($data); 
+        return $obj->dataClean($data,$imageName); 
     }
 }

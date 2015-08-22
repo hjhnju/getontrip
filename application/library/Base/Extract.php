@@ -194,7 +194,7 @@ class Base_Extract {
 	 * in the web page]
 	 * @return string
 	 */
-	function getPlainText() {
+	function getPlainText($imageName='src') {
 		$preProcText = $this->preProcess();
 		$this->getTextLines( $preProcText );
 		$this->calBlocksLen();
@@ -222,7 +222,7 @@ class Base_Extract {
 				$end = $i - 1;
 			}
 		}
-        return $this->dataClean($this->text);
+        return $this->dataClean($this->text,true,$imageName);
 	}
 	
 	/**
@@ -252,13 +252,13 @@ class Base_Extract {
 	 * @param string $content
 	 * @return string
 	 */
-	public function dataClean($content,$bSourceOther=true){
+	public function dataClean($content,$bSourceOther=true,$imageName='src'){
 	    $content = preg_replace( '/<p.*?>/', '<p>', $content );
 	    $content = preg_replace( '/<br.*?>/', '<br>', $content );	
 	    $content = preg_replace( '/<P.*?>/', '<p>', $content );
 	    $content = preg_replace( '/<BR.*?>/', '<br>', $content );
 	    $content = preg_replace( '/<B.*?>/', '<b>', $content );
-	    $num = preg_match_all('/img.*?src=\"(.*?)\".*?>/si',$content,$match);
+	    $num = preg_match_all('/img.*?'.$imageName.'=\"(.*?)\".*?>/si',$content,$match);
 	    for($i=0;$i<$num;$i++){
 	        if(!$bSourceOther || $this->isFullPath($match[1][$i])){
 	            $content = str_replace($match[0][$i],"img src=\"".$match[1][$i]."\">",$content);

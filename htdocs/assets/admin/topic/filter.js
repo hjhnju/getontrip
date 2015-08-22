@@ -285,7 +285,8 @@ $(document).ready(function() {
                 "error": function(XMLHttpRequest, textStatus, errorThrown) {
                     $('#addTopic-btn').attr('disabled', false);
                     $('#addTopic-btn').html('添加并创建话题');
-                    alert("服务器未正常响应，请重试");
+                    alert(XMLHttpRequest.responseText);
+                   // alert("服务器未正常响应，请重试");
                 },
                 "success": function(response) {
                     if (response.status == 0) {

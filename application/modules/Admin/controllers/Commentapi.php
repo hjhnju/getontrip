@@ -1,6 +1,7 @@
 <?php
 /**
- * 城市管理相关操作
+ * 用户评论
+ * fyy
  */
 class CommentapiController extends Base_Controller_Api{
      

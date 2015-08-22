@@ -10,7 +10,7 @@ class  ThemeapiController extends Base_Controller_Api{
     }
      
     /**
-     * 标签list
+     * list
      *  
      */    
     public function listAction(){  
@@ -23,53 +23,27 @@ class  ThemeapiController extends Base_Controller_Api{
         $page=($start/$pageSize)+1;
          
         $arrParam = isset($_REQUEST['params'])?$_REQUEST['params']:array();
-        $query =isset($_REQUEST['params']['content'])?$_REQUEST['params']['content']:'';
         
-         
-        
-        $List = Topic_Api::search($arrParam,$page,$pageSize);
+          
+        $List = Theme_Api::searchTheme($arrParam,$page,$pageSize);
 
         //处理状态值 
         $tmpList = $List['list'];
+        
         for($i=0; $i<count($tmpList); $i++) { 
-            $tmpList[$i]["statusName"] = Topic_Type_Status::getTypeName($tmpList[$i]["status"]);  
-         }
-
-        //添加景点名称
-        $sightArray=array(); 
-        for($i=0; $i<count($tmpList); $i++){
-          $sightlist = $tmpList[$i]['sights']; 
-          for($j=0; $j<count($sightlist); $j++){ 
-             $item = $sightlist[$j];
-             $sight_id = $item['sight_id']; 
-              if (!array_key_exists($sight_id,$sightArray)) {  
-                    //根据ID查找景点名称
-                    $sightInfo =(array) Sight_Api::getSightById($sight_id);
-                     
-                    $item['sight_name'] = $sightInfo['name']; 
-                    //添加到数组
-                    $sightArray[$sight_id]=$sightInfo['name'];  
-              }
-              else{ 
-                   $item['sight_name']  = $sightArray[$sight_id];
-              }
-              $sightlist[$j] = $item;
-          } 
-           $tmpList[$i]['sights'] = $sightlist; 
-        } 
-
-          
+            $tmpList[$i]["statusName"] = Theme_Type_Status::getTypeName($tmpList[$i]["status"]);  
+        }  
         $List['list']=$tmpList;
         
         $retList['recordsFiltered'] =$List['total'];
-        $retList['recordsTotal'] = $List['total']; 
-        $retList['data'] =$List['list'];  
+        $retList['recordsTotal'] = $List['total'];  
+        $retList['data'] = $List['list'];  
 		    return $this->ajax($retList);
          
     }
 
     /**
-     * 编辑话题
+     * 编辑
      * @return [type] [description]
      */
     public function saveAction()
@@ -78,7 +52,9 @@ class  ThemeapiController extends Base_Controller_Api{
        if($postid <= 0){
             $this->ajaxError();
        } 
-       $bRet=Topic_Api::editTopic($postid,$_REQUEST);
+       $_REQUEST['status'] = $this->getStatusByActionStr($_REQUEST['action']);
+       
+       $bRet=Theme_Api::editTheme($postid,$_REQUEST);
        if($bRet){
             return $this->ajax();
        }
@@ -86,39 +62,61 @@ class  ThemeapiController extends Base_Controller_Api{
     }
     
    /**
-    * 添加话题
+    * 添加
     */
     public function addAction(){  
-       $bRet=Topic_Api::addTopic($_REQUEST);   
-       if($bRet){
-            return $this->ajax();
+       $bRet=Theme_Api::addTheme($_REQUEST);   
+       if(!empty($bRet)){
+            return $this->ajax($bRet);
        } 
        return $this->ajaxError();
     }
-
-   /**
-   * 过滤器 添加话题
-   */
-    public function addByFilterAction(){
-       $bRet=Topic_Api::addTopic($_REQUEST);   
-       if($bRet){
-            return $this->ajax();
-       } 
-       return $this->ajaxError();
-    }
+ 
 
     /**
-    * 删除话题
+    * 删除
     */
     public function delAction(){
         //判断是否有ID
         $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0;  
-        $bRet =Topic_Api::delTopic($postid);
+        $bRet =Theme_Api::delTheme($postid);
         if($bRet){
             return $this->ajax($postid);
         }
         return $this->ajaxError();
     }
-     
- 
+    
+    /*
+      发布  或取消发布操作
+    */
+    public function publishAction(){
+       $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0; 
+       if($postid <= 0){
+            $this->ajaxError();
+       } 
+       $bRet=Theme_Api::editTheme($postid,array('status'=>$this->getStatusByActionStr($_REQUEST['action'])));
+       if($bRet){ 
+            return $this->ajax();
+       }
+       return $this->ajaxError(); 
+    }
+     /**
+     * 获取保存的状态
+     * @param  [type] $action [description]
+     * @return [type]         [description]
+    */
+    public function getStatusByActionStr($action){
+        switch ($action) {
+         case 'save':
+           $status = Theme_Type_Status::NOTPUBLISHED;
+           break;
+         case 'publish':
+           $status = Theme_Type_Status::PUBLISHED;
+           break;
+         default:
+           $status = Theme_Type_Status::NOTPUBLISHED;
+           break;
+       } 
+       return   $status;
+    }
 }

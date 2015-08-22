@@ -3,7 +3,9 @@ Page Header
 ***********/
 /* Header search bar, toggler button & top menu */
 .page-header.navbar {
-  background-color: #1f1f1f;
+  background-color: #fff;
+  background-color: #1f1f1f; 
+  
   /* Top notification menu/bar */
   /* Header seaech box */
   /* Toggler button for sidebar expand/collapse and responsive sidebar menu */

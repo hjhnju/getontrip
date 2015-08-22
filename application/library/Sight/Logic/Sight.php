@@ -245,4 +245,16 @@ class Sight_Logic_Sight{
     public function getSightsNum($arrInfo){
         return $this->modelSight->getSightNumByWhere($arrInfo);
     }
+    
+    /**
+     * 检查所给的景点名是否存在
+     * @param string $name
+     */
+    public function checkSightName($name){
+        $ret = $this->querySights(array('name'=>$name), 1, 1);
+        if(empty($ret['list'])){
+            return false;
+        }
+        return true;
+    }
 }

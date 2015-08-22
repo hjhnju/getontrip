@@ -80,15 +80,13 @@ class Book_Logic_Book extends Base_Logic{
         }else{
             return array();
         }
-                
-        foreach ($temp as $key => $val){
+        $key = 0;        
+        foreach ($temp as $val){
             if($val['isBook'] == false){
-                unset($temp[$key]);
                 continue;
             }
             $temp[$key]['url']       = "http://item.jd.com/".$val['skuId'].".html";
             //$temp[$key]['imageUrl']  = $this->uploadPic($temp[$key]['imageUrl']);
-            //$temp[$key]['imageUrl']    = $temp[$key]['imageUrl'];
             $detailRequest = new WareBasebookGetRequest();
             $detailRequest->setSkuId($val['skuId']);
             $detail = $c->execute($detailRequest);
@@ -153,6 +151,8 @@ class Book_Logic_Book extends Base_Logic{
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'totalNum',$temp[$key]['totalNum']);
     
             $temp[$key]['id'] = $index;
+            
+            $key += 1;
         }
         return $temp;
     }

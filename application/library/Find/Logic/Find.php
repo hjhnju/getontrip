@@ -34,19 +34,25 @@ class Find_Logic_Find{
             $ret  = $logic->getHotTopic('',self::DEFAULT_DURING,$page,$pageSize);
             $data = json_encode($ret);
             $redis->setex(Find_Keys::getFindKey($page),self::REDIS_TIMEOUT,$data);
-        }        
+        }       
         foreach ($ret as $key => $val){
-            $ret[$key]['dist']  = $this->modelGis->getEarthDistanceToTopic($x,$y,$val['id']);
-            $ret[$key]['dist']  = strval(floor($ret[$key]['dist']/1000));            
+            $sightId = '';                   
             $ret[$key]['sight'] = '';
             $ret[$key]['city']  = '';
-            $sight              = $this->logicSight->getSightByTopic($val['id'],1,PHP_INT_MAX);
+            $sight              = $this->logicSight->getSightByTopic($val['id'],1,1);
             if(!empty($sight['list'])){
                 $sightInfo = $this->logicSight->getSightById($sight['list'][0]['sight_id']);
                 $ret[$key]['sight'] = $sightInfo['name'];                
                 $cityInfo  = $this->logicCity->getCityById($sightInfo['city_id']);
                 $ret[$key]['city']  = $cityInfo['name'];
+                $sightId = $sight['list'][0]['sight_id'];
             }
+            if(!empty($val['x']) && !empty($val['y'])){
+                $ret[$key]['dist']  = $this->modelGis->getEarthDistanceToTopic($x,$y,$val['id']);
+            }else{            
+                $ret[$key]['dist']  = $this->modelGis->getEarthDistanceToSight($x, $y, $sightId);
+            }
+            $ret[$key]['dist']  = Base_Util_Number::getDis($ret[$key]['dist']) ;
             $logicComment          = new Comment_Logic_Comment();
             $ret[$key]['comment']  = $logicComment->getTotalCommentNum($val['id']);
             unset($ret[$key]['visit']);

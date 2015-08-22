@@ -56,6 +56,11 @@ $(document).ready(function() {
             }
         });
 
+        landscape_id_array = [];
+        $('#landscape_alert span button').each(function() {
+            landscape_id_array.push(Number($(this).attr('data-id')));
+        });
+
         //景观输入框自动完成
         $('#landscape_name').typeahead({
             display: 'name',
@@ -66,9 +71,13 @@ $(document).ready(function() {
             },
             itemSelected: function(item, val, text) {
                 $("#landscape_name").val('');
-                landscape_id_array.push(Number(val));
-                //添加到右侧选框中 
-                $('#landscape_alert').append('<span class="badge badge-sm label-danger" role="badge">' + text + '<button type="button" class="close" data-id="' + val + '"><span class="fa fa-remove"></span></button></span>');
+                //先判断是否已经选择
+                var valnum = Number(val);
+                if (!landscape_id_array.in_array(valnum)) {
+                    landscape_id_array.push(Number(val));
+                    //添加到右侧选框中 
+                    $('#landscape_alert').append('<span class="badge badge-sm label-danger" role="badge">' + text + '<button type="button" class="close" data-id="' + val + '"><span class="fa fa-remove"></span></button></span>');
+                }
             }
         });
 

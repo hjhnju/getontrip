@@ -25,7 +25,7 @@ class ApiController extends Base_Controller_Page {
     public function addAction() {
         $type      = isset($_REQUEST['type'])?intval($_REQUEST['type']):Collect_Type::SIGHT;
         $device_id = isset($_REQUEST['device'])?trim($_REQUEST['device']):'';
-        $obj_id  = isset($_REQUEST['objid'])?trim($_REQUEST['objid']):'';
+        $obj_id    = isset($_REQUEST['objid'])?trim($_REQUEST['objid']):'';
         if(empty($type) || empty($device_id) || empty($sight_id)){
             return $this->ajaxError(Collect_RetCode::PARAM_ERROR,
                 Collect_RetCode::getMsg(Collect_RetCode::PARAM_ERROR));
@@ -36,9 +36,32 @@ class ApiController extends Base_Controller_Page {
         }
         return $this->ajaxError();
     } 
+    
+    /**
+     * 接口2：/api/collect/del
+     * 取消收藏接口
+     * @param integer type,1：话题;2：景点；3:主题
+     * @param string  device，设备ID
+     * @param integer objid，收藏对象的ID
+     * @return json
+     */
+    public function delAction() {
+        $type      = isset($_REQUEST['type'])?intval($_REQUEST['type']):Collect_Type::SIGHT;
+        $device_id = isset($_REQUEST['device'])?trim($_REQUEST['device']):'';
+        $obj_id  = isset($_REQUEST['objid'])?trim($_REQUEST['objid']):'';
+        if(empty($type) || empty($device_id) || empty($sight_id)){
+            return $this->ajaxError(Collect_RetCode::PARAM_ERROR,
+                Collect_RetCode::getMsg(Collect_RetCode::PARAM_ERROR));
+        }
+        $ret = $this->logic->delCollect($type, $device_id, $obj_id);
+        if($ret){
+            return $this->ajax();
+        }
+        return $this->ajaxError();
+    }
 
     /**
-     * 接口2：/api/collect/list
+     * 接口3：/api/collect/list
      * 获取收藏列表内容
      * @param integer type,1：话题;2：景点；3：主题
      * @param string  device,设备ID

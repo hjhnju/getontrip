@@ -123,6 +123,9 @@ class Topic_Logic_Topic extends Base_Logic{
         $objTopic->setFileds(array('id','title','content','from','image','x','y'));
         $objTopic->fetch(array('id' => $topicId));
         $arrRet                = $objTopic->toArray();
+        if(empty($arrRet)){
+            return $arrRet;
+        }
         $logicComment          = new Comment_Logic_Comment();
         $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
         $arrRet['dis']         = '';

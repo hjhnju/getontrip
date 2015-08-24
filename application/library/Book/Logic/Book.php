@@ -86,7 +86,6 @@ class Book_Logic_Book extends Base_Logic{
                 continue;
             }
             $temp[$key]['url']       = "http://item.jd.com/".$val['skuId'].".html";
-            //$temp[$key]['imageUrl']  = $this->uploadPic($temp[$key]['imageUrl']);
             $detailRequest = new WareBasebookGetRequest();
             $detailRequest->setSkuId($val['skuId']);
             $detail = $c->execute($detailRequest);
@@ -112,17 +111,18 @@ class Book_Logic_Book extends Base_Logic{
             $temp[$key]['press'] = isset($detail['publishers'])?$detail['publishers']:'';
             $temp[$key]['isbn'] = isset($detail['isbn'])?$detail['isbn']:'';
             
-            //此处可以拿到大图
-            //$objImage = new WareBaseproductGetRequest();
-            //$objImage->setSkuId($val['skuId']);
-            //$objImage->setBase('image_path');
-            //$tempRet = $c->execute($objImage);
-            //$tempRet = json_decode($tempRet->resp,true);
-            //if(isset($tempRet['jingdong_ware_baseproduct_get_responce']['product_base'][0]["image_path"])){
-            //    $temp[$key]['image'] = $tempRet['jingdong_ware_baseproduct_get_responce']['product_base'][0]["image_path"];
-            //}else{
+            //此处拿到大图
+            $objImage = new WareBaseproductGetRequest();
+            $objImage->setSkuId($val['skuId']);
+            $objImage->setBase('image_path');
+            $tempRet = $c->execute($objImage);
+            $tempRet = json_decode($tempRet->resp,true);
+            if(isset($tempRet['jingdong_ware_baseproduct_get_responce']['product_base'][0]["image_path"])){
+                $temp[$key]['image'] = $tempRet['jingdong_ware_baseproduct_get_responce']['product_base'][0]["image_path"];
+            }else{
                 $temp[$key]['image'] = $temp[$key]['imageUrl'];
-            //}
+            }
+            $temp[$key]['image']  = $this->uploadPic($temp[$key]['image']);
             unset($temp[$key]['imageUrl']);
             
             $temp[$key]['status'] = Book_Type_Status::PUBLISHED;
@@ -139,7 +139,9 @@ class Book_Logic_Book extends Base_Logic{
             $ret = $detail->resp;
             $arr = json_decode($ret,true);
             $info =  $arr["jingdong_ware_bookbigfield_get_responce"]["BookBigFieldEntity"][0]["book_big_field_info"];
-            $temp[$key]['content_desc'] = isset($info["content_desc"])?trim(html_entity_decode(strip_tags($info["content_desc"]))):'';            
+            $temp[$key]['content_desc'] = isset($info["content_desc"])?html_entity_decode(strip_tags($info["content_desc"])):'';            
+            $temp[$key]['content_desc'] = Base_Util_String::trimall($temp[$key]['content_desc']);
+            
             
             $redis = Base_Redis::getInstance();
             $index = ($page-1)*$pageSize+$key+1;

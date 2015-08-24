@@ -89,4 +89,15 @@ class Base_Util_String {
 	    }
 	    return $str;
 	}
+	
+	/**
+	 * 删除字符串中空格
+	 * @param string $str
+	 * @return string
+	 */
+	public static function trimall($str){
+	    $pattern = '/\s/';
+	    $replacement = "";
+	    return preg_replace( $pattern, $replacement, $str );
+	}
 }

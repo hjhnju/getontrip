@@ -84,16 +84,16 @@ class TopicModel{
         $redis = Base_Redis::getInstance();
         $ret   =  '';
         if(($page <= self::CACHE_PAGES)){
-            $ret = $redis->get(Sight_Keys::getHotTopicKey($sightId, $page));
+            $ret = $redis->get(Sight_Keys::getNewTopicKey($sightId, $page));
         }
         if(!empty($ret)){
             return json_decode($ret,true);
         }
         $from = ($page-1)*$pageSize;
         if(empty($strTags)){
-            $sql = "SELECT a.id FROM `topic` a, `sight_topic` b   WHERE  a.id = b.topic_id and b.sight_id = $sightId ORDER BY a.update_time desc limit $from,$pageSize";
+            $sql = "SELECT a.id FROM `topic` a, `sight_topic` b   WHERE  a.id = b.topic_id and b.sight_id = $sightId and a.status = ".Topic_Type_Status::PUBLISHED." ORDER BY a.update_time desc limit $from,$pageSize";
         }else{
-            $sql = "SELECT a.id FROM `topic`  a,`topic_tag`  b, `sight_topic` c WHERE a.id=b.topic_id=c.topic_id AND c.sight_id = $sightId AND b.tag_id in(".$strTags.") ORDER by a.update_time desc limit $from,$pageSize";
+            $sql = "SELECT a.id FROM `topic`  a,`topic_tag`  b, `sight_topic` c WHERE a.id=b.topic_id=c.topic_id AND c.sight_id = $sightId AND b.tag_id in(".$strTags.") and a.status = ".Topic_Type_Status::PUBLISHED." ORDER by a.update_time desc limit $from,$pageSize";
         }
         try {
             $data = $this->db->fetchAll($sql);

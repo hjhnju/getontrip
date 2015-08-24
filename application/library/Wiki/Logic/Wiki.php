@@ -138,7 +138,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
                 }
             }         
             $arrTemp['title']       = $sight['name'];
-            $arrTemp['content']     = $content;
+            $arrTemp['content']     = Base_Util_String::trimall($content);
             $arrTemp['image']       = Base_Image::getUrlByName($hash);
             $arrTemp['items']       = $arrItems;
             $arrTemp['status']      = Wiki_Type_Status::PUBLISHED;

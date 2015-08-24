@@ -22,11 +22,14 @@ class Keyword_Logic_Keyword extends Base_Logic{
         }
         if(!empty($sight_id)){
             $arr['sight_id'] = $sight_id;
+            $list->setOrder('weight asc');
+        }else{
+            $list->setOrder('update_time desc');
         }
         if(!empty($arr)){
             $list->setFilter($arr);
         }
-        $list->setOrder('weight asc');        
+               
         $list->setPage($page);
         $list->setPagesize($pageSize);
         return $list->toArray();

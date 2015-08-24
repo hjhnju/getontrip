@@ -80,29 +80,55 @@ class Collect_Logic_Collect{
      * @return array
      */
     public function getCollect($type, $device_id, $page, $pageSize){
+        $arrRet      = array();
         $listCollect = new Collect_List_Collect();
         $listCollect->setFilter(array(
             'type'   => $type,
             'userid' => $this->logicUser->getUserId($device_id),
         ));
-        if(empty($listCollect->list)){
+        $arrCollect = $listCollect->toArray();
+        if(empty($listCollect['list'])){
             return array();
         }
         switch ($type){
             case Collect_Type::SIGHT:
-                foreach ($listCollect as $key => $val){
-                    
+                $logicSight = new Sight_Logic_Sight();
+                foreach ($arrCollect['list'] as $val){
+                    $temp['id']       = $val['obj_id'];
+                    $sight            = $logicSight->getSightById($val['obj_id']);
+                    $temp['image']    = Base_Image::getUrlByName($sight['image']);
+                    $temp['topicNum'] = $logicSight->getTopicNum($val['obj_id']);
+                    $arrRet[]         = $temp;
                 }
                 break;
             case Collect_Type::THEME:
+                $logicTheme = new Theme_Logic_Theme();
+                foreach ($arrCollect['list'] as $val){
+                    $temp['id']      = $val['obj_id'];
+                    $theme           = $logicTheme->queryThemeById($val['obj_id']);
+                    $temp['image']   = Base_Image::getUrlByName($temp['image']);
+                    $temp['title']   = $theme['title'];
+                    $temp['collect'] = strval($this->getTotalCollectNum(Collect_Type::THEME, $val['obj_id']));
+                    $arrRet[]        = $temp;
+                }
                 break;
             case Collect_Type::TOPIC:
-                break;
-            case Collect_Type::ANSWER:
+                $logicTopic = new Topic_Logic_Topic();
+                foreach ($arrCollect['list'] as $val){
+                    $temp['id']         = $val['obj_id'];
+                    $topic              = $logicTopic->getTopicById($val['obj_id']);
+                    $temp['image']      = Base_Image::getUrlByName($topic['image']);
+                    $temp['subtitle']   = trim($topic['subtitle']);
+                    $temp['title']      = trim($topic['title']);
+                    //话题收藏数
+                    $temp['collect']    = strval($this->getTotalCollectNum(Collect_Type::TOPIC, $val['obj_id']));
+                    $arrRet[]           = $temp;
+                }
                 break;
             default:
                 break;                
         }
+        return $arrRet;
     }
     
     /**

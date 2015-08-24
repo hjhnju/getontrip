@@ -222,7 +222,7 @@ class Sight_Logic_Sight{
      * @param integer $sightId
      * @return integer
      */
-    public function getTopicNum($sightId='',$arrConf){
+    public function getTopicNum($sightId='',$arrConf = array()){
         $count = 0;
         $listSightTopic = new Sight_List_Topic();
         if(!empty($sightId)){

@@ -154,13 +154,29 @@ class Sight_Logic_Sight{
         $listSightTopic->setFilter(array('sight_id' => $id));
         $listSightTopic->setPagesize(PHP_INT_MAX);
         $arrSightTopic = $listSightTopic->toArray();
-        foreach ($arrSightTopic['list'] as $key => $val){
+        foreach ($arrSightTopic['list'] as $val){
             $objSightTopic = new Sight_Object_Topic();
             $objSightTopic->fetch(array('id' => $val['id']));
             $objSightTopic->remove();
         }
         //删除redis缓存
         $redis->delete(Sight_Keys::getSightTopicKey($id));
+        
+        //删除景点词条
+        $listKeyword = new Keyword_List_Keyword();
+        $listKeyword->setFilter(array('sight_id' => $id));
+        $listKeyword->setPagesize(PHP_INT_MAX);
+        $arrKeyword  = $listKeyword->toArray();
+        foreach ($arrKeyword['list'] as $val){
+            $objKeyword = new Keyword_Object_Keyword();
+            $objKeyword->fetch(array('id' => $val['id']));
+            $objKeyword->remove();
+        }
+        $keys = $redis->keys(Wiki_Keys::getWikiInfoName($id, '*'));
+        $keys = array_merge($keys,$redis->keys(Wiki_Keys::getWikiCatalogName($id, '*','*')));
+        foreach ($keys as $key){
+            $redis->delete($key);
+        }
         return $ret;
     }
     

@@ -168,6 +168,8 @@ class Topic_Logic_Topic extends Base_Logic{
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getTotalKey($topicId));
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateKey($topicId,'*'));        
         
+        $logicTag = new Tag_Logic_Tag();
+        $arrRet['tags'] = $logicTag->getTopicTags($topicId);
         //这里需要更新一下热度
         return $arrRet;
     }    
@@ -606,6 +608,7 @@ class Topic_Logic_Topic extends Base_Logic{
         }        
         $ret = $objTopic->save();
         if(isset($arrInfo['tags'])){
+            $arrInfo['tags'] = array_unique($arrInfo['tags']);
             foreach($arrInfo['tags'] as $val){
                 $objTopictag = new Topic_Object_Tag();
                 $objTopictag->topicId = $objTopic->id;
@@ -615,6 +618,7 @@ class Topic_Logic_Topic extends Base_Logic{
             }
         }
         if(isset($arrInfo['sights'])){
+            $arrInfo['sights'] = array_unique($arrInfo['sights']);
             foreach($arrInfo['sights'] as $val){
                 $objSightTopic = new Sight_Object_Topic();
                 $objSightTopic->topicId = $objTopic->id;

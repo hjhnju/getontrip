@@ -31,11 +31,12 @@ class Wiki_Logic_Wiki extends Base_Logic{
                 foreach ($arrKeys as $key){
                     $arrItem[] = $redis->hGetAll($key);
                 }
-                $ret['items']  = $arrItem;
+                $ret['items']  = $arrItem;                
                 $arrRet[]      = $ret;
             }
         }else{
             $arrWikiKeys = $redis->keys(Wiki_Keys::getWikiInfoName($sightId, "*"));
+            sort($arrWikiKeys);
             foreach ($arrWikiKeys as $index => $wikiKey){
                 $ret     = $redis->hGetAll($wikiKey);
                 $num     = $index + 1;

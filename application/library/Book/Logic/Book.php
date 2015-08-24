@@ -99,16 +99,30 @@ class Book_Logic_Book extends Base_Logic{
             
             $temp[$key]['author'] = isset($detail['author'])?$detail['author']:'';
             
-            $temp[$key]['price_mart'] = $temp[$key]['martPrice'];
-            unset($temp[$key]['martPrice']);
+            $temp[$key]['price_mart'] = isset($temp[$key]['martPrice'])?$temp[$key]['martPrice']:'';
+            if(isset($temp[$key]['martPrice'])){
+                unset($temp[$key]['martPrice']);
+            }
             
-            $temp[$key]['price_jd'] = $temp[$key]['jdPrice'];
-            unset($temp[$key]['jdPrice']);
+            $temp[$key]['price_jd'] = isset($temp[$key]['jdPrice'])?$temp[$key]['jdPrice']:'';
+            if(isset($temp[$key]['jdPrice'])){
+                unset($temp[$key]['jdPrice']);
+            }
             
             $temp[$key]['press'] = isset($detail['publishers'])?$detail['publishers']:'';
             $temp[$key]['isbn'] = isset($detail['isbn'])?$detail['isbn']:'';
             
-            $temp[$key]['image'] = $temp[$key]['imageUrl'];
+            //此处可以拿到大图
+            //$objImage = new WareBaseproductGetRequest();
+            //$objImage->setSkuId($val['skuId']);
+            //$objImage->setBase('image_path');
+            //$tempRet = $c->execute($objImage);
+            //$tempRet = json_decode($tempRet->resp,true);
+            //if(isset($tempRet['jingdong_ware_baseproduct_get_responce']['product_base'][0]["image_path"])){
+            //    $temp[$key]['image'] = $tempRet['jingdong_ware_baseproduct_get_responce']['product_base'][0]["image_path"];
+            //}else{
+                $temp[$key]['image'] = $temp[$key]['imageUrl'];
+            //}
             unset($temp[$key]['imageUrl']);
             
             $temp[$key]['status'] = Book_Type_Status::PUBLISHED;

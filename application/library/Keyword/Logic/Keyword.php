@@ -25,7 +25,8 @@ class Keyword_Logic_Keyword extends Base_Logic{
         }
         if(!empty($arr)){
             $list->setFilter($arr);
-        }        
+        }
+        $list->setOrder('weight asc');        
         $list->setPage($page);
         $list->setPagesize($pageSize);
         return $list->toArray();
@@ -47,11 +48,8 @@ class Keyword_Logic_Keyword extends Base_Logic{
             }
         }
         if($bCheck){
-            $logicUser = new User_Logic_Login();
-            $userId    = $logicUser->checkLogin();
-            if(!empty($userId)){
-                $obj->createUser = $userId;
-            }
+            $num = $this->getKeywordNumBySight($arrInfo['sight_id']);
+            $obj->weight = $num + 1;
             $ret = $obj->save();
         }
         if($ret){
@@ -158,5 +156,17 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $objKeyword = new Keyword_Object_Keyword();
         $objKeyword->fetch(array('name' => $name));
         return $objKeyword->id;
+    }
+    
+    /**
+     * 根据景点ID获取词条数
+     * @param integer $sightId
+     * @return integer
+     */
+    public function getKeywordNumBySight($sightId){
+        $listKeyword = new Keyword_List_Keyword();
+        $listKeyword->setFilter(array('sight_id'=>$sightId));
+        $ret = $listKeyword->toArray();
+        return $ret['total'];
     }
 }

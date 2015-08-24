@@ -64,7 +64,7 @@ abstract class Spider_Web_Base{
         $arrName  = explode(".",$picUrl);
         $size     = count($arrName);
         if(strtolower($arrName[$size-1]) == "gif"){
-            $filename = $hash . '.jpg';
+            $filename = $hash . '.gif';
         }else{
             $filename = $hash . '.jpg';
         }

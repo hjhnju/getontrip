@@ -25,7 +25,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
                 $arrItem = array();
                 $ret = $redis->hGetAll(Wiki_Keys::getWikiInfoName($sightId, $i));
                 if(empty($ret)){
-                    break;
+                    continue;
                 }
                 $arrKeys = $redis->keys(Wiki_Keys::getWikiCatalogName($sightId, $i, "*"));
                 foreach ($arrKeys as $key){

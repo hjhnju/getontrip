@@ -34,14 +34,15 @@ class Comment_Api{
      * 接口3：Comment_Api::addComment($topicId,$deviceId,$toUserId,$content)
      * 添加评论信息
      * @param integer $topicId
+     * @param integer $upId,上层评论ID
      * @param string $deviceId
      * @param integer $toUserId
      * @param string $content
      * @return boolean
      */
-    public function  addComment($topicId,$deviceId,$toUserId,$content){
+    public function  addComment($topicId,$upId,$deviceId,$toUserId,$content){
         $logicComment = new Comment_Logic_Comment();
-        return $logicComment->addComment($topicId,$deviceId, $toUserId, $content);
+        return $logicComment->addComment($topicId,$upId,$deviceId, $toUserId, $content);
     }
     
     /**

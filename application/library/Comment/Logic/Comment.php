@@ -34,10 +34,11 @@ class Comment_Logic_Comment  extends Base_Logic{
      * @param integer $id
      * @param array $info
      */
-    public function  addComment($topicId,$deviceId,$toUserId,$content){
+    public function  addComment($topicId,$upId,$deviceId,$toUserId,$content){
         $objComment = new Comment_Object_Comment();    
         $logicUser  = new User_Logic_User();
         $objComment->fromUserId = $logicUser->getUserId($deviceId);
+        $objComment->upId       = $upId;
         $objComment->toUserId   = $toUserId;
         $objComment->topicId    = $topicId;
         $objComment->content    = $content;
@@ -59,14 +60,24 @@ class Comment_Logic_Comment  extends Base_Logic{
     public function getCommentList($topicId,$page,$pageSize){
         $logicUser    = new User_Logic_User();
         $listComment  = new Comment_List_Comment();
-        $listComment->setFilter(array('topic_id' => $topicId));
+        $listComment->setFilter(array('topic_id' => $topicId,'up_id' => 0));
         $listComment->setPage($page);
         $listComment->setPagesize($pageSize);
-        $listComment->setOrder("create_time desc");
+        $listComment->setOrder("create_time asc");
         $ret = $listComment->toArray();
         foreach ($ret['list'] as $key => $val){
             $ret['list'][$key]['from_name'] = $logicUser->getUserName($val['from_user_id']);
-            $ret['list'][$key]['to_name'] = $logicUser->getUserName($val['to_user_id']);
+            $ret['list'][$key]['to_name']   = $logicUser->getUserName($val['to_user_id']);
+            $listSubComment = new Comment_List_Comment();
+            $listSubComment->setFilter(array('up_id' => $val['id']));
+            $listSubComment->setPagesize(PHP_INT_MAX);
+            $listSubComment->setOrder("create_time asc");
+            $arrSubComment = $listSubComment->toArray();
+            foreach ($arrSubComment as $index => $data){
+                $arrSubComment['list'][$index]['from_name'] = $logicUser->getUserName($data['from_user_id']);
+                $arrSubComment['list'][$index]['to_name']   = $logicUser->getUserName($data['to_user_id']);
+            }
+            $ret['list'][$key]['subComment'] = $arrSubComment['list'];
         }
         return $ret['list'];
     }
@@ -105,7 +116,7 @@ class Comment_Logic_Comment  extends Base_Logic{
             return $ret;
         }
         $list   = new Comment_List_Comment();
-        $filter = "'topic_id' = $topicId and 'create_time' >= $during";
+        $filter = "`topic_id` = $topicId and `create_time` >= $during and `up_id` = 0";
         $list->setPagesize(PHP_INT_MAX);
         $list->setFilterString($filter);
         $arrRet = $list->toArray();
@@ -127,7 +138,7 @@ class Comment_Logic_Comment  extends Base_Logic{
         }
         $list   = new Comment_List_Comment();
         $list->setPagesize(PHP_INT_MAX);
-        $list->setFilter(array('topic_id' => $topicId));
+        $list->setFilter(array('topic_id' => $topicId,'up_id' => 0));
         $arrRet = $list->toArray();
         $redis->hSet(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($topicId),$arrRet['total']);
         return $arrRet['total'];

@@ -27,8 +27,8 @@ class ApiController extends Base_Controller_Api {
      * @return json
      */
     public function indexAction() {
-        $x          = isset($_REQUEST['x'])?doubleval($_REQUEST['x']):'';
-        $y          = isset($_REQUEST['y'])?doubleval($_REQUEST['y']):'';
+        $x         = isset($_REQUEST['x'])?doubleval($_REQUEST['x']):'';
+        $y         = isset($_REQUEST['y'])?doubleval($_REQUEST['y']):'';
         $city      = isset($_REQUEST['city'])?intval($_REQUEST['city']):2;
         $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;

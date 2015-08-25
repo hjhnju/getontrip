@@ -26,7 +26,7 @@ class Comment_Object_Comment extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'topic_id', 'from_user_id', 'to_user_id', 'status', 'content', 'create_time', 'update_time');
+    protected $fields = array('id', 'topic_id', 'from_user_id', 'to_user_id', 'status', 'content', 'create_time', 'update_time', 'up_id');
 
     /**
      * 字段与属性隐射关系
@@ -41,6 +41,7 @@ class Comment_Object_Comment extends Base_Object {
         'content'     => 'content',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
+        'up_id'       => 'upId',
     );
 
     /**
@@ -55,6 +56,7 @@ class Comment_Object_Comment extends Base_Object {
         'status'      => 1,
         'create_time' => 1,
         'update_time' => 1,
+        'up_id'       => 1,
     );
 
     /**
@@ -112,5 +114,11 @@ class Comment_Object_Comment extends Base_Object {
      * @var integer
      */
     public $updateTime;
+
+    /**
+     * 上级评论id
+     * @var integer
+     */
+    public $upId;
 
 }

@@ -20,7 +20,7 @@ class Comment_List_Comment extends Base_List {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'topic_id', 'from_user_id', 'to_user_id', 'status', 'content', 'create_time', 'update_time');
+    protected $fields = array('id', 'topic_id', 'from_user_id', 'to_user_id', 'status', 'content', 'create_time', 'update_time', 'up_id');
 
     /**
      * 整数类型的字段
@@ -34,6 +34,7 @@ class Comment_List_Comment extends Base_List {
         'status'      => 1,
         'create_time' => 1,
         'update_time' => 1,
+        'up_id'       => 1,
     );
 
     /**

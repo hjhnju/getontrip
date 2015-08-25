@@ -40,7 +40,7 @@ class TopicModel{
             }
         }
         if(!empty($ret)){
-           return json_decode($ret,true); 
+           return array_slice(json_decode($ret,true),0,$pageSize); 
         }
                 
         $from = ($page-1)*$pageSize;
@@ -87,7 +87,7 @@ class TopicModel{
             $ret = $redis->get(Sight_Keys::getNewTopicKey($sightId, $page));
         }
         if(!empty($ret)){
-            return json_decode($ret,true);
+            return array_slice(json_decode($ret,true),0,$pageSize);
         }
         $from = ($page-1)*$pageSize;
         if(empty($strTags)){

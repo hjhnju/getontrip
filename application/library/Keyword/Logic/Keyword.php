@@ -178,6 +178,12 @@ class Keyword_Logic_Keyword extends Base_Logic{
         return $ret['total'];
     }
     
+    /**
+     * 修改某景点下的词条的权重
+     * @param integer $id 词条ID
+     * @param integer $to 需要排的位置
+     * @return boolean
+     */
     public function changeWeight($id,$to){
         $objKeyword = new Keyword_Object_Keyword();
         $objKeyword->fetch(array('id' => $id));

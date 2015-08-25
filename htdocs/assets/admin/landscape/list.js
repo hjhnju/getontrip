@@ -45,7 +45,7 @@ $(document).ready(function() {
         }, {
             "data": function(e) {
                 if(e.image){
-                   return '<a href="/pic/' + e.image + '" target="_blank"><img alt="" src="/pic/' + e.image.getNewImgByImg(80,22) + '"/></a>';
+                   return '<a href="/pic/' + e.image + '" target="_blank"><img alt="" src="/pic/' + e.image.getNewImgByImg(80,22,'f') + '"/></a>';
                 }
                  return "未上传";
             }

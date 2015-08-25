@@ -112,8 +112,8 @@
                                   <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"> 
                                   </div>
                                   <div id="imageView" class="imageView thumbnail {%if isset($post.image)%}imagedis{%/if%}" style="max-width: 200px; max-height: 150px; line-height: 20px;"> 
-                                    {%if empty($post.image) eq 0%} 
-                                    <img src="{%$webroot%}/pic/{%$post.image%}" alt="">
+                                    {%if empty($post.image) eq 0%}  
+                                     <img src="{%$webroot%}/pic/{%$post.image%}@f190w_f80h" alt=""> 
                                     {%/if%}
                                   </div> 
                                     <button id="crop-img" class="btn btn-primary fileupload-crop{%if empty($post.image)==1%} hidden{%/if%}" type="button"><i class="fa fa-cut"></i>裁剪</button>

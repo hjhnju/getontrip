@@ -177,4 +177,38 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $ret = $listKeyword->toArray();
         return $ret['total'];
     }
+    
+    /**
+     * 修改某景点下的词条的权重
+     * @param integer $id 词条ID
+     * @param integer $to 需要排的位置
+     * @return boolean
+     */
+    public function changeWeight($id,$to){
+        $objKeyword = new Keyword_Object_Keyword();
+        $objKeyword->fetch(array('id' => $id));
+        $from       = $objKeyword->weight;
+        $objKeyword->weight = $to;       
+        
+        $bAsc = ($to > $from)?1:0;
+        $min  = min(array($from,$to));
+        $max  = max(array($from,$to));
+        $listKeyword = new Keyword_List_Keyword();
+        $listKeyword->setPagesize(PHP_INT_MAX);
+        $listKeyword->setFilter(array('sight_id' => $objKeyword->sightId));
+        $listKeyword->setOrder('weight asc');
+        $arrKeyword = $listKeyword->toArray();
+        $arrKeyword = array_slice($arrKeyword['list'],$min-1+$bAsc,$max-$min); 
+        $ret = $objKeyword->save();
+        foreach ($arrKeyword as $key => $val){
+            $objKeyword->fetch(array('id' => $val['id']));
+            if($bAsc){
+                $objKeyword->weight = $min + $key ;
+            }else{
+                $objKeyword->weight = $max - $key;
+            }
+            $objKeyword->save();
+        }
+        return $ret;
+    }
 }

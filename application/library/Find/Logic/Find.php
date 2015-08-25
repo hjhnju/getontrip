@@ -25,16 +25,8 @@ class Find_Logic_Find{
     }
     
     public function listFind($x,$y,$page,$pageSize){
-        $logic      = new Topic_Logic_Topic();
-        $redis      = Base_Redis::getInstance();
-        $ret   = $redis->get(Find_Keys::getFindKey($page));
-        if(!empty($ret)){
-            $ret = json_decode($ret,true);
-        }else{
-            $ret  = $logic->getHotTopic('',self::DEFAULT_DURING,$page,$pageSize);
-            $data = json_encode($ret);
-            $redis->setex(Find_Keys::getFindKey($page),self::REDIS_TIMEOUT,$data);
-        }       
+        $logic   = new Topic_Logic_Topic();
+        $ret     = $logic->getHotTopic('',self::DEFAULT_DURING,$page,$pageSize);
         foreach ($ret as $key => $val){
             $sightId = '';                   
             $ret[$key]['sight'] = '';

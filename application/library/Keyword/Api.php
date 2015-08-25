@@ -63,4 +63,16 @@ class Keyword_Api{
         $logic = new Keyword_Logic_Keyword();
         return $logic->queryById($id);
     }
+    
+    /**
+     * 接口6：Keyword_Api::changeWeight($id,$to)
+     * 修改某景点下的词条的权重
+     * @param integer $id 词条ID
+     * @param integer $to 需要排的位置 
+     * @return boolean
+     */
+    public static function changeWeight($id,$to){
+        $logic = new Keyword_Logic_Keyword();
+        return $logic->changeWeight($id,$to);
+    }
 }

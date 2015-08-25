@@ -7,6 +7,8 @@ class TopicModel{
     
     const CACHE_PAGES = 10;
     
+    const INDEX_PAGE_SIZE = 2;
+    
     const REDIS_TIMEOUT = 3600;
     
     const CONTENT_LEN   = 75;
@@ -30,7 +32,11 @@ class TopicModel{
         if(empty($strTags) && ($page <= self::CACHE_PAGES)){
             switch ($during){
                 case self::MONTH:
-                    $ret = $redis->get(Sight_Keys::getHotTopicKey($sightId, $page));
+                    if($pageSize == self::INDEX_PAGE_SIZE){
+                        $ret = $redis->get(Sight_Keys::getIndexTopicKey($sightId, $page));
+                    }else{
+                        $ret = $redis->get(Sight_Keys::getHotTopicKey($sightId, $page));
+                    }                    
                     break;
                 case self::WEEK:
                     $ret = $redis->get(Find_Keys::getFindKey($page));
@@ -65,7 +71,11 @@ class TopicModel{
         }
         if(empty($strTags) &&($page <= self::CACHE_PAGES)){
             if($during == self::MONTH){
-                $redis->setex(Sight_Keys::getHotTopicKey($sightId,$page),self::REDIS_TIMEOUT,json_encode($data)); 
+                if($pageSize == self::INDEX_PAGE_SIZE){
+                    $redis->setex(Sight_Keys::getIndexTopicKey($sightId,$page),self::REDIS_TIMEOUT,json_encode($data));
+                }else{
+                    $redis->setex(Sight_Keys::getHotTopicKey($sightId,$page),self::REDIS_TIMEOUT,json_encode($data));
+                }       
             }else{
                 $redis->setex(Find_Keys::getFindKey($page),self::REDIS_TIMEOUT,json_encode($data));
             }
@@ -87,7 +97,7 @@ class TopicModel{
             $ret = $redis->get(Sight_Keys::getNewTopicKey($sightId, $page));
         }
         if(!empty($ret)){
-            return json_decode($ret,true);
+            return array_slice(json_decode($ret,true),0,$pageSize);
         }
         $from = ($page-1)*$pageSize;
         if(empty($strTags)){

@@ -83,7 +83,7 @@ $(document).ready(function() {
                 } else {
                     var data = response.data;
                     $('#image').val(data.image);
-                    $('#imageView').html('<img src="/pic/' + data.hash + '_190_140.jpg" alt=""/>');
+                    $('#imageView').html('<img src="/pic/' + data.image.getNewImgByImg(190,140,'f') + '" alt=""/>');
                     $('#imageView').removeClass('imageView');
                     //手工关闭模态框
                     $('#corpModal').modal('hide');

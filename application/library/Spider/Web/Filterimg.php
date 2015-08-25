@@ -64,8 +64,7 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
                 $name = $hashs[0]; 
             }else{
               //其他站图片则根据url上传到云
-                $name = $this->uploadPic($picUrl); 
-                $name = $name['name'];
+                $name = $this->uploadPic($picUrl);  
             }
             array_push($imgNameArray, $name);
         }

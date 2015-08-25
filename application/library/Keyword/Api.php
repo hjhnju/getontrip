@@ -9,10 +9,9 @@ class Keyword_Api{
     /**
      * 接口1：Keyword_Api::queryKeywords($page,$pageSize,$arrInfo)
      * 查询景点的词条信息
-     * @param integer $sight_id
      * @param integer $page
      * @param integer $pageSize
-     * @param integer  $status 1: 未确认，2：已确认，3：所有
+     * @param array  $arrInfo eg:array('status'=>xxx,'create_user'=>xxx);
      * @return array
      */
     public static function queryKeywords($page,$pageSize,$arrInfo){

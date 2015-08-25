@@ -19,7 +19,7 @@ switch ($action){
         return 0;
 }
 
-function addImage($sightId=''){
+function addImage($sightId = ''){
      $arrTopics  = array();
      $listTopic = new Topic_List_Topic();
      if(!empty($sightId)){
@@ -46,7 +46,7 @@ function addImage($sightId=''){
          }
          preg_match_all('/<img.*?data-image="(.*?)">/', $content,$match);
          foreach ($match[1] as $val){
-             $content  = file_get_contents("http://123.57.46.229:8301/Pic/".$val);
+             $content  = file_get_contents("http://123.57.67.165:8301/Pic/".$val);
              $filename = $val ;
              $res = $oss->writeFileContent($filename, $content);
          }
@@ -68,7 +68,7 @@ function addImage($sightId=''){
      }
 }
 
-function delImage($sightId=''){
+function delImage($sightId = ''){
     $arrTopics  = array();
     $listTopic  = new Topic_List_Topic();
     if(!empty($sightId)){

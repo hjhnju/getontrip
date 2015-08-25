@@ -32,6 +32,7 @@ class Base_Image_Imagick {
     public function read($blob){
         $this->image = new Imagick();
         $this->image->readimageblob($blob);
+        $this->type   = $this->image->getimagemimetype();
         return $this->image;
     }
 
@@ -224,14 +225,14 @@ class Base_Image_Imagick {
                     $img = new Imagick();
                     $img->readImageBlob($frame);
                     $img->cropImage($crop_w, $crop_h, $crop_x, $crop_y);
-                    $img->thumbnailImage( $width, $height, true );
+                    $img->thumbnailImage( $width, $height, false );
                     $canvas->addImage( $img );
                     $canvas->setImageDelay( $img->getImageDelay() );
                     $canvas->setImagePage($width, $height, 0, 0);
                 }
             }else {
               $image->cropImage($crop_w, $crop_h, $crop_x, $crop_y);
-              $image->thumbnailImage( $width, $height, true );
+              $image->thumbnailImage( $width, $height, false );
               $canvas->addImage( $image );
               $canvas->setImagePage($width, $height, 0, 0);
             }
@@ -299,8 +300,12 @@ class Base_Image_Imagick {
     }
 
     // 输出图像
-    public function output($header = true) {
+    public function output($quality = 100,$header = true) {
         if($header) header('Content-type: '.$this->type);
+        if(empty($quality)){
+            $quality = 100;
+        }
+        $this->image->setimagecompressionquality($quality);
         echo $this->image->getImagesBlob();
     }
 

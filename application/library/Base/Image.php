@@ -54,38 +54,47 @@ class Base_Image {
     }
     
     /**
-     * 获取图片的URL地址 Base_Image::getUrlByName($name, $width = 0, $height = 0)
+     * 获取图片的URL地址 Base_Image::getUrlByName($name, $width = 0, $height = 0, $type = 'e', $quality = 100)
      * @param string $name
      * @param number $width
      * @param number $height
      * @return string
      */
-    public static function getUrlByName($name, $width = 0, $height = 0) {
+    public static function getUrlByName($name, $width = 0, $height = 0, $type = 'e', $quality = 100) {
         if(empty($name)){
             return '';  
         }
-        $arrName = explode(".",$name);
-        $url     = "/pic/".$arrName[0];
-        if ($width > 0) {
-            $url .= "_{$width}";
-            if ($height > 0) {
-                $url .= "_{$height}";
-            }
+        $url     = "/pic/".$name;
+        if (!empty($width)) {
+            $url .= "@_".$type.$width."w";            
         }
-        $url .= ".".$arrName[1];
+        if (!empty($height)) {
+            if (!empty($width)) {
+                $url .= "_".$type.$height."h";
+            }else{
+                $url .= "@_".$type.$height."h";
+            }            
+        }
+        if (!empty($quality)) {
+            if (!empty($height) || !empty($width)) {
+                $url .= "_".$quality."q";
+            }else{
+                $url .= "@_".$quality."q";
+            }
+        }        
         return $url;
     }
 
 
      /**
-     * 获取图片的完整URL地址 Base_Image::getWholeUrlByName($name, $width = 0, $height = 0)
+     * 获取图片的完整URL地址 Base_Image::getWholeUrlByName($name, $width = 0, $height = 0, $type = 'e', $quality = 100)
      * @param string $name
      * @param number $width
      * @param number $height
      * @return string
      */
-    public static function getWholeUrlByName($name, $width = 0, $height = 0) {
-        $url = Base_Config::getConfig('web')->root . Base_Image::getUrlByName($name, $width, $height);
+    public static function getWholeUrlByName($name, $width = 0, $height = 0, $type = 'e', $quality = 100) {
+        $url = Base_Config::getConfig('web')->root . Base_Image::getUrlByName($name, $width, $height, $type, $quality);
         return $url;
     }
 

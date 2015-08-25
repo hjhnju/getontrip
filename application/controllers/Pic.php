@@ -13,59 +13,88 @@ class PicController extends Base_Controller_Page {
      * 图片浏览
      */
     public function indexAction() {
-        $width  = 0;
-        $height = 0;
+        $width    = 0;
+        $height   = 0;
+        $quality  = 100;
+        $scaleType = '';
         $hash = $this->_request->get('hash');
         if (empty($hash)) {
             header("HTTP/1.1 404 Not Found");
             exit;
         }
-        $arrName = explode(".",$hash);
-        $ary = explode('_', $arrName[0]);
-        $hash = $ary[0];
-        $cnt = count($ary);
-        if ($cnt > 1) {
-            $width = intval($ary[1]);
+        $arrName  = explode("@",$hash);
+        if(isset($arrName[1])){
+            $filename = $arrName[0] ;
+            $arrData = explode("_",$arrName[1]);
+            foreach ($arrData as $val){
+                $num  = strlen($val);
+                $char = strtolower($val[$num-1]);
+                $val  = substr($val,0,$num-1);
+                switch ($char) {
+                    case 'h':
+                        if(!is_numeric($val)){
+                            $scaleType = strtolower($val[0]);
+                            $val  = substr($val,1,$num);
+                        }
+                        $height = intval($val);
+                        break;
+                    case 'w':
+                        if(!is_numeric($val)){
+                            $scaleType = strtolower($val[0]);
+                            $val  = substr($val,1,$num);
+                        }
+                        $width = intval($val);
+                        break;
+                    case 'q':
+                        $quality = intval(substr($val,0,$num-1));
+                        break;
+                    default :
+                        break;
+                }
+            }
+        }else{
+            $filename = $hash ;
         }
-        if ($cnt > 2) {
-            $height = intval($ary[2]);
-        }
-
-        if (!empty($width) && empty($height)) {
-            $height = $width;
-        }
-        $filename = $hash ."." .$arrName[1];
         $oss = Oss_Adapter::getInstance();
         $image = $oss->getContent($filename);
         if (empty($image)) {
             header("HTTP/1.1 404 Not Found");
             exit;
         }
-
-        //TODO: 使用Base类
-        // $imagick = new Base_Image_Imagick();
-        // $imagick->read($blob);
-
-        $imagick = new Imagick();
-        $imagick->readimageblob($image);
-        $md5 = md5($image);
-
-        $mime = $imagick->getimagemimetype();
-        //TODO:获取header头
-        if($md5 == "8d4db6fe3f6b647784bc76c510b91cd4"){
-            header("content-type: " . $mime, true, 304);
+        $imagick = new Base_Image_Imagick();
+        $imagick->read($image);
+        $md5     = md5($image.$filename);
+        $mime    = $imagick->get_type();
+        ob_clean();
+        if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && ($md5 == $_SERVER['HTTP_IF_NONE_MATCH'])){
             $this->setBrowserCache($md5, 3600 * 24);
+            header("content-type: " . $mime, true, 304);           
         } else {
-            header("content-type: " . $mime);
             $this->setBrowserCache($md5, 3600 * 24);
-            // @TODO 需要对图片跟缩略图做本地cache
-            if ($width > 0 && $height > 0) {
-                //$imagick->adaptiveResizeImage($width, $height);
-                $imagick->cropthumbnailimage($width, $height);
+            if ($width > 0 || $height > 0) {
+                if(empty($scaleType) || $scaleType == 'e'){
+                    //固定一条边,另一条边按原图比例进行缩放
+                    $realHeight = $imagick->get_height();
+                    $realWidth  = $imagick->get_width();
+                    if(!empty($height) && !empty($width)){
+                        $rateHeight = $realHeight/$height;
+                        $rateWidth  = $realWidth/$width;
+                        if($rateHeight >= $rateWidth){
+                            $height = $realHeight/$rateWidth;
+                        }else{
+                            $width  = $realWidth/$rateHeight;
+                        }
+                    }                    
+                    $imagick->resize_to($width,$height,'force');
+                }elseif($scaleType == 'c'){
+                    //居中适应的缩放并裁剪
+                    $imagick->resize_to($width,$height);
+                }elseif($scaleType == 'f'){
+                    //强制缩放不裁剪
+                    $imagick->resize_to($width,$height,'force');
+                }
             }
-            $imagick->setimagecompressionquality(100);
-            ob_clean();
-            echo $imagick->getimageblob();
+            echo $imagick->output($quality);
         }
         exit;
     }

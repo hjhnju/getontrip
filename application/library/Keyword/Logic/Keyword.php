@@ -14,18 +14,23 @@ class Keyword_Logic_Keyword extends Base_Logic{
      * @param integer $pageSize
      * @return array
      */
-    public function queryKeywords($page, $pageSize,$status,$sight_id){
+    public function queryKeywords($page, $pageSize,$arrInfo){
         $list  = new Keyword_List_Keyword();
         $arr   = array();
-        if($status != Keyword_Type_Status::ALL){
-            $arr['status'] = $status;
+        if(isset($arrInfo['status']) && $arrInfo['status'] != Keyword_Type_Status::ALL){
+            $arr['status'] = $arrInfo['status'];            
         }
-        if(!empty($sight_id)){
-            $arr['sight_id'] = $sight_id;
+        if(!empty($arrInfo['sight_id'])){
+            $arr['sight_id'] = $arrInfo['sight_id'];
             $list->setOrder('weight asc');
+            unset($arrInfo['sight_id']);
         }else{
             $list->setOrder('update_time desc');
         }
+        if(isset($arrInfo['status'])){
+           unset($arrInfo['status']); 
+        }
+        $arr = array_merge($arr,$arrInfo);
         if(!empty($arr)){
             $list->setFilter($arr);
         }

@@ -75,7 +75,7 @@ class Base_Image {
                 $url .= "@_".$type.$height."h";
             }            
         }
-        if (!empty($quality)) {
+        if (!empty($quality) && ($quality !== 100)) {
             if (!empty($height) || !empty($width)) {
                 $url .= "_".$quality."q";
             }else{

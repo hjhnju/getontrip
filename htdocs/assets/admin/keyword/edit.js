@@ -31,6 +31,12 @@ $(document).ready(function() {
                $('#view-link').attr('href',$('#url').val());
             }
         });
+        $('#url').blur(function(event) {
+           var name= $.trim($(this).val());
+            if(name){  
+               $('#view-link').attr('href',$('#url').val());
+            }
+        });
         //点击保存或者确认并保存按钮
         $('#Form button[type="submit"]').click(function(event) {
              $('#status').val($(this).attr('data-status'));

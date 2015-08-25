@@ -8,27 +8,49 @@
  
 {%/block%} 
 {%block name="content"%}
-<div class="container">
-   <div class="bg-img"> 
-    <img src="{%$webroot%}/pic/{%$post.image%}.jpg" alt="" class="topic-bg">
-    <div class="title">{%$post.title%} </div>
+<div class="container"> 
+ <!--  <div class="top-bar"></div> -->
+ {%if isset($post.id)%} 
+  <!--  <div class="bg-img"> -->
+   <!--  {%if empty($post.image)%} 
+   <img src="{%$feroot%}/common/img/imgloading.gif" alt="" class="topic-bg"> 
+   {%else%}
+   <img src="{%$feroot%}/common/img/imgloading.gif" data-webroot="{%$webroot%}" data-img_hash="{%$post.img_hash%}" data-img_type="{%$post.img_type%}" alt="" class="topic-bg" id="topic-bg">
+   {%/if%}   -->
+    {%if empty($post.image)%} 
+      <div class="bg-img"  style="background-image:url('{%$feroot%}/common/img/imgloading.gif');"> 
+    {%else%} 
+      <div class="bg-img" id="bg-img" style="background-image:url('{%$feroot%}/common/img/imgloading.gif'); " data-webroot="{%$webroot%}" data-image="{%$post.image%}"> 
+    {%/if%}  
+    <div class="title-box">
+        <div class="title">
+          {%if empty($post.title)==0%}{%$post.title%}{%/if%} 
+        </div>
+        <div class="like">
+           <i class="fa"></i>{%$post.collect%}
+           <i class="fa fa-eye"></i>{%$post.collect%}
+        </div>
+    </div>
   </div>
   <div class="main-content">
     <div class="main-content-inner rich-text">
-       {%$post.content%} 
+       {%if empty($post.title)==0%}{%$post.content%}{%/if%}
     </div>
     <div class="text-from">
-       内容来自{%$post.from_name%}<a href="{%$post.url%}" target="_blank">查看原网页</a>
+       {%if empty($post.from_name)==0%}
+            内容来自{%$post.from_name%}<a href="{%$post.url%}" target="_blank">查看原网页</a>
+       {%/if%} 
     </div>
   </div>
+{%/if%}  
 </div>
  
 
 {%/block%}
 {%block name="script"%}
-<script>
+<script> 
     require(['topic/detail'], function (main) {
-        main.init('{%$feroot%}');
+        main.init();
     }); 
 </script>
 {%/block%}

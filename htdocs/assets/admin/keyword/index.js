@@ -4,20 +4,20 @@
   author:fyy
  */
 $(document).ready(function() {
-     var FORMATER = 'YYYY-MM-DD HH:mm:ss';
+    var FORMATER = 'YYYY-MM-DD HH:mm:ss';
     var oTable = $('#editable').dataTable({
         "serverSide": true, //分页，取数据等等的都放到服务端去
         "processing": true, //载入数据的时候是否显示“载入中”
         "pageLength": 10, //首次加载的数据条数  
         "searching": false, //是否开启本地分页
-        "ordering":false,
+        "ordering": false,
         "ajax": {
             "url": "/admin/Keywordapi/list",
             "type": "POST",
             "data": function(d) {
                 //添加额外的参数传给服务器
-               // d.params.sight_id = '';
-                  d.params = {};
+                // d.params.sight_id = '';
+                d.params = {};
                 if ($("#form-sight").attr('data-sight_id')) {
                     d.params.sight_id = Number($.trim($("#form-sight").attr('data-sight_id')));
                 }
@@ -45,7 +45,7 @@ $(document).ready(function() {
         }, {
             "data": function(e) {
                 if (e.url) {
-                    return '<a href="' + e.url + '" target="_blank" title="' + e.url + '">' + (e.url.length > 20 ? e.url.substr(0, 20)+'...' : e.url) + '</a>';
+                    return '<a href="' + e.url + '" target="_blank" title="' + e.url + '">' + (e.url.length > 20 ? e.url.substr(0, 20) + '...' : e.url) + '</a>';
                 }
                 return '暂无';
             }
@@ -66,15 +66,21 @@ $(document).ready(function() {
                 return "空";
             }
         }, {
-            "data": function(e){
-                if(e.status==2){
-                   return '<span class="span-status" data-id="'+e.id+'"><i class="fa fa-2x fa-check color-check"></i></span>'
-                }else if(e.status==1){
-                   return '<span class="span-status" data-id="'+e.id+'"><i class="fa fa-2x fa-close color-uncheck"></i></span>'
-                }else{
-                    return '<span class="span-status" data-id="'+e.id+'">未知状态</span>';
+            'data': function(e) {
+                if (e.weight) {
+                    return e.weight + '  <button class="btn btn-primary  btn-xs weight" title="修改权重" data-toggle="tooltip"><i class="fa fa-reorder"></i></button>'
                 }
-                
+            }
+        }, {
+            "data": function(e) {
+                if (e.status == 2) {
+                    return '<span class="span-status" data-id="' + e.id + '"><i class="fa fa-2x fa-check color-check"></i></span>'
+                } else if (e.status == 1) {
+                    return '<span class="span-status" data-id="' + e.id + '"><i class="fa fa-2x fa-close color-uncheck"></i></span>'
+                } else {
+                    return '<span class="span-status" data-id="' + e.id + '">未知状态</span>';
+                }
+
             }
         }, {
             "data": function(e) {
@@ -95,7 +101,7 @@ $(document).ready(function() {
     /*
       绑定事件
      */
-    function bindEvents() { 
+    function bindEvents() {
 
         //绑定draw事件
         $('#editable').on('draw.dt', function() {
@@ -122,21 +128,21 @@ $(document).ready(function() {
                     alert("服务器未正常响应，请重试");
                 },
                 "success": function(response) {
-                    if (response.status == 0) { 
-                        oTable.fnDeleteRow(nRow); 
+                    if (response.status == 0) {
+                        oTable.fnDeleteRow(nRow);
                     }
                 }
             });
         });
 
         //确认url操作
-         $('#editable button.confirm').live('click', function(e) {
-            e.preventDefault(); 
+        $('#editable button.confirm').live('click', function(e) {
+            e.preventDefault();
             var nRow = $(this).parents('tr')[0];
             var data = oTable.api().row(nRow).data();
-            var params={
-                id:data.id,
-                status:2 //确认的状态
+            var params = {
+                id: data.id,
+                status: 2 //确认的状态
             }
             $.ajax({
                 "url": "/admin/Keywordapi/save",
@@ -148,20 +154,84 @@ $(document).ready(function() {
                 "success": function(response) {
                     if (response.status == 0) {
                         //刷新当前页
-                        oTable.fnRefresh();  
+                        oTable.fnRefresh();
                     }
                 }
             });
         });
-        
-        
-     
+
+        //修改权重操作 
+        $('#editable button.weight').live('click', function(e) {
+            e.preventDefault();
+            var nRow = $(this).parents('tr')[0];
+            var data = oTable.api().row(nRow).data();
+            var params = {
+                'sight_id': data.sight_id
+            };
+            sight_name = data.sight_name;
+            //查询当前景点下的所有词条
+            $.ajax({
+                "url": "/admin/Keywordapi/list",
+                "data": {
+                    params
+                },
+                "type": "post",
+                "error": function(e) {
+                    alert("服务器未正常响应，请重试");
+                },
+                "success": function(response) {
+                    var data = response.data.data;
+                    var li = '';
+                    $.each(data, function(key, value) {
+                        li = li + '<li class="list-primary" data-id="' + value.id + '"><div class="task-title"><span class="task-title-sp">' + value.name + '</span><span class="badge badge-sm label-info">' + sight_name + '</span></div></li>'
+                    });
+                    $('#sortable').html(li);
+                    $("#sortable").sortable({
+                        //revert: true,
+                        start: function(d, li) {
+                            oldNum = $(li.item).index() + 1
+                        },
+                        stop: function(d, li) {
+                            newNum = $(li.item).index() + 1
+                            if (oldNum === newNum) {
+                                return;
+                            }
+                            changeWeight($(li.item).attr('data-id'),newNum);
+                        }
+                    });
+                    //弹出模态框
+                    $('#myModal').modal();
+                }
+            });
+
+            function changeWeight(id,to) {
+                $.ajax({
+                    "url": "/admin/Keywordapi/changeWeight",
+                    "data": {
+                        id:id,
+                        to:to
+                    },
+                    "type": "post",
+                    "error": function(e) {
+                        alert("服务器未正常响应，请重试");
+                    },
+                    "success": function(response) { 
+                        //关闭模态框
+                        $('#myModal').modal('hide');
+                        api.ajax.reload();
+                    }
+                });
+            }
+
+        });
+
+
     }
 
     /*
       过滤事件
      */
-    function filters() { 
+    function filters() {
 
         //景点输入框自动完成
         $('#form-sight').typeahead({
@@ -185,22 +255,22 @@ $(document).ready(function() {
             $("#form-sight").attr('data-sight_id', '');
             //触发dt的重新加载数据的方法
             api.ajax.reload();
-        }); 
-         
+        });
+
         $('#form-status').change(function(event) {
             //触发dt的重新加载数据的方法
             api.ajax.reload();
         });
 
-          //只看我自己发布的
+        //只看我自己发布的
         $('#form-user_id').click(function(event) {
             api.ajax.reload();
         });
-        
 
-      
+
+
     }
 
- 
+
 
 });

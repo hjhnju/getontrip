@@ -17,11 +17,13 @@ class KeywordapiController extends Base_Controller_Api{
 
         $page=($start/$pageSize)+1;
          
-        $sight_id =isset($_REQUEST['sight_id'])?$_REQUEST['sight_id']:'';
+        // $sight_id =isset($_REQUEST['sight_id'])?$_REQUEST['sight_id']:'';
 
-        $status = isset($_REQUEST['status'])?intval($_REQUEST['status']):3;
+        //$status = isset($_REQUEST['status'])?intval($_REQUEST['status']):3;
+        //
+        $arrInfo =isset($_REQUEST['params'])?$_REQUEST['params']:array();
         
-        $List =Keyword_Api::queryKeywords($page,$pageSize,$status,$sight_id);
+        $List =Keyword_Api::queryKeywords($page,$pageSize,$arrInfo);
         
 
         $tmpList=$List['list'];

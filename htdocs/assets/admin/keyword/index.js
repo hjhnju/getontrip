@@ -16,12 +16,16 @@ $(document).ready(function() {
             "type": "POST",
             "data": function(d) {
                 //添加额外的参数传给服务器
-                d.sight_id = '';
+               // d.params.sight_id = '';
+                  d.params = {};
                 if ($("#form-sight").attr('data-sight_id')) {
-                    d.sight_id = Number($.trim($("#form-sight").attr('data-sight_id')));
-                } 
+                    d.params.sight_id = Number($.trim($("#form-sight").attr('data-sight_id')));
+                }
+                if ($('#form-user_id').attr("checked")) {
+                    d.params.create_user = $('#form-user_id').val();
+                }
                 if ($("#form-status").val()) {
-                    d.status = $.trim($("#form-status").val());
+                    d.params.status = $.trim($("#form-status").val());
                 }
             }
         },

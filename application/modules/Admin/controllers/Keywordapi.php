@@ -110,4 +110,20 @@ class KeywordapiController extends Base_Controller_Api{
         $keywordsList = Keyword_Api::queryKeywords(1, PHP_INT_MAX,array('sight_id'=>$sight_id));
         return $this->ajax($keywordsList['list']);
     }
+
+    /**
+     * 修改某景点下的词条的权重
+     * @return [type] [description]
+     */
+    public function changeWeightAction(){
+       $id = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0; 
+       $to = isset($_REQUEST['to'])? intval($_REQUEST['to']) : 0;
+        
+       $dbRet = Keyword_Api::changeWeight($id,$to);
+       if ($dbRet) {
+            return $this->ajax();
+        }
+        return $this->ajaxError();
+    }
+
 }

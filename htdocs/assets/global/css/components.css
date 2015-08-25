@@ -223,6 +223,10 @@ hr {
     border-top: 1px solid #eee;
     border-bottom: 0;
 }
+ul{
+    list-style-type: none; 
+    padding: 0; 
+}
 
 
 /* Unstyled List */

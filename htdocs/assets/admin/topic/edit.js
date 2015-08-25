@@ -422,6 +422,7 @@ $(document).ready(function() {
                     "success": function(response) {
                         if (response.status == 0) {
                             toastr.success('保存成功');
+                            localStorage.topicContent = '';
                             if (url.indexOf('add') >= 0) {
                                 //resetForm();
                                 window.location.href = '/admin/topic/edit?action=edit&id=' + response.data;

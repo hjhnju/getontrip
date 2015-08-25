@@ -60,6 +60,7 @@
                 name: e.target.value.replace(/^.+\\/, '')
             }
             if (!file || invoked === 'clear') return
+            if(file.size>2097152) {alert('图片大小必须小于2M');return}
 
             this.$hidden.val('')
             this.$hidden.attr('name', '')

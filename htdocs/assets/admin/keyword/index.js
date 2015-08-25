@@ -187,6 +187,11 @@ $(document).ready(function() {
             //触发dt的重新加载数据的方法
             api.ajax.reload();
         });
+
+          //只看我自己发布的
+        $('#form-user_id').click(function(event) {
+            api.ajax.reload();
+        });
         
 
       

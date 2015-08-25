@@ -186,6 +186,7 @@ $(document).ready(function() {
                     "success": function(response) {
                         if (response.status == 0) {
                             toastr.success('保存成功');
+                            localStorage.themeContent = '';
                             if (url.indexOf('add') >= 0) {
                                 window.location.href = '/admin/theme/edit?action=edit&id=' + response.data;
                             } else {

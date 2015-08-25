@@ -107,7 +107,7 @@ class KeywordapiController extends Base_Controller_Api{
     public function getKeywordsBySightIdAction(){
       
         $sight_id = isset($_REQUEST['sight_id'])? intval($_REQUEST['sight_id']) : 1;  
-        $keywordsList = Keyword_Api::queryKeywords($sight_id,1, PHP_INT_MAX);
+        $keywordsList = Keyword_Api::queryKeywords(1, PHP_INT_MAX,array('sight_id'=>$sight_id));
         return $this->ajax($keywordsList['list']);
     }
 }

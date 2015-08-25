@@ -126,7 +126,7 @@ $(document).ready(function() {
                 dataType: 'json',
                 success: function(res, status) { //当文件上传成功后，需要向数据库中插入数据
                     $('#image').val(res.data.image);
-                    $('#imageView').html('<img src="/pic/' + res.data.hash + '_190_140.jpg"  alt=""/>');
+                    $('#imageView').html('<img src="/pic/' + res.data.image.getNewImgByImg(190,140,'f') + '"  alt=""/>');
                     $('#imageView').removeClass('imageView');
                     $('#crop-img').removeClass('hidden');
                 },

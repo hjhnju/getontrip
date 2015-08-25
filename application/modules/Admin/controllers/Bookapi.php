@@ -82,14 +82,5 @@ class BookapiController extends Base_Controller_Api{
     }
   
 
-      /**
-     * 根据景点ID获取百科词条
-     * @return [type] [description]
-     */
-    public function getKeywordsBySightIdAction(){
-      
-        $sight_id = isset($_REQUEST['sight_id'])? intval($_REQUEST['sight_id']) : 1;  
-        $keywordsList = Keyword_Api::queryKeywords($sight_id,1, PHP_INT_MAX);
-        return $this->ajax($keywordsList['list']);
-    }
+   
 }

@@ -461,13 +461,37 @@ var Metronic = function() {
             var type = this.replace('/pic/', '').split('.')[1];
             return type;
         }
-        String.prototype.getNewUrlByUrl = function(width, height) {
-            var array = this.split('.');
-            return array[0] + '_' + width + '_' + height + '.' + array[1];
+        String.prototype.getNewUrlByUrl = function(width, height,type,quality) {
+            var url=this.toString();
+            if(!type){
+                type='e';
+            }
+            if(width){
+                url=url+'@'+type+width+'w';
+            }
+            if(height){
+                url=url+'_'+type+height+'h';
+            }
+            if(quality){
+                url=url+'_'+quality;
+            }
+            return url; 
         }
-        String.prototype.getNewImgByImg = function(width, height) {
-            var array = this.split('.');
-            return array[0] + '_' + width + '_' + height + '.' + array[1];
+        String.prototype.getNewImgByImg = function(width, height,type,quality) {
+            var img=this.toString();
+            if(!type){
+                type='e';
+            }
+            if(width){
+                img=img+'@'+type+width+'w';
+            }
+            if(height){
+                img=img+'_'+type+height+'h';
+            }
+            if(quality){
+                img=img+'_'+quality;
+            }
+            return img; 
         }
         String.prototype.getBytes = function() {
                 var cArr = this.match(/[^\x00-\xff]/ig);

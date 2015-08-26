@@ -73,8 +73,8 @@ class Wiki_Logic_Wiki extends Base_Logic{
             $index       = ($page-1)*$pageSize+$key+1;    
             $word        = urlencode(trim($sight['name']));
             
-            $url         = "http://baike.baidu.com/search/word?word=".$word;
-            $html        = file_get_html($url);
+            $wikiUrl     = "http://baike.baidu.com/search/word?word=".$word;
+            $html        = file_get_html($wikiUrl);
             $image       = $html->find('img');
             $name        = '';
             foreach ($image as $e){
@@ -115,7 +115,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
                     $name = html_entity_decode($ret->innertext)."\r\n";
                     $arrItems[] = array(
                         'name' => $name,
-                        'url'  => $url,
+                        'url'  => $wikiUrl.$url,
                     );  
                     if(count($arrItems) >= self::WIKI_CATALOG_NUM){
                         break;
@@ -129,7 +129,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
                     $name = html_entity_decode($ret->innertext)."\r\n";
                     $arrItems[] = array(
                         'name' => $name,
-                        'url'  => $url,
+                        'url'  => $wikiUrl.$url,
                     );
                     
                     if(count($arrItems) >= self::WIKI_CATALOG_NUM){
@@ -140,6 +140,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
             $arrTemp['title']       = $sight['name'];
             $arrTemp['content']     = Base_Util_String::trimall($content);
             $arrTemp['image']       = Base_Image::getUrlByName($hash);
+            $arrTemp['url']         = $wikiUrl;
             $arrTemp['items']       = $arrItems;
             $arrTemp['status']      = Wiki_Type_Status::PUBLISHED;
             $arrTemp['create_time'] = time();
@@ -161,6 +162,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
             $redis->delete(Wiki_Keys::getWikiInfoName($sightId, $index));
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'title',$arrTemp['title']);
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'content',$arrTemp['content']);
+            $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'url',$arrTemp['url'] );
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'image',$arrTemp['image']);
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'status',$arrTemp['status']);
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'create_time',$arrTemp['create_time']);

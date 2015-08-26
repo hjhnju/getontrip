@@ -785,16 +785,17 @@ class Topic_Logic_Topic extends Base_Logic{
         $redis = Base_Redis::getInstance();
         $num   = $redis->sCard(Sight_Keys::getSightTopicKey($sightId));
         if(empty($num)){
+            $num = 0;
             $listTopic = new Sight_List_Topic();
             $objTopic  = new Topic_Object_Topic();
             $listTopic->setFilter(array('sight_id' => $sightId));
             $listTopic->setPagesize(PHP_INT_MAX);
             $arrTopics = $listTopic->toArray();
-            $num       = $arrTopics['total'];
             foreach ($arrTopics['list'] as $val){
                 $objTopic->fetch(array('id' => $val['topic_id']));
                 if ($objTopic->status == $status) {
                     $redis->sAdd(Sight_Keys::getSightTopicKey($sightId),$val['topic_id']);
+                    $num += 1;
                 }
             }
         }

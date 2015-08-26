@@ -822,17 +822,15 @@ class Topic_Logic_Topic extends Base_Logic{
         foreach ($arrKeys as $key){
             $redis->delete($key);
         }
-        $arrKeys = $redis->keys(Sight_Keys::getSightTopicKey($sightId));
-        foreach ($arrKeys as $key){
-            $redis->delete($key);
-        }
+        
+        $redis->delete(Sight_Keys::getSightTopicKey($sightId));
         
         if(self::ADD_TOPIC == $type){            
             $num = $this->getTopicNumBySight($sightId);
             if ($num == 1) {
                 $model->eddSight($sightId, array('hastopic' => 1));
             }
-        }else{;
+        }else{
             $num = $this->getTopicNumBySight($sightId);
             if ($num == 0) {
                 $model->eddSight($sightId, array('hastopic' => 0));

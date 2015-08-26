@@ -85,8 +85,8 @@ class Wiki_Logic_Wiki extends Base_Logic{
                 }
             }
             if(empty($name)){
-                foreach ($image as $index => $e){
-                    if ($index <= 1) {
+                foreach ($image as $tempInd => $e){
+                    if ($tempInd <= 1) {
                         continue;
                     }
                     $val = $e->getAttribute('src');

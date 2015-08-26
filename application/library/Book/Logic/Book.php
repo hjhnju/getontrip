@@ -134,7 +134,7 @@ class Book_Logic_Book extends Base_Logic{
             $arr = json_decode($ret,true);
             $info =  $arr["jingdong_ware_bookbigfield_get_responce"]["BookBigFieldEntity"][0]["book_big_field_info"];
             $temp[$key]['content_desc'] = isset($info["content_desc"])?html_entity_decode(strip_tags($info["content_desc"])):'';            
-            $temp[$key]['content_desc'] = Base_Util_String::trimall($val['content_desc']);
+            $temp[$key]['content_desc'] = Base_Util_String::trimall($temp[$key]['content_desc']['content_desc']);
             
             
             $redis = Base_Redis::getInstance();

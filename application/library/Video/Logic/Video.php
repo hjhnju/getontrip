@@ -157,7 +157,11 @@ class Video_Logic_Video extends Base_Logic{
      * @return boolean
      */
     public function delVideo($sightId,$id){
-        $redis        = Base_Redis::getInstance();
+        $redis    = Base_Redis::getInstance();
+        $picName  = $redis->hget(Video_Keys::getVideoInfoName($sightId, $id),'image');
+        if(!empty($picName)){
+            $this->delPic($picName);
+        }
         $ret      = $redis->delete(Video_Keys::getVideoInfoName($sightId, $id));
         return $ret;
     }

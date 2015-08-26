@@ -41,6 +41,6 @@ class Video_Api{
      */
     public function delVideo($sightId,$id){
         $logicVideo = new Video_Logic_Video();
-        return $logicVideo->delWiki($sightId, $id);
+        return $logicVideo->delVideo($sightId, $id);
     }
 }

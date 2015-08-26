@@ -786,6 +786,10 @@ class Topic_Logic_Topic extends Base_Logic{
         $redis = Base_Redis::getInstance();
         $model = new SightModel();
         $redis->delete(Sight_Keys::getHotTopicKey($sightId, "*"));
+        $arrKeys = $redis->keys(Sight_Keys::getIndexTopicKey($sightId, "*"));
+        foreach ($arrKeys as $key){
+            $redis->delete($key);
+        }
         $arrKeys = $redis->keys(Sight_Keys::getHotTopicKey($sightId, "*"));
         foreach ($arrKeys as $key){
             $redis->delete($key);

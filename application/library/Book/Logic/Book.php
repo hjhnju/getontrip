@@ -202,6 +202,10 @@ class Book_Logic_Book extends Base_Logic{
      */
     public function delBook($sightId,$id){
         $redis        = Base_Redis::getInstance();
+        $picName  = $redis->hget(Book_Keys::getBookInfoName($sightId, $id),'image');
+        if(!empty($picName)){
+            $this->delPic($picName);
+        }
         $ret      = $redis->delete(Book_Keys::getBookInfoName($sightId, $id));
         return $ret;
     }

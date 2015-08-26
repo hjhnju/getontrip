@@ -16,6 +16,7 @@ class AdminuserapiController extends Base_Controller_Api{
     public function loginAction(){  
     	 $name =isset($_REQUEST['name'])?$_REQUEST['name']:''; 
     	 $password=isset($_REQUEST['password'])?$_REQUEST['password']:''; 
+         $redirectUri   = isset($_REQUEST['redirectUri']) ? $_REQUEST['redirectUri'] : '';
          if(empty($name)){ 
              return $this->ajaxError(Admin_RetCode::USERNAME_EMPTY, Admin_RetCode::getMsg(Admin_RetCode::USERNAME_EMPTY));
          }
@@ -24,7 +25,10 @@ class AdminuserapiController extends Base_Controller_Api{
          }  
     	 $dbRet = Admin_Api::login($name,$password);
     	 if ($dbRet) { 
-    	     return $this->ajax();
+            if(!empty($redirectUri)){
+               return $this->ajaxJump($redirectUri);
+            }
+    	     return $this->ajax(); 
     	 } 
          return $this->ajaxError(Admin_RetCode::PASSWORD_WRONG, Admin_RetCode::getMsg(Admin_RetCode::PASSWORD_WRONG));
 

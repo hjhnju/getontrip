@@ -124,30 +124,34 @@
 <script src="{%$feroot%}s/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
 <script src="{%$feroot%}s/global/plugins/bootstrap-toastr/toastr.min.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
-<!-- BEGIN PAGE LEVEL SCRIPTS -->
+BEGIN PAGE LEVEL SCRIPTS
 <script src="{%$feroot%}s/global/scripts/metronic.js" type="text/javascript"></script>
-<script src="{%$feroot%}s/global/scripts/json2.js" type="text/javascript"></script>
+<script src="{%$feroot%}s/global/scripts/json2.js" type="text/javascript"></script> 
+<script src="{%$feroot%}s/global/scripts/emitter.js" type="text/javascript"></script>  
+<script src="{%$feroot%}s/global/scripts/Remoter.js" type="text/javascript"></script>
+ 
 <script src="{%$feroot%}s/admin/layout/scripts/layout.js" type="text/javascript"></script>
-<script src="{%$feroot%}s/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
-<script src="{%$feroot%}s/admin/layout/scripts/demo.js" type="text/javascript"></script>
-<script src="{%$feroot%}s/admin/pages/scripts/index.js" type="text/javascript"></script>
-<script src="{%$feroot%}s/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 
+<!-- <script src="{%$feroot%}s/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script> -->
+<!-- <script src="{%$feroot%}s/admin/layout/scripts/demo.js" type="text/javascript"></script> -->
+<!-- <script src="{%$feroot%}s/admin/pages/scripts/index.js" type="text/javascript"></script>
+<script src="{%$feroot%}s/admin/pages/scripts/tasks.js" type="text/javascript"></script>
+ -->
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {    
    Metronic.init(); // init metronic core componets
    Layout.init(); // init layout
-   QuickSidebar.init(); // init quick sidebar
-   Demo.init(); // init demo features 
-   Index.init();   
+   //QuickSidebar.init(); // init quick sidebar
+   //Demo.init(); // init demo features 
+/*   Index.init();   
    Index.initDashboardDaterange();
    Index.initJQVMAP(); // init index page's custom scripts
    Index.initCalendar(); // init index page's custom scripts
    Index.initCharts(); // init index page's custom scripts
    Index.initChat();
    Index.initMiniCharts();
-   Tasks.initDashboardWidget();
+   Tasks.initDashboardWidget();*/
 });
 </script>
 {%block name='script'%}{%/block%}

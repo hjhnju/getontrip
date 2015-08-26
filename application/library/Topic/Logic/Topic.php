@@ -790,7 +790,7 @@ class Topic_Logic_Topic extends Base_Logic{
             $listTopic->setPagesize(PHP_INT_MAX);
             $arrTopics = $listTopic->toArray();
             $num       = $arrTopics['total'];
-            foreach ($arrTopics as $val){
+            foreach ($arrTopics['list'] as $val){
                 $redis->sAdd(Sight_Keys::getSightTopicKey($sightId),$val['topic_id']);
             }
         }

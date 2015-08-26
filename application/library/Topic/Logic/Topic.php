@@ -781,12 +781,12 @@ class Topic_Logic_Topic extends Base_Logic{
      * @param integer $sightId
      * @return integer
      */
-    public function getTopicNumBySight($sightId){
+    public function getTopicNumBySight($sightId,$status){
         $redis = Base_Redis::getInstance();
         $num   = $redis->sCard(Sight_Keys::getSightTopicKey($sightId));
         if(empty($num)){
             $listTopic = new Sight_List_Topic();
-            $listTopic->setFilter(array('sight_id' => $sightId));
+            $listTopic->setFilter(array('sight_id' => $sightId,'status' => $status));
             $listTopic->setPagesize(PHP_INT_MAX);
             $arrTopics = $listTopic->toArray();
             $num       = $arrTopics['total'];
@@ -826,12 +826,12 @@ class Topic_Logic_Topic extends Base_Logic{
         $redis->delete(Sight_Keys::getSightTopicKey($sightId));
         
         if(self::ADD_TOPIC == $type){            
-            $num = $this->getTopicNumBySight($sightId);
+            $num = $this->getTopicNumBySight($sightId,Topic_Type_Status::PUBLISHED);
             if ($num == 1) {
                 $model->eddSight($sightId, array('hastopic' => 1));
             }
         }else{
-            $num = $this->getTopicNumBySight($sightId);
+            $num = $this->getTopicNumBySight($sightId,Topic_Type_Status::PUBLISHED);
             if ($num == 0) {
                 $model->eddSight($sightId, array('hastopic' => 0));
             }

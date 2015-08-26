@@ -80,18 +80,20 @@ class Comment_Logic_Comment  extends Base_Logic{
         $logicUser    = new User_Logic_User();
         $listComment  = new Comment_List_Comment();
         $listComment->setFilter(array('topic_id' => $topicId,'up_id' => 0,'status' => Comment_Type_Status::PUBLISHED));
-        $listComment->setFields(array('id','from_user_id','to_user_id','content','create_time','up_id'));
+        $listComment->setFields(array('id','from_user_id','to_user_id','content','create_time'));
         $listComment->setPage($page);
         $listComment->setPagesize($pageSize);
         $listComment->setOrder("create_time asc");
         $ret = $listComment->toArray();
         foreach ($ret['list'] as $key => $val){
-            $ret['list'][$key]['from_name'] = $logicUser->getUserName($val['from_user_id']);
-            $ret['list'][$key]['to_name']   = $logicUser->getUserName($val['to_user_id']);
+            $ret['list'][$key]['from_name']   = $logicUser->getUserName($val['from_user_id']);
+            $ret['list'][$key]['to_name']     = $logicUser->getUserName($val['to_user_id']);
+            $ret['list'][$key]['create_time'] = Base_Util_String::getTimeAgoString($val['create_time']);
             unset($ret['list'][$key]['from_user_id']);
             unset($ret['list'][$key]['to_user_id']);
             $listSubComment = new Comment_List_Comment();
-            $listSubComment->setFilter(array('up_id' => $val['id']));
+            $listSubComment->setFilter(array('up_id' => $val['id'],'status' => Comment_Type_Status::PUBLISHED));
+            $listComment->setFields(array('id','from_user_id','to_user_id','content'));
             $listSubComment->setPagesize(PHP_INT_MAX);
             $listSubComment->setOrder("create_time asc");
             $arrSubComment = $listSubComment->toArray();

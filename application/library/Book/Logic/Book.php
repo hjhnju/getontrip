@@ -49,6 +49,8 @@ class Book_Logic_Book extends Base_Logic{
      */
     public function getJdBooks($sightId,$page,$pageSize){        
         Base_JosSdk::register();
+        $temp      = array();
+        $arrTemp   = array();
         $conf      = new Yaf_Config_INI(CONF_PATH. "/jd.ini");
         $sight     = Sight_Api::getSightById($sightId);
         $query     = trim($sight['name']);
@@ -76,12 +78,12 @@ class Book_Logic_Book extends Base_Logic{
         $count = $arr['jingdong_ware_product_search_list_get_responce']['searchProductList']['wareCount'];
         
         if($count){
-            $temp = $arr['jingdong_ware_product_search_list_get_responce']['searchProductList']['wareInfo'];
+            $arrTemp = $arr['jingdong_ware_product_search_list_get_responce']['searchProductList']['wareInfo'];
         }else{
             return array();
         }
         $key = 0;        
-        foreach ($temp as $val){
+        foreach ($arrTemp as $val){
             if($val['isBook'] == false){
                 continue;
             }
@@ -93,20 +95,13 @@ class Book_Logic_Book extends Base_Logic{
             $arr = json_decode($ret,true);
             $detail =  $arr['jingdong_ware_basebook_get_responce']['BookEntity'][0]['book_info'];
             
-            $temp[$key]['title'] = $temp[$key]['wareName'];
-            unset($temp[$key]['wareName']);
+            $temp[$key]['title'] = $val['wareName'];
             
             $temp[$key]['author'] = isset($detail['author'])?$detail['author']:'';
             
-            $temp[$key]['price_mart'] = isset($temp[$key]['martPrice'])?$temp[$key]['martPrice']:'';
-            if(isset($temp[$key]['martPrice'])){
-                unset($temp[$key]['martPrice']);
-            }
+            $temp[$key]['price_mart'] = isset($val['martPrice'])?$val['martPrice']:'';
             
-            $temp[$key]['price_jd'] = isset($temp[$key]['jdPrice'])?$temp[$key]['jdPrice']:'';
-            if(isset($temp[$key]['jdPrice'])){
-                unset($temp[$key]['jdPrice']);
-            }
+            $temp[$key]['price_jd'] = isset($val['jdPrice'])?$val['jdPrice']:'';
             
             $temp[$key]['press'] = isset($detail['publishers'])?$detail['publishers']:'';
             $temp[$key]['isbn'] = isset($detail['isbn'])?$detail['isbn']:'';
@@ -120,10 +115,9 @@ class Book_Logic_Book extends Base_Logic{
             if(isset($tempRet['jingdong_ware_baseproduct_get_responce']['product_base'][0]["image_path"])){
                 $temp[$key]['image'] = $tempRet['jingdong_ware_baseproduct_get_responce']['product_base'][0]["image_path"];
             }else{
-                $temp[$key]['image'] = $temp[$key]['imageUrl'];
+                $temp[$key]['image'] = $val['imageUrl'];
             }
             $temp[$key]['image']  = Base_Image::getUrlByName($this->uploadPic($temp[$key]['image']));
-            unset($temp[$key]['imageUrl']);
             
             $temp[$key]['status'] = Book_Type_Status::PUBLISHED;
             $temp[$key]['create_time'] = time();
@@ -140,7 +134,7 @@ class Book_Logic_Book extends Base_Logic{
             $arr = json_decode($ret,true);
             $info =  $arr["jingdong_ware_bookbigfield_get_responce"]["BookBigFieldEntity"][0]["book_big_field_info"];
             $temp[$key]['content_desc'] = isset($info["content_desc"])?html_entity_decode(strip_tags($info["content_desc"])):'';            
-            $temp[$key]['content_desc'] = Base_Util_String::trimall($temp[$key]['content_desc']);
+            $temp[$key]['content_desc'] = Base_Util_String::trimall($val['content_desc']);
             
             
             $redis = Base_Redis::getInstance();

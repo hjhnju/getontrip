@@ -100,4 +100,21 @@ class Base_Util_String {
 	    $replacement = "";
 	    return preg_replace( $pattern, $replacement, $str );
 	}
+	
+	/**
+	 * 时间离当前有多久
+	 * @param unknown $time
+	 */
+	public static function getTimeAgoString($time){
+	    $ago = time() -  $time;	    
+	    if ($ago < 60) {
+	        $str = $ago."秒";
+	    }elseif ($ago < 3600){
+	        $str = floor($ago/60)."分钟";
+	    }elseif ($ago < 86400){
+	        $str = floor($ago/3600)."小时";
+	    }else{
+	        $str = floor($ago/86400)."天";
+	    }
+	}
 }

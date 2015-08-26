@@ -42,11 +42,30 @@ class Comment_Logic_Comment  extends Base_Logic{
         $objComment->toUserId   = $toUserId;
         $objComment->topicId    = $topicId;
         $objComment->content    = $content;
+        $objComment->status     = Comment_Type_Status::PUBLISHED;
         $ret = $objComment->save();
         
         $redis = Base_Redis::getInstance();
         $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($topicId, '*'));
         $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($topicId));
+        return $ret;
+    }
+    
+    /**
+     * 改变评论的状态
+     * @param integer $id
+     * @param integer $status
+     * @return boolean
+     */
+    public function changeCommentStatus($id,$status){
+        $objComment = new Comment_Object_Comment();
+        $objComment->fetch(array('id' => $id));
+        $objComment->status = $status;
+        $ret = $objComment->save();
+        
+        $redis = Base_Redis::getInstance();
+        $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objComment->topicId, '*'));
+        $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($objComment->topicId));
         return $ret;
     }
     
@@ -60,7 +79,8 @@ class Comment_Logic_Comment  extends Base_Logic{
     public function getCommentList($topicId,$page,$pageSize){
         $logicUser    = new User_Logic_User();
         $listComment  = new Comment_List_Comment();
-        $listComment->setFilter(array('topic_id' => $topicId,'up_id' => 0));
+        $listComment->setFilter(array('topic_id' => $topicId,'up_id' => 0,'status' => Comment_Type_Status::PUBLISHED));
+        $listComment->setFields(array('id','from_user_id','to_user_id','content','create_time','up_id'));
         $listComment->setPage($page);
         $listComment->setPagesize($pageSize);
         $listComment->setOrder("create_time asc");
@@ -68,6 +88,8 @@ class Comment_Logic_Comment  extends Base_Logic{
         foreach ($ret['list'] as $key => $val){
             $ret['list'][$key]['from_name'] = $logicUser->getUserName($val['from_user_id']);
             $ret['list'][$key]['to_name']   = $logicUser->getUserName($val['to_user_id']);
+            unset($ret['list'][$key]['from_user_id']);
+            unset($ret['list'][$key]['to_user_id']);
             $listSubComment = new Comment_List_Comment();
             $listSubComment->setFilter(array('up_id' => $val['id']));
             $listSubComment->setPagesize(PHP_INT_MAX);
@@ -76,6 +98,8 @@ class Comment_Logic_Comment  extends Base_Logic{
             foreach ($arrSubComment as $index => $data){
                 $arrSubComment['list'][$index]['from_name'] = $logicUser->getUserName($data['from_user_id']);
                 $arrSubComment['list'][$index]['to_name']   = $logicUser->getUserName($data['to_user_id']);
+                unset($arrSubComment['list'][$index]['from_user_id']);
+                unset($arrSubComment['list'][$index]['to_user_id']);
             }
             $ret['list'][$key]['subComment'] = $arrSubComment['list'];
         }
@@ -152,6 +176,9 @@ class Comment_Logic_Comment  extends Base_Logic{
     public function  delComment($id){
         $objComment = new Comment_Object_Comment();
         $objComment->fetch(array('id' => $id));
+        $redis = Base_Redis::getInstance();
+        $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objComment->topicId, '*'));
+        $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($objComment->topicId));
         return $objComment->remove();
     }
 }

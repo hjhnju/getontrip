@@ -47,11 +47,24 @@ class Comment_Api{
     
     /**
      * 接口4：Comment_Api::delComment($id)
+     * 删除评论
      * @param integer $id
      * @return boolean
      */
     public static function  delComment($id){
         $logicComment = new Comment_Logic_Comment();
         return $logicComment->delComment($id);
+    }
+    
+    /**
+     * 接口5：changeCommentStatus($id,$status)
+     * 改变评论的状态
+     * @param integer $id
+     * @param integer $status
+     * @return boolean
+     */
+    public static function changeCommentStatus($id,$status){
+        $logicComment = new Comment_Logic_Comment();
+        return $logicComment->changeCommentStatus($id, $status);
     }
 }

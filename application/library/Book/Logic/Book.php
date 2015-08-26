@@ -122,7 +122,7 @@ class Book_Logic_Book extends Base_Logic{
             }else{
                 $temp[$key]['image'] = $temp[$key]['imageUrl'];
             }
-            $temp[$key]['image']  = $this->uploadPic($temp[$key]['image']);
+            $temp[$key]['image']  = Base_Image::getUrlByName($this->uploadPic($temp[$key]['image']));
             unset($temp[$key]['imageUrl']);
             
             $temp[$key]['status'] = Book_Type_Status::PUBLISHED;

@@ -65,8 +65,8 @@ class Book_Logic_Book extends Base_Logic{
         $req = new WareProductSearchListGetRequest();
         $req->setPage($page);
         $req->setPageSize($pageSize);
-        $req->setSort(1);
-        $req->setKeyword($query."书");
+        $req->setSort(0);
+        $req->setKeyword("图书 ".$query);
         $req->setIsLoadAverageScore("false");
         $req->setIsLoadPromotion("false");
         $req->setClient("m");

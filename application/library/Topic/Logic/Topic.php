@@ -777,6 +777,27 @@ class Topic_Logic_Topic extends Base_Logic{
     }
     
     /**
+     * 根据景点ID获取话题数
+     * @param integer $sightId
+     * @return integer
+     */
+    public function getTopicNumBySight($sightId){
+        $redis = Base_Redis::getInstance();
+        $num   = $redis->sCard(Sight_Keys::getSightTopicKey($sightId));
+        if(empty($num)){
+            $listTopic = new Sight_List_Topic();
+            $listTopic->setFilter(array('sight_id' => $sightId));
+            $listTopic->setPagesize(PHP_INT_MAX);
+            $arrTopics = $listTopic->toArray();
+            $num       = $arrTopics['total'];
+            foreach ($arrTopics as $val){
+                $redis->sAdd(Sight_Keys::getSightTopicKey($sightId),$val['topic_id']);
+            }
+        }
+        return $num;
+    }
+    
+    /**
      * 有新话题发布时更新redis
      * @param integer $type,1:新增，2：删除
      * @param integer $sightId
@@ -785,7 +806,6 @@ class Topic_Logic_Topic extends Base_Logic{
         //让缓存话题数据失效
         $redis = Base_Redis::getInstance();
         $model = new SightModel();
-        $redis->delete(Sight_Keys::getHotTopicKey($sightId, "*"));
         $arrKeys = $redis->keys(Sight_Keys::getIndexTopicKey($sightId, "*"));
         foreach ($arrKeys as $key){
             $redis->delete($key);
@@ -802,16 +822,18 @@ class Topic_Logic_Topic extends Base_Logic{
         foreach ($arrKeys as $key){
             $redis->delete($key);
         }
+        $arrKeys = $redis->keys(Sight_Keys::getSightTopicKey($sightId));
+        foreach ($arrKeys as $key){
+            $redis->delete($key);
+        }
         
         if(self::ADD_TOPIC == $type){            
-            $redis->sAdd(Sight_Keys::getSightTopicKey($sightId),$topicId);
-            $num = $redis->sCard(Sight_Keys::getSightTopicKey($sightId));
+            $num = $this->getTopicNumBySight($sightId);
             if ($num == 1) {
                 $model->eddSight($sightId, array('hastopic' => 1));
             }
-        }else{
-            $redis->sRemove(Sight_Keys::getSightTopicKey($sightId),$topicId);
-            $num = $redis->sCard(Sight_Keys::getSightTopicKey($sightId));
+        }else{;
+            $num = $this->getTopicNumBySight($sightId);
             if ($num == 0) {
                 $model->eddSight($sightId, array('hastopic' => 0));
             }

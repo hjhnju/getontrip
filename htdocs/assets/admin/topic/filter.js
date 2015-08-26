@@ -161,6 +161,14 @@ $(document).ready(function() {
             }
         });
 
+         //景点框后的清除按钮，清除所选的景点
+        $('#clear-from').click(function(event) {
+            $("#from_name").val('');
+            $("#from_name").attr('data-url','');
+            $("#from_name").attr('data-id',''); 
+            setQuery();
+        });
+
         //点击打开来源创建模态框
         $('.openSource').click(function(event) {
             event.preventDefault();
@@ -309,6 +317,7 @@ $(document).ready(function() {
     function setQuery() {
         var query = $("#sight_name").val() + ' ' + tagStr + ' ' + keywordStr + ' ';
         var action = $("#Form").attr('action');
+        var site='';
         if (action == sogou) {
             $('#Type').attr('name', "type");
             $('#Type').val('2');
@@ -318,7 +327,8 @@ $(document).ready(function() {
             $('#Type').attr('name', "tn");
             $('#Type').val('baidu');
             $('#query').attr('name', 'wd');
-            $('#query').val('site:' + $('#from_name').attr('data-url') + ' ' + query + '-日游');
+            $('#from_name').attr('data-url')?site='site:'+$('#from_name').attr('data-url')+' ':'';
+            $('#query').val(site  + query + '-(日游)');
 
             if ($('#query').val().getBytes() > 76) {
                 alert('请控制关键词在38个汉字以内(一个汉字相当于两个字母或数字)');

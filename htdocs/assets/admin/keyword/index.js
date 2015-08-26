@@ -164,16 +164,16 @@ $(document).ready(function() {
         $('#editable button.weight').live('click', function(e) {
             e.preventDefault();
             var nRow = $(this).parents('tr')[0];
-            var data = oTable.api().row(nRow).data();
-            var params = {
-                'sight_id': data.sight_id
-            };
+            var data = oTable.api().row(nRow).data(); 
             sight_name = data.sight_name;
+             var params = {
+                'sight_id': data.sight_id
+            }; 
             //查询当前景点下的所有词条
             $.ajax({
                 "url": "/admin/Keywordapi/list",
                 "data": {
-                    params
+                    params:params
                 },
                 "type": "post",
                 "error": function(e) {

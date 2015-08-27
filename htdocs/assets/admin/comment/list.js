@@ -12,7 +12,7 @@ $(document).ready(function() {
         "searching": false, //是否开启本地分页
         "ordering":false,
         "ajax": {
-            "url": "/admin/Keywordapi/list",
+            "url": "/admin/Commentapi/list",
             "type": "POST",
             "data": function(d) {
                 //添加额外的参数传给服务器
@@ -35,18 +35,19 @@ $(document).ready(function() {
             "width": 20
         }],
         "columns": [{
+            "data": function() {
+                return '<td class="center "><a class="btn btn-success btn-xs" for="details" title="详情" data-toggle="tooltip"><i class="fa fa-plus"></i></a></td>';
+            }
+        },{
             "data": "id"
         }, {
-            "data": 'name'
+            "data": 'topic_id'
         }, {
-            "data": function(e) {
-                if (e.url) {
-                    return '<a href="' + e.url + '" target="_blank" title="' + e.url + '">' + (e.url.length > 20 ? e.url.substr(0, 20)+'...' : e.url) + '</a>';
-                }
-                return '暂无';
-            }
+            "data": 'from_user_id'
         }, {
-            "data": "sight_name"
+            "data": 'to_user_id'
+        }, {
+            "data": "status_name"
         }, {
             "data": function(e) {
                 if (e.create_time) {
@@ -60,17 +61,6 @@ $(document).ready(function() {
                     return moment.unix(e.update_time).format(FORMATER);
                 }
                 return "空";
-            }
-        }, {
-            "data": function(e){
-                if(e.status==2){
-                   return '<span class="span-status" data-id="'+e.id+'"><i class="fa fa-2x fa-check color-check"></i></span>'
-                }else if(e.status==1){
-                   return '<span class="span-status" data-id="'+e.id+'"><i class="fa fa-2x fa-close color-uncheck"></i></span>'
-                }else{
-                    return '<span class="span-status" data-id="'+e.id+'">未知状态</span>';
-                }
-                
             }
         }, {
             "data": function(e) {

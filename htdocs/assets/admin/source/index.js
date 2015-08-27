@@ -39,6 +39,8 @@ $(document).ready(function() {
         }, {
             "data": "url"
         }, {
+            "data": "type"
+        }, {
             "data": function(e) {
                 if (e.create_time) {
                     return moment.unix(e.create_time).format(FORMATER);
@@ -76,6 +78,7 @@ $(document).ready(function() {
             event.preventDefault(); 
             //打开模态框
             $('#source')[0].reset();
+             $('#source input[name="type"][value="2"]').click();
             $('#myModal').modal();
 
         });
@@ -86,9 +89,14 @@ $(document).ready(function() {
                 $('#source label[for="source-name"]').text('公众号名称:'); 
                 $('#source .source-url').hide();
                 $('#source-url').val('mp.weixin.qq.com'); 
-            } else {
+            } else if ($(this).val() == 2){
                 $('#source label[for="source-name"]').text('来源名称:'); 
-                $('#source .source-url').show(); 
+                $('#source .source-url').show();
+                $('#source-url').val(''); 
+            }else if ($(this).val() == 3){
+                $('#source label[for="source-name"]').text('来源名称:'); 
+                $('#source .source-url').hide(); 
+                $('#source-url').val('');
             }
         });
 
@@ -157,14 +165,14 @@ $(document).ready(function() {
      * @return {[type]}     [description]
      */
     function save(url, data) {
-        if (!$('#source-name').val()) {
+        if (!data.name) {
             toastr.warning('名称不能为空');
             return false;
         }
-        /*if (!$('#source-url').val()) {
+        if (data.type=='2'&&!data.url) {
             toastr.warning('url不能为空');
             return false;
-        }*/
+        }
         $.ajax({
             "url": url,
             "data": data,
@@ -175,24 +183,11 @@ $(document).ready(function() {
             "success": function(response) {
                 if (response.status != 0) {
                     alert(response.statusInfo);
-                } else {
-                    //添加创建的来源 并选中
-                    var data = response.data;
-                    if (data.type == 1) {
-                        //公众号
-                        $('#weixin-from').attr('data-id', data.id);
-                        $('#weixin-from').val(data.name);
-                    } else {
-                        $('#from_name').attr('data-id', data.id);
-                        $('#from_name').attr('data-url', data.url);
-                        $('#from_name').val(data.name);
-
-
-                    }
+                } else { 
                     //手工关闭模态框
                     $('#myModal').modal('hide');
                     document.getElementById("source").reset();
-                     oTable.fnRefresh();
+                    oTable.fnRefresh();
                 }
             }
         });

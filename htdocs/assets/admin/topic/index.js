@@ -32,17 +32,20 @@ $(document).ready(function() {
             "visible": true,
             "searchable": false
         }, {
-            "targets": [0],
+            "targets": [0,1],
             "width": 20
         }, {
             "targets": [2],
             "width": 250
         }, {
-            "targets": [6,7],
+            "targets": [3,4,5],
+            "width": 50
+        }, {
+            "targets": [6,7,8],
             "width": 50
         }, {
             "targets": [9],
-            "width": 80
+            "width": 100
         }],
         "columns": [{
             "data": function() {
@@ -95,6 +98,8 @@ $(document).ready(function() {
         }, {
             "data": function(e) {
                 return '<button type="button" class="btn btn-success btn-xs copy-button" title="复制链接" data-toggle="tooltip" data-clipboard-text="' + $('#webroot').html() + '/topic/detail/preview?id=' + e.id + '"><i class="fa fa-eye"></i></button><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/topic/edit?action=edit&id=' + e.id + '" target="_blank"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
+
+                //return '<a href="/admin/comment/list?topic_id='+e.id+'" target="_blank" class="btn btn-warning btn-xs comments" title="评论列表" data-toggle="tooltip"><i class="fa fa-comments-o"></i></a>'+'<button type="button" class="btn btn-success btn-xs copy-button" title="复制链接" data-toggle="tooltip" data-clipboard-text="' + $('#webroot').html() + '/topic/detail/preview?id=' + e.id + '"><i class="fa fa-eye"></i></button><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/topic/edit?action=edit&id=' + e.id + '" target="_blank"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
             }
         }],
         "initComplete": function(setting, json) {

@@ -59,7 +59,6 @@ class Base_Logic{
         }else{
             $filename = $hash . '.jpg';
         }
-        $filename = $hash . '.jpg';
         $res      = $oss->writeFileContent($filename, $content);
         if($res){
            return $filename; 

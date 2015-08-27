@@ -109,13 +109,13 @@ $(document).ready(function() {
                 element.attr('data-id', val);
                 element.val(text);
             }
-        }); 
-         //话题来源框删除来源
-        $('#clear-from').click(function(event) {
-            $('#from_name').attr('data-id',''); 
-            $('#from_name').val(''); 
         });
-        
+        //话题来源框删除来源
+        $('#clear-from').click(function(event) {
+            $('#from_name').attr('data-id', '');
+            $('#from_name').val('');
+        });
+
 
         //标签选择
         $('#tags').multiSelect({
@@ -191,14 +191,15 @@ $(document).ready(function() {
         $('#Form').delegate('input[data-name="form-from"]', 'click touchend', function(event) {
             $('input[data-name="form-from"]').attr('checked', false);
             $(this).attr('checked', 'ture');
+            var type=$(this).attr('data-type');
             if ($(this).val() == "weixin") {
                 $('.weixin-from-input').show();
                 $('.from_name').hide();
-            } else {
-                $('.weixin-from-input').hide();
-                $('.from_name').show();
-                $('#from-type').next().find('.dropdown-menu li[data-original-index="1"] a').click();
-                //$('#from-type').selectpicker();
+            }else {
+                //$('.weixin-from-input').hide();
+                //$('.from_name').show();
+                $('#from-type').next().find('.dropdown-menu li[data-original-index="'+(type-1)+'"] a').click();
+                
                 $('#from_name').val($(this).attr('data-from_name'));
                 $('#from_name').attr('data-url', $('input[data-name="form-from"]:checked').val());
                 $('#from_name').attr('data-id', $('input[data-name="form-from"]:checked').attr('data-id'));
@@ -259,15 +260,14 @@ $(document).ready(function() {
 
         //点击创建话题来源
         $('#addSource-btn').click(function(event) {
-          /*  if (!$('#source-name').val()) {
+            if (!$('#source-name').val()) {
                 toastr.warning('名称不能为空');
                 return false;
-            }*/
-            if ($('#source-type').val()==='2'&&!$('#source-url').val()) {
+            }
+            if ($('#source-type').val() === '2' && !$('#source-url').val()) {
                 toastr.warning('url不能为空');
                 return false;
             }
-            return;
             $.ajax({
                 "url": "/admin/Sourceapi/addAndReturn",
                 "data": {
@@ -285,21 +285,11 @@ $(document).ready(function() {
                     } else {
                         //添加创建的来源 并选中
                         var data = response.data;
-                        if (data.type == 1) {
-                            //公众号 
-                            $('#weixin-from').attr('data-id', data.id);
-                            $('#weixin-from').val(data.name);
-                        } else {
-                            /* $('#div-from label:last').after('<label class="radio-inline"><input type="radio" name="form-from" data-name="form-from" id="" value="' + data.url + '" data-id="' + data.id + '" data-type="' + data.type + '">' + data.name + '</label>');
-                             $('input[data-name="form-from"]').attr('checked', false);
-                             $('#div-from input:last').attr('checked', 'ture');
-                             $('#div-from input:last').click();
-                             //绑定Uniform
-                             Metronic.initUniform($('input[data-name="form-from"]'));*/
-                            $('#from_name').attr('data-id', data.id);
-                            $('#from_name').attr('data-url', data.url);
-                            $('#from_name').val(data.name);
-                        }
+
+                        $('#from_name').attr('data-id', data.id);
+                        $('#from_name').attr('data-url', data.url);
+                        $('#from_name').val(data.name);
+
                         //手工关闭模态框
                         $('#myModal').modal('hide');
                         document.getElementById("source").reset();

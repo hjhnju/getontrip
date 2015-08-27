@@ -24,7 +24,7 @@
     {%/if%}  
     <div class="title-box">
         <div class="title">
-          {%if empty($post.title)==0%}{%$post.title%}{%/if%} 
+          {%if empty($post.title) eq 0%}{%$post.title%}{%/if%} 
         </div>
         <div class="like">
            <i class="fa"></i>{%$post.collect%}
@@ -34,11 +34,13 @@
   </div>
   <div class="main-content">
     <div class="main-content-inner rich-text">
-       {%if empty($post.title)==0%}{%$post.content%}{%/if%}
+       {%if empty($post.content) eq 0%}{%$post.content%}{%/if%}
     </div>
     <div class="text-from">
-       {%if empty($post.from_name)==0%}
-            内容来自{%$post.from_name%}<a href="{%$post.url%}" target="_blank">查看原网页</a>
+       {%if empty($post.from_detail) eq 0%}
+            来自：{%$post.from%}
+       {%elseif empty($post.from) eq 0%}
+            来自:{%$post.from%}&nbsp;&nbsp;<a href="{%$post.url%}" target="_blank">查看原网页</a>
        {%/if%} 
     </div>
   </div>

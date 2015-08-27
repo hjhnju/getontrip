@@ -95,7 +95,7 @@ $(document).ready(function() {
             $(this).parent().remove();
         });
 
-        //微信公众号自动完成 
+        //话题来源自动完成 
         $('#weixin-from,#from_name').typeahead({
             display: 'name',
             val: 'id',
@@ -109,7 +109,13 @@ $(document).ready(function() {
                 element.attr('data-id', val);
                 element.val(text);
             }
+        }); 
+         //话题来源框删除来源
+        $('#clear-from').click(function(event) {
+            $('#from_name').attr('data-id',''); 
+            $('#from_name').val(''); 
         });
+        
 
         //标签选择
         $('#tags').multiSelect({
@@ -126,7 +132,7 @@ $(document).ready(function() {
                 dataType: 'json',
                 success: function(res, status) { //当文件上传成功后，需要向数据库中插入数据
                     $('#image').val(res.data.image);
-                    $('#imageView').html('<img src="/pic/' + res.data.image.getNewImgByImg(190,140,'f') + '"  alt=""/>');
+                    $('#imageView').html('<img src="/pic/' + res.data.image.getNewImgByImg(190, 140, 'f') + '"  alt=""/>');
                     $('#imageView').removeClass('imageView');
                     $('#crop-img').removeClass('hidden');
                 },
@@ -202,13 +208,25 @@ $(document).ready(function() {
         $('#from-type').selectpicker();
         $('#from-type').change(function(event) {
             var val = $(this).val();
-            if (val === '1') {
-                $('.weixin-from-input').show();
-                $('.from_name').hide();
+            $('.openSource').attr('data-type', val);
+            if (val === '3') {
+                $('.from_detail-input').show();
             } else {
-                $('.weixin-from-input').hide();
-                $('.from_name').show();
+                $('.from_detail-input').hide();
             }
+            /*  if (val === '1') {
+                  $('.weixin-from-input').show();
+                  $('.from_name').hide();
+                  $('.from_detail-input').hide();
+              } else if (val === '2') {
+                  $('.weixin-from-input').hide();
+                  $('.from_name').show();
+                  $('.from_detail-input').hide();
+              } else if (val === '3') {
+                  $('.weixin-from-input').show();
+                  $('.from_name').hide();
+                  $('.from_detail-input').show();
+              }*/
         });
 
         //点击打开来源创建模态框
@@ -219,13 +237,19 @@ $(document).ready(function() {
             if (type == "1") {
                 //微信公众号
                 $('#source label[for="source-name"]').text('公众号名称*');
-                $('#source-name').val($('#weixin-from').val());
+                $('#source-name').val('');
                 $('#source .source-url').hide();
                 $('#source-url').val('mp.weixin.qq.com');
-            } else {
-                $('#source label[for="source-name"]').text('来源名称*');
+            } else if (type == "2") {
+                $('#source label[for="source-name"]').text('网站名称*');
                 $('#source-name').val('');
                 $('#source .source-url').show();
+                $('#source-url').val('');
+            } else if (type == "3") {
+                //期刊专著
+                $('#source label[for="source-name"]').text('期刊专著名称*');
+                $('#source-name').val('');
+                $('#source .source-url').hide();
                 $('#source-url').val('');
             }
             $('#source-type').val(type);
@@ -235,14 +259,15 @@ $(document).ready(function() {
 
         //点击创建话题来源
         $('#addSource-btn').click(function(event) {
-            if (!$('#source-name').val()) {
+          /*  if (!$('#source-name').val()) {
                 toastr.warning('名称不能为空');
                 return false;
+            }*/
+            if ($('#source-type').val()==='2'&&!$('#source-url').val()) {
+                toastr.warning('url不能为空');
+                return false;
             }
-            /*    if (!$('#source-url').val()) {
-                    toastr.warning('url不能为空');
-                    return false;
-                }*/
+            return;
             $.ajax({
                 "url": "/admin/Sourceapi/addAndReturn",
                 "data": {
@@ -352,6 +377,14 @@ $(document).ready(function() {
             infoId: 'subtitleinfo'
         });
 
+        //详细来源说明弹出框 
+        $('#from_detail-help').popover({
+            //trigger: 'hover',
+            placement: 'top',
+            html: true,
+            title: '无来源网址的“来源标注”情况',
+            content: '(1)来源为期刊: 姓名，文章名，杂志名+期数 <br>(2)来源为专著: 姓名，专著名'
+        });
     }
 
     /*
@@ -379,20 +412,23 @@ $(document).ready(function() {
                 $('input[data-name="form-tag"]:checked').each(function() {
                     tag_id_array.push(Number($(this).val()));
                 });
-                //处理来源
-                var from = "";
-                if ($('#from-type').val() == "1") {
-                    from = $('#weixin-from').attr('data-id');
-                    if (!from) {
-                        toastr.warning('请填写微信公众号！');
-                        return false;
-                    }
-                } else {
-                    from = $('#from_name').attr('data-id');
-                }
+                /* //处理来源
+                 var from = "";
+                 var fromType=$('#from-type').val();
+                 if (fromType == "1") {
+                     from = $('#weixin-from').attr('data-id');
+                     if (!from) {
+                         toastr.warning('请填写微信公众号！');
+                         return false;
+                     }
+                 } else if (fromType == "2"){
+                     from = $('#from_name').attr('data-id');
+                 }else if (fromType == "3"){
+                      from = $('#weixin-from').attr('data-id');
+                 }*/
                 param.tags = tag_id_array;
                 param.sights = sight_id_array;
-                param.from = from;
+                param.from = from = $('#from_name').attr('data-id');
                 param.content = $("#summernote").code();
 
                 //发布的状态

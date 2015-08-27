@@ -44,17 +44,18 @@ class DetailController extends Base_Controller_Page {
      *  预览页面
     */
     public function previewAction() {             
-       $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0;  
-       $postInfo = Topic_Api::getTopicById($postid);
+       $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0;
+       $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):''; 
+       $logic      = new Topic_Logic_Topic();
+       $postInfo    = $logic->getTopicDetail($postid,$deviceId); 
+       //$postInfo = Topic_Api::getTopicById($postid);
        if(!isset($postInfo['id'])){
           $this->getView()->assign('post', array()); 
-       }else{
-           //处理状态值  
-           $postInfo["statusName"] = Topic_Type_Status::getTypeName($postInfo["status"]);  
-           
-           //处理来源
-           $sourceInfo = Source_Api::getSourceInfo($postInfo['from']);
-           $postInfo['from_name'] = $sourceInfo['name'];
+       }else{ 
+        
+           //处理来源 
+          /* $sourceInfo = Source_Api::getSourceInfo($postInfo['from']);
+           $postInfo['from_name'] = $sourceInfo['name'];*/
 
            //处理背景图片
            if(!empty($postInfo["image"])){

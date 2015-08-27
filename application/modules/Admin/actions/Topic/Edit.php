@@ -56,7 +56,7 @@ class EditAction extends Yaf_Action_Abstract {
             //处理来源名称、类型
             $sourceInfo = Source_Api::getSourceInfo($postInfo['from']);
             $postInfo["fromName"]=$sourceInfo['name'];
-            $postInfo["fromType"]=$sourceInfo['type'];
+            $postInfo["fromType"]=empty($sourceInfo['url'])?3:$sourceInfo['type'];
 
 
             //处理图片名称 分割为hash 和 img_type 

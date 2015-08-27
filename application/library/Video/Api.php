@@ -12,11 +12,7 @@ class Video_Api{
      */
     public static function getVideos($sightId,$page,$status=Video_Type_Status::ALL){
         $logicVideo = new Video_Logic_Video();
-        $arrVideo   = $logicVideo->getVideos($sightId, $page,self::PAGE_SIZE,$status);
-        if(!empty($arrVideo)){
-            return $arrVideo;
-        }
-        return $logicVideo->getAiqiyiSource($sightId,$page);
+        return    $logicVideo->getVideos($sightId, $page,self::PAGE_SIZE,$status);
     }
     
     /**

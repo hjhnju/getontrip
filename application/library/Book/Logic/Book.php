@@ -1,6 +1,6 @@
 <?php
-class Book_Logic_Book extends Base_Logic{
-    
+require_once(APP_PATH."/application/library/Base/HtmlDom.php");
+class Book_Logic_Book extends Base_Logic{  
     public function __construct(){
         
     }
@@ -50,10 +50,11 @@ class Book_Logic_Book extends Base_Logic{
     public function getJdBooks($sightId,$page,$pageSize){        
         Base_JosSdk::register();
         $temp      = array();
-        $arrTemp   = array();
+        $arrIds    = array();
         $conf      = new Yaf_Config_INI(CONF_PATH. "/jd.ini");
         $sight     = Sight_Api::getSightById($sightId);
-        $query     = trim($sight['name']);
+        $name      = trim($sight['name']);
+        $totalCount = 0;
 
         $appKey    = $conf['appKey'];
         $appSecret = $conf['appSecret'];
@@ -62,73 +63,72 @@ class Book_Logic_Book extends Base_Logic{
         $c->appkey = $appKey;
         $c->secretKey = $appSecret;
         
-        $req = new WareProductSearchListGetRequest();
-        $req->setPage($page);
-        $req->setPageSize($pageSize);
-        $req->setSort(0);
-        $req->setKeyword("图书 ".$query);
-        $req->setIsLoadAverageScore("false");
-        $req->setIsLoadPromotion("false");
-        $req->setClient("m");
-         
-        $resp = $c->execute($req);
-        $ret = $resp->resp;
-        $arr = json_decode($ret,true);
-        
-        $count = $arr['jingdong_ware_product_search_list_get_responce']['searchProductList']['wareCount'];
-        
-        if($count){
-            $arrTemp = $arr['jingdong_ware_product_search_list_get_responce']['searchProductList']['wareInfo'];
-        }else{
-            return array();
-        }
-        $key = 0;        
-        foreach ($arrTemp as $val){
-            if($val['isBook'] == false){
-                continue;
+        $url  = "http://search.jd.com/Search?keyword=".$name."&enc=utf-8&book=y&page=".$page;
+        $html = file_get_html($url);
+        $items  = $html->find('li.item-book div.p-img a');
+        foreach ($items as $item){
+            $str = $item->getAttribute('href');           
+            preg_match("/\/(\d+).htm/is", $str, $match);
+            if(isset($match[1])){
+                $arrIds[] = $match[1];
             }
-            $temp[$key]['url']       = "http://item.jd.com/".$val['skuId'].".html";
+        }
+        
+        $item = $html->find('div.total span strong',0);
+        $totalCount = intval($item->innertext);
+        
+        $url = "http://search.jd.com/s.php?keyword=".$name."&enc=utf-8&book=y&page=".($page+1)."&start=".count($arrIds);
+        $html = file_get_html($url);
+        $items  = $html->find('li.item-book div.p-img a');
+        foreach ($items as $item){
+            $str = $item->getAttribute('href');
+            preg_match("/\/(\d+).htm/is", $str, $match);
+            if(isset($match[1])){
+                $arrIds[] = $match[1];
+            }
+        }        
+        foreach ($arrIds as $key => $val){
+            $base = new WareProductDetailSearchListGetRequest();
+            $base->setSkuId($val);
+            $base->setIsLoadWareScore("true");
+            $base->setClient("m");           
+            $ret = $c->execute($base);
+            $temparr = json_decode($ret->resp,true);
+           
+            $arr   = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['productInfo'];
+            $image = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['imagePaths'][0];
+            $temp[$key]['url']       = "http://item.jd.com/".$val.".html";
             $detailRequest = new WareBasebookGetRequest();
-            $detailRequest->setSkuId($val['skuId']);
+            $detailRequest->setSkuId($val);
             $detail = $c->execute($detailRequest);
             $ret = $detail->resp;
-            $arr = json_decode($ret,true);
-            $detail =  $arr['jingdong_ware_basebook_get_responce']['BookEntity'][0]['book_info'];
+            $arrBook = json_decode($ret,true);
+            $detail =  $arrBook['jingdong_ware_basebook_get_responce']['BookEntity'][0]['book_info'];
             
-            $temp[$key]['title'] = $val['wareName'];
+            $temp[$key]['title'] = $arr['wname'];
             
             $temp[$key]['author'] = isset($detail['author'])?$detail['author']:'';
             
-            $temp[$key]['price_mart'] = isset($val['martPrice'])?$val['martPrice']:'';
+            $temp[$key]['price_mart'] = isset($arr['martPrice'])?$arr['martPrice']:'';
             
-            $temp[$key]['price_jd'] = isset($val['jdPrice'])?$val['jdPrice']:'';
+            $temp[$key]['price_jd'] = isset($arr['jdPrice'])?$arr['jdPrice']:'';
             
             $temp[$key]['press'] = isset($detail['publishers'])?$detail['publishers']:'';
             $temp[$key]['isbn'] = isset($detail['isbn'])?$detail['isbn']:'';
             
-            //此处拿到大图
-            $objImage = new WareBaseproductGetRequest();
-            $objImage->setSkuId($val['skuId']);
-            $objImage->setBase('image_path');
-            $tempRet = $c->execute($objImage);
-            $tempRet = json_decode($tempRet->resp,true);
-            if(isset($tempRet['jingdong_ware_baseproduct_get_responce']['product_base'][0]["image_path"])){
-                $temp[$key]['image'] = $tempRet['jingdong_ware_baseproduct_get_responce']['product_base'][0]["image_path"];
-            }else{
-                $temp[$key]['image'] = $val['imageUrl'];
-            }
-            $temp[$key]['image']  = Base_Image::getUrlByName($this->uploadPic($temp[$key]['image']));
+            
+            $temp[$key]['image']  = Base_Image::getUrlByName($this->uploadPic($image['bigpath']));
             
             $temp[$key]['status'] = Book_Type_Status::PUBLISHED;
             $temp[$key]['create_time'] = time();
             
-            $temp[$key]['totalNum'] = $count;
+            $temp[$key]['totalNum'] = $totalCount;
             
             $temp[$key]['pages']    = isset($detail['pages'])?$detail['pages']:'';
             
             
             $obj = new WareBookbigfieldGetRequest();
-            $obj->setSkuId($val['skuId']);
+            $obj->setSkuId($val);
             $detail = $c->execute($obj);
             $ret = $detail->resp;
             $arr = json_decode($ret,true);
@@ -161,8 +161,9 @@ class Book_Logic_Book extends Base_Logic{
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'totalNum',$temp[$key]['totalNum']);
     
             $temp[$key]['id'] = $index;
-            
-            $key += 1;
+            if($index >= 20){
+                break;
+            }
         }
         return $temp;
     }

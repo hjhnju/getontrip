@@ -20,7 +20,7 @@ class Topic_List_Topic extends Base_List {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'title', 'subtitle', 'content', 'desc', 'image', 'create_user', 'update_user', 'from', 'url', 'status', 'x', 'y', 'hot1', 'hot2', 'hot3', 'create_time', 'update_time');
+    protected $fields = array('id', 'title', 'subtitle', 'content', 'desc', 'image', 'create_user', 'update_user', 'from', 'url', 'status', 'x', 'y', 'hot1', 'hot2', 'hot3', 'create_time', 'update_time', 'from_detail');
 
     /**
      * 整数类型的字段

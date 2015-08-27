@@ -26,7 +26,7 @@ class Topic_Object_Topic extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'title', 'subtitle', 'content', 'desc', 'image', 'create_user', 'update_user', 'from', 'url', 'status', 'x', 'y', 'hot1', 'hot2', 'hot3', 'create_time', 'update_time');
+    protected $fields = array('id', 'title', 'subtitle', 'content', 'desc', 'image', 'create_user', 'update_user', 'from', 'url', 'status', 'x', 'y', 'hot1', 'hot2', 'hot3', 'create_time', 'update_time', 'from_detail');
 
     /**
      * 字段与属性隐射关系
@@ -51,6 +51,7 @@ class Topic_Object_Topic extends Base_Object {
         'hot3'        => 'hot3',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
+        'from_detail' => 'fromDetail',
     );
 
     /**
@@ -185,5 +186,11 @@ class Topic_Object_Topic extends Base_Object {
      * @var integer
      */
     public $updateTime;
+
+    /**
+     * 来源的详细描述
+     * @var string
+     */
+    public $fromDetail;
 
 }

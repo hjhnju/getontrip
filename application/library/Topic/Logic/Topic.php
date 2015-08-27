@@ -120,7 +120,7 @@ class Topic_Logic_Topic extends Base_Logic{
      */
     public function getTopicDetail($topicId,$device_id){
         $objTopic = new Topic_Object_Topic();
-        $objTopic->setFileds(array('id','title','content','from','image','x','y'));
+        $objTopic->setFileds(array('id','title','content','from','from_detail','image','x','y'));
         $objTopic->fetch(array('id' => $topicId));
         $arrRet                = $objTopic->toArray();
         if(empty($arrRet)){
@@ -154,7 +154,12 @@ class Topic_Logic_Topic extends Base_Logic{
         
         //话题来源
         $logicSource     = new Source_Logic_Source();
-        $arrRet['from']  = $logicSource->getSourceName($objTopic->from);
+        if(empty($objTopic->fromDetail)){
+            $arrRet['from']  = $logicSource->getSourceName($objTopic->from);
+        }else{
+            $arrRet['from']  = trim($objTopic->fromDetail);
+        }
+        
         $arrRet['image'] = Base_Image::getUrlByName($arrRet['image']);
         
         //话题访问人数

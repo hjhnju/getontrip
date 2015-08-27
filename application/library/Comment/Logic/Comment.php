@@ -105,7 +105,7 @@ class Comment_Logic_Comment  extends Base_Logic{
             }
             $ret['list'][$key]['subComment'] = $arrSubComment['list'];
         }
-        return $ret['list'];
+        return $ret;
     }
     
     /**

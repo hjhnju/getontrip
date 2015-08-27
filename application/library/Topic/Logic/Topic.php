@@ -648,6 +648,7 @@ class Topic_Logic_Topic extends Base_Logic{
             return false;
         }
         foreach ($arrInfo as $key => $val){
+            $key  = $this->getprop($key);
             $objTopic->$key = $val;
         }
         $ret = $objTopic->save();

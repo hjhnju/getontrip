@@ -389,9 +389,9 @@ class Topic_Logic_Topic extends Base_Logic{
             $listTopic->setFilterString($filter);
         }
         if(isset($arrParam['id'])){
-            $listTopic->setFields(array('id','title','from','content','url','image','status','create_time','update_time'));
+            $listTopic->setFields(array('id','title','from','from_detail','content','url','image','status','create_time','update_time'));
         }else{
-            $listTopic->setFields(array('id','title','from','url','image','status','create_time','update_time'));
+            $listTopic->setFields(array('id','title','from','from_detail','url','image','status','create_time','update_time'));
         }
         $listTopic->setPage($page);
         $listTopic->setPagesize($pageSize);

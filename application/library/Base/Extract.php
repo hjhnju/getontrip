@@ -259,12 +259,10 @@ class Base_Extract {
 	    $content = preg_replace( '/<p.*?>/is', '<p>', $content );
 	    $content = preg_replace( '/<br.*?>/is', '<br>', $content );
 	    $content = preg_replace( '/<b.*?>/is', '<b>', $content );
-	    if(!$bSourceOther){
-	        return $content;
-	    }
+	    
 	    $num = preg_match_all('/img.*?'.$imageName.'=\"(.*?)\".*?>/si',$content,$match);
 	    for($i=0;$i<$num;$i++){
-	        if($this->isFullPath($match[1][$i])){
+	        if(!$bSourceOther || $this->isFullPath($match[1][$i])){
 	            $content = str_replace($match[0][$i],"img src=\"".$match[1][$i]."\">",$content);
 	        }else{
 	            if(stristr($match[1][$i],"//")){

@@ -19,7 +19,7 @@ define(function(require) {
         var imgBox = $('#bg-img'); 
         var width = imgBox.width();
         var height = Math.ceil(rate * width);
-        var imgUrl = imgBox.attr('data-webroot') + '/pic/' + imgBox.attr('data-image') + '@c' + width+ 'w_c' + height+'h';
+        var imgUrl = imgBox.attr('data-webroot') + '' + imgBox.attr('data-image') + '@c' + width+ 'w_c' + height+'h';
 
         // var imgUrl=imgBox.attr('data-webroot') + '/pic/' + imgBox.attr('data-img_hash') + '_' + width + '_' + height + '.'+imgBox.attr('data-img_type');
         imgBox.css({

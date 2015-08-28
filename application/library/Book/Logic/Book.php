@@ -12,31 +12,27 @@ class Book_Logic_Book extends Base_Logic{
      * @param integer $pageSize
      * @return array
      */
-    public function getBooks($sightId,$page,$pageSize,$status=Book_Type_Status::PUBLISHED){
+    public function getBooks($sightId,$page,$pageSize,$status = Book_Type_Status::PUBLISHED){
         $redis  = Base_Redis::getInstance();
         $from   = ($page-1)*$pageSize+1;
         $to     = $page*$pageSize;
         $ret    = array();
         $arrRet = array();
-        if($status == Book_Type_Status::ALL){
-            for($i = $from; $i<=$to; $i++){
-                $arrItem = array();
-                $ret = $redis->hGetAll(Book_Keys::getBookInfoName($sightId, $i));
-                if(empty($ret)){
-                    break;
-                }
-                $arrRet[] = $ret;
-            }
-        }else{
-            $arrBookKeys = $redis->keys(Book_Keys::getBookInfoName($sightId, "*"));
-            foreach ($arrBookKeys as $index => $BookKey){
-                $ret = $redis->hGetAll($BookKey);
-                $num = $index + 1;
-                if(($ret['status'] == $status)&&($num >= $from)&&($num <= $to)){
+        $arrBookKeys = array();
+        $num    = 1;
+        $arrBookKeys = $redis->keys(Book_Keys::getBookInfoName($sightId, "*"));
+        $arrBookKeys = $this->keySort($arrBookKeys);
+        $count       = count($arrBookKeys);
+        foreach ($arrBookKeys as  $key){
+            $ret = $redis->hGetAll($key);
+            if (($num >= $from)&&($num <= $to)){
+                if ($status == Book_Type_Status::ALL || $status == $ret['status']){
+                    $ret['totalNum'] = $count;
                     $arrRet[] = $ret;
                 }
             }
-        }        
+            $num += 1;
+        }
         return $arrRet; 
     }
     
@@ -74,8 +70,9 @@ class Book_Logic_Book extends Base_Logic{
             }
         }
         
-        $item = $html->find('div.total span strong',0);
-        $totalCount = intval($item->innertext);
+        //书籍总数
+        //$item = $html->find('div.total span strong',0);
+        //$totalCount = intval($item->innertext);
         
         $url = "http://search.jd.com/s.php?keyword=".$name."&enc=utf-8&book=y&page=".($page+1)."&start=".count($arrIds);
         $html = file_get_html($url);
@@ -86,17 +83,27 @@ class Book_Logic_Book extends Base_Logic{
             if(isset($match[1])){
                 $arrIds[] = $match[1];
             }
-        }        
-        foreach ($arrIds as $key => $val){
+        }
+        
+        $logicBlack = new Black_Logic_Black();        
+        $arrBlackId = $logicBlack->getList(Black_Type_Type::BOOK);
+        $key        = 0;
+        foreach ($arrIds as $val){
+            if (in_array($val,$arrBlackId)) {
+                continue;
+            }
             $base = new WareProductDetailSearchListGetRequest();
             $base->setSkuId($val);
-            $base->setIsLoadWareScore("true");
+            $base->setIsLoadWareScore("false");
             $base->setClient("m");           
             $ret = $c->execute($base);
             $temparr = json_decode($ret->resp,true);
            
             $arr   = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['productInfo'];
             $image = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['imagePaths'][0];
+            if(!$arr['isbook']){
+                continue;
+            }
             $temp[$key]['url']       = "http://item.jd.com/".$val.".html";
             $detailRequest = new WareBasebookGetRequest();
             $detailRequest->setSkuId($val);
@@ -109,7 +116,7 @@ class Book_Logic_Book extends Base_Logic{
             
             $temp[$key]['author'] = isset($detail['author'])?$detail['author']:'';
             
-            $temp[$key]['price_mart'] = isset($arr['martPrice'])?$arr['martPrice']:'';
+            $temp[$key]['price_mart'] = isset($arr['marketPrice'])?$arr['marketPrice']:'';
             
             $temp[$key]['price_jd'] = isset($arr['jdPrice'])?$arr['jdPrice']:'';
             
@@ -121,8 +128,6 @@ class Book_Logic_Book extends Base_Logic{
             
             $temp[$key]['status'] = Book_Type_Status::PUBLISHED;
             $temp[$key]['create_time'] = time();
-            
-            $temp[$key]['totalNum'] = $totalCount;
             
             $temp[$key]['pages']    = isset($detail['pages'])?$detail['pages']:'';
             
@@ -158,12 +163,12 @@ class Book_Logic_Book extends Base_Logic{
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'content_desc',$temp[$key]['content_desc']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'status',$temp[$key]['status']);
             $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'create_time',$temp[$key]['create_time']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'totalNum',$temp[$key]['totalNum']);
     
             $temp[$key]['id'] = $index;
-            if($index >= 20){
+            if($key >= 10){
                 break;
             }
+            $key += 1;
         }
         return $temp;
     }
@@ -197,7 +202,10 @@ class Book_Logic_Book extends Base_Logic{
      */
     public function delBook($sightId,$id){
         $redis        = Base_Redis::getInstance();
-        $picName  = $redis->hget(Book_Keys::getBookInfoName($sightId, $id),'image');
+        $logicBlack   = new Black_Logic_Black();
+        $picName      = $redis->hget(Book_Keys::getBookInfoName($sightId, $id),'image');
+        $id           = $redis->hget(Book_Keys::getBookInfoName($sightId, $id),'isbn');
+        $logicBlack->addBlack($id, Black_Type_Type::BOOK);
         if(!empty($picName)){
             $this->delPic($picName);
         }

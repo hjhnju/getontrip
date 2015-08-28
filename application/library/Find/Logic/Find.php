@@ -37,6 +37,7 @@ class Find_Logic_Find{
                 $ret[$key]['sight'] = $sightInfo['name'];                
                 $cityInfo  = $this->logicCity->getCityById($sightInfo['city_id']);
                 $ret[$key]['city']  = $cityInfo['name'];
+                $ret[$key]['city']  = str_replace("市","",$ret[$key]['city']);
                 $sightId = $sight['list'][0]['sight_id'];
             }
             if(!empty($val['x']) && !empty($val['y'])){

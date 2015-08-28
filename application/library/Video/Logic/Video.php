@@ -21,26 +21,22 @@ class Video_Logic_Video extends Base_Logic{
         $to     = $page*$pageSize;
         $ret    = array();
         $arrRet = array();
-        if($status == Video_Type_Status::ALL){
-            for($i = $from; $i<=$to; $i++){
-                $arrItem = array();
-                $ret = $redis->hGetAll(Video_Keys::getVideoInfoName($sightId, $i));
-                if(empty($ret)){
-                    break;
-                }
-                $arrRet[] = $ret;
-            }
-        }else{
-            $arrVideoKeys = $redis->keys(Video_Keys::getVideoInfoName($sightId, "*"));
-            foreach ($arrVideoKeys as $index => $VideoKey){
-                $ret = $redis->hGetAll($VideoKey);
-                $num = $index + 1;
-                if(($ret['status'] == $status)&&($num >= $from)&&($num <= $to)){
+        $arrVideoKeys= array();        
+        $num    = 1;
+        $arrVideoKeys = $redis->keys(Video_Keys::getVideoInfoName($sightId, "*"));
+        $arrVideoKeys = $this->keySort($arrVideoKeys);
+        $count        = count($arrVideoKeys);
+        foreach ($arrVideoKeys as  $key){
+            $ret = $redis->hGetAll($key);
+            if (($num >= $from)&&($num <= $to)){
+                if ($status == Video_Type_Status::ALL || $status == $ret['status']){
+                    $ret['totalNum'] = $count;
                     $arrRet[] = $ret;
                 }
             }
-        }      
-        return $arrRet; 
+            $num += 1;
+        }
+        return $arrRet;
     }
         
     /**
@@ -57,28 +53,37 @@ class Video_Logic_Video extends Base_Logic{
         $url = "http://so.iqiyi.com/so/q_".$name."_page_".$page;
         $html = file_get_html($url);
         
-        $item  = $html->find('div.mod-page a',-2);
-        $count = $item->getAttribute('data-key')*self::PAGE_SIZE;
+        //视频总数
+        //$item  = $html->find('div.mod-page a',-2);
+        //$count = $item->getAttribute('data-key')*self::PAGE_SIZE;
         
-        foreach($html->find('li.list_item') as $key => $e){
+        $logicBlack = new Black_Logic_Black();
+        $arrBlackId = $logicBlack->getList(Black_Type_Type::VIDEO);
+        $key        = 0;
+        
+        foreach($html->find('li.list_item') as $e){
             $strMark = $e->getAttribute('data-searchpingback-position');
             preg_match('/target=(.*?)&/is', $strMark,$match);
             if(isset($match[1])){
                 $sign = $match[1];
             }
             $info = array();
-            $info['title']     = html_entity_decode($e->getAttribute('data-widget-searchlist-tvname'));
+            $info['title']     = trim(html_entity_decode($e->getAttribute('data-widget-searchlist-tvname')));
             $diversity         = intval($e->getAttribute('data-widget-searchlist-pagesize'));
             $info['type']      = ($diversity > 1)?Video_Type_Type::ALBUM:Video_Type_Type::VIDEO;
             $info['catageory'] = html_entity_decode($e->getAttribute('data-widget-searchlist-catageory'));
             $ret               = $e->find('a.figure',0);
-            $info['url']       = $ret->getAttribute("href");        
+            $info['url']       = trim($ret->getAttribute("href"));        
             $ret               = $e->find('a.figure img',0);
             $info['image']     = Base_Image::getUrlByName($this->uploadPic($ret->getAttribute("src")));
             $info['status']    = Video_Type_Status::PUBLISHED;
             $info['from']      = '爱奇艺';
-            $info['create_time'] = time();
-            $info['totalNum']    = $count;           
+            $info['create_time'] = time();          
+            
+            $id = md5($info['title'].$info['url']);
+            if(in_array($id,$arrBlackId)){
+                continue;
+            }
             
             if(Video_Type_Type::VIDEO == $info['type']){
                 $ele = $e->find('p.viedo_rb span.v_name',0);
@@ -119,11 +124,11 @@ class Video_Logic_Video extends Base_Logic{
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'type',$info['type']);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'status',$info['status']);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'create_time',$info['create_time']);
-            $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'totalNum',$info['totalNum']);
             $redis->hset(Video_Keys::getVideoInfoName($sightId, $index),'len',$info['len']);
             
             $info['id']      = $index;
             $arrData[]       = $info;
+            $key            += 1;
         }
         $html->clear();
         return $arrData;
@@ -158,7 +163,12 @@ class Video_Logic_Video extends Base_Logic{
      */
     public function delVideo($sightId,$id){
         $redis    = Base_Redis::getInstance();
+        $logic    = new Black_Logic_Black();
         $picName  = $redis->hget(Video_Keys::getVideoInfoName($sightId, $id),'image');
+        $title    = $redis->hget(Video_Keys::getVideoInfoName($sightId, $id),'title');
+        $url      = $redis->hget(Video_Keys::getVideoInfoName($sightId, $id),'url');
+        $id       = md5($title.$url);
+        $logic->addBlack($id, Black_Type_Type::VIDEO);
         if(!empty($picName)){
             $this->delPic($picName);
         }

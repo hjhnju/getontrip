@@ -75,4 +75,21 @@ class Base_Logic{
         $oss  = Oss_Adapter::getInstance();
         return $oss->remove($name);
     }
+    
+    /**
+     * redis key的排序
+     * @param array $arrKeys
+     * @param integer $order
+     * @return array
+     */
+    public function  keySort($arrKeys,$order = SORT_ASC){
+        $arrWeight = array();
+        foreach ($arrKeys as $key){
+            $temp  = explode("_",$key);
+            $count = count($temp);            
+            $arrWeight[] = $temp[$count-1];
+        }
+        array_multisort($arrWeight, $order , $arrKeys);
+        return $arrKeys;
+    }
 }

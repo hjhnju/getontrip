@@ -127,7 +127,7 @@ class Base_Extract {
 		
 		// 5. HTML TAGs
 		/*$pattern = '/<[^(img|p|br)].*?>/s';*/
-		$pattern = '/<(?!img|p|\/p|br|P|\/P|BR|b|B|\/b|\/B|hr).*?>/s';
+		$pattern = '/<(?!img|p|\/p|br|\/br|b|\/b|hr).*?>/is';
 		$replacement = '';
 		$content = preg_replace( $pattern, $replacement, $content );
 		
@@ -249,16 +249,16 @@ class Base_Extract {
 	}
 	
 	/**
-	 * 对图像及p,br标签数据整理
+	 * 对img及p,br标签数据整理
+	 * $bSourceOther=true,表示其他网站，这样其图片可能是相对路径，需要改成绝对路径，同时去掉其他属性
+	 * $bSourceOther=false,表示我们的站点，只对其它属性进行处理
 	 * @param string $content
 	 * @return string
 	 */
 	public function dataClean($content,$bSourceOther=true,$imageName='src'){
-	    $content = preg_replace( '/<p.*?>/', '<p>', $content );
-	    $content = preg_replace( '/<br.*?>/', '<br>', $content );	
-	    $content = preg_replace( '/<P.*?>/', '<p>', $content );
-	    $content = preg_replace( '/<BR.*?>/', '<br>', $content );
-	    $content = preg_replace( '/<B.*?>/', '<b>', $content );
+	    $content = preg_replace( '/<p.*?>/is', '<p>', $content );
+	    $content = preg_replace( '/<br.*?>/is', '<br>', $content );
+	    $content = preg_replace( '/<b.*?>/is', '<b>', $content );
 	    if(!$bSourceOther){
 	        return $content;
 	    }

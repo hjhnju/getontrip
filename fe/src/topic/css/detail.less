@@ -94,3 +94,151 @@
         font-size: 10px;
     }
 }
+
+.main-wrap {
+    max-width: 640px;
+    min-width: 300px;
+    margin: 0 auto;
+}
+.content-wrap {
+    overflow: hidden; 
+}
+.web-logo {
+  width: 126px;
+  height: 42px;
+  background-image:url('/img/Web_Logo.png');
+  background-repeat:no-repeat;
+  display: inline-block;
+  vertical-align: middle;
+}
+.global-header {
+  width: 100%; 
+  top:0;
+  z-index: 9990;
+  height: 60px;
+  background-color: #009dd7;
+  color: #FaFcFe;
+}
+
+.global-header .title {
+  font-size: 24px;
+  font-weight: 100;
+  margin: 0 0 0 63px;
+}
+.global-header .main-wrap{
+  height: 60px;
+  position: relative;
+  line-height: 60px;
+}
+.download-banner-v2 {
+  position: fixed;
+  bottom: 0;
+  z-index: 3;
+  display: none;
+  width: 100%;
+  height: 60px;
+  background-color: rgba(0, 0, 0, .7);
+  color: #fff;
+  -webkit-transition: opacity .3s ease-out;
+          transition: opacity .3s ease-out;
+}
+
+.download-banner-v2.hide {
+  opacity: 0;
+}
+
+.download-banner-v2 .close {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 21px;
+  height: 21px;
+  padding: 19px 12px 20px;
+  background-image: url(/img/download_banner/close.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 21px;
+  opacity: 1;
+}
+
+.download-banner-v2 .icon {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 46px;
+  width: 41px;
+  height: 41px;
+  margin: auto;
+  background-image: url(/img/download_banner/app-icon.png);
+  background-position: center;
+  background-size: 41px;
+}
+
+.download-banner-v2 .title,
+.download-banner-v2 .describe {
+  margin-left: 97px;
+  margin-right: 84px;
+  line-height: 1;
+}
+
+.download-banner-v2 .title {
+  margin-top: 12px;
+  margin-bottom: 0;
+  font-size: 19px;
+}
+
+.download-banner-v2 .describe {
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.download-banner-v2 .download-btn {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  bottom: 0;
+  width: 74px;
+  height: 23px;
+  padding-top: 10px;
+  margin: auto;
+  font-size: 13px;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background-color: #58af08;
+  border: 0;
+  border-radius: 4px;
+}
+
+.sprite-ico-Header_Logo2x {
+  position: absolute;
+  bottom: 0;
+}
+
+.button {
+  display: inline-block;
+  height: 36px;
+  line-height: 36px;
+  width: 120px;
+  background-color: #1cade9;
+  margin: 0 5px;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 14px;
+}
+html.no-touch .button:hover {
+  background-color: #1fb3f0;
+}
+.button i {
+  margin-right: 10px;
+}
+.button span {
+  vertical-align: -2px;
+}
+
+.download {
+  float: right;
+}

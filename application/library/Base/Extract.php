@@ -74,16 +74,17 @@ class Base_Extract {
 	 */
 	function preProcess() {
 		$content = $this->rawPageCode;
-		
 		$num = preg_match_all('/<meta.*?>/si',$content,$match);
 		for( $i = 0; $i < $num; $i++ ){
-		    if(false !== stristr($match[0][$i],"charset")){
+		    if(isset($match[0][$i]) && (false !== stristr($match[0][$i],"charset"))){
 		        preg_match('/charset=\"?(.*?)(\"|\s|\/|>)/si',$content,$match);
 		        $sourceCode = trim($match[1]);
+		        if (strtolower($sourceCode) == 'gb2312'){
+		            $sourceCode = "gbk";
+		        }
 		        $content = mb_convert_encoding($content,"utf8",$sourceCode);
 		    }
 		}
-	
 		// 1. DTD information
 		$pattern = '/<!DOCTYPE.*?>/si';
 		$replacement = '';

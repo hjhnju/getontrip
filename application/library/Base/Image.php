@@ -175,8 +175,8 @@ class Base_Image {
     }
     
     /**
-    * 根据src获取图片名字获取图片的类型
-    * @param  string $name [description]
+    * 根据src获取图片名字image
+    * @param  string $src [description]
     * @return string      [图片的类型]
     */
     public static function getImgNameBySrc($src){
@@ -187,7 +187,7 @@ class Base_Image {
             return '';
         }
         return $name[0];
-    }
+    } 
 
      /**
      * 根据content 获取图片name数组

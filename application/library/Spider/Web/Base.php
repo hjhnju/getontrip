@@ -94,4 +94,17 @@ abstract class Spider_Web_Base{
         $data  = $obj->preProcess();  
         return $obj->dataClean($data,$imageName); 
     }
+
+    /**
+     * 判断图片是否已经上传过
+     */
+    public function isUploaded($src){
+        $image=Base_Image::getImgNameBySrc($src);
+        if(empty($image)){
+            return false;
+        }
+        $oss      = Oss_Adapter::getInstance();
+        $ret= $oss->exists($image);
+        return $ret;  
+    }
 }

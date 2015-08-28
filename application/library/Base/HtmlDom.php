@@ -81,6 +81,9 @@ function file_get_html($url, $use_include_path = false, $context=null, $offset =
         if(false !== stristr($match[0][$i],"charset")){
             preg_match('/charset=\"?(.*?)(\"|\s|\/|>)/si',$contents,$match1);
             $sourceCode = trim($match1[1]);
+            if (strtolower($sourceCode) == "gb2312"){
+                $sourceCode = "gbk";
+            }
             $contents = mb_convert_encoding($contents,"utf8",$sourceCode);
         }
     }

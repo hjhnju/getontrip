@@ -7,7 +7,7 @@
 class Spider_Web_Filterimg extends Spider_Web_Base{
     
     public function __construct($url,$type){
-        parent::__construct($url,$type);
+        parent::__construct($url,$type); 
     }
     
     /**
@@ -30,18 +30,18 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
          $imgUrlArray=array(); 
          $imgDomArray=array();   
          foreach ($this->objDom->find('img') as $img){
-            $oldSrc = $img->src;
-            if($this->isUrl($oldSrc)){ 
-                //去掉url 后面的参数
+            $oldSrc = $img->src; 
+            //是否已经上传过
+            $isUploaded=$this->isUploaded($oldSrc);
+            if(!$isUploaded){
+            //去掉url 后面的参数
                 $src= preg_replace("/\?(.)*/", '', $oldSrc);
                 $img->src = $src;
                 array_push($imgUrlArray, $src);
-                array_push($imgDomArray, $img); 
-            }else if($img->hasAttribute('data-hash')){
-                //如果有data-hash属性，替换为data-image属性
-                $img->setAttribute('data-image',Base_Image::getImgNameBySrc($img->getAttribute('src')));
-                $img->removeAttribute('data-hash');
-            }
+                array_push($imgDomArray, $img);  
+               
+            }else{ 
+             }
          } 
         $this->imgUrlArray = $imgUrlArray;
         $this->imgDomArray = $imgDomArray;
@@ -80,27 +80,11 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
         $strData = '';
         $imgNameArray=$this->imgNameArray; 
         $imgDomArray = $this->imgDomArray;
-        for($i=0;$i<count($imgNameArray);$i++){ 
-            if($this->isUrl($imgDomArray[$i]->src)){  
+        for($i=0;$i<count($imgNameArray);$i++){   
               $imgDomArray[$i] ->setAttribute('data-image',$imgNameArray[$i]);
               $imgDomArray[$i]->src = Base_Image::getUrlByName($imgNameArray[$i]);
-            } 
         }   
-    }
-
-    /**
-     * 只保留img br p
-     * @param  [string] $content [description]
-     * @return [string]          [description]
-     */
-    public function dataClean(){
-       $content=$this->objDom->__toString();
-        //只保留img br p  
-       $obj   = new Base_Extract('',$content);
-       $content  =  $obj->preProcess(); 
-       $content  =  $obj->dataClean($content,false);  
-       return $content;
-    }
+    } 
 
     /**
      * 替换掉多余的回车等
@@ -123,11 +107,13 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
     * 综合上述操作 [用于编辑话题，上传图片] 
     * @return [type] [description]
     */
-    public function getReplacedContent(){  
+    public function getReplacedContent(){
+
         $this->getImgUrlArray(); 
         $this->uploadImgs(); 
         $this->replaceImg();
-        $content=$this->dataClean();
+        $content=$this->objDom->outertext;
+        $content=$this->dataClean($content,false);  
         return $this->replaceBrs($content);
     }
 
@@ -204,5 +190,19 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
         $ourUrl=parse_url(Base_Config::getConfig('web')->root);
         $url=parse_url($str);
         return $ourUrl['host']==$url['host'];
+    }
+
+     /**
+     * 只保留img br p
+     * @param  [string] $content [description]
+     * @return [string]          [description]
+     */
+    public function dataClean($content,$bSourceOther){ 
+        //只保留img br p  
+       $obj   = new Base_Extract('',$content);
+       $content  =  $obj->preProcess(); 
+       $content  =  $obj->dataClean($content,$bSourceOther); 
+       ob_clean();  
+       return $content;
     }
 }

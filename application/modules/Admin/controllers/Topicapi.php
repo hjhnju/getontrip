@@ -59,10 +59,14 @@ class  TopicapiController extends Base_Controller_Api{
         } 
 
         //处理来源名称
-        $fromArray=array(); 
-        for($i=0; $i<count($tmpList); $i++) { 
-            $fromInfo = Source_Api::getSourceInfo($tmpList[$i]["from"]);
-            $tmpList[$i]["fromName"] = isset($fromInfo['name'])?$fromInfo['name']:'';  
+       // $fromArray=array(); 
+        for($i=0; $i<count($tmpList); $i++) {
+            if(empty($tmpList[$i]["from_detail"])) {  
+               $fromInfo = Source_Api::getSourceInfo($tmpList[$i]["from"]);
+               $tmpList[$i]["fromName"] = isset($fromInfo['name'])?$fromInfo['name']:''; 
+            }else{ 
+               $tmpList[$i]["fromName"] =$tmpList[$i]["from_detail"];
+            } 
         }
 
         //处理图片名称 分割为 img_hash 和 img_type

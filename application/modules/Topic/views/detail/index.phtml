@@ -8,37 +8,55 @@
  
 {%/block%} 
 {%block name="content"%}
-<div class="container"> 
- <!--  <div class="top-bar"></div> -->
- {%if isset($post.id)%} 
-  <!--  <div class="bg-img"> -->
-   <!--  {%if empty($post.image)%} 
-   <img src="{%$feroot%}/common/img/imgloading.gif" alt="" class="topic-bg"> 
-   {%else%}
-   <img src="{%$feroot%}/common/img/imgloading.gif" data-webroot="{%$webroot%}" data-img_hash="{%$post.img_hash%}" data-img_type="{%$post.img_type%}" alt="" class="topic-bg" id="topic-bg">
-   {%/if%}   -->
-    {%if empty($post.image)%} 
-      <div class="bg-img"  style="background-image:url('{%$feroot%}/common/img/imgloading.gif');"> 
-    {%else%} 
-      <div class="bg-img" id="bg-img" style="background-image:url('{%$feroot%}/common/img/imgloading.gif'); " data-webroot="{%$webroot%}" data-image="{%$post.image%}"> 
-    {%/if%}  
-    <div class="title-box">
-        <div class="title">
-          {%if empty($post.title)==0%}{%$post.title%}{%/if%} 
+{%if $isapp eq 0%}  
+  <div class="container">
+    {%if $isMobile%}
+    <div class="header-for-mobile">
+      <a href="#" class="header-for-mobile-download-link">
+      <span class="header-for-mobile-btn">立即下载</span>
+      <img class="header-for-mobile-logo-img" src="http://static.daily.zhihu.com/img/app-logo.png">
+      <span class="header-for-mobile-title">途知</span>
+      <span class="header-for-mobile-meta">每日提供高质量新闻资讯</span>
+      </a>
+    </div> 
+    {%else%}
+    <div class="global-header">
+      <div class="main-wrap">
+        <div class="download">
+        <a href="#" class="button" data-device="ios"><i class="sprite-ico-Button_iPhone2x"></i> <span>iPhone</span></a>
+       <!--  <a href="/download/android" class="button" data-device="android-local"><i class="sprite-ico-Button_Android2x"></i> <span>Android</span></a> -->
         </div>
-        <div class="like">
-           <i class="fa"></i>{%$post.collect%}
-           <i class="fa fa-eye"></i>{%$post.collect%}
-        </div>
+        <a href="/" target="_self" title="途知"><i class="web-logo"></i></a>
+      </div>
     </div>
+    {%/if%} 
   </div>
+{%/if%}  
+<div class="container main-wrap content-wrap"> 
+ {%if isset($post.id)%}  
+    {%if $isapp eq 0%}  
+      <div class="bg-img" id="bg-img" style="background-image:url('{%$feroot%}/common/img/imgloading.gif'); " data-webroot="{%$webroot%}" data-image="{%$post.image%}">  
+      <div class="title-box">
+          <div class="title">
+            {%if empty($post.title)==0%}{%$post.title%}{%/if%} 
+          </div>
+          <div class="like">
+             <i class="fa"></i>{%$post.collect%}
+             <i class="fa fa-eye"></i>{%$post.collect%}
+          </div>
+       </div> 
+      <div class="img-mask"></div> 
+    </div> 
+   {%/if%}
   <div class="main-content">
     <div class="main-content-inner rich-text">
        {%if empty($post.title)==0%}{%$post.content%}{%/if%}
     </div>
     <div class="text-from">
-       {%if empty($post.from_name)==0%}
-            内容来自{%$post.from_name%}<a href="{%$post.url%}" target="_blank">查看原网页</a>
+       {%if empty($post.from_detail) eq 0%}
+            来自：{%$post.from%}
+       {%elseif empty($post.from) eq 0%}
+            来自:{%$post.from%}&nbsp;&nbsp;<a href="{%$post.url%}" target="_blank">查看原网页</a>
        {%/if%} 
     </div>
   </div>

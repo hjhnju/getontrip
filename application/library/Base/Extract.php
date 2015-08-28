@@ -271,7 +271,6 @@ class Base_Extract {
 	            }
 	        }
 	    }	    
-	    $content = html_entity_decode($content);
 	    return $content;
 	}
 }

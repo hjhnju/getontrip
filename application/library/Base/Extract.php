@@ -257,8 +257,9 @@ class Base_Extract {
 	 */
 	public function dataClean($content,$bSourceOther=true,$imageName='src'){
 	    $content = preg_replace( '/<p.*?>/is', '<p>', $content );
+	    $content = preg_replace( '/<b[^r].*?>/is', '<b>', $content );
 	    $content = preg_replace( '/<br.*?>/is', '<br>', $content );
-	    $content = preg_replace( '/<b.*?>/is', '<b>', $content );
+	    
 	    
 	    $num = preg_match_all('/img.*?'.$imageName.'=\"(.*?)\".*?>/si',$content,$match);
 	    for($i=0;$i<$num;$i++){

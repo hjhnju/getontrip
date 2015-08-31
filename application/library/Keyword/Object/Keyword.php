@@ -26,7 +26,7 @@ class Keyword_Object_Keyword extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'sight_id', 'name', 'url', 'weight', 'status', 'create_user', 'update_user', 'create_time', 'update_time');
+    protected $fields = array('id', 'sight_id', 'name', 'url', 'weight', 'status', 'create_user', 'update_user', 'create_time', 'update_time', 'x', 'y');
 
     /**
      * 字段与属性隐射关系
@@ -43,6 +43,8 @@ class Keyword_Object_Keyword extends Base_Object {
         'update_user' => 'updateUser',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
+        'x'           => 'x',
+        'y'           => 'y',
     );
 
     /**
@@ -75,7 +77,7 @@ class Keyword_Object_Keyword extends Base_Object {
     public $id;
 
     /**
-     * 来源名称
+     * 景点ID
      * @var integer
      */
     public $sightId;
@@ -127,5 +129,17 @@ class Keyword_Object_Keyword extends Base_Object {
      * @var integer
      */
     public $updateTime;
+
+    /**
+     * 经度
+     * @var 
+     */
+    public $x;
+
+    /**
+     * 纬度
+     * @var 
+     */
+    public $y;
 
 }

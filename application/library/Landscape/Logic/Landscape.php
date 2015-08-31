@@ -128,7 +128,7 @@ class Landscape_Logic_Landscape extends Base_Logic{
                 $arrTotal[] = $val;
             }
         }
-        $redis->hSet(Landscape_Keys::getTopicVisitKey(),Landscape_Keys::getTotalKey($landscapeId),count($arrTotal));
+        $redis->hSet(Landscape_Keys::getLandscapeVisitKey(),Landscape_Keys::getTotalKey($landscapeId),count($arrTotal));
         return count($arrTotal);
     }
     
@@ -150,6 +150,11 @@ class Landscape_Logic_Landscape extends Base_Logic{
         $arrTopics       = $logicTopic->searchTopic($ret['name'],1,PHP_INT_MAX);
         $ret['topics']   = $arrTopics['list'];
         $ret['topicNum'] = $arrTopics['total'];
+        $logicCity       = new City_Logic_City();
+        $city            = $logicCity->getCityById($ret['city_id']);
+        $ret['city']     = $city['name'];
+        unset($ret['city_id']);
+        $ret['image']    = Base_Image::getUrlByName($ret['image']);
         $ret['visit']    = strval($this->getTotalTopicVistUv($id));        
         return $ret;
     }

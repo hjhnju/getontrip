@@ -50,7 +50,6 @@ class Book_Logic_Book extends Base_Logic{
         $conf      = new Yaf_Config_INI(CONF_PATH. "/jd.ini");
         $sight     = Sight_Api::getSightById($sightId);
         $name      = trim($sight['name']);
-        $totalCount = 0;
 
         $appKey    = $conf['appKey'];
         $appSecret = $conf['appSecret'];

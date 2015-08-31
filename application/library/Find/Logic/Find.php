@@ -41,7 +41,7 @@ class Find_Logic_Find{
                 $sightId = $sight['list'][0]['sight_id'];
             }
             if(!empty($val['x']) && !empty($val['y'])){
-                $ret[$key]['dist']  = $this->modelGis->getEarthDistanceToTopic($x,$y,$val['id']);
+                $ret[$key]['dist']  = $this->modelGis->getEarthDistanceToPoint($x,$y,$val['x'],$val['y']);
             }else{            
                 $ret[$key]['dist']  = $this->modelGis->getEarthDistanceToSight($x, $y, $sightId);
             }

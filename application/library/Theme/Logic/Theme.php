@@ -113,9 +113,10 @@ class Theme_Logic_Theme extends Base_Logic{
      * @param integer $id
      * @return array
      */
-    public function queryThemeById($id){
+    public function queryThemeById($id,$x='',$y=''){
         $obj          = new Theme_Object_Theme();
         $arrLandscape = array();
+        $obj->setFileds(array('id','name','image','content','period'));
         $obj->fetch(array('id' => $id));
         $arrRet = $obj->toArray();
         
@@ -125,12 +126,17 @@ class Theme_Logic_Theme extends Base_Logic{
         $ret = $list->toArray();
         foreach ($ret['list'] as $val){
             $logicLandscape = new Landscape_Logic_Landscape();
-            $objLandscape   = $logicLandscape->queryLandscapeById($val['landscape_id']);
+            $objLandscape   = $logicLandscape->queryLandscapeById($val['landscape_id'],$x,$y);
             if($objLandscape['status'] == Landscape_Type_Status::PUBLISHED){
-                $arrLandscape[] = $objLandscape;
+                $arr['city']    = $objLandscape['city'];
+                $arr['image']   = $objLandscape['image'];
+                $arr['name']    = $objLandscape['name'];
+                $arr['dis']     = $objLandscape['dis'];
+                $arrLandscape[] = $arr;
             }
         }
         $arrRet['landscape'] = $arrLandscape;
+        $arrRet['image']     = Base_Image::getUrlByName($arrRet['image']);
         return $arrRet;
     }
     
@@ -253,6 +259,7 @@ class Theme_Logic_Theme extends Base_Logic{
         $arrRet = $list->toArray();
         foreach ($arrRet['list'] as $key => $val){
             $arrRet['list'][$key]['collect'] = $logicCollect->getTotalCollectNum(Collect_Keys::THEME,$val['id']);
+            $arrRet['list'][$key]['image']   = Base_Image::getUrlByName($arrRet['list'][$key]['image']);
         }
         return $arrRet['list'];
     }

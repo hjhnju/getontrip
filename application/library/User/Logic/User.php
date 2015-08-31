@@ -37,6 +37,12 @@ class User_Logic_User extends Base_Logic{
         return $objUser->nickName;
     }
     
+    public function getUserAvatar($userId){
+        $objUser  = new User_Object_User();
+        $objUser->fetch(array('id' => $userId));
+        return Base_Image::getUrlByName($objUser->image);
+    }
+    
     /**
      * 获取用户信息
      * @param string $deviceId

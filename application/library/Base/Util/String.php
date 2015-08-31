@@ -106,7 +106,7 @@ class Base_Util_String {
 	 * @param unknown $time
 	 */
 	public static function getTimeAgoString($time){
-	    $ago = time() -  $time;	    
+	    $ago = time() -  $time;	  
 	    if ($ago < 60) {
 	        $str = $ago."秒";
 	    }elseif ($ago < 3600){
@@ -116,5 +116,6 @@ class Base_Util_String {
 	    }else{
 	        $str = floor($ago/86400)."天";
 	    }
+	    return $str;
 	}
 }

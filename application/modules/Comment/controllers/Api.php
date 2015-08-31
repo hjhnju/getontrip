@@ -20,8 +20,7 @@ class ApiController extends Base_Controller_Api {
      * @param integer upId,上层评论ID，如果是顶级评论，则可以不传
      * @param string  deviceId,设备ID
      * @param integer toUserId,回复给的人，如果是评论，则可以不传
-     * @param integer page
-     * @param integer pageSize
+     * @param string content,回复的内容
      * @return json
      */
     public function addAction() {
@@ -29,7 +28,7 @@ class ApiController extends Base_Controller_Api {
         $upId       = isset($_REQUEST['upId'])?intval($_REQUEST['upId']):0;
         $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
         $toUserId   = isset($_REQUEST['toUserId'])?intval($_REQUEST['toUserId']):'';
-        $content    = isset($_REQUEST['content'])?intval($_REQUEST['content']):'';               
+        $content    = isset($_REQUEST['content'])?trim($_REQUEST['content']):'';               
         if(empty($topicId) || empty($deviceId)|| empty($toUserId) ||empty($content)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }

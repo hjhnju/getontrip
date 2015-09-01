@@ -137,5 +137,17 @@ class Base_Util_Number {
         }
         return $strDis;
     }
+    
+    /**
+     * 获取期数
+     * @param integer $period
+     * @return string
+     */
+    public static function getPeriods($period){
+        if(empty($period)){
+            return '';
+        }       
+        return "第".$period."期";
+    }
 }
 

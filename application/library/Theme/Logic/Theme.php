@@ -262,6 +262,7 @@ class Theme_Logic_Theme extends Base_Logic{
         foreach ($arrRet['list'] as $key => $val){
             $arrRet['list'][$key]['collect'] = $logicCollect->getTotalCollectNum(Collect_Keys::THEME,$val['id']);
             $arrRet['list'][$key]['image']   = Base_Image::getUrlByName($arrRet['list'][$key]['image']);
+            $arrRet['list'][$key]['period']  = Base_Util_Number::getPeriods($arrRet['list'][$key]['period']);
         }
         return $arrRet['list'];
     }

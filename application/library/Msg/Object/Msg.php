@@ -26,7 +26,7 @@ class Msg_Object_Msg extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('mid', 'sender', 'receiver', 'title', 'type', 'content', 'status', 'create_time', 'update_time', 'read_time');
+    protected $fields = array('mid', 'sender', 'receiver', 'title', 'type', 'content', 'attach', 'image', 'status', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -39,10 +39,11 @@ class Msg_Object_Msg extends Base_Object {
         'title'       => 'title',
         'type'        => 'type',
         'content'     => 'content',
+        'attach'      => 'attach',
+        'image'       => 'image',
         'status'      => 'status',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
-        'read_time'   => 'readTime',
     );
 
     /**
@@ -56,7 +57,6 @@ class Msg_Object_Msg extends Base_Object {
         'status'      => 1,
         'create_time' => 1,
         'update_time' => 1,
-        'read_time'   => 1,
     );
 
     /**
@@ -104,7 +104,19 @@ class Msg_Object_Msg extends Base_Object {
     public $content;
 
     /**
-     * 状态 1已读 2未读 -1删除
+     * 消息的附加信息
+     * @var string
+     */
+    public $attach;
+
+    /**
+     * 消息图片
+     * @var string
+     */
+    public $image;
+
+    /**
+     * 状态 1已读 2未读 3删除
      * @var integer
      */
     public $status;
@@ -120,11 +132,5 @@ class Msg_Object_Msg extends Base_Object {
      * @var integer
      */
     public $updateTime;
-
-    /**
-     * 阅读时间
-     * @var integer
-     */
-    public $readTime;
 
 }

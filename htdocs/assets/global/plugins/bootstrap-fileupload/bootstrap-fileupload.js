@@ -59,8 +59,20 @@
             var file = e.target.files !== undefined ? e.target.files[0] : {
                 name: e.target.value.replace(/^.+\\/, '')
             }
+            var typeArray = [
+                'image/jpg', 'image/jpeg', 'image/png', 'image/gif'
+            ];
+
+            //判断图片类型
+            if ($.inArray(file.type, typeArray)<0) {
+                alert('图片格式必须为jpg、jpeg、png、gif');
+                return;
+            }
             if (!file || invoked === 'clear') return
-            if(file.size>2097152) {alert('图片大小必须小于2M');return}
+            if (file.size > 2097152) {
+                alert('图片大小必须小于2M');
+                return
+            }
 
             this.$hidden.val('')
             this.$hidden.attr('name', '')

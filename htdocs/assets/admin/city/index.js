@@ -52,7 +52,7 @@
     });
 
     // 模态框从远端的数据源加载完数据之后触发该事件
-    $('#mapModal').on('loaded.bs.modal', function(e) {
+/*    $('#mapModal').on('loaded.bs.modal', function(e) {
         var data = oTable.api().row(currentRow).data();
         oldXY.x = data.x;
         oldXY.y = data.y;
@@ -60,7 +60,7 @@
         $("#cityName").val(data.name);
         $('#mapModal .btn-search').click();
     });
-
+*/
     //模态框 点击确定之后立即触发该事件。
     $('#mapModal').delegate('.btn-submit', 'click', function(event) {
         var valXY = $.trim($("#txtCoordinate").val());
@@ -81,12 +81,20 @@
         $('#mapModal').modal('hide');
     });
 
+
+    //编辑坐标
     $('#editable').delegate('button.edit', 'click', function(event) {
         currentRow = $(this).parents('tr')[0];
         //打开模态框
         $('#mapModal').modal({
-            remote: '/admin/utils/map'
+           // remote: '/admin/utils/map'
         });
+        var data = oTable.api().row(currentRow).data();
+        oldXY.x = data.x;
+        oldXY.y = data.y;
+        $("#txtSearch").val(data.name);
+        $("#cityName").val(data.name);
+        $('#mapModal .btn-search').click();
     });
 
 

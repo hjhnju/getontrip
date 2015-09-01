@@ -52,6 +52,10 @@ $(document).ready(function() {
         }, {
             "data": "sight_name"
         }, {
+            "data": 'x'
+        }, {
+            "data": 'y'
+        }/*, {
             "data": function(e) {
                 if (e.create_time) {
                     return moment.unix(e.create_time).format(FORMATER);
@@ -65,7 +69,7 @@ $(document).ready(function() {
                 }
                 return "空";
             }
-        }, {
+        }*/, {
             'data': function(e) {
                 if (e.weight) {
                     return e.weight + '  <button class="btn btn-primary  btn-xs weight" title="修改权重" data-toggle="tooltip"><i class="fa fa-reorder"></i></button>'

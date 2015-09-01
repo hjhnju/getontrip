@@ -9,6 +9,32 @@ $(document).ready(function() {
     bindEvents(); 
 
     function bindEvents() {
+          //定位地图模态框
+        $('#position').click(function(e) {  
+            //打开模态框
+            $('#mapModal').modal({
+                //remote: '/admin/utils/map'
+            });
+             $("#txtSearch").val($.trim($("#name").val())); 
+            $('#mapModal .btn-search').click();
+        });
+ 
+
+        //模态框 点击确定之后立即触发该事件。
+        $('#mapModal').delegate('.btn-submit', 'click', function(event) {
+            var valXY = $.trim($("#txtCoordinate").val());
+            if (!valXY) {
+                alert('还没有选定坐标呢');
+                return;
+            }
+            var arrayXy = valXY.split(',');
+            $("#x").val(arrayXy[0]);
+            $("#y").val(arrayXy[1]);
+            $("#xy").val(valXY); 
+
+            //手工关闭模态框
+            $('#mapModal').modal('hide');
+        });
         //景点输入框自动完成
         $('#sight_name').typeahead({
             display: 'name',

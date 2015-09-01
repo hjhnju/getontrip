@@ -34,7 +34,7 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
             //是否已经上传过
             $isUploaded=$this->isUploaded($oldSrc);
             if(!$isUploaded){
-            //去掉url 后面的参数
+                //去掉url 后面的参数
                 $src= preg_replace("/\?(.)*/", '', $oldSrc);
                 $img->src = $src;
                 array_push($imgUrlArray, $src);

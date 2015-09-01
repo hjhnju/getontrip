@@ -425,7 +425,7 @@ class Topic_Logic_Topic extends Base_Logic{
     
     public function getTopicById($id){
         $objTopic = new Topic_Object_Topic();
-        $objTopic->setFileds(array('id','title','subtitle','content','desc','image','create_user','update_user','from','from_detail','url','status','create_time','update_time'));
+        $objTopic->setFileds(array('id','title','subtitle','content','desc','image','create_user','x','y','update_user','from','from_detail','url','status','create_time','update_time'));
         $objTopic->fetch(array('id' => $id));
         $ret = $objTopic->toArray();
         

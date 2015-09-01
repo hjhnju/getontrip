@@ -8,18 +8,11 @@ class Msg_RetCode extends Base_RetCode{
 
     //定义错误码：
 
-    const MSG_READ        = 1;  //已读消息状态
-    const MSG_UNREAD      = 2;  //未读消息状态
-    const MSG_REMOVE      = -1; //消息删除
-    const MSG_ALL         = 0; //所有消息
-
 
     /* 消息函数
      * @var array
     */
     protected static $_arrErrMap = array(
-        self::MSG_READ           => '消息状态为已读',
-
     );
 
     /**

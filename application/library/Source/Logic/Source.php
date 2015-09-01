@@ -129,7 +129,7 @@ class Source_Logic_Source extends Base_Logic{
      */
     public function getHotSource(){
         $arrHotSource    = array();
-        $arrHotSourceIds = array(1,6,14,2,48);
+        $arrHotSourceIds = array(1,6,14,48,2);
         foreach ($arrHotSourceIds as $id){
             $objSource = new Source_Object_Source();
             $objSource->fetch(array('id' => $id));

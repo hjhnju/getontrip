@@ -128,8 +128,8 @@ class Theme_Logic_Theme extends Base_Logic{
         foreach ($ret['list'] as $val){
             $logicLandscape = new Landscape_Logic_Landscape();
             $objLandscape   = $logicLandscape->queryLandscapeById($val['landscape_id'],$x,$y);
-            if($objLandscape['status'] == Landscape_Type_Status::PUBLISHED){                
-                $arr['image']   = $objLandscape['image'];
+            if($objLandscape['status'] == Landscape_Type_Status::PUBLISHED){  
+                $arr['id']      = $objLandscape['id'];
                 $arr['name']    = $objLandscape['name'];
                 $arrLandscape[] = $arr;
             }

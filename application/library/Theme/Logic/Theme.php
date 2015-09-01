@@ -49,6 +49,7 @@ class Theme_Logic_Theme extends Base_Logic{
      */
     public function editTheme($id,$arrInfo){
         $bCheck = false;
+        $ret1   = true;
         $obj    = new Theme_Object_Theme();
         $obj->fetch(array('id' => $id));
         foreach ($arrInfo as $key => $val){

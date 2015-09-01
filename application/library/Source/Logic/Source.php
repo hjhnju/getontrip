@@ -128,8 +128,9 @@ class Source_Logic_Source extends Base_Logic{
      * @return array
      */
     public function getHotSource(){
-        $arrHotSource    = array();
+        //2是其他来源，故放在最后
         $arrHotSourceIds = array(1,6,14,48,2);
+        $arrHotSource    = array();       
         foreach ($arrHotSourceIds as $id){
             $objSource = new Source_Object_Source();
             $objSource->fetch(array('id' => $id));

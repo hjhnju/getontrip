@@ -43,9 +43,13 @@ class Base_Logic{
      * @param string $url
      * @return string $hash
      */
-    public function uploadPic($url){
-        $oss      = Oss_Adapter::getInstance();
-        $content  = file_get_contents($url);  
+    public function uploadPic($url,$refer=''){
+        $oss      = Oss_Adapter::getInstance();        
+        $ch = curl_init();
+        curl_setopt($ch,CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_REFERER, $refer);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER , true);
+        $content = curl_exec($ch); 
         if(empty($url) || empty($content)){
             return '';
         }   

@@ -146,16 +146,14 @@ $(document).ready(function() {
         $('#position').click(function(e) {
             //打开模态框
             $('#mapModal').modal({
-                remote: '/admin/utils/map'
+                //remote: '/admin/utils/map'
             });
-        });
-
-        // 模态框从远端的数据源加载完数据之后触发该事件
-        $('#mapModal').on('loaded.bs.modal', function(e) {
             $("#txtSearch").val($.trim($("#name").val()));
             $("#cityName").val($.trim($("#city_name").val()));
             $('#mapModal .btn-search').click();
         });
+
+        
 
         //模态框 点击确定之后立即触发该事件。
         $('#mapModal').delegate('.btn-submit', 'click', function(event) {

@@ -23,6 +23,7 @@
 				<!-- /.modal-dialog -->
 			</div>
        {%include file='utils/corpimg.phtml'%}
+        {%include file='utils/map.phtml'%}
 			<!-- /.modal -->
 			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 			<!-- BEGIN PAGE HEADER-->
@@ -107,7 +108,7 @@
                           <div class="col-md-9">
                               <div class="fileupload fileupload-new" data-provides="fileupload">
                                   <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
-                                      <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt="">
+                                      <img src="{%$feroot%}s/global/img/no_image.png" alt="">
                                   </div>
                                   <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"> 
                                   </div>
@@ -165,7 +166,8 @@
 <script src="{%$feroot%}s/global/plugins/bootstrap-fileupload/bootstrap-fileupload.js" type="text/javascript"></script> 
 <script src="{%$feroot%}s/global/plugins/ajaxfileupload.js" type="text/javascript"></script> 
 <script src="{%$feroot%}s/global/plugins/jcrop/js/jquery.Jcrop.js" type="text/javascript"></script> 
-<script src="{%$feroot%}s/admin/sight/edit.js" type="text/javascript"></script> 
+<script src="{%$feroot%}s/admin/sight/edit.js" type="text/javascript"></script>
+<script src="{%$feroot%}s/admin/utils/map/index.js" type="text/javascript"></script>  
 <script src="{%$feroot%}s/admin/utils/cropimg/index.js" type="text/javascript"></script> 
 
  

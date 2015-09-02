@@ -155,7 +155,7 @@ class  TopicapiController extends Base_Controller_Api{
        //5、批量上传图片，得到最终的content 
        if($content != ""){
           $spider = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
-          $content = $spider->getReplacedContent();  
+          $content = $spider->getReplacedContent($_REQUEST['url']);  
        } 
        $_REQUEST['content'] =$content; 
 

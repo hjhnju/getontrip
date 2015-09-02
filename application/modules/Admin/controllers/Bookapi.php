@@ -22,16 +22,19 @@ class BookapiController extends Base_Controller_Api{
         
         $List =Book_Api::getJdBooks($sight_id,$page,$pageSize);
         
-
+        $total=0;
         $tmpList=$List;
         if (count($tmpList)>0) { 
             for($i=0;$i<count($tmpList);$i++){ 
                //处理状态值
                 $tmpList[$i]["statusName"] = Book_Type_Status::getTypeName($tmpList[$i]["status"]); 
-            }  
-            $retList['recordsTotal'] = $List[0]['totalNum'];
-            $retList['recordsFiltered'] =$List[0]['totalNum']; 
+            }
+            $total=$List[0]['totalNum'];
+           
         }
+        $retList['recordsTotal'] = $total;
+        $retList['recordsFiltered'] =$total;
+        
         $List =  $tmpList;
 
         

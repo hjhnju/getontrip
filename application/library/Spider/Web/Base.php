@@ -56,29 +56,8 @@ abstract class Spider_Web_Base{
      * @return string,如果上传上成功返回hash，否则返回空
      */
     public function uploadPic($picUrl,$refer=''){
-        $oss      = Oss_Adapter::getInstance();
-        $ch = curl_init();
-        curl_setopt($ch,CURLOPT_URL,$picUrl);
-        curl_setopt($ch, CURLOPT_REFERER, $refer);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER , true);
-        $content = curl_exec($ch); 
-        curl_close($ch);
-        $hash     = md5(microtime(true));
-        $hash     = substr($hash, 8, 16);
-        
-        $arrName  = explode(".",$picUrl);
-        $size     = count($arrName);
-        if(strtolower($arrName[$size-1]) == "gif"){
-            $filename = $hash . '.gif';
-        }else{
-            $filename = $hash . '.jpg';
-        }
-        $res = $oss->writeFileContent($filename, $content);
-        if($res){
-             return $filename;
-            //return array('hash'=>$hash,'name'=>$filename,'url'=>Base_Image::getUrlByName($filename));
-        }
-        return '';
+        $logic = new Base_Logic();
+        return $logic->uploadPic($picUrl,$refer);
     }
     
     /**

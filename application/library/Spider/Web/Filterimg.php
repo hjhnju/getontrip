@@ -52,7 +52,7 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
      * 上传图片
      * @return [type] [description]
      */
-    public function uploadImgs(){
+    public function uploadImgs($refer){
         $imgNameArray=array(); 
         foreach ($this->imgUrlArray as $picUrl){
             //已经上传过的图片，自己网站的图片,则不用上传
@@ -63,8 +63,9 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
                 //$hash=preg_replace('/.[jpg|gif]{3,3}/i','',$hashs[0]); 
                 $name = $hashs[0]; 
             }else{
-              //其他站图片则根据url上传到云
-                $name = $this->uploadPic($picUrl);  
+               //其他站图片则根据url上传到云 
+                $name = $this->uploadPic($picUrl,$refer); 
+
             }
             array_push($imgNameArray, $name);
         }
@@ -107,10 +108,10 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
     * 综合上述操作 [用于编辑话题，上传图片] 
     * @return [type] [description]
     */
-    public function getReplacedContent(){
+    public function getReplacedContent($refer){
 
         $this->getImgUrlArray(); 
-        $this->uploadImgs(); 
+        $this->uploadImgs($refer); 
         $this->replaceImg();
         $content=$this->objDom->outertext;
         $content=$this->dataClean($content,false);  

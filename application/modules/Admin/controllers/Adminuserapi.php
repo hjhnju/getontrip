@@ -4,7 +4,7 @@
  * author :fyy
  */
 class AdminuserapiController extends Base_Controller_Api{
-     
+      
      public function init() {
         parent::init();
     }
@@ -14,6 +14,7 @@ class AdminuserapiController extends Base_Controller_Api{
      *  
      */    
     public function loginAction(){  
+         $homeUrl  = '/admin';
     	 $name =isset($_REQUEST['name'])?$_REQUEST['name']:''; 
     	 $password=isset($_REQUEST['password'])?$_REQUEST['password']:''; 
          $redirectUri   = isset($_REQUEST['redirectUri']) ? $_REQUEST['redirectUri'] : '';
@@ -28,7 +29,8 @@ class AdminuserapiController extends Base_Controller_Api{
             if(!empty($redirectUri)){
                return $this->ajaxJump($redirectUri);
             }
-    	     return $this->ajax(); 
+    	    //return $this->ajax();
+            return $this->ajaxJump($homeUrl); 
     	 } 
          return $this->ajaxError(Admin_RetCode::PASSWORD_WRONG, Admin_RetCode::getMsg(Admin_RetCode::PASSWORD_WRONG));
 

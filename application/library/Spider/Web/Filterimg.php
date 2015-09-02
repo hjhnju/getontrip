@@ -108,7 +108,7 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
     * 综合上述操作 [用于编辑话题，上传图片] 
     * @return [type] [description]
     */
-    public function getReplacedContent($refer){
+    public function getReplacedContent($refer=''){
 
         $this->getImgUrlArray(); 
         $this->uploadImgs($refer); 

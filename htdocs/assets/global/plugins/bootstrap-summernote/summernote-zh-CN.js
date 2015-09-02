@@ -21,7 +21,7 @@
         floatRight: '右浮动',
         floatNone: '不浮动',
         dragImageHere: '将图片拖至此处',
-        selectFromFiles: '从本地上传',
+        selectFromFiles: '从本地上传(图片格式必须为jpg、jpeg、png、gif)',
         url: '图片地址'
       },
       link: {

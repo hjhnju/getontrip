@@ -1,7 +1,7 @@
 
 #myPageTop { 
     background: #FFF;
-    margin: 10px auto;
+    /* margin: 10px auto; */
     padding: 0 0 10px 10px;
   /*   border: 1px solid #ccc; */
 }
@@ -71,10 +71,87 @@
   border: 1px solid #999;
   background: #FFF;
   z-index: 99;
+  display: none;
 }
 .message {
   font-size: 12px;
   color: blue;
-  margin-right: 20px;
-  float: right;
+  margin-right: 20px; 
+  
+}
+
+#citySug {
+    position: absolute;
+    z-index: 2;
+    top: 4px;
+    right: 8px;
+    height: 30px;
+    line-height: 30px;
+}
+#btnCurrentCity {
+    text-decoration: none;
+    color: #333;
+    display: inline-block;
+    height: 28px;
+    padding: 0 28px 0 15px;
+    background: #fff url(/console/public/show/bg.32.png) right -288px no-repeat;
+    border: 1px solid #999;
+}
+#btnCurrentCity {
+    background: #fff;
+    padding: 0 15px;
+    box-sizing: content-box;
+}
+#allCityList {
+    position: absolute;
+    top: 29px;
+    left: 0;
+    height: 300px;
+    background: #FFF;
+    border: 1px solid #999;
+    line-height: 150%;
+    padding: 5px 12px;
+    z-index: 3;
+}
+#allCityList {
+    left: auto;
+    right: 0;
+    width: 300px;
+}
+#closeCityHolder {
+    height: 29px;
+    line-height: 30px;
+    border-bottom: 1px solid #999;
+} 
+#closeCityHolder a {
+    float: right;
+    width: 16px;
+    height: 29px;
+    _display: inline-block;
+    background: url(/console/public/show/bg.32.png) -45px -240px no-repeat;
+}
+#allCityListSelect {
+    height: 260px;
+    padding: 8px 0 2px;
+    overflow: auto;
+     border-spacing: 0;
+}
+#allCityListSelect a {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 1px;
+    color: #0075c2;
+    text-decoration: none;
+}
+#allCityList th {
+    width: 40px;
+    font-weight: normal;
+    vertical-align: top;
+    padding: 2px 0 0;
+}
+#tbodyAllCities td {
+    padding: 2px 0;
+} 
+.hide{
+  display:none;
 }

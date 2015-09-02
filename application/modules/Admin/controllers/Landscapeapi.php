@@ -126,7 +126,7 @@ class  LandscapeapiController extends Base_Controller_Api{
     */
     public function getLandscapeListAction(){ 
         $str=isset($_REQUEST['query'])?$_REQUEST['query']:'';
-        $arrConf = array('name' => $str); 
+        $arrConf = array('name' => $str,'status'=>Landscape_Type_Status::PUBLISHED); 
         //最大值 PHP_INT_MAX  
         $List = Landscape_Api::queryLandscape($arrConf,1,PHP_INT_MAX); 
       

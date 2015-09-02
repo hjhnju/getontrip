@@ -37,20 +37,23 @@ $(document).ready(function() {
             validate.settings.rules.xy.required = true;
 
             //打开模态框
-            $('#myModal').modal({
-                remote: '/admin/utils/map'
+            $('#mapModal').modal({
+                //remote: '/admin/utils/map'
             });
+            $("#txtSearch").val($.trim($("#name").val()));
+            $("#cityName").val($.trim($("#city_name").val()));
+            $('#mapModal .btn-search').click();
         });
 
         // 模态框从远端的数据源加载完数据之后触发该事件
-        $('#myModal').on('loaded.bs.modal', function(e) {
+        $('#mapModal').on('loaded.bs.modal', function(e) {
             $("#txtSearch").val($.trim($("#name").val()));
             $("#cityName").val($.trim($("#city_name").val()));
-            $('#myModal .btn-search').click();
+            $('#mapModal .btn-search').click();
         });
 
         //模态框 点击确定之后立即触发该事件。
-        $('#myModal').delegate('.btn-submit', 'click', function(event) {
+        $('#mapModal').delegate('.btn-submit', 'click', function(event) {
             var valXY = $.trim($("#txtCoordinate").val());
             if (!valXY) {
                 alert('还没有选定坐标呢');
@@ -64,7 +67,7 @@ $(document).ready(function() {
             validate.settings.rules.xy.required = true;
 
             //手工关闭模态框
-            $('#myModal').modal('hide');
+            $('#mapModal').modal('hide');
         });
 
         //上传图片，得到url

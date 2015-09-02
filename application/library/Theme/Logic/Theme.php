@@ -131,17 +131,48 @@ class Theme_Logic_Theme extends Base_Logic{
             if($objLandscape['status'] == Landscape_Type_Status::PUBLISHED){  
                 $arr['id']      = $objLandscape['id'];
                 $arr['name']    = $objLandscape['name'];
+                if(!empty($x) && !empty($y)){
+                    $arr['image']  = $objLandscape['image'];
+                    $arr['city']   = $objLandscape['city'];
+                    $arr['dis']    = $objLandscape['dis'];
+                }
                 $arrLandscape[] = $arr;
             }
         }
-        $arrRet['landscape'] = $arrLandscape;
-        if(!empty($x) && !empty($y)){
-            $arrRet['image']  = Base_Image::getUrlByName($arrRet['image']);
-            $arr['city']      = $objLandscape['city'];
-            $arr['dis']       = $objLandscape['dis'];
-        }
+        $arrRet['image']       = Base_Image::getUrlByName($arrRet['image']);
+        $arrRet['period']      = Base_Util_Number::getPeriods($arrRet['period']);
+        $logicCollect          = new Collect_Logic_Collect();
+        $arrRet['collect']     = strval($logicCollect->getTotalCollectNum(Collect_Type::THEME, $id));
+        $arrRet['landscape']   = $arrLandscape;
         return $arrRet;
     }
+    
+    /**
+     * 获取主题总的访问人数
+     * @param integer $landscapeId
+     * @return integer
+     */
+    public function getTotalThemeVistUv($themeId){
+        $redis   = Base_Redis::getInstance();
+        $ret = $redis->hGet(Theme_Keys::getThemeVisitKey(),Theme_Keys::getTotalKey($themeId));
+        if(!empty($ret)){
+            return $ret;
+        }
+        $list   = new Visit_List_Visit();
+        $list->setFields(array('device_id'));
+        $list->setFilter(array('obj_id' => $themeId,'type' => Visit_Type::THEME));
+        $list->setPagesize(PHP_INT_MAX);
+        $arrRet = $list->toArray();
+        $arrTotal = array();
+        foreach($arrRet['list'] as $val){
+            if(!in_array($val,$arrTotal)){
+                $arrTotal[] = $val;
+            }
+        }
+        $redis->hSet(Theme_Keys::getThemeVisitKey(),Theme_Keys::getTotalKey($themeId),count($arrTotal));
+        return count($arrTotal);
+    }
+    
     
     /**
      * 根据条件查询主题信息

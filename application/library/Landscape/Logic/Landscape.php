@@ -111,7 +111,7 @@ class Landscape_Logic_Landscape extends Base_Logic{
      * @param integer $landscapeId
      * @return integer
      */
-    public function getTotalTopicVistUv($landscapeId){
+    public function getTotalLandscapeVistUv($landscapeId){
         $redis   = Base_Redis::getInstance();
         $ret = $redis->hGet(Landscape_Keys::getLandscapeVisitKey(),Landscape_Keys::getTotalKey($landscapeId));
         if(!empty($ret)){
@@ -146,7 +146,7 @@ class Landscape_Logic_Landscape extends Base_Logic{
         }     
         $modelGis        = new GisModel();
         $logicTopic      = new Topic_Logic_Topic();
-        $ret['dis']      = $modelGis->getEarthDistanceToPoint($x, $y, $ret['x'], $ret['y']);
+        $ret['dis']      = Base_Util_Number::getDis($modelGis->getEarthDistanceToPoint($x, $y, $ret['x'], $ret['y']));
         $arrTopics       = $logicTopic->searchTopic($ret['name'],1,PHP_INT_MAX);
         $ret['topics']   = $arrTopics['list'];
         $ret['topicNum'] = $arrTopics['total'];
@@ -155,7 +155,7 @@ class Landscape_Logic_Landscape extends Base_Logic{
         $ret['city']     = $city['name'];
         unset($ret['city_id']);
         $ret['image']    = Base_Image::getUrlByName($ret['image']);
-        $ret['visit']    = strval($this->getTotalTopicVistUv($id));        
+        $ret['visit']    = strval($this->getTotalLandscapeVistUv($id));        
         return $ret;
     }
 }

@@ -54,6 +54,6 @@ class ApiController extends Base_Controller_Api {
         }
         $logic      = new Comment_Logic_Comment();
         $ret        = $logic->getCommentList($topicId, $page, $pageSize);
-        $this->ajax($ret);
+        $this->ajax($ret['list']);
     }
 }

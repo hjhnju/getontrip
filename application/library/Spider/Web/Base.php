@@ -55,9 +55,14 @@ abstract class Spider_Web_Base{
      * @param string $picUrl
      * @return string,如果上传上成功返回hash，否则返回空
      */
-    public function uploadPic($picUrl){
+    public function uploadPic($picUrl,$refer=''){
         $oss      = Oss_Adapter::getInstance();
-        $content  = file_get_contents($picUrl);
+        $ch = curl_init();
+        curl_setopt($ch,CURLOPT_URL,$picUrl);
+        curl_setopt($ch, CURLOPT_REFERER, $refer);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER , true);
+        $content = curl_exec($ch); 
+        curl_close($ch);
         $hash     = md5(microtime(true));
         $hash     = substr($hash, 8, 16);
         

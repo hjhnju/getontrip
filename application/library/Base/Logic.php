@@ -50,6 +50,7 @@ class Base_Logic{
         curl_setopt($ch, CURLOPT_REFERER, $refer);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER , true);
         $content = curl_exec($ch); 
+        curl_close($ch);
         if(empty($url) || empty($content)){
             return '';
         }   

@@ -268,6 +268,9 @@ class Base_List {
     public function countAll() {
         $where = $this->getWhere();
         $sql = "select count(*) as total from `{$this->dbname}`.`{$this->table}` where $where";
+        if(!empty($this->group)){
+            $sql = "select count(distinct(".$this->group.")) as total from `{$this->dbname}`.`{$this->table}` where $where";
+        }
         $this->total = $this->db->fetchOne($sql);
         $this->pageall = ceil($this->total / $this->pagesize);
         return $this->total;

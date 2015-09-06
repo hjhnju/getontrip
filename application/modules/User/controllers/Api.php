@@ -76,10 +76,10 @@ class ApiController extends Base_Controller_Page{
     
     /**
      * 接口5：/api/user/edit
-     * 用户信息修改接口
+     * 用户信息添加、修改接口
      * @param integer deviceId
-     * @param string  param
-     * @param array
+     * @param string  param,eg: param=nick_name:aa,image:bb,sex:1
+     * @return json
      */
     public function editAction(){
         $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';

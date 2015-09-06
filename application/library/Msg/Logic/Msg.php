@@ -138,6 +138,7 @@ class Msg_Logic_Msg {
         if(!empty($filter)){
             $listMsg->setFilterString($filter);
         }
+        $listMsg->setGroup("content");
         $listMsg->setPage($intPage);
         $listMsg->setPagesize($intPageSize);
         return $listMsg->toArray();
@@ -182,6 +183,7 @@ class Msg_Logic_Msg {
      */
     public function sendmsg($intType, $image = '',$toid = '', $arrParam = array(), $fromid = 0) {
         $objMsg = new Msg_Object_Msg();
+        $count  = 0;
         $objMsg->sender    = $fromid;
         $objMsg->receiver  = $toid;
         $objMsg->type      = $intType;
@@ -202,11 +204,17 @@ class Msg_Logic_Msg {
             foreach ($arrUser['list'] as $user){
                 $objMsg->receiver = $user['id'];
                 $ret = $objMsg->save();
+                if($ret){
+                    $count += 1;
+                }
             }
         }else{
             $objMsg->receiver = $toid;
             $ret = $objMsg->save();
+            if($ret){
+                $count += 1;
+            }
         }       
-        return $ret;
+        return $count;
     }
 }

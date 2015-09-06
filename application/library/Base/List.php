@@ -38,6 +38,12 @@ class Base_List {
     public $order = null;
     
     /**
+     * 分组方式
+     * @var string
+     */
+    public $group = null;
+    
+    /**
      * 当前页
      * @var integer
      */
@@ -222,7 +228,13 @@ class Base_List {
         $cols = implode("`, `", $this->fields);
         $where = $this->getWhere();
         $order = !empty($this->order) ? $this->order : $this->prikey . ' desc';
-        $sql = "select `$cols` from `{$this->dbname}`.`{$this->table}` where $where order by $order";
+        $sql = "select `$cols` from `{$this->dbname}`.`{$this->table}` where $where";
+        if(!empty($this->group)){
+            $sql .= " group by $this->group";
+        }
+        if(!empty($this->order)){
+            $sql .= " order by $order";
+        }
         if ($this->pagesize > 0 && $this->pagesize != PHP_INT_MAX) {
             $offset = $this->offset;
             $pagesize = $this->pagesize;
@@ -232,7 +244,6 @@ class Base_List {
         $this->data = $this->db->fetchAll($sql);
         $this->dealIntField();
         $this->countAll();
-        
         $this->fetched = 1;
     }
     
@@ -380,6 +391,15 @@ class Base_List {
      */
     public function setOrder($order) {
         $this->order = $order;
+        $this->fetched = 0;
+    }
+    
+    /**
+     * 设置排序方式
+     * @param integer $order
+     */
+    public function setGroup($group) {
+        $this->group = $group;
         $this->fetched = 0;
     }
     

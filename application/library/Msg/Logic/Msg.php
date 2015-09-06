@@ -126,7 +126,7 @@ class Msg_Logic_Msg {
         foreach ($arrParams as $key => $val){
             if(!in_array($key,$this->_fields)){
                 unset($arrInfo[$key]);
-            }elseif($key !== 'status' || (($key == 'status') && ($val !== Msg_Type_Status::ALL))){
+            }elseif($key != 'status' || (($key == 'status') && ($val != Msg_Type_Status::ALL))){
                 $filter .= "`".$key."`= $val and ";
             }
         }

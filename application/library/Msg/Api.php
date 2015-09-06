@@ -2,11 +2,12 @@
 class Msg_Api {    
     
     /**
-     * 接口1：Msg_Api::sendmsg($intType, $toid = '', $arrParam = array(), $fromid = 0)
+     * 接口1：Msg_Api::sendmsg($intType, $image = '', $toid = '', $arrParam = array(), $fromid = 0)
      * 发送系统消息
      * @param integer $intType：消息类型，定义见 Msg_Type 
      * @param string  $image:消息的背景图片
      * @param integer $toid，收消息用户，如为空，则收消息人为全体用户
+     * @param integer $fromid，收消发送人ID，默认是0
      * @param array   $arrParam
      * @return true|false 成功true, 失败 false
      */

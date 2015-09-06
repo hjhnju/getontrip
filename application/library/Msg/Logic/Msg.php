@@ -182,26 +182,27 @@ class Msg_Logic_Msg {
      * @return boolean
      */
     public function sendmsg($intType, $image = '',$toid = '', $arrParam = array(), $fromid = 0) {
-        $objMsg = new Msg_Object_Msg();
         $count  = 0;
-        $objMsg->sender    = $fromid;
-        $objMsg->receiver  = $toid;
-        $objMsg->type      = $intType;
-        $objMsg->image     = $image;
-        if(!empty($arrParam)){
-            $strContent = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam);
-        }else{
-            $strContent = Msg_Type_Type::$_arrMsgMap[$intType]['content'];
-        }
-        $objMsg->content   = $strContent;
-        $objMsg->title     = Msg_Type_Type::$_arrMsgMap[$intType]['title'];
-        $objMsg->attach    = json_encode($arrParam);
         if(empty($toid)){
             $listUser = new User_List_User();
             $listUser->setFields(array('id'));
             $listUser->setPagesize(PHP_INT_MAX);
             $arrUser = $listUser->toArray();
             foreach ($arrUser['list'] as $user){
+                $objMsg = new Msg_Object_Msg();
+                $objMsg->sender    = $fromid;
+                $objMsg->receiver  = $toid;
+                $objMsg->type      = $intType;
+                $objMsg->image     = $image;
+                if(Msg_Type_Type::SYSTEM == $intType){
+                    $strContent = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam['content']);
+                }else{
+                    $strContent = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam);
+                    $objMsg->attach    = json_encode($arrParam);
+                }
+                $objMsg->content   = $strContent;
+                $objMsg->title     = Msg_Type_Type::$_arrMsgMap[$intType]['title'];        
+                
                 $objMsg->receiver = $user['id'];
                 $ret = $objMsg->save();
                 if($ret){
@@ -209,6 +210,19 @@ class Msg_Logic_Msg {
                 }
             }
         }else{
+            $objMsg = new Msg_Object_Msg();
+            $objMsg->sender    = $fromid;
+            $objMsg->receiver  = $toid;
+            $objMsg->type      = $intType;
+            $objMsg->image     = $image;
+            if(Msg_Type_Type::SYSTEM == $intType){
+                $strContent = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam['content']);
+            }else{
+                $strContent = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam);
+                $objMsg->attach    = json_encode($arrParam);
+            }
+            $objMsg->content   = $strContent;
+            $objMsg->title     = Msg_Type_Type::$_arrMsgMap[$intType]['title'];
             $objMsg->receiver = $toid;
             $ret = $objMsg->save();
             if($ret){

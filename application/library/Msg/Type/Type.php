@@ -45,7 +45,7 @@ class Msg_Type_Type extends Base_Type {
      */
     public static $_arrMsgMap = array(
         self::SYSTEM => array(
-            'title'    => '系统消息',
+            'title'    => '%s',
             'content'  => '%s',
             'link'     => '/guide',
         ),

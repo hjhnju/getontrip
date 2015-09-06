@@ -195,13 +195,13 @@ class Msg_Logic_Msg {
                 $objMsg->type      = $intType;
                 $objMsg->image     = $image;
                 if(Msg_Type_Type::SYSTEM == $intType){
-                    $strContent = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam['content']);
+                    $strContent     = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam['content']);
                 }else{
-                    $strContent = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam);
-                    $objMsg->attach    = json_encode($arrParam);
+                    $strContent     = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam);
+                    $objMsg->attach  = json_encode($arrParam);
                 }
                 $objMsg->content   = $strContent;
-                $objMsg->title     = Msg_Type_Type::$_arrMsgMap[$intType]['title'];        
+                $objMsg->title  = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['title'],$arrParam['title']);
                 
                 $objMsg->receiver = $user['id'];
                 $ret = $objMsg->save();

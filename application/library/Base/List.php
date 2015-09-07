@@ -232,9 +232,7 @@ class Base_List {
         if(!empty($this->group)){
             $sql .= " group by $this->group";
         }
-        if(!empty($this->order)){
-            $sql .= " order by $order";
-        }
+        $sql .= " order by $order";
         if ($this->pagesize > 0 && $this->pagesize != PHP_INT_MAX) {
             $offset = $this->offset;
             $pagesize = $this->pagesize;

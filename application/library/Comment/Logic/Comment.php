@@ -131,8 +131,6 @@ class Comment_Logic_Comment  extends Base_Logic{
         foreach ($ret['list'] as $key => $val){
             $ret['list'][$key]['from_name']   = $logicUser->getUserName($val['from_user_id']);
             $ret['list'][$key]['to_name']     = $logicUser->getUserName($val['to_user_id']);
-            $ret['list'][$key]['avatar']      = $logicUser->getUserAvatar($val['from_user_id']);
-            $ret['list'][$key]['create_time'] = Base_Util_String::getTimeAgoString($val['create_time']);
             $listSubComment = new Comment_List_Comment();
             $arrParams = array_merge($arrParam,array('up_id' => $val['id']));
             $listSubComment->setFilter($arrParams);

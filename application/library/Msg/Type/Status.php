@@ -37,6 +37,6 @@ class Msg_Type_Status extends Base_Type {
         self::READ     => '未读',
         self::UNREAD   => '已读',
         self::DEL      => '删除',
-        self::ALL      => '所有的',
+        self::ALL      => '全部状态',
     );
 }

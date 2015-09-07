@@ -4,18 +4,18 @@
  * @author huwei
  *
  */
-class Advise_Type extends Base_Type {
+class Advise_Type_Status extends Base_Type {
     /**
-     * 0 未处理
+     * 1 未处理
      * @var integer
      */
-    const UNTREATED  = 0; 
+    const UNTREATED  = 1; 
     
    /**
     * 1 已解决
     * @var integer
     */
-    const SETTLED    = 1;
+    const SETTLED    = 2;
    
     /**
      * 状态名

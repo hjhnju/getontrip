@@ -6,8 +6,10 @@
  */
 class ApiController extends Base_Controller_Api {
     
+    const PAGESIZE = 6;
+    
     public function init() {
-        $this->setNeedLogin(true);
+        $this->setNeedLogin(false);
         parent::init();        
     }
     
@@ -36,12 +38,14 @@ class ApiController extends Base_Controller_Api {
      * @return json
      */
     public function listAction() {
-        $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
+        $deviceId  = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
+        $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
         if(empty($deviceId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $logic     = new Advise_Logic_Advise();
-        $ret       = $logic->listAdvise($deviceId);
+        $ret       = $logic->listAdvise($deviceId,$page,$pageSize);
         $this->ajax($ret);
     }
     

@@ -6,7 +6,12 @@
  */
 class Advise_Logic_Advise{
     
-    const DEFAULT_SIZE = 5;
+    //反馈自动回复列表
+    protected $_feedmsg = array(
+        '有什么可以帮您？',
+        '感谢您的反馈，我们将尽快处理',
+        '欢迎关注微信号，一起讨论',
+    );
     
     protected $logicUser = '';
         
@@ -15,17 +20,74 @@ class Advise_Logic_Advise{
     }
     
     /**
-     * 查询反馈意见
+     * 查询反馈意见，前端使用
      * @param integer $deviceId
      * @return array
      */
-    public function listAdvise($deviceId){
-        $userId     = $this->logicUser->getUserId($deviceId);
+    public function listAdvise($deviceId,$page,$pageSize){
+        $arrRet     = array();
+        $index      = 0;
+        $userId     = $this->logicUser->getUserId($deviceId); 
+        $image      = $this->logicUser->getUserAvatar($userId);      
         $listAdvise = new Advise_List_Advise();
         $listAdvise->setFilter(array('userid' => $userId));
-        $listAdvise->setPagesize(self::DEFAULT_SIZE);
+        $listAdvise->setPage($page);
+        $listAdvise->setPagesize($pageSize);
         $listAdvise->setOrder('create_time desc');
-        return $listAdvise->toArray();
+        $ret =  $listAdvise->toArray();
+        foreach ($ret['list'] as $val){
+            $temp['id']          = $val['id'];
+            $temp['type']        = Advise_Type_Type::ADVISE;
+            $temp['image']       = $image;
+            $temp['content']     = $val['content'];
+            $temp['create_time'] = date('Y-m-d H:i',$val['create_time']);           
+            $arrRet[] = $temp;
+            
+            //拼回答,优先选择人工回答
+            $ret = $this->getAnswer($val['id'], $index);
+            foreach ($ret as $key => $val){
+                if(empty($val['create_time'])){
+                    $ret[$key]['create_time'] = $temp['create_time'];
+                }
+            }
+            $arrRet = array_merge($arrRet,$ret);
+            $index += 1;                        
+        }
+        return $arrRet;
+    }
+    
+    /**
+     * 查询反馈意见，后端使用
+     * @return array
+     */
+    public function getAdviseList($page,$pageSize,$status = ''){
+        $arrRet     = array();
+        $index      = 0;
+        $listAdvise = new Advise_List_Advise();
+        $listAdvise->setFilter(array('userid' => $userId));
+        $listAdvise->setPage($page);
+        $listAdvise->setPagesize($pageSize);
+        $listAdvise->setOrder('create_time desc');
+        $ret =  $listAdvise->toArray();
+        foreach ($ret['list'] as $val){
+            $temp['id']          = $val['id'];
+            $temp['type']        = Advise_Type_Type::ADVISE;
+            $temp['image']       = $image;
+            $temp['content']     = $val['content'];
+            $temp['create_time'] = date('Y-m-d H:i',$val['create_time']);
+            $arrRet[] = $temp;
+    
+            //拼回答,优先选择人工回答
+            $ret = $this->getAnswer($val['id'], $index);
+            foreach ($ret as $key => $val){
+                if(empty($val['create_time'])){
+                    $ret[$key]['create_time'] = $temp['create_time'];
+                }
+            }
+            $arrRet = array_merge($arrRet,$ret);
+            $index += 1;
+        }
+        return $arrRet;
     }
     
     /**
@@ -39,7 +101,59 @@ class Advise_Logic_Advise{
         $objAdvise          = new Advise_Object_Advise();
         $objAdvise->userid  = $userId;
         $objAdvise->content = $strData;
-        $objAdvise->status  = Advise_Type::UNTREATED;
-        return $objAdvise->save();
+        $objAdvise->status  = Advise_Type_Status::UNTREATED;
+        $objAdvise->save();
+        
+        $listAdvise         = new Advise_List_Advise();
+        $listAdvise->setPagesize(PHP_INT_MAX);
+        $listAdvise->setFilter(array('userid' => $userId));
+        $ret   = $listAdvise->toArray();
+        $index = $ret['total'];
+        if(isset($this->_feedmsg[$index])){
+            return $this->_feedmsg[$index];
+        }
+        return '';
+    }
+    
+    /**
+     * 获取反馈的回复
+     * @param integer $adviseId
+     * @param integer $index
+     * @return array
+     */
+    public function getAnswer($adviseId,$index){
+        $listAdvise          = new Advise_List_Advise();
+        $listAdvise->setFilter(array('userid' => $adviseId));
+        $listAdvise->setPagesize(PHP_INT_MAX);
+        $ret = $listAdvise->toArray();
+        $arrRet = array();
+        if(!empty($ret['list'])){
+            return $ret['list'];
+        }
+        if(isset($this->_feedmsg[$index])){
+            $temp['id']          = '';
+            $temp['type']        = Advise_Type_Type::ANSWER;
+            $temp['content']     = $this->_feedmsg[$index];
+            $temp['create_time'] = '';
+            $arrRet[] = $temp;
+        }
+        return $arrRet;
+    }
+    
+    /**
+     * 对反馈内容进行回复
+     */
+    public function addAnswer($adviseId,$strContent){
+        $objAdvise = new Advise_Object_Advise();
+        $objAdvise->userid  = $adviseId;
+        $objAdvise->content = $strContent;
+        $objAdvise->type    = Advise_Type_Type::ANSWER;
+        $ret1 =  $objAdvise->save();
+        
+        $objAdvise->fetch(array('id' => $adviseId));
+        $objAdvise->status   = Advise_Type_Status::SETTLED;
+        $objAdvise->dealTime = time();
+        $ret2 = $objAdvise->save();
+        return $ret1&&$ret2;
     }
 }

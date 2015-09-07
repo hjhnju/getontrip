@@ -26,7 +26,7 @@ class Advise_Object_Advise extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'userid', 'content', 'status', 'create_time', 'update_time', 'deal_time');
+    protected $fields = array('id', 'userid', 'content', 'status', 'create_time', 'update_time', 'deal_time', 'type');
 
     /**
      * 字段与属性隐射关系
@@ -40,6 +40,7 @@ class Advise_Object_Advise extends Base_Object {
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
         'deal_time'   => 'dealTime',
+        'type'        => 'type',
     );
 
     /**
@@ -53,6 +54,7 @@ class Advise_Object_Advise extends Base_Object {
         'create_time' => 1,
         'update_time' => 1,
         'deal_time'   => 1,
+        'type'        => 1,
     );
 
     /**
@@ -82,7 +84,7 @@ class Advise_Object_Advise extends Base_Object {
     public $content;
 
     /**
-     * 状态 
+     * 状态:0未处理，1已处理
      * @var integer
      */
     public $status;
@@ -104,5 +106,11 @@ class Advise_Object_Advise extends Base_Object {
      * @var integer
      */
     public $dealTime;
+
+    /**
+     * 类型，1:提问,2:回答
+     * @var integer
+     */
+    public $type;
 
 }

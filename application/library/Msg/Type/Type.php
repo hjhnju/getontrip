@@ -51,7 +51,7 @@ class Msg_Type_Type extends Base_Type {
         ),
         self::REPLY => array(
             'title'    => '',
-            'content'  => '%s回复了您的评论',
+            'content'  => '%s 回复了您的评论',
             'link'     => '/comment',
         ),
     );

@@ -221,6 +221,7 @@ class Comment_Logic_Comment  extends Base_Logic{
         $redis = Base_Redis::getInstance();
         $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objComment->topicId, '*'));
         $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($objComment->topicId));
-        return $objComment->remove();
+        $objComment->status = Comment_Type_Status::DELETED;
+        return $objComment->save();
     }
 }

@@ -26,7 +26,7 @@
         <a href="#" class="button" data-device="ios"><i class="sprite-ico-Button_iPhone2x"></i> <span>iPhone</span></a>
        <!--  <a href="/download/android" class="button" data-device="android-local"><i class="sprite-ico-Button_Android2x"></i> <span>Android</span></a> -->
         </div>
-        <a href="/" target="_self" title="途知"><i class="web-logo"></i></a>
+        <a href="#" target="_self" title="途知" class="logo-title"><!-- <i class="web-logo"></i> -->途知</a>
       </div>
     </div>
     {%/if%} 
@@ -40,7 +40,7 @@
           <div class="title">
             {%if empty($post.title)==0%}{%$post.title%}{%/if%} 
           </div>
-          <div class="like">
+          <div class="like" style="display:none;">
              <i class="fa"></i>{%$post.collect%}
              <i class="fa fa-eye"></i>{%$post.collect%}
           </div>

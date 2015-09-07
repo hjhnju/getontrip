@@ -21,16 +21,15 @@ class CommentapiController extends Base_Controller_Api{
         $pageSize = isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX; 
         $page = ($start/$pageSize)+1;
 
-        $pid = isset($_REQUEST['pid'])?$_REQUEST['pid']:"";
+        $topicId = isset($_REQUEST['topicId'])?$_REQUEST['topicId']:0;
         
-        if(!empty($pid)){
-           $arrInfo=array('pid' => $pid); 
+        if(!empty($topicId)){
+           $arrInfo=array('topicId' => $topicId); 
         } else{
              $arrInfo = array();
         }
-        $List =City_Api::queryCity($arrInfo,$page, $pageSize);
-         
-    
+        $List =Comment_Api::getCommentList($topicId,$page,$pageSize);
+ 
         $retList['recordsFiltered'] =$List['total'];
         $retList['recordsTotal'] = $List['total']; 
         $retList['data'] =$List['list'];

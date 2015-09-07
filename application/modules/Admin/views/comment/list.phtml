@@ -37,7 +37,8 @@
                  <div class="clearfix">  
                     <div class="col-xs-2 pull-right">   
                         <div class="input-group ">
-                          <select name="" id="form-status">  
+                          <select name="" id="form-status">
+                             <option value="">全部状态</option>   
                              {%foreach $statusTypeArray as $key=>$item%} 
                                   <option value="{%$key%}">{%$item%}</option> 
                              {%/foreach%}  
@@ -52,11 +53,12 @@
                             <th></th>  
                             <th>ID</th>
                             <th>话题ID</th>
-                            <th>评论人ID</th>
-                            <th>被回复人ID</th> 
-                            <th>状态</th>
-                            <th>创建时间</th>
+                            <th>评论人</th>
+                            <th>被回复人</th> 
+                            <th>内容</th>
+                            <th>评论时间</th>
                             <th>更新时间</th> 
+                            <th>状态</th>
                             <th>操作</th>  
                           </tr>
                       </thead>

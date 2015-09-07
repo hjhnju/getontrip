@@ -5,8 +5,8 @@
  *
  */
 class ListAction extends Yaf_Action_Abstract {
-    public function execute() { 
-    	$topicId = $_REQUEST['topicId'];
+    public function execute() {  
+    	$topicId = isset($_REQUEST['topicId'])?$_REQUEST['topicId']:0;
     	$statusTypeArray=Comment_Type_Status::$names;
         $statusTypeArray=array_reverse($statusTypeArray,true);
 

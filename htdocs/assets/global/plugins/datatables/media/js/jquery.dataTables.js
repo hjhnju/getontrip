@@ -3052,7 +3052,7 @@
                     len = settings._iDisplayLength,
                     vis = settings.fnRecordsDisplay(),
                     all = len === -1; 
-                     console.log('total:'+vis); 
+                     //console.log('total:'+vis); 
                 return str.
 
                 replace(/_START_/g, formatter.call(settings, start)).

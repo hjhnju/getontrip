@@ -892,7 +892,7 @@ $.extend( $.validator, {
 					return this.findByName( element.name ).filter( ":checked" ).length;
 				}
 			}
-			return value.length;
+			return value.replace(/[^\x00-\xff]/g, 'aa').length;
 		},
 
 		depend: function( param, element ) {
@@ -1263,7 +1263,7 @@ $.extend( $.validator, {
 
 		// http://jqueryvalidation.org/maxlength-method/
 		maxlength: function( value, element, param ) {
-			var length = $.isArray( value ) ? value.length : this.getLength( value, element );
+			var length = $.isArray( value ) ? value.length : Math.ceil(this.getLength( value, element ) / 2);
 			return this.optional( element ) || length <= param;
 		},
 

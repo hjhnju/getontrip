@@ -496,8 +496,15 @@ var Metronic = function() {
         String.prototype.getBytes = function() {
                 var cArr = this.match(/[^\x00-\xff]/ig);
                 return this.length + (cArr == null ? 0 : cArr.length);
-            }
-            //表单序列化json
+        }
+        
+        //字符截取
+        String.prototype.subString = function(length,spiltStr) { 
+              spiltStr=spiltStr?spiltStr:'...';
+              return   this.length > length ? this.substr(0, length) + spiltStr : this; 
+        }
+
+        //表单序列化json
         $.fn.serializeObject = function() {
             var o = {};
             var a = this.serializeArray();

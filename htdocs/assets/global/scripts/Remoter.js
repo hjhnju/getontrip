@@ -179,7 +179,8 @@
                      *
                      * @event#error
                      */
-                    me.emit('error');
+                    //me.emit('error');
+                    alert(e.responseText);
                 }
             });
         },

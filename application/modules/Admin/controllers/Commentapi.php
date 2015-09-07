@@ -22,36 +22,64 @@ class CommentapiController extends Base_Controller_Api{
         $page = ($start/$pageSize)+1;
 
         $topicId = isset($_REQUEST['topicId'])?$_REQUEST['topicId']:0;
-        
-        if(!empty($topicId)){
+        $arrParam = isset($_REQUEST['params'])?$_REQUEST['params']:array();
+        /*if(!empty($topicId)){
            $arrInfo=array('topicId' => $topicId); 
         } else{
              $arrInfo = array();
+        }*/
+        $List = Comment_Api::getComments($page,$pageSize,$arrParam,$topicId);
+        $tmpList=$List['list'];
+        if (count($tmpList)>0) { 
+            for($i=0;$i<count($tmpList);$i++){ 
+                //处理状态名称
+                $tmpList[$i]['status_name'] = Comment_Type_Status::getTypeName($tmpList[$i]['status']);
+                //被回复
+                $subComment= $tmpList[$i]['subComment'];
+                for($a=0;$a<count($subComment);$a++){ 
+                   //处理状态名称
+                   $subComment[$a]['status_name'] = Comment_Type_Status::getTypeName($subComment[$a]['status']);
+                }
+                $tmpList[$i]['subComment']=$subComment;
+            }
         }
-        $List =Comment_Api::getCommentList($topicId,$page,$pageSize);
- 
+        $List['list'] =  $tmpList;
+
         $retList['recordsFiltered'] =$List['total'];
         $retList['recordsTotal'] = $List['total']; 
         $retList['data'] =$List['list'];
  
-		$this->ajax($retList);
+		return $this->ajax($retList);
          
     }
 
 
     /**
-     * 保存城市坐标信息
+     *  修改评论状态
      * @return [type] [description]
      */
-    public function saveAction()
+    public function changeStatusAction()
     {   
-      //判断是否有ID
-       $cityId=isset($_POST['id'])?$_POST['id']:''; 
-       $arrInfo = array(
-            'x' => $_POST['x'], 
-            'y'  => $_POST['y'] 
-       );
-       $bRet = City_Api::editCity($cityId,$arrInfo); 
+        //判断是否有ID
+        $id=isset($_POST['id'])?$_POST['id']:''; 
+        $action=isset($_POST['action'])?$_POST['action']:''; 
+        if(empty($id)||empty($action)){
+           return $this->ajaxError(Base_RetCode::PARAM_ERROR); 
+        } 
+        switch ($action) {
+            case 'PUBLISHED':
+                $status=Comment_Type_Status::PUBLISHED;
+                break;
+            case 'PUBLISHED':
+                $status=Comment_Type_Status::NOTPUBLISHED;
+                break;
+            
+            default:
+                $status=Comment_Type_Status::NOTPUBLISHED;
+                break;
+        }
+       
+        $bRet = Comment_Api::changeCommentStatus($id,$status); 
 
         if($bRet){
             return $this->ajax();
@@ -59,27 +87,8 @@ class CommentapiController extends Base_Controller_Api{
         return $this->ajaxError(); 
 
     }
-    
-    /**
-     * 获取省份信息  用于下拉框
-     * @return [type] [description]
-     */
-    public function getProvinceListAction(){ 
-        $str=$_REQUEST['query'];
-        //最大值 PHP_INT_MAX  
-        $List =City_Api::queryProvincePrefix($str,1,PHP_INT_MAX);
-        return $this->ajax($List["list"]);  
-    }
-    
 
-    /**
-     * 获取城市信息  用于下拉框
-     * @return [type] [description]
-     */
-    public function getCityListAction(){ 
-        $str=$_REQUEST['query'];
-        //最大值 PHP_INT_MAX  
-        $List =City_Api::queryCityPrefix($str,1,PHP_INT_MAX);
-        return $this->ajax($List["list"]);  
-    }
+
+    
+  
 }

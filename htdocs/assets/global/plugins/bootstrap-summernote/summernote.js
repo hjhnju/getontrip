@@ -5228,15 +5228,19 @@
         //去掉样式
         var filterContent = function(html) {
             var pattern = /style=\"(.*?)\"/gi; //去掉样式 
-            var pattern2 = /data-(.*?)=\"(.*?)\"/gi; //去掉多余的属性
-            var pattern3 = /class=\"(.*?)\"/gi; //去掉class样式 
-            var pattern4 = /id=\"(.*?)\"/gi; //去掉id属性 
-            var pattern5 = /\<p(.*?)\>/gi;//去掉p多余的属性
+            //var pattern2 = /data-(.*?)=\"(.*?)\"/gi; //去掉多余的属性
+            //var pattern3 = /class=\"(.*?)\"/gi; //去掉class样式 
+            //var pattern4 = /id=\"(.*?)\"/gi; //去掉id属性 
+            //var pattern5 = /\<p(.*?)\>/gi;//去掉p多余的属性
             var pattern6 = /div/gi;//div替换为p
+            var pattern7 = /font/gi;//font替换为span
+            var pattern8 = /<\/?span(.*?)>/gi;//去掉span
             /*var htmlstr  = html;
             html.replace(pattern, '')
             return htmlstr;*/
-            return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern2, '').replace(pattern3, '').replace(pattern4, '').replace(pattern6,'p');
+            //return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern2, '').replace(pattern3, '').replace(pattern4, '').replace(pattern6,'p');
+            return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern6, 'p').replace(pattern7, 'span').replace(pattern8,'');
+           
         }
 
         /**

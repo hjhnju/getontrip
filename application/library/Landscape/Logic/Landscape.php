@@ -139,20 +139,23 @@ class Landscape_Logic_Landscape extends Base_Logic{
      */
     public function queryLandscapeById($id,$x='',$y=''){
         $obj = new Landscape_Object_Landscape();
+        $obj->setFileds(array('id','x','y','image','name','content','city_id'));
         $obj->fetch(array('id' => $id));
         $ret = $obj->toArray();
-        if(empty($x) && empty($y)){
+        if(empty($ret['x']) && empty($ret['y'])){
             return $ret;
         }     
         $modelGis        = new GisModel();
         $logicTopic      = new Topic_Logic_Topic();
         $ret['dis']      = Base_Util_Number::getDis($modelGis->getEarthDistanceToPoint($x, $y, $ret['x'], $ret['y']));
+        unset($ret['x']);
+        unset($ret['y']);
         $arrTopics       = $logicTopic->searchTopic($ret['name'],1,PHP_INT_MAX);
         $ret['topics']   = $arrTopics['list'];
         $ret['topicNum'] = $arrTopics['total'];
         $logicCity       = new City_Logic_City();
         $city            = $logicCity->getCityById($ret['city_id']);
-        $ret['city']     = $city['name'];
+        $ret['city']     = str_replace('市', '', $city['name']);
         unset($ret['city_id']);
         $ret['image']    = Base_Image::getUrlByName($ret['image']);
         $ret['visit']    = strval($this->getTotalLandscapeVistUv($id));        

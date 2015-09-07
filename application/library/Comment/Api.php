@@ -7,16 +7,16 @@
 class Comment_Api{
     
     /**
-     * 接口1：Comment_Api::getCommentList($topicId,$page,$pageSize)
+     * 接口1：Comment_Api::getComments($page,$pageSize,$arrParam = array(),$topicId='')
      * 获取话题的评论列表
      * @param integer $topicId
      * @param integer $page
      * @param integer $pageSize
      * @return array
      */
-    public static function getCommentList($topicId,$page,$pageSize){
+    public static function getComments($page,$pageSize,$arrParam = array(),$topicId = ''){
         $logicComment = new Comment_Logic_Comment();
-        return $logicComment->getCommentList($topicId, $page, $pageSize);
+        return $logicComment->getComments($page,$pageSize,$arrParam,$topicId);
     }
     
     /**

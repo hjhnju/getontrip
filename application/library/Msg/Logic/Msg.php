@@ -100,16 +100,26 @@ class Msg_Logic_Msg {
         }else{
             $objsMsg->setFilter(array('status'=>$intType,'receiver' => $toId));
         }
-        $objsMsg->setFields(array('mid','title','content','image','attach','create_time'));
+        $objsMsg->setFields(array('mid','title','content','image','attach','create_time','type'));
         $objsMsg->setPage($intPage);
         $objsMsg->setPagesize($intPageSize);
         $arrObjs = $objsMsg->toArray();
         foreach ($arrObjs['list'] as $key => $val){
             if(!empty($val['attach'])){
                 $arrObjs['list'][$key]['attach'] = json_decode($val['attach'],true);
+            }else{
+                $arrObjs['list'][$key]['attach'] = '';
             }           
             $arrObjs['list'][$key]['image'] = Base_Image::getUrlByName($val['image']);
             $arrObjs['list'][$key]['create_time'] = Base_Util_String::getTimeAgoString($val['create_time']);
+            if($val['type'] == Msg_Type_Type::REPLY){
+                sscanf($val['content'],Msg_Type_Type::$_arrMsgMap[Msg_Type_Type::REPLY]['content'],$name);
+                $objUser = new User_Object_User();
+                $objUser->fetch(array('nick_name' => $name));
+                $arrObjs['list'][$key]['avatar'] = Base_Image::getUrlByName($objUser->image);
+            }else{
+                $arrObjs['list'][$key]['avatar'] = '';
+            }
         }
         return $arrObjs['list'];
     }
@@ -197,7 +207,8 @@ class Msg_Logic_Msg {
                 if(Msg_Type_Type::SYSTEM == $intType){
                     $strContent     = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam['content']);
                 }else{
-                    $strContent     = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam);
+                    $strContent     = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam['user_id']);
+                    unset($arrParam['user_id']);
                     $objMsg->attach  = json_encode($arrParam);
                 }
                 $objMsg->content   = $strContent;
@@ -218,7 +229,8 @@ class Msg_Logic_Msg {
             if(Msg_Type_Type::SYSTEM == $intType){
                 $strContent = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam['content']);
             }else{
-                $strContent = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam);
+                $strContent = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam['user_id']);
+                unset($arrParam['user_id']);
                 $objMsg->attach    = json_encode($arrParam);
             }
             $objMsg->content   = $strContent;

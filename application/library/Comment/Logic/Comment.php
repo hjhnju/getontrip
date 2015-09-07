@@ -70,7 +70,7 @@ class Comment_Logic_Comment  extends Base_Logic{
     }
     
     /**
-     * 获取话题的评论列表
+     * 获取话题的评论列表，前端使用
      * @param integer $topicId
      * @param integer $page
      * @param integer $pageSize
@@ -103,6 +103,45 @@ class Comment_Logic_Comment  extends Base_Logic{
                 $arrSubComment['list'][$index]['to_name']   = $logicUser->getUserName($data['to_user_id']);
                 unset($arrSubComment['list'][$index]['from_user_id']);
                 unset($arrSubComment['list'][$index]['to_user_id']);
+            }
+            $ret['list'][$key]['subComment'] = $arrSubComment['list'];
+        }
+        return $ret;
+    }
+    
+    /**
+     * 获取话题的评论列表，后端使用
+     * @param integer $topicId
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function getComments($page,$pageSize,$arrParam = array(),$topicId = ''){
+        $logicUser    = new User_Logic_User();
+        $listComment  = new Comment_List_Comment();
+        $arrFilter    = array_merge($arrParam,array('up_id' => 0));
+        if(!empty($topicId)){
+            $arrFilter = array_merge($arrFilter,array('topic_id' => $topicId));
+        }
+        $listComment->setFilter($arrFilter);
+        $listComment->setPage($page);
+        $listComment->setPagesize($pageSize);
+        $listComment->setOrder("create_time asc");
+        $ret = $listComment->toArray();
+        foreach ($ret['list'] as $key => $val){
+            $ret['list'][$key]['from_name']   = $logicUser->getUserName($val['from_user_id']);
+            $ret['list'][$key]['to_name']     = $logicUser->getUserName($val['to_user_id']);
+            $ret['list'][$key]['avatar']      = $logicUser->getUserAvatar($val['from_user_id']);
+            $ret['list'][$key]['create_time'] = Base_Util_String::getTimeAgoString($val['create_time']);
+            $listSubComment = new Comment_List_Comment();
+            $arrParams = array_merge($arrParam,array('up_id' => $val['id']));
+            $listSubComment->setFilter($arrParams);
+            $listSubComment->setPagesize(PHP_INT_MAX);
+            $listSubComment->setOrder("create_time asc");
+            $arrSubComment = $listSubComment->toArray();
+            foreach ($arrSubComment['list'] as $index => $data){
+                $arrSubComment['list'][$index]['from_name'] = $logicUser->getUserName($data['from_user_id']);
+                $arrSubComment['list'][$index]['to_name']   = $logicUser->getUserName($data['to_user_id']);
             }
             $ret['list'][$key]['subComment'] = $arrSubComment['list'];
         }

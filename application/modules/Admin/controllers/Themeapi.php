@@ -65,7 +65,8 @@ class  ThemeapiController extends Base_Controller_Api{
     * 添加
     */
     public function addAction(){  
-       $bRet=Theme_Api::addTheme($_REQUEST);   
+       $_REQUEST['status'] = $this->getStatusByActionStr($_REQUEST['action']);   
+       $bRet=Theme_Api::addTheme($_REQUEST); 
        if(!empty($bRet)){
             return $this->ajax($bRet);
        } 
@@ -107,10 +108,10 @@ class  ThemeapiController extends Base_Controller_Api{
     */
     public function getStatusByActionStr($action){
         switch ($action) {
-         case 'save':
+         case 'NOTPUBLISHED':
            $status = Theme_Type_Status::NOTPUBLISHED;
            break;
-         case 'publish':
+         case 'PUBLISHED':
            $status = Theme_Type_Status::PUBLISHED;
            break;
          default:

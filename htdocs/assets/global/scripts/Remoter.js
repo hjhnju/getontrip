@@ -157,7 +157,8 @@
                              *
                              * @event#fail
                              */
-                            me.emit('fail', data.statusInfo);
+                            //me.emit('fail', data.statusInfo);
+                            alert(data.statusInfo);
                         }
                     } else if (status > 1024 && status < 99999) {
 

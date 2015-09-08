@@ -32,8 +32,8 @@ $(document).ready(function() {
             "targets": [1],
             "visible": false,
             "searchable": false
-        },{
-            "targets": [3,4,5,6,7],
+        }, {
+            "targets": [3, 4, 5, 6, 7],
             "width": 80
         }],
         "columns": [{
@@ -44,10 +44,10 @@ $(document).ready(function() {
             "data": "name"
         }, {
             "data": function(e) {
-                if(e.image){
-                   return '<a href="/pic/' + e.image + '" target="_blank"><img alt="" src="/pic/' + e.image.getNewImgByImg(80,22,'f') + '"/></a>';
+                if (e.image) {
+                    return '<a href="/pic/' + e.image + '" target="_blank"><img alt="" src="/pic/' + e.image.getNewImgByImg(80, 22, 'f') + '"/></a>';
                 }
-                 return "未上传";
+                return "未上传";
             }
         }, {
             "data": 'city_name'
@@ -56,17 +56,17 @@ $(document).ready(function() {
         }, {
             "data": 'y'
         }, {
-            "data": function(e){
+            "data": function(e) {
                 if (e.statusName == '未发布') {
                     return e.statusName + '<button type="button" class="btn btn-primary btn-xs publish" title="发布" data-toggle="tooltip" ><i class="fa fa-check-square-o"></i></button>';
                 } else {
                     return e.statusName + '<button type="button" class="btn btn-warning btn-xs cel-publish" title="取消发布" data-toggle="tooltip" ><i class="fa fa-close"></i></button>';
                 }
-                
+
             }
         }, {
             "data": function(e) {
-                return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/landscape/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>';//  + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
+                return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/landscape/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>'; //  + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
             }
         }],
         "initComplete": function(setting, json) {
@@ -80,7 +80,7 @@ $(document).ready(function() {
     filter();
 
     var validate = null;
-  
+
 
     /*
      绑定事件
@@ -116,36 +116,33 @@ $(document).ready(function() {
                     }
                 }
             });
-        }); 
-  
+        });
+
 
         //发布操作
         $('#editable button.publish,#editable button.cel-publish').live('click', function(e) {
             e.preventDefault();
             var nRow = $(this).parents('tr')[0];
-            var data = oTable.api().row(nRow).data(); 
-            var params={
-                id: data.id 
-            } 
-            if ($(this).hasClass('publish')) {
-                params.action = 'publish';
-            } else {
-                params.action = 'save';
-            }
-            $.ajax({
-                "url": '/admin/landscapeapi/publish',
-                "data":params,
-                "type": "post",
-                "error": function(e) {
-                    alert("服务器未正常响应，请重试");
-                },
-                "success": function(response) {
-                    if (response.status == 0) {
-                        //刷新当前页
-                        oTable.fnRefresh();  
-                    }
+            var data = oTable.api().row(nRow).data();
+            var action;
+            if ($(this).hasClass('publish')) { 
+                if (!data.image) {
+                    toastr.warning('发布之前必须上传背景图片');
+                    return;
                 }
+                action = 'PUBLISHED';
+            } else {
+                action = 'NOTPUBLISHED';
+            }
+            var publish = new Remoter('/admin/landscapeapi/publish');
+            publish.remote({
+                id: data.id,
+                action: action
             });
+            publish.on('success', function(data) {
+                //刷新当前页
+                oTable.fnRefresh();
+            }); 
         });
     }
 
@@ -217,6 +214,6 @@ $(document).ready(function() {
             api.ajax.reload();
         });
     }
-  
-   
+
+
 });

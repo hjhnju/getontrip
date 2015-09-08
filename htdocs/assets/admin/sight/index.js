@@ -159,27 +159,26 @@ $(document).ready(function() {
             e.preventDefault();
             var nRow = $(this).parents('tr')[0];
             var data = oTable.api().row(nRow).data(); 
-            if ($(this).hasClass('publish')) {
-                url = '/admin/sightapi/publish';
-            } else {
-                url = '/admin/sightapi/cancelpublish';
-            }
-            $.ajax({
-                "url": url,
-                "data": {
-                    id: data.id 
-                },
-                "type": "post",
-                "error": function(e) {
-                    alert("服务器未正常响应，请重试");
-                },
-                "success": function(response) {
-                    if (response.status == 0) {
-                        //刷新当前页
-                        oTable.fnRefresh();  
-                    }
+            var action;
+            if ($(this).hasClass('publish')) { 
+                if (!data.image) {
+                    toastr.warning('发布之前必须上传背景图片');
+                    return;
                 }
+                action = 'PUBLISHED';
+            } else {
+                action = 'NOTPUBLISHED';
+            }
+            var publish = new Remoter('/admin/sightapi/publish');
+            publish.remote({
+                id: data.id,
+                action: action
             });
+            publish.on('success', function(data) {
+                //刷新当前页
+                oTable.fnRefresh();
+            });  
+ 
         });
     }
 

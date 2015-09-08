@@ -142,10 +142,10 @@ class  LandscapeapiController extends Base_Controller_Api{
     */
     public function getStatusByActionStr($action){
         switch ($action) {
-         case 'save':
+         case 'NOTPUBLISHED':
            $status = Theme_Type_Status::NOTPUBLISHED;
            break;
-         case 'publish':
+         case 'PUBLISHED':
            $status = Theme_Type_Status::PUBLISHED;
            break;
          default:

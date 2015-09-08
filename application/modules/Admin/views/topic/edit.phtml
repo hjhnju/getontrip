@@ -256,8 +256,8 @@
                       <div class="form-group">
                           <div class="col-lg-offset-2 col-lg-10">
                             {%if !isset($disabled)%} 
-                              <button class="btn btn-danger" type="submit"   data-action="save" data-btn_text="保存">保存</button>
-                              <button class="btn btn-danger" type="submit" data-action="publish" data-btn_text="发布">发布</button>
+                              <button class="btn btn-danger" type="submit"   data-action="NOTPUBLISHED" data-btn_text="保存">保存</button>
+                              <button class="btn btn-danger" type="submit" data-action="PUBLISHED" data-btn_text="发布">发布</button>
                             {%/if%}
                                {%if isset($post.id)%}
                                  <a class="btn btn-default"  href="/admin/topic/list">返回列表</a> 

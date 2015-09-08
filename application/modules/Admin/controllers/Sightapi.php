@@ -173,7 +173,7 @@ class  SightapiController extends Base_Controller_Api{
        if($postid <= 0){
             $this->ajaxError();
        }  
-       $bRet=Sight_Api::editSight($postid,array('status'=>Sight_Type_Status::PUBLISHED));
+       $bRet=Sight_Api::editSight($postid,array('status'=>$this->getStatusByActionStr($_REQUEST['action'])));
        if($bRet){ 
             return $this->ajax();
        }
@@ -219,10 +219,10 @@ class  SightapiController extends Base_Controller_Api{
      */
     public function getStatusByActionStr($action){
         switch ($action) {
-         case 'save':
+         case 'NOTPUBLISHED':
            $status = Sight_Type_Status::NOTPUBLISHED;
            break;
-         case 'publish':
+         case 'PUBLISHED':
            $status = Sight_Type_Status::PUBLISHED;
            break;
          default:

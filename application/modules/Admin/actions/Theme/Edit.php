@@ -23,6 +23,9 @@ class EditAction extends Yaf_Action_Abstract {
         if(empty($postInfo)){
             $action='add';
         }else{
+
+           //处理图片 去掉pic
+           $postInfo["image"] = Base_Image::getImgNameBySrc($postInfo["image"]);
  
            //处理状态值  
            $postInfo["statusName"] = Theme_Type_Status::getTypeName($postInfo["status"]);  

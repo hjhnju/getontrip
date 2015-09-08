@@ -96,8 +96,8 @@ $(document).ready(function() {
 
             action = $(this).attr('data-action'); 
             //先判断图片 
-            if(action==='publish'&&!$('#image').val()){
-                alert('发布之前必须上传图片');
+            if(action==='PUBLISHED'&&!$('#image').val()){
+                toastr.warning('发布之前必须上传图片');
                 return false;
             }
         });

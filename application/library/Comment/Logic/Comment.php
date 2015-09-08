@@ -37,13 +37,26 @@ class Comment_Logic_Comment  extends Base_Logic{
     public function  addComment($topicId,$upId,$deviceId,$toUserId,$content){
         $objComment = new Comment_Object_Comment();    
         $logicUser  = new User_Logic_User();
-        $objComment->fromUserId = $logicUser->getUserId($deviceId);
+        $fromUserId = $logicUser->getUserId($deviceId);
+        $objComment->fromUserId = $fromUserId;
         $objComment->upId       = $upId;
         $objComment->toUserId   = $toUserId;
         $objComment->topicId    = $topicId;
         $objComment->content    = $content;
         $objComment->status     = Comment_Type_Status::PUBLISHED;
         $ret = $objComment->save();
+        
+        //发送回复消息
+        if(!empty($upId)){
+            $logicTopic = new Topic_Logic_Topic();
+            $topic      = $logicTopic->getTopicById($topicId);
+            $arrInfo    = array(
+                'user_id'   => $fromUserId,
+                'topicId'   => $topic['id'],
+                'commentId' => $upId,               
+            );
+            Msg_Api::sendmsg(Msg_Type_Type::REPLY,$topic['image'],$toUserId,$arrInfo,$fromUserId);
+        }
         
         $redis = Base_Redis::getInstance();
         $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($topicId, '*'));

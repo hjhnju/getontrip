@@ -54,6 +54,7 @@ class Msg_Object_Msg extends Base_Object {
         'mid'         => 1,
         'sender'      => 1,
         'receiver'    => 1,
+        'type'        => 1,
         'status'      => 1,
         'create_time' => 1,
         'update_time' => 1,
@@ -93,7 +94,7 @@ class Msg_Object_Msg extends Base_Object {
 
     /**
      * 消息类型
-     * @var string
+     * @var integer
      */
     public $type;
 

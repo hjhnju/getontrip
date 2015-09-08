@@ -177,31 +177,8 @@ $(document).ready(function() {
             publish.on('success', function(data) {
                 //刷新当前页
                 oTable.fnRefresh();
-            }); 
-
-
-
-        /*    if ($(this).hasClass('publish')) {
-                url = '/admin/sightapi/publish';
-            } else {
-                url = '/admin/sightapi/cancelpublish';
-            }
-            $.ajax({
-                "url": url,
-                "data": {
-                    id: data.id 
-                },
-                "type": "post",
-                "error": function(e) {
-                    alert("服务器未正常响应，请重试");
-                },
-                "success": function(response) {
-                    if (response.status == 0) {
-                        //刷新当前页
-                        oTable.fnRefresh();  
-                    }
-                }
-            });*/
+            });  
+ 
         });
     }
 

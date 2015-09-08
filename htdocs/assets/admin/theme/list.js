@@ -147,7 +147,29 @@ $(document).ready(function() {
             e.preventDefault();
             var nRow = $(this).parents('tr')[0];
             var data = oTable.api().row(nRow).data();
-            var params={
+             var action;
+            if ($(this).hasClass('publish')) { 
+                if (!data.image) {
+                    toastr.warning('发布之前必须上传背景图片');
+                    return;
+                }
+                action = 'PUBLISHED';
+            } else {
+                action = 'NOTPUBLISHED';
+            }
+            var publish = new Remoter('/admin/themeapi/publish');
+            publish.remote({
+                id: data.id,
+                action: action
+            });
+            publish.on('success', function(data) {
+                //刷新当前页
+                oTable.fnRefresh();
+            }); 
+
+
+
+           /* var params={
                 id: data.id 
             } 
             if ($(this).hasClass('publish')) {
@@ -168,7 +190,7 @@ $(document).ready(function() {
                         oTable.fnRefresh();
                     }
                 }
-            });
+            });*/
         });
 
 

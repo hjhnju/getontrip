@@ -164,7 +164,29 @@ $(document).ready(function() {
             e.preventDefault();
             var nRow = $(this).parents('tr')[0];
             var data = oTable.api().row(nRow).data();
-            var status = data.status;
+            var action;
+            if ($(this).hasClass('publish')) { 
+                if (!data.image) {
+                    toastr.warning('发布之前必须上传背景图片');
+                    return;
+                }
+                action = 'PUBLISHED';
+            } else {
+                action = 'NOTPUBLISHED';
+            }
+            var publish = new Remoter('/admin/topicapi/changeStatus');
+            publish.remote({
+                id: data.id,
+                action: action
+            });
+            publish.on('success', function(data) {
+                //刷新当前页
+                oTable.fnRefresh();
+            }); 
+
+
+
+       /*     var status = data.status;
             if ($(this).hasClass('publish')) {
                 status = 5;
             } else {
@@ -186,7 +208,7 @@ $(document).ready(function() {
                         oTable.fnRefresh();  
                     }
                 }
-            });
+            });*/
         });
 
 

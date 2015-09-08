@@ -158,7 +158,7 @@ class  TopicapiController extends Base_Controller_Api{
           $content = $spider->getReplacedContent($_REQUEST['url']);  
        } 
        $_REQUEST['content'] =$content; 
-
+       $_REQUEST['status'] = $this->getStatusByActionStr('NOTPUBLISHED');
 
        //保存到数据库
        $bRet=Topic_Api::addTopic($_REQUEST);
@@ -208,6 +208,7 @@ class  TopicapiController extends Base_Controller_Api{
        if($postid <= 0){
             $this->ajaxError();
        }  
+       $_REQUEST['status'] = $this->getStatusByActionStr($_REQUEST['action']);
        $bRet=Topic_Api::editTopic($postid,$_REQUEST);
        if($bRet){ 
             return $this->ajax();
@@ -274,10 +275,10 @@ class  TopicapiController extends Base_Controller_Api{
     */
     public function getStatusByActionStr($action){
         switch ($action) {
-         case 'save':
+         case 'NOTPUBLISHED':
            $status = Topic_Type_Status::NOTPUBLISHED;
            break;
-         case 'publish':
+         case 'PUBLISHED':
            $status = Topic_Type_Status::PUBLISHED;
            break;
          default:

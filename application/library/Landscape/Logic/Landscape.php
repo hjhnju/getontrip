@@ -139,7 +139,7 @@ class Landscape_Logic_Landscape extends Base_Logic{
      */
     public function queryLandscapeById($id,$x='',$y=''){
         $obj = new Landscape_Object_Landscape();
-        $obj->setFileds(array('id','x','y','image','name','content','city_id'));
+        $obj->setFileds(array('id','x','y','image','name','content','city_id','status'));
         $obj->fetch(array('id' => $id));
         $ret = $obj->toArray();
         if(empty($ret['x']) && empty($ret['y'])){

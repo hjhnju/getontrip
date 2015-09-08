@@ -41,7 +41,8 @@ class Collect_Logic_Collect{
      */
     public function delCollect($type, $device_id, $obj_id){
         $obj         = new Collect_Object_Collect();
-        $obj->fetch(array('type' => $type,'obj_id' => $obj_id,'device_id'=> $device_id));
+        $userId      = $this->logicUser->getUserId($device_id);
+        $obj->fetch(array('type' => $type,'obj_id' => $obj_id,'user_id'=> $userId));
         $ret         = $obj->remove();
         $redis       = Base_Redis::getInstance();
         $redis->hDel(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateKeyName($obj_id,'*'));
@@ -84,10 +85,12 @@ class Collect_Logic_Collect{
         $listCollect = new Collect_List_Collect();
         $listCollect->setFilter(array(
             'type'   => $type,
-            'userid' => $this->logicUser->getUserId($device_id),
+            'user_id' => $this->logicUser->getUserId($device_id),
         ));
+        $listCollect->setPage($page);
+        $listCollect->setPagesize($pageSize);
         $arrCollect = $listCollect->toArray();
-        if(empty($listCollect['list'])){
+        if(empty($arrCollect['list'])){
             return array();
         }
         switch ($type){
@@ -106,8 +109,8 @@ class Collect_Logic_Collect{
                 foreach ($arrCollect['list'] as $val){
                     $temp['id']      = $val['obj_id'];
                     $theme           = $logicTheme->queryThemeById($val['obj_id']);
-                    $temp['image']   = Base_Image::getUrlByName($temp['image']);
-                    $temp['title']   = $theme['title'];
+                    $temp['image']   = $theme['image'];
+                    $temp['name']   = $theme['name'];
                     $temp['collect'] = strval($this->getTotalCollectNum(Collect_Type::THEME, $val['obj_id']));
                     $arrRet[]        = $temp;
                 }

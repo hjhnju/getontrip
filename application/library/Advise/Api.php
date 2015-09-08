@@ -7,16 +7,16 @@
 class Advise_Api{
     
     /**
-     * 接口1：Advise_Api::listAdvise($type,$page,$pageSize)
+     * 接口1：Advise_Api::getAdviseList($page,$pageSize,$arrParams = array())
      * 根据类型查询反馈意见
-     * @param integer $type，意见类型：1 未解决，2 已经解决
+     * @param integer $arrParams,参数数组，其中status，意见类型：1 未解决，2 已经解决，全部类型就不用传
      * @param integer $page
      * @param integer $pageSize
      * @return array
      */
-    public static function listAdvise($type,$page,$pageSize){
+    public static function getAdviseList($page,$pageSize,$arrParams = array()){
         $logicAdvise = new Advise_Logic_Advise();
-        return $logicAdvise->listAdvise('');
+        return $logicAdvise->getAdviseList($page,$pageSize,$arrParams);
     }
     
     /**

@@ -60,33 +60,18 @@ class Advise_Logic_Advise{
      * 查询反馈意见，后端使用
      * @return array
      */
-    public function getAdviseList($page,$pageSize,$status = ''){
+    public function getAdviseList($page,$pageSize,$arrParams = array()){
         $arrRet     = array();
-        $index      = 0;
+        $arrType    = array('type' => Advise_Type_Type::ADVISE);
+        if(isset($arrParams['status'])){
+            $arrType = array_merge($arrType,array('status' => $arrParams['status']));
+        }
         $listAdvise = new Advise_List_Advise();
-        $listAdvise->setFilter(array('userid' => $userId));
         $listAdvise->setPage($page);
         $listAdvise->setPagesize($pageSize);
+        $listAdvise->setFilter($arrType);
         $listAdvise->setOrder('create_time desc');
-        $ret =  $listAdvise->toArray();
-        foreach ($ret['list'] as $val){
-            $temp['id']          = $val['id'];
-            $temp['type']        = Advise_Type_Type::ADVISE;
-            $temp['image']       = $image;
-            $temp['content']     = $val['content'];
-            $temp['create_time'] = date('Y-m-d H:i',$val['create_time']);
-            $arrRet[] = $temp;
-    
-            //拼回答,优先选择人工回答
-            $ret = $this->getAnswer($val['id'], $index);
-            foreach ($ret as $key => $val){
-                if(empty($val['create_time'])){
-                    $ret[$key]['create_time'] = $temp['create_time'];
-                }
-            }
-            $arrRet = array_merge($arrRet,$ret);
-            $index += 1;
-        }
+        $arrRet =  $listAdvise->toArray();
         return $arrRet;
     }
     

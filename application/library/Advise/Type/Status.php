@@ -12,7 +12,7 @@ class Advise_Type_Status extends Base_Type {
     const UNTREATED  = 1; 
     
    /**
-    * 1 已解决
+    * 2 已解决
     * @var integer
     */
     const SETTLED    = 2;

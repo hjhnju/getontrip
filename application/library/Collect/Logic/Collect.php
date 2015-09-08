@@ -99,8 +99,9 @@ class Collect_Logic_Collect{
                 foreach ($arrCollect['list'] as $val){
                     $temp['id']       = $val['obj_id'];
                     $sight            = $logicSight->getSightById($val['obj_id']);
+                    $temp['name']     = $sight['name'];
                     $temp['image']    = Base_Image::getUrlByName($sight['image']);
-                    $temp['topicNum'] = $logicSight->getTopicNum($val['obj_id']);
+                    $temp['topicNum'] = Base_Util_String::getTopicNumStr($logicSight->getTopicNum($val['obj_id']));
                     $arrRet[]         = $temp;
                 }
                 break;
@@ -110,7 +111,8 @@ class Collect_Logic_Collect{
                     $temp['id']      = $val['obj_id'];
                     $theme           = $logicTheme->queryThemeById($val['obj_id']);
                     $temp['image']   = $theme['image'];
-                    $temp['name']   = $theme['name'];
+                    $temp['name']    = $theme['name'];
+                    $temp['period']  = $theme['period'];
                     $temp['collect'] = strval($this->getTotalCollectNum(Collect_Type::THEME, $val['obj_id']));
                     $arrRet[]        = $temp;
                 }

@@ -77,6 +77,15 @@ class Base_Util_String {
 	}
 	
 	/**
+	 * 手机号加星 186***043
+	 * @param string $phone
+	 * @return string
+	 */
+	public static function getTopicNumStr($num) {
+	    return '共'.$num.'个话题';
+	}
+	
+	/**
 	 * 带中文的字符串截断
 	 * @param string $str
 	 * @param integer $length

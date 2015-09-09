@@ -66,7 +66,7 @@ class Collect_Logic_Collect{
             'user_id' => $userId,
             'obj_id'  => $obj_id,
         ));
-        if(empty($obj->id)){
+        if(!empty($obj->id)){
             return true;
         }
         return false;
@@ -175,7 +175,7 @@ class Collect_Logic_Collect{
             $count = $ret;
         }else{
             $list = new Collect_List_Collect();
-            $filter = "'type' = $type and 'obj_id' = $objId and 'create_time' >= $start";
+            $filter = "`type` = $type and `obj_id` = $objId and `create_time` >= ".$start;
             $list->setPagesize(PHP_INT_MAX);
             $list->setFilterString($filter);
             $arrRet = $list->toArray();

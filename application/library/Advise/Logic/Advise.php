@@ -157,8 +157,8 @@ class Advise_Logic_Advise{
         $ret1 =  $objAdvise->save();
         
         $objAdvise->fetch(array('id' => $adviseId));
-        $objAdvise->status   = Advise_Type_Status::SETTLED;
-        $objAdvise->dealTime = time();
+        $objAdvise->status     = Advise_Type_Status::SETTLED;
+        $objAdvise->updateTime = time();
         $ret2 = $objAdvise->save();
         return $ret1&&$ret2;
     }

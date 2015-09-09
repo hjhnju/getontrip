@@ -326,7 +326,7 @@ class Topic_Logic_Topic extends Base_Logic{
      */
     public function getTopicHotDegree($topicId,$period){
         $redis = Base_Redis::getInstance();
-        $ret   = $redis->hGet(Topic_Keys::getTopicHot(),Topic_Keys::getLateKey($topicId));
+        $ret   = $redis->hGet(Topic_Keys::getTopicHotKey(),Topic_Keys::getLateKey($topicId,$period));
         if(!empty($ret)){
             return $ret;
         }
@@ -342,7 +342,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $commentNum        = $logicComment->getLateCommentNum($topicId, $period);
         
         $hotDegree         = $collectTopicNum + $commentNum + $visitTopicUv;
-        $redis->hSet(Topic_Keys::getTopicHot(),Topic_Keys::getLateKey($topicId),$hotDegree);
+        $redis->hSet(Topic_Keys::getTopicHotKey(),Topic_Keys::getLateKey($topicId,$period),$hotDegree);
         return $hotDegree;
     }
     

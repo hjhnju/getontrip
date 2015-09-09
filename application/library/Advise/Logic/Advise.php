@@ -81,14 +81,10 @@ class Advise_Logic_Advise{
      */
     public function getAdviseList($page,$pageSize,$arrParams = array()){
         $arrRet     = array();
-        $arrType    = array('type' => Advise_Type_Type::ADVISE);
-        if(isset($arrParams['status'])){
-            $arrType = array_merge($arrType,array('status' => $arrParams['status']));
-        }
         $listAdvise = new Advise_List_Advise();
         $listAdvise->setPage($page);
         $listAdvise->setPagesize($pageSize);
-        $listAdvise->setFilter($arrType);
+        $listAdvise->setFilter($arrParams);
         $arrRet =  $listAdvise->toArray();
         foreach ($arrRet['list'] as $key => $val){
             $listAdvise = new Advise_List_Advise();

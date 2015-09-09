@@ -101,7 +101,7 @@ class Collect_Logic_Collect{
                     $sight            = $logicSight->getSightById($val['obj_id']);
                     $temp['name']     = $sight['name'];
                     $temp['image']    = Base_Image::getUrlByName($sight['image']);
-                    $temp['topicNum'] = Base_Util_String::getTopicNumStr($logicSight->getTopicNum($val['obj_id']));
+                    $temp['topicNum'] = sprintf("共%d个话题",$logicSight->getTopicNum($val['obj_id']));
                     $arrRet[]         = $temp;
                 }
                 break;

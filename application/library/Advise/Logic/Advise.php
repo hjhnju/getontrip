@@ -33,7 +33,6 @@ class Advise_Logic_Advise{
         $listAdvise->setFilter(array('userid' => $userId));
         $listAdvise->setPage($page);
         $listAdvise->setPagesize($pageSize);
-        $listAdvise->setOrder('create_time desc');
         $ret =  $listAdvise->toArray();
         foreach ($ret['list'] as $val){
             $temp['id']          = $val['id'];
@@ -57,6 +56,26 @@ class Advise_Logic_Advise{
     }
     
     /**
+     * 根据ID查询反馈意见
+     * @param integer $adviseId
+     * @return array
+     */
+    public function getAdviseById($adviseId){
+        $arrRet     = array();
+        $index      = 0;
+        $objAdvise = new Advise_Object_Advise();
+        $objAdvise->fetch(array('id' => $adviseId));
+        $arrRet =  $objAdvise->toArray();
+        
+        $listAdvise = new Advise_List_Advise();
+        $listAdvise->setFilter(array('userid' => $arrRet['id'],'type' => Advise_Type_Type::ANSWER));
+        $listAdvise->setPagesize(PHP_INT_MAX);
+        $arrAnswer  = $listAdvise->toArray();
+        $arrRet['answer'] = $arrAnswer['list'];
+        return $arrRet;
+    }
+    
+    /**
      * 查询反馈意见，后端使用
      * @return array
      */
@@ -70,8 +89,14 @@ class Advise_Logic_Advise{
         $listAdvise->setPage($page);
         $listAdvise->setPagesize($pageSize);
         $listAdvise->setFilter($arrType);
-        $listAdvise->setOrder('create_time desc');
         $arrRet =  $listAdvise->toArray();
+        foreach ($arrRet['list'] as $key => $val){
+            $listAdvise = new Advise_List_Advise();
+            $listAdvise->setPagesize(PHP_INT_MAX);
+            $listAdvise->setFilter(array('userid' => $val['id'],'type' => Advise_Type_Type::ANSWER));
+            $arrTmp =  $listAdvise->toArray();
+            $arrRet['list'][$key]['answer'] = $arrTmp['list'];
+        }
         return $arrRet;
     }
     

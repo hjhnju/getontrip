@@ -20,7 +20,18 @@ class Advise_Api{
     }
     
     /**
-     * 接口2：Advise_Api::addAnswer($adviseId, $strContent)
+     * 接口2：Advise_Api::getAdviseById($adviseId)
+     * 根据ID查询反馈意见
+     * @param integer $adviseId
+     * @return array
+     */
+    public function getAdviseById($adviseId){
+        $logicAdvise = new Advise_Logic_Advise();
+        return $logicAdvise->getAdviseById($adviseId);
+    }
+    
+    /**
+     * 接口3：Advise_Api::addAnswer($adviseId, $strContent)
      * 对某个反馈进行处理
      * @param integer $adviseId
      * @param string  $strContent

@@ -34,14 +34,11 @@ class ApiController extends Base_Controller_Page {
            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR)); 
         }
         $ret = $this->_logicCity->getCityDetail($cityId,$deviceId,$page,$pageSize);
-        if($ret){
-            return $this->ajax($ret);
-        }
-        return $this->ajaxError();
+        return $this->ajax($ret);
     }  
     
     /**
-     * 接口1：/api/city/list
+     * 接口2：/api/city/list
      * 获取城市列表信息，切换城市时使用
      * @param char filter,前缀字母
      * @param integer page,页码
@@ -53,9 +50,6 @@ class ApiController extends Base_Controller_Page {
         $page     = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGE_SIZE;
         $ret = City_Api::getCityInfo($page, $pageSize,$filter);
-        if($ret){
-            return $this->ajax($ret);
-        }
-        return $this->ajaxError();
+        return $this->ajax($ret);
     }
 }

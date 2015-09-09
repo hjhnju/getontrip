@@ -127,15 +127,13 @@ class Base_Util_String {
         //词性数组，只取数组中给出的词性的词，词性含义详见：http://bbs.xunsearch.com/showthread.php?tid=1235
 	    $arrAttri = array('n','nr','ns','nz','nt');
 	    $arrRet   = array();
-	    $so = scws_new();
-	    $so->set_charset('utf8');
+	    $so       = scws_new();
 	    $so->send_text($str);
-	    $so->set_dict('dict.utf8.xdb');
 	    $so->set_multi(true);
 	    $tmp = $so->get_result();
 	    foreach ($tmp as $val){
 	        if(in_array($val['attr'],$arrAttri)){
-	            $arrRet[] = $val;
+	            $arrRet[] = $val['word'];
 	        }
 	    }
 	    $so->close();

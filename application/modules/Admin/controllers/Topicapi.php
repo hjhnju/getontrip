@@ -262,6 +262,9 @@ class  TopicapiController extends Base_Controller_Api{
             case 'bbs.dili360.com':
               return 'Dili360bbs';
               break;
+            case 'thepaper.cn':
+              return 'Thepaper';
+              break; 
             default:
               return 'Auto';
               break;

@@ -1,0 +1,57 @@
+{%sidebar%} 
+<aside id="sidebar">
+  <!-- sidebar menu start-->
+  <ul class="sidebar-menu" id="nav-accordion" style="display: block;">
+        {%foreach $sidebar as $key => $section%}
+          <li{%if isset($section.items)%} class="sub-menu dcjq-parent-li"{%/if%}>
+                <a href="javascript:;" class="dcjq-parent{%if $section.current == 1%} active{%/if%}">
+                    <i class="{%$section.icon%}"></i>
+                    <span>{%$section.name%}</span>
+                    {%if $section.current == 1%}
+                    <span class="dcjq-icon fa fa-angle-down"></span>
+                    {%else%} 
+                    <span class="dcjq-icon fa fa-angle-left"></span>
+                    {%/if%} 
+                    
+                </a>
+                <ul class="sub">
+                {%foreach $section.items as $id => $item%}
+                  <li{%if $item.current == 1%} class="active"{%/if%}>
+                        <a href="{%$item.url%}">
+                        <i class="{%$item.icon%}"></i>
+                        {%$item.name%}</a>
+                  </li>
+                {%/foreach%}
+                </ul>
+          </li>
+        {%/foreach%} 
+
+      <!--multi level menu start-->
+      <li class="sub-menu dcjq-parent-li" style="display: none;">
+          <a href="javascript:;" class="dcjq-parent">
+              <i class="fa fa-sitemap"></i>
+              <span>Multi level Menu</span>
+          <span class="dcjq-icon"></span></a>
+          <ul class="sub" style="display: none;">
+              <li><a href="javascript:;">Menu Item 1</a></li>
+              <li class="sub-menu dcjq-parent-li">
+                  <a href="boxed_page.html" class="dcjq-parent">Menu Item 2<span class="dcjq-icon"></span></a>
+                  <ul class="sub" style="display: none;">
+                      <li><a href="javascript:;">Menu Item 2.1</a></li>
+                      <li class="sub-menu dcjq-parent-li">
+                          <a href="javascript:;" class="dcjq-parent">Menu Item 3<span class="dcjq-icon"></span></a>
+                          <ul class="sub" style="display: none;">
+                              <li><a href="javascript:;">Menu Item 3.1</a></li>
+                              <li><a href="javascript:;">Menu Item 3.2</a></li>
+                          </ul>
+                      </li>
+                  </ul>
+              </li>
+          </ul>
+      </li>
+      <!--multi level menu end-->
+
+  </ul>
+  <!-- sidebar menu end-->
+</aside>
+ 

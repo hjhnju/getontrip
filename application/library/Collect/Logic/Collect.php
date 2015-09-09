@@ -175,7 +175,7 @@ class Collect_Logic_Collect{
             $count = $ret;
         }else{
             $list = new Collect_List_Collect();
-            $filter = "'type' = $type and 'obj_id' = $objId and 'create_time' >= $start";
+            $filter = "`type` = $type and `obj_id` = $objId and `create_time` >= ".$start;
             $list->setPagesize(PHP_INT_MAX);
             $list->setFilterString($filter);
             $arrRet = $list->toArray();

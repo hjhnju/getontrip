@@ -33,12 +33,13 @@ class City_Logic_City{
      * @param integer $pageSize
      * @return array
      */
-    public function getCityDetail($cityId,$page,$pageSize){
+    public function getCityDetail($cityId,$deviceId,$page,$pageSize){
         $arrHot     = array();
         $logicTopic = new Topic_Logic_Topic();
         $redis      = Base_Redis::getInstance();
         $ret        = City_Api::getCityById($cityId);
         $arrSight   = $this->_modeSight->getSightByCity($page, $pageSize, $cityId);
+        $logicCollect = new Collect_Logic_Collect();
         foreach ($arrSight as $key => $val){
             $ret    = $redis->sMembers(Sight_Keys::getSightTopicKey($val['id']));
             $hot    = 0;
@@ -47,7 +48,8 @@ class City_Logic_City{
             }
             $arrHot[] = $hot;     
             $arrSight[$key]['image']  = Base_Image::getUrlByName($val['image']);
-            $arrSight[$key]['topics'] = count($redis->sMembers(Sight_Keys::getSightTopicKey($val['id'])));
+            $arrSight[$key]['topics'] = sprintf("共%s个话题",count($redis->sMembers(Sight_Keys::getSightTopicKey($val['id']))));
+            $arrSight[$key]['collect']= strval($logicCollect->checkCollect(Collect_Type::SIGHT, $deviceId, $val['id']));
         }
         array_multisort($arrHot, SORT_DESC , $arrSight);
         return $arrSight;

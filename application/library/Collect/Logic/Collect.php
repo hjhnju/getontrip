@@ -66,7 +66,7 @@ class Collect_Logic_Collect{
             'user_id' => $userId,
             'obj_id'  => $obj_id,
         ));
-        if(empty($obj->id)){
+        if(!empty($obj->id)){
             return true;
         }
         return false;

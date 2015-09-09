@@ -22,7 +22,7 @@ class Base_Search {
     );
     
     /**
-     * 对theme、topic两表提供全文检索,eg:Base_Search::Search('topic','测试',1,10, array('id'))
+     * 对theme、topic两表提供全文检索,eg:Base_Search::Search('topic','测试',1,10,array('id'))
      * @param string  $type，类型，eg:'topic','theme'
      * @param string  $word,检索关键词
      * @param integer $page
@@ -30,9 +30,10 @@ class Base_Search {
      * @param array $arrNeedKey,需要返回的key
      */
     public static function Search($type,$word,$page = 1,$pageSize = self::PAGE_SIZE, $arrNeedKey = array()){
-        $query = '';
+        $query  = '';
+        $arrRet = array();
         if(!in_array(trim($type),self::$arrTypes)){
-            return array();
+            return $arrRet;
         }
         foreach (self::$arrPrams as $val){
             $query .= $val.":".$word." or ";
@@ -49,11 +50,11 @@ class Base_Search {
         }else{
             $param = implode(",",$arrNeedKey);
         }
-        $param = urlencode($param);
-        $from  = ($page-1)*$pageSize;
-        $url = Base_Config::getConfig('solr')->url.'/solr/'.$type.'/select?q='.$query.'&wt=json&fl='.$param."&start=".$from."&rows=".$pageSize;
-        $ret = file_get_contents($url);
-        $ret = json_decode($ret,true);
-        return $ret['response']['docs'];
+        $param  = urlencode($param);
+        $from   = ($page-1)*$pageSize;
+        $url    = Base_Config::getConfig('solr')->url.'/solr/'.$type.'/select?q='.$query.'&wt=json&fl='.$param."&start=".$from."&rows=".$pageSize;
+        $ret    = file_get_contents($url);
+        $arrRet = json_decode($ret,true);
+        return $arrRet['response']['docs'];
     }
 }

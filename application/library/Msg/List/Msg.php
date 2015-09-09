@@ -30,6 +30,7 @@ class Msg_List_Msg extends Base_List {
         'mid'         => 1,
         'sender'      => 1,
         'receiver'    => 1,
+        'type'        => 1,
         'status'      => 1,
         'create_time' => 1,
         'update_time' => 1,

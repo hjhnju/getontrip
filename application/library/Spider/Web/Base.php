@@ -26,7 +26,7 @@ abstract class Spider_Web_Base{
      * 构造函数，source可能是网址，也可以是页面内容
      * @param string $url
      */
-    public function __construct( $source ,$type=Spider_Type_Source::URL){
+    public function __construct( $source ,$type = Spider_Type_Source::URL){
         switch($type){
             case Spider_Type_Source::URL:
                 $this->url     = $source;

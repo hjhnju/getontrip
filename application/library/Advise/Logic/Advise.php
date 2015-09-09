@@ -33,7 +33,6 @@ class Advise_Logic_Advise{
         $listAdvise->setFilter(array('userid' => $userId));
         $listAdvise->setPage($page);
         $listAdvise->setPagesize($pageSize);
-        $listAdvise->setOrder('create_time desc');
         $ret =  $listAdvise->toArray();
         foreach ($ret['list'] as $val){
             $temp['id']          = $val['id'];
@@ -57,35 +56,46 @@ class Advise_Logic_Advise{
     }
     
     /**
+     * 根据ID查询反馈意见
+     * @param integer $adviseId
+     * @return array
+     */
+    public function getAdviseById($adviseId){
+        $arrRet     = array();
+        $index      = 0;
+        $objAdvise = new Advise_Object_Advise();
+        $objAdvise->fetch(array('id' => $adviseId));
+        $arrRet =  $objAdvise->toArray();
+        
+        $listAdvise = new Advise_List_Advise();
+        $listAdvise->setFilter(array('userid' => $arrRet['id'],'type' => Advise_Type_Type::ANSWER));
+        $listAdvise->setPagesize(PHP_INT_MAX);
+        $arrAnswer  = $listAdvise->toArray();
+        $arrRet['answer'] = $arrAnswer['list'];
+        return $arrRet;
+    }
+    
+    /**
      * 查询反馈意见，后端使用
      * @return array
      */
-    public function getAdviseList($page,$pageSize,$status = ''){
+    public function getAdviseList($page,$pageSize,$arrParams = array()){
         $arrRet     = array();
-        $index      = 0;
+        $arrType    = array('type' => Advise_Type_Type::ADVISE);
+        if(isset($arrParams['status'])){
+            $arrType = array_merge($arrType,array('status' => $arrParams['status']));
+        }
         $listAdvise = new Advise_List_Advise();
-        $listAdvise->setFilter(array('userid' => $userId));
         $listAdvise->setPage($page);
         $listAdvise->setPagesize($pageSize);
-        $listAdvise->setOrder('create_time desc');
-        $ret =  $listAdvise->toArray();
-        foreach ($ret['list'] as $val){
-            $temp['id']          = $val['id'];
-            $temp['type']        = Advise_Type_Type::ADVISE;
-            $temp['image']       = $image;
-            $temp['content']     = $val['content'];
-            $temp['create_time'] = date('Y-m-d H:i',$val['create_time']);
-            $arrRet[] = $temp;
-    
-            //拼回答,优先选择人工回答
-            $ret = $this->getAnswer($val['id'], $index);
-            foreach ($ret as $key => $val){
-                if(empty($val['create_time'])){
-                    $ret[$key]['create_time'] = $temp['create_time'];
-                }
-            }
-            $arrRet = array_merge($arrRet,$ret);
-            $index += 1;
+        $listAdvise->setFilter($arrType);
+        $arrRet =  $listAdvise->toArray();
+        foreach ($arrRet['list'] as $key => $val){
+            $listAdvise = new Advise_List_Advise();
+            $listAdvise->setPagesize(PHP_INT_MAX);
+            $listAdvise->setFilter(array('userid' => $val['id'],'type' => Advise_Type_Type::ANSWER));
+            $arrTmp =  $listAdvise->toArray();
+            $arrRet['list'][$key]['answer'] = $arrTmp['list'];
         }
         return $arrRet;
     }

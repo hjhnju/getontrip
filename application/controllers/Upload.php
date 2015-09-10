@@ -10,6 +10,32 @@ class UploadController extends Base_Controller_Page {
     }
     
     /**
+     * 接口1：/upload/urlpic
+     * 上传图像，根据一个URL上传图像
+     * @param string url，头像的链接
+     * @return json
+     * 
+     */
+    public function urlPicAction(){
+        $url = isset($_REQUEST['url'])?trim($_REQUEST['url']):'';
+        if(empty($url)){
+            return $this->ajaxError();
+        }
+        $hash = md5(microtime(true));
+        $hash = substr($hash, 8, 16);
+        $arrName = explode(".",$url);
+        $count   = count($arrName);
+        if(trim($arrName[$count-1]) == 'gif'){
+            $filename = $hash . '.gif';
+        }else{
+            $filename = $hash . '.jpg';
+        }
+        $logic = new Base_Logic();
+        $ret = $logic->uploadPic($url);
+        return $this->ajax($ret);
+    }
+    
+    /**
      * 上传图片
      */
     public function picAction() {

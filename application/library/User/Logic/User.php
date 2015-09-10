@@ -88,7 +88,17 @@ class User_Logic_User extends Base_Logic{
         if(!empty($arrParams)){
             $listUser->setFilter($arrParams);
         }
-        return $listUser->toArray();
+        $arrRet =  $listUser->toArray();
+        foreach ($arrRet['list'] as $key => $val){
+            $objLogin = new User_Object_Login();
+            $objLogin->fetch(array('id' => $val['id']));
+            if(!empty($objLogin->id)){
+                $arrRet['list'][$key]['logintime'] = $objLogin->loginTime;
+            }else{
+                $arrRet['list'][$key]['logintime'] = '';
+            }
+        }
+        return $arrRet;
     }
     
     /**
@@ -99,6 +109,14 @@ class User_Logic_User extends Base_Logic{
     public function getUserById($userId){
         $objUser = new User_Object_User();
         $objUser->fetch(array('id' => $userId));
-        return $objUser->toArray();        
+        $ret = $objUser->toArray(); 
+        $objLogin = new User_Object_Login();
+        $objLogin->fetch(array('id' => $ret['id']));
+        if(!empty($objLogin->id)){
+            $ret['logintime'] = $objLogin->loginTime;
+        }else{
+            $ret['logintime'] = '';
+        }    
+        return $ret;   
     }
 }

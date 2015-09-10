@@ -2,7 +2,6 @@
 /**
  * 景点发布及词条发布后通过此接口异步抓取百科、视频、书籍数据
  * @author huwei
- *
  */
 ini_set("max_execution_time", "180000");
 class InitDataController extends Base_Controller_Page {
@@ -29,7 +28,6 @@ class InitDataController extends Base_Controller_Page {
         }else{
             $arrSight[] = $sightId;
         }
-        
         foreach ($arrSight as $id){
             switch($type){
                 case 'Book':
@@ -53,11 +51,13 @@ class InitDataController extends Base_Controller_Page {
                 case 'All':
                     $logicBook  = new Book_Logic_Book();
                     $logicVideo = new Video_Logic_Video();
+                    $logicWiki  = new Wiki_Logic_Wiki();
                     $page       = ceil($num/self::PAGE_SIZE);
                     for( $i = 1; $i <= $page; $i++ ){
                         $logicBook->getJdBooks($id, $i,self::PAGE_SIZE);
                         $logicVideo->getAiqiyiSource($id, $i);
                     }
+                    $logicWiki->getWikiSource($id,1,$num,Wiki_Type_Status::PUBLISHED);
                     break;
                 default:
                     break;

@@ -61,13 +61,6 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $ret = $obj->save();
         }
         if($ret){
-            if($obj->status == Keyword_Type_Status::PUBLISHED){
-                $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
-                $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$obj->sightId."&type=Wiki&num=".$conf['thirddata'] ['initnum'];
-                $http = Base_Network_Http::instance()->url($url);
-                $http->timeout(1);
-                $http->exec();
-            }
             return $obj->id;
         }
         return '';
@@ -94,13 +87,6 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $ret =  $obj->save();
         }
         if($ret){
-            if($obj->status == Keyword_Type_Status::PUBLISHED){
-                $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
-                $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$obj->sightId."&type=Wiki&num=".$conf['thirddata'] ['initnum'];
-                $http = Base_Network_Http::instance()->url($url);
-                $http->timeout(1);
-                $http->exec();
-            }
             return $obj->id;
         }
         return '';

@@ -236,11 +236,12 @@ class  TopicapiController extends Base_Controller_Api{
             if($bRet){
                return $this->ajax($ret); 
             }
-            return $this->ajaxError(); 
+            return $this->ajaxError('');
+            return $this->ajaxError('100','修改话题的图片hash错误');  
           }
           return $this->ajax($ret); 
         }
-        return $this->ajaxError(); 
+        return $this->ajaxError('101','裁剪图片错误错误');  
     }
  
 

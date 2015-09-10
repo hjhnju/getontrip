@@ -105,7 +105,7 @@
                                     <img src="{%$webroot%}/pic/{%$post.image%}" alt="">
                                     {%/if%}
                                   </div> 
-                                    <button id="crop-img" class="btn btn-primary fileupload-crop{%if empty($post.image)==1%} hidden{%/if%}" type="button"><i class="fa fa-cut"></i>裁剪</button>
+                                    <button id="crop-img" class="btn btn-primary fileupload-crop{%if empty($post.image)==1%} hidden{%/if%}" type="button" data-corpUrl="landscape"><i class="fa fa-cut"></i>裁剪</button>
                                     <input type="hidden" id="jcrop-ratio" data-width="133" data-height="93"/>
                                   <div>
                                    <span class="btn btn-white btn-file">

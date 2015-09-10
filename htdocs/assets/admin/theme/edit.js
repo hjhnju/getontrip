@@ -100,11 +100,20 @@ $(document).ready(function() {
                     $('#imageView').html('<img src="/pic/' + res.data.image.getNewImgByImg(190,140,'f')+'"  alt=""/>');
                     $('#imageView').removeClass('imageView');
                     $('#crop-img').removeClass('hidden');
+
+                    localStorage.image = res.data.image;
                 },
                 error: function(data, status, e) {
                     alert(status.statusInfo);
                 }
             })
+        });
+
+         //确保图片上传后存上
+        $(window).bind('beforeunload', function() {
+            if (localStorage.image) {
+                return '等等!!你刚刚上传了图片，不点最下面的保存就丢了!';
+            }
         });
 
         //点击发布或者保存按钮
@@ -187,6 +196,7 @@ $(document).ready(function() {
                         if (response.status == 0) {
                             toastr.success('保存成功');
                             localStorage.themeContent = '';
+                             localStorage.image = '';
                             if (url.indexOf('add') >= 0) {
                                 window.location.href = '/admin/theme/edit?action=edit&id=' + response.data;
                             } else {

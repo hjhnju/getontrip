@@ -28,7 +28,9 @@ $(document).ready(function() {
             "orderable": false,
             "width": 150
         }],
-        "columns": [  {
+        "columns": [ {
+            "data": 'id'
+        },{
             "data": 'title'
         }, {
             "data": function(e) {

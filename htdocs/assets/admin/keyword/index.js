@@ -34,9 +34,11 @@ $(document).ready(function() {
             "visible": true,
             "searchable": false
         }, {
-            "targets": [1],
-            "orderable": false,
+            "targets": [1,2,4,5,6,7], 
             "width": 20
+        }, {
+            "targets": [2,3], 
+            "width": 70
         }],
         "columns": [{
             "data": "id"
@@ -143,7 +145,7 @@ $(document).ready(function() {
         $('#editable button.confirm').live('click', function(e) {
             e.preventDefault();
             var nRow = $(this).parents('tr')[0];
-            var data = oTable.api().row(nRow).data();
+            var data = oTable.api().row(nRow).data(); 
             var params = {
                 id: data.id,
                 status: 2 //确认的状态

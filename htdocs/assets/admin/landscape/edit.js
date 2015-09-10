@@ -67,16 +67,25 @@ $(document).ready(function() {
                 fileElementId: 'imageBtn',
                 dataType: 'json',
                 success: function(res, status) { //当文件上传成功后，需要向数据库中插入数据
-                    $('#image').val(res.data.image);
-                    $('#imageView').html('<img src="/pic/' + res.data.hash + '_190_140.jpg"  alt=""/>');
+                    $('#image').val(res.data.image); 
+                     $('#imageView').html('<img src="/pic/' + res.data.image.getNewImgByImg(190, 140, 'f') + '"  alt=""/>');
                     $('#imageView').removeClass('imageView');
                     $('#crop-img').removeClass('hidden');
+
+                     localStorage.image = res.data.image;
                 },
                 error: function(data, status, e) {
                     alert(status.statusInfo);
                 }
             })
         }); 
+
+          //确保图片上传后存上
+        $(window).bind('beforeunload', function() {
+            if (localStorage.image) {
+                return '等等!!你刚刚上传了图片，不点最下面的保存就丢了!';
+            }
+        });
 
         //描述字数统计
       /*  $('#content').limitTextarea({
@@ -131,6 +140,7 @@ $(document).ready(function() {
                     },
                     "success": function(response) {
                         if (response.status == 0) {
+                             localStorage.image = '';
                             alert('保存成功');
                             //$("button[name='reset']").click();
                             $('#Form button[type="submit"]').btnEnable(); 

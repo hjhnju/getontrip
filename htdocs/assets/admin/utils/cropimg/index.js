@@ -54,7 +54,7 @@ $(document).ready(function() {
             $preview.appendTo(jcrop_api.ui.holder);
          
         });
-        setTimeout(function() {
+        setTimeout(function() { 
             //打开模态框
             $('#corpModal').modal(); 
         }, 0);	
@@ -63,8 +63,9 @@ $(document).ready(function() {
 
     //点击确定
     $('#corp-btn').click(function(event) {
+        var url='/admin/'+$('#crop-img').attr('data-corpUrl')+'api/cropPic';
         $.ajax({
-            "url": "/admin/topicapi/cropPic",
+            "url": url,
             "data": {
                 id: $('#id').val(),
                 image: $('#target').attr('data-image'),
@@ -87,6 +88,8 @@ $(document).ready(function() {
                     $('#imageView').removeClass('imageView');
                     //手工关闭模态框
                     $('#corpModal').modal('hide');
+
+                    localStorage.image=data.image;
                 }
             }
         });

@@ -14,6 +14,7 @@ class Admin_Logic_Admin extends Base_Logic{
      */
     public function login($name,$password){
         $objAdmin = new Admin_Object_Admin();
+        $password = Base_Util_Secure::encrypt($password);
         $objAdmin->fetch(array('name' => $name,'passwd' => $password));
         if(!empty($objAdmin->id)){
             $objAdmin->loginTime = time();

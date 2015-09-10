@@ -97,11 +97,11 @@ class Wiki_Logic_Wiki extends Base_Logic{
                 }
             }
             if(!empty($name)){
-                $hash  = $this->uploadPic($name);
+                $hash  = $this->uploadPic($name,$wikiUrl);
             }else{
                 $hash  = $name;
             }
-            
+
             $content   = $html->find('div.card-summary-content div.para',0);
             if(empty($content)){
                 $content = $html->find('div[class="lemmaWgt-lemmaSummary lemmaWgt-lemmaSummary-light"]',0);
@@ -160,6 +160,7 @@ class Wiki_Logic_Wiki extends Base_Logic{
                 $this->delPic($picName);
             }
             $redis->delete(Wiki_Keys::getWikiInfoName($sightId, $index));
+            $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'id',$index);
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'title',$arrTemp['title']);
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'content',$arrTemp['content']);
             $redis->hset(Wiki_Keys::getWikiInfoName($sightId, $index),'url',$arrTemp['url'] );

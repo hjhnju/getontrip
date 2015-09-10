@@ -75,7 +75,7 @@ class Video_Logic_Video extends Base_Logic{
             $ret               = $e->find('a.figure',0);
             $info['url']       = trim($ret->getAttribute("href"));        
             $ret               = $e->find('a.figure img',0);
-            $info['image']     = Base_Image::getUrlByName($this->uploadPic($ret->getAttribute("src")));
+            $info['image']     = Base_Image::getUrlByName($this->uploadPic($ret->getAttribute("src"),$url));
             $info['status']    = Video_Type_Status::PUBLISHED;
             $info['from']      = '爱奇艺';
             $info['create_time'] = time();          

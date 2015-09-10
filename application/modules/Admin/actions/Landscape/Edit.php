@@ -22,8 +22,9 @@ class EditAction extends Yaf_Action_Abstract {
            
             //获取城市名称
            $cityInfo=City_Api::getCityById($postInfo["city_id"]);
-           $postInfo["city_name"]=$cityInfo["name"];
-           $postInfo["level"]=trim($postInfo["level"]);
+           $postInfo["city_name"]=$cityInfo["name"]; 
+
+           //处理图片，去掉路径
            
            $this->getView()->assign('post', $postInfo);
            

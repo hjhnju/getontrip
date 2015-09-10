@@ -4,21 +4,21 @@
   author:fyy
  */
 $(document).ready(function() {
-    var validate = null; 
+    var validate = null;
     validations();
-    bindEvents(); 
+    bindEvents();
 
     function bindEvents() {
-          //定位地图模态框
-        $('#position').click(function(e) {  
+        //定位地图模态框
+        $('#position').click(function(e) {
             //打开模态框
             $('#mapModal').modal({
                 //remote: '/admin/utils/map'
             });
-             $("#txtSearch").val($.trim($("#name").val())); 
+            $("#txtSearch").val($.trim($("#name").val()));
             $('#mapModal .btn-search').click();
         });
- 
+
 
         //模态框 点击确定之后立即触发该事件。
         $('#mapModal').delegate('.btn-submit', 'click', function(event) {
@@ -30,7 +30,7 @@ $(document).ready(function() {
             var arrayXy = valXY.split(',');
             $("#x").val(arrayXy[0]);
             $("#y").val(arrayXy[1]);
-            $("#xy").val(valXY); 
+            $("#xy").val(valXY);
 
             //手工关闭模态框
             $('#mapModal').modal('hide');
@@ -51,21 +51,21 @@ $(document).ready(function() {
 
         //输入词条名称生成url
         $('#name').blur(function(event) {
-            var name= $.trim($(this).val());
-            if(name){ 
-               $('#url').val('http://baike.baidu.com/item/'+name);
-               $('#view-link').attr('href',$('#url').val());
+            var name = $.trim($(this).val());
+            if (name) {
+                $('#url').val('http://baike.baidu.com/item/' + name);
+                $('#view-link').attr('href', $('#url').val());
             }
         });
         $('#url').blur(function(event) {
-           var name= $.trim($(this).val());
-            if(name){  
-               $('#view-link').attr('href',$('#url').val());
+            var name = $.trim($(this).val());
+            if (name) {
+                $('#view-link').attr('href', $('#url').val());
             }
         });
         //点击保存或者确认并保存按钮
         $('#Form button[type="submit"]').click(function(event) {
-             $('#status').val($(this).attr('data-status'));
+            $('#status').val($(this).attr('data-status'));
         });
     }
 
@@ -113,12 +113,14 @@ $(document).ready(function() {
         validate = $("#Form").validate({
             rules: {
                 name: "required",
-                sight_name: "required" 
+                sight_name: "required",
+                xy: "required"
             },
             messages: {
                 name: "名称不能为空！",
-                sight_name: "景点名称不能为空哦！" 
-                
+                sight_name: "景点名称不能为空哦！",
+                xy: "坐标不能为空"
+
             }
         });
     }

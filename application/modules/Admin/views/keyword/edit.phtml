@@ -48,7 +48,7 @@
                           <div class="col-lg-5">
                               <input  id="x" name="x"  type="hidden" value="{%if isset($post.x)%}{%$post.x%}{%/if%}">
                               <input  id="y" name="y"  type="hidden" value="{%if isset($post.y)%}{%$post.y%}{%/if%}">
-                              <input class="form-control disabled" id="xy"  type="text" readonly="readonly" value="{%if isset($post.x)%}{%$post.x%},{%$post.y%}{%/if%}"><label for="xy" class="error"></label>  
+                              <input class="form-control disabled" id="xy"  type="text" readonly="readonly" required="" value="{%if isset($post.x)%}{%$post.x%},{%$post.y%}{%/if%}"><label for="xy" class="error"></label>  
                            </div>
                            <div class="col-lg-5"> 
                           <button type="button"  class="btn btn-success" id="position">

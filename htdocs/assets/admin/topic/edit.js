@@ -135,11 +135,20 @@ $(document).ready(function() {
                     $('#imageView').html('<img src="/pic/' + res.data.image.getNewImgByImg(190, 140, 'f') + '"  alt=""/>');
                     $('#imageView').removeClass('imageView');
                     $('#crop-img').removeClass('hidden');
+
+                    localStorage.image = res.data.image;
                 },
                 error: function(data, status, e) {
                     alert(status.statusInfo);
                 }
             })
+        });
+
+        //确保图片上传后存上
+        $(window).bind('beforeunload', function() {
+            if (localStorage.image) {
+                return '等等!!你刚刚上传了图片，不点最下面的保存就丢了!';
+            }
         });
 
         //定位地图模态框
@@ -399,21 +408,7 @@ $(document).ready(function() {
                 tag_id_array = [];
                 $('input[data-name="form-tag"]:checked').each(function() {
                     tag_id_array.push(Number($(this).val()));
-                });
-                /* //处理来源
-                 var from = "";
-                 var fromType=$('#from-type').val();
-                 if (fromType == "1") {
-                     from = $('#weixin-from').attr('data-id');
-                     if (!from) {
-                         toastr.warning('请填写微信公众号！');
-                         return false;
-                     }
-                 } else if (fromType == "2"){
-                     from = $('#from_name').attr('data-id');
-                 }else if (fromType == "3"){
-                      from = $('#weixin-from').attr('data-id');
-                 }*/
+                }); 
                 param.tags = tag_id_array;
                 param.sights = sight_id_array;
                 param.from = from = $('#from_name').attr('data-id');
@@ -447,6 +442,7 @@ $(document).ready(function() {
                         if (response.status == 0) {
                             toastr.success('保存成功');
                             localStorage.topicContent = '';
+                             localStorage.image = '';
                             if (url.indexOf('add') >= 0) {
                                 //resetForm();
                                 window.location.href = '/admin/topic/edit?action=edit&id=' + response.data;

@@ -213,6 +213,35 @@ class  SightapiController extends Base_Controller_Api{
 
 
     /**
+     * 裁剪背景图片
+     * @return [type] [description]
+    */
+    public function cropPicAction(){
+        $postid=isset($_REQUEST['id'])?intval($_REQUEST['id']):''; 
+        $oldhash=$_REQUEST['image'];
+        $x=$_REQUEST['x'];
+        $y=$_REQUEST['y']; 
+        $width=$_REQUEST['width'];
+        $height=$_REQUEST['height']; 
+        $ret=Base_Image::cropPic($oldhash,$x,$y,$width,$height); 
+        if($ret){
+          if(!empty($postid)){
+            $params = array('image'=>$ret['image']);
+            //修改话题的图片hash
+            $bRet=Sight_Api::editSight($postid,$params);
+            if($bRet){
+               return $this->ajax($ret); 
+            }
+            return $this->ajaxError('');
+            return $this->ajaxError('100','修改话题的图片hash错误');  
+          }
+          return $this->ajax($ret); 
+        }
+        return $this->ajaxError('101','裁剪图片错误错误');  
+    }
+
+
+    /**
      * 获取保存的状态
      * @param  [type] $action [description]
      * @return [type]         [description]

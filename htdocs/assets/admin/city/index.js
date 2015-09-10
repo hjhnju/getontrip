@@ -19,7 +19,7 @@
                }
         },
         "columnDefs": [{
-            "targets": [0],
+            "targets": [],
             "visible": false,
             "searchable": false
         }],

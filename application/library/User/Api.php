@@ -1,14 +1,30 @@
 <?php
 /**
- * 对外的API接口
+ * 用户模块对外的API接口
  */
 class User_Api{
     
-    public static function getUserList(){
-        
+    /**
+     * 接口1：User_Api::getUserList($page,$pageSize,$arrParams = array())
+     * 获取用户信息列表
+     * @param integer $page
+     * @param integer $pageSize
+     * @param array $arrParams
+     * @return array
+     */
+    public static function getUserList($page,$pageSize,$arrParams = array()){
+       $logicUser = new User_Logic_User();
+       return $logicUser->getUserList($page, $pageSize, $arrParams);
     }
     
-    public static function getLoginUser(){
-        
+    /**
+     * 接口2：User_Api::getUserById($userId)
+     * 根据用户ID获取用户信息
+     * @param integer $userId
+     * @return array
+     */
+    public static function getUserById($userId){
+        $logicUser = new User_Logic_User();
+        return $logicUser->getUserById($userId);  
     }
 }

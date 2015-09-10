@@ -73,4 +73,32 @@ class User_Logic_User extends Base_Logic{
         }
         return $objUser->save();
     }
+    
+    /**
+     * 获取用户信息列表
+     * @param integer $page
+     * @param integer $pageSize
+     * @param array $arrParams
+     * @return array
+     */
+    public function getUserList($page,$pageSize,$arrParams = array()){
+        $listUser = new User_List_User();
+        $listUser->setPage($page);
+        $listUser->setPagesize($pageSize);
+        if(!empty($arrParams)){
+            $listUser->setFilter($arrParams);
+        }
+        return $listUser->toArray();
+    }
+    
+    /**
+     * 根据用户ID获取用户信息
+     * @param unknown $userId
+     * @return Ambigous <multitype:, multitype:NULL >
+     */
+    public function getUserById($userId){
+        $objUser = new User_Object_User();
+        $objUser->fetch(array('id' => $userId));
+        return $objUser->toArray();        
+    }
 }

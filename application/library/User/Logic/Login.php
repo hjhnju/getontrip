@@ -38,7 +38,7 @@ class User_Logic_Login {
             $objLogin->authType = $type;
             $userid             = $objUser->id;
         }else{
-           $userid = $arr['user_id']; 
+            $userid = $arr['user_id']; 
         }
         $objLogin->loginTime = time();
         $objLogin->save();        

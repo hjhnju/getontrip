@@ -109,14 +109,16 @@ class User_Logic_User extends Base_Logic{
     public function getUserById($userId){
         $objUser = new User_Object_User();
         $objUser->fetch(array('id' => $userId));
-        $ret = $objUser->toArray(); 
-        $objLogin = new User_Object_Login();
-        $objLogin->fetch(array('id' => $ret['id']));
-        if(!empty($objLogin->id)){
-            $ret['logintime'] = $objLogin->loginTime;
-        }else{
-            $ret['logintime'] = '';
-        }    
+        $ret = $objUser->toArray();
+        if(!empty($ret)){ 
+            $objLogin = new User_Object_Login();
+            $objLogin->fetch(array('id' => $ret['id']));
+            if(!empty($objLogin->id)){
+                $ret['logintime'] = $objLogin->loginTime;
+            }else{
+                $ret['logintime'] = '';
+            }    
+        }
         return $ret;   
     }
 }

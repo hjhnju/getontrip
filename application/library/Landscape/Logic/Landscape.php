@@ -142,7 +142,7 @@ class Landscape_Logic_Landscape extends Base_Logic{
         $obj->setFileds(array('id','x','y','image','name','content','city_id','status'));
         $obj->fetch(array('id' => $id));
         $ret = $obj->toArray();
-        if(empty($ret['x']) && empty($ret['y'])){
+        if(empty($x) && empty($x)){
             return $ret;
         }     
         $modelGis        = new GisModel();

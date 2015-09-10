@@ -48,28 +48,64 @@ class User_Logic_User extends Base_Logic{
      * @param string $deviceId
      * @return array
      */
-    public function getUserInfo($deviceId){
+    public function getUserInfo($userId,$type){
         $objUser  = new User_Object_User();
-        $objUser->fetch(array('device_id' => $deviceId));
+        $objUser->fetch(array('id' => $userId,'type' => $type));
         return $objUser->toArray();
     }
     
     /**
      * 修改用户信息
-     * @param string $deviceId
+     * @param string $userId
      * @param string $strParam
      * @return boolean
      */
-    public function editUserInfo($deviceId,$strParam){
+    public function editUserInfo($userId,$strParam){
+        $image = '';
+        $type  = '';
         $objUser  = new User_Object_User();
-        $objUser->fetch(array('device_id' => $deviceId));
+        $objUser->fetch(array('id' => $userId));
         $arrData  = implode(",",$strParam);
         foreach ($arrData as $val){
             $arrTemp = implode(":", $val);
-            if(isset($val[0]) && isset($val[1])){
+            if(isset($arrTemp[0]) && isset($arrTemp[1])){
                 $key           = $this->getprop($arrTemp[0]);
-                $objUser->$key = $arrTemp[1];
+                if($key == 'image'){
+                    $image = $arrTemp[1];
+                    continue;
+                }elseif($key == 'type'){
+                    $type = $arrTemp[1];
+                }else{
+                    $objUser->$key = $arrTemp[1];
+                }
             }            
+        }
+        if(!empty($image)){
+            $this->uploadUserAvatar($image, $type);
+        }
+        return $objUser->save();
+    }
+    
+    /**
+     * 添加用户信息
+     * @param string $userId
+     * @param string $strParam
+     * @return boolean
+     */
+    public function addUserInfo($userId,$strParam){
+        $objUser  = new User_Object_User();
+        $objUser->fetch(array('id' => $userId));
+        $arrData  = implode(",",$strParam);
+        foreach ($arrData as $val){
+            $arrTemp = implode(":", $val);
+            if(isset($arrTemp[0]) && isset($arrTemp[1])){
+                $key           = $this->getprop($arrTemp[0]);
+                if($key == 'image'){
+                    $objUser->$key = $this->uploadPic($arrTemp[1]);
+                }else{
+                    $objUser->$key = $arrTemp[1];
+                }
+            }
         }
         return $objUser->save();
     }
@@ -120,5 +156,24 @@ class User_Logic_User extends Base_Logic{
             }    
         }
         return $ret;   
+    }
+    
+    /**
+     * 上传用户图像
+     * @param string $data，图像二进制数据
+     * @param string $type,图像后缀名
+     * @see Base_Logic::uploadPic()
+     */
+    public function uploadUserAvatar($data,$type){
+        $hash = md5(microtime(true));
+        $hash = substr($hash, 8, 16);
+        $filename = $hash .'.'.$type;
+        
+        $oss = Oss_Adapter::getInstance();
+        $res = $oss->writeFile($filename, $data);
+        if ($res) {
+            $filename;
+        }
+        return '';
     }
 }

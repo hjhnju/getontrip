@@ -26,7 +26,7 @@ class User_Object_User extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'device_id', 'nick_name', 'city_id', 'image', 'sex', 'accept_pic', 'accept_msg', 'create_time', 'update_time');
+    protected $fields = array('id', 'device_id', 'nick_name', 'city_id', 'image', 'sex', 'accept_pic', 'accept_msg', 'create_time', 'update_time', 'type');
 
     /**
      * 字段与属性隐射关系
@@ -43,6 +43,7 @@ class User_Object_User extends Base_Object {
         'accept_msg'  => 'acceptMsg',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
+        'type'        => 'type',
     );
 
     /**
@@ -57,6 +58,7 @@ class User_Object_User extends Base_Object {
         'accept_msg'  => 1,
         'create_time' => 1,
         'update_time' => 1,
+        'type'        => 1,
     );
 
     /**
@@ -98,19 +100,19 @@ class User_Object_User extends Base_Object {
     public $image;
 
     /**
-     * 性别
+     * 性别，1:男性,2:女性,0:表示用户还没设置，不确定
      * @var integer
      */
     public $sex;
 
     /**
-     * 是否无图模式
+     * 是否有图模式
      * @var integer
      */
     public $acceptPic;
 
     /**
-     * 是否关闭消息
+     * 是否接收消息
      * @var integer
      */
     public $acceptMsg;
@@ -126,5 +128,11 @@ class User_Object_User extends Base_Object {
      * @var integer
      */
     public $updateTime;
+
+    /**
+     * 第三方登录类型
+     * @var integer
+     */
+    public $type;
 
 }

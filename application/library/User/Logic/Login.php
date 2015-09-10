@@ -41,8 +41,8 @@ class User_Logic_Login {
             $userid = $arr['user_id']; 
         }
         $objLogin->loginTime = time();
-        $objLogin->save();        
-        $ret = Yaf_Session::getInstance()->set(User_Keys::getLoginUserKey(), $userid);
+        $ret = $objLogin->save();        
+        Yaf_Session::getInstance()->set(User_Keys::getLoginUserKey(), $userid);
         return $ret;           
     }
     

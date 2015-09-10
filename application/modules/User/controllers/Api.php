@@ -36,7 +36,10 @@ class ApiController extends Base_Controller_Page{
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $ret = $this->logicLogin->setLogin($openId,$type,$deviceId);
-        return $this->ajax($ret);
+        if($ret){
+            return $this->ajax();
+        }
+        return $this->ajaxError();
     }
 
     /**
@@ -46,7 +49,10 @@ class ApiController extends Base_Controller_Page{
      */
     public function signOutAction(){
         $ret = $this->logicLogin->signOut();
-        return $this->ajax($ret);
+        if($ret){
+            return $this->ajax();
+        }
+        return $this->ajaxError();
     }   
     
     /**
@@ -56,7 +62,10 @@ class ApiController extends Base_Controller_Page{
      */
     public function checkLoginAction(){
         $ret = $this->logicLogin->checkLogin();
-        return $this->ajax($ret);
+        if($ret){
+            return $this->ajax();
+        }
+        return $this->ajaxError();
     }    
     
     /**
@@ -88,6 +97,9 @@ class ApiController extends Base_Controller_Page{
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $ret        = $this->logicUser->editUserInfo($deviceId,$strParam);
-        $this->ajax($ret);
+        if($ret){
+            return $this->ajax();
+        }
+        return $this->ajaxError();
     }
 }

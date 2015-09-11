@@ -376,6 +376,11 @@ a.logo:hover, a.logo:focus {
 a.logo span {
     color: #FF6C60;
 }
+#smalltime{
+    line-height: 43px;
+    font-size: 20px;
+    color: #fff;
+}
 
 
 /*notification*/

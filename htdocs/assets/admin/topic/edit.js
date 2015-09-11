@@ -53,12 +53,14 @@ $(document).ready(function() {
                 }
             },
             onChange: function(characters, editor, $editable) {
-                if (!$('#id').val()) {
-                    localStorage.topicContent = $('#summernote').code();
-                } else {
+                localStorage.topicContent = $('#summernote').code();
+                if ($('#id').val()) {
                     $(window).bind('beforeunload', function() {
-                        return '您输入的内容尚未保存';
+                        if (localStorage.topicContent) {
+                            return '等等!!您输入的正文内容尚未保存！!';
+                        }
                     });
+
                 }
             }
         });
@@ -162,7 +164,7 @@ $(document).ready(function() {
             $('#mapModal .btn-search').click();
         });
 
-        
+
 
         //模态框 点击确定之后立即触发该事件。
         $('#mapModal').delegate('.btn-submit', 'click', function(event) {
@@ -198,15 +200,15 @@ $(document).ready(function() {
         $('#Form').delegate('input[data-name="form-from"]', 'click touchend', function(event) {
             $('input[data-name="form-from"]').attr('checked', false);
             $(this).attr('checked', 'ture');
-            var type=$(this).attr('data-type');
+            var type = $(this).attr('data-type');
             if ($(this).val() == "weixin") {
                 $('.weixin-from-input').show();
                 $('.from_name').hide();
-            }else {
+            } else {
                 //$('.weixin-from-input').hide();
                 //$('.from_name').show();
-                $('#from-type').next().find('.dropdown-menu li[data-original-index="'+(type-1)+'"] a').click();
-                
+                $('#from-type').next().find('.dropdown-menu li[data-original-index="' + (type - 1) + '"] a').click();
+
                 $('#from_name').val($(this).attr('data-from_name'));
                 $('#from_name').attr('data-url', $('input[data-name="form-from"]:checked').val());
                 $('#from_name').attr('data-id', $('input[data-name="form-from"]:checked').attr('data-id'));
@@ -408,7 +410,7 @@ $(document).ready(function() {
                 tag_id_array = [];
                 $('input[data-name="form-tag"]:checked').each(function() {
                     tag_id_array.push(Number($(this).val()));
-                }); 
+                });
                 param.tags = tag_id_array;
                 param.sights = sight_id_array;
                 param.from = from = $('#from_name').attr('data-id');
@@ -442,7 +444,7 @@ $(document).ready(function() {
                         if (response.status == 0) {
                             toastr.success('保存成功');
                             localStorage.topicContent = '';
-                             localStorage.image = '';
+                            localStorage.image = '';
                             if (url.indexOf('add') >= 0) {
                                 //resetForm();
                                 window.location.href = '/admin/topic/edit?action=edit&id=' + response.data;

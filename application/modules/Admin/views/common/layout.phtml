@@ -49,7 +49,8 @@
         <a href="/admin" class="logo">Flat<span>途知</span></a>
         <!--logo end--> 
         <div class="top-nav ">
-              <ul class="nav pull-right top-menu"> 
+              <ul class="nav pull-right top-menu">
+                  <li id="smalltime">11:06:35</li> 
                   <!-- user login dropdown start-->
                   <li class="dropdown">
                       <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -60,7 +61,8 @@
                       <ul class="dropdown-menu extended logout">
                           <div class="log-arrow-up"></div>
                            <li><a href="#"><i class="fa fa-cog"></i>设置</a></li> 
-                          <li><a href="{%$webroot%}/admin/adminuserapi/logout"><i class="fa fa-key"></i>退出</a></li>
+                           <li><a href="#" data-toggle="modal"  data-target="#pwdModal"><i class="fa fa-key"></i>修改密码</a></li> 
+                           <li><a href="{%$webroot%}/admin/adminuserapi/logout"><i class="fa fa-sign-out"></i>退出</a></li>
                       </ul>
                   </li>
                   <!-- user login dropdown end --> 
@@ -75,6 +77,7 @@
     <!--main content start-->
     <section id="main-content">
     	<section class="wrapper full-height-content">
+          {%include file='utils/changepwd.phtml'%}
     		  {%block name='content'%}{%/block%}
     	</section>
     </section>
@@ -110,7 +113,8 @@
 <script src="{%$feroot%}s/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
 <script src="{%$feroot%}s/global/plugins/jquery-nicescroll/jquery.nicescroll.js" type="text/javascript"></script>
 <script src="{%$feroot%}s/global/plugins/jquery.dcjqaccordion.js" type="text/javascript"></script>
-<script src="{%$feroot%}s/global/plugins/jquery.scrollTo.min.js" type="text/javascript"></script>
+<script src="{%$feroot%}s/global/plugins/jquery.scrollTo.min.js" type="text/javascript"></script> 
+<script src="{%$feroot%}s/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script> 
 <!-- END CORE PLUGINS -->
  
 <script src="{%$feroot%}s/global/plugins/jquery.pulsate.min.js" type="text/javascript"></script>
@@ -131,7 +135,7 @@
 
 
 <script src="{%$feroot%}s/admin/layout3/js/layout.js" type="text/javascript"></script>
-
+<script src="{%$feroot%}s/admin/common.js" type="text/javascript"></script>
 <!-- <script src="{%$feroot%}s/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script> -->
 <!-- <script src="{%$feroot%}s/admin/layout/scripts/demo.js" type="text/javascript"></script> -->
 <!-- <script src="{%$feroot%}s/admin/pages/scripts/index.js" type="text/javascript"></script>
@@ -142,6 +146,7 @@
 jQuery(document).ready(function() {    
    Metronic.init(); // init metronic core componets
    Layout.init(); // init layout
+   Common.init();//通用
    //QuickSidebar.init(); // init quick sidebar
    //Demo.init(); // init demo features 
 /*   Index.init();   

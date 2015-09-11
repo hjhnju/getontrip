@@ -5,6 +5,14 @@
  *
  */
 class User_Type_Login extends Base_Type {
+    
+    /**
+     * 0 NOT_IN
+     * 未登录
+     */
+    const NOT_IN = 0;
+    
+    
     /**
      * 1 QQ
      * @var integer

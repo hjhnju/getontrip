@@ -22,6 +22,7 @@ class User_Logic_User extends Base_Logic{
             return $objUser->id;
         }
         $objUser->deviceId = $device_id;
+        $objUser->type     = User_Type_Login::NOT_IN;
         $objUser->save();
         return $objUser->id;
     }

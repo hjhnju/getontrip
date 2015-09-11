@@ -60,9 +60,9 @@ class Base_Extract {
 	 * @return void
 	 */
 	function __construct( $url,$content='') {
-	    $this->url         = "compress.zlib://".$url;
+	    $this->url         = $url;
 	    if(empty($content)){
-	        $this->rawPageCode = file_get_contents($this->url);
+	        $this->rawPageCode = file_get_contents("compress.zlib://".$this->url);
 	    }else{
 	        $this->rawPageCode = $content;
 	    }
@@ -245,8 +245,18 @@ class Base_Extract {
 	 */
 	public function getUrlBase(){
 	    $parts = parse_url( $this->url);
-	    return $parts['scheme']."://".$parts['host'];
+	    return $parts['scheme']."://".$parts['host']."/";
 	}
+	
+	/**
+	 * 获取URL的相对路径
+	 * @return string
+	 */
+	public function getUrlRelativePath(){
+	    $arrTemp = explode('/',$this->url);
+	    $count   = count($arrTemp);
+	    return str_replace($arrTemp[$count-1],"",$this->url);
+	} 
 	
 	/**
 	 * 对img及p,br标签数据整理
@@ -260,16 +270,17 @@ class Base_Extract {
 	    $content = preg_replace( '/<b\s.*?>/is', '<b>', $content );
 	    $content = preg_replace( '/<br.*?>/is', '<br>', $content );
 	    
-	    
 	    $num = preg_match_all('/img.*?'.$imageName.'=\"(.*?)\".*?>/si',$content,$match);
 	    for($i=0;$i<$num;$i++){
 	        if(!$bSourceOther || $this->isFullPath($match[1][$i])){
 	            $content = str_replace($match[0][$i],"img src=\"".$match[1][$i]."\">",$content);
 	        }else{
-	            if(stristr($match[1][$i],"//")){
+	            if(stristr($match[1][$i],"//")){  //比较特殊的情况
 	                $content = str_replace($match[0][$i],"img src=\""."http:".$match[1][$i]."\">",$content);
-	            }else{
+	            }elseif(stristr($match[1][$i],"/")){ //拼绝对路径
 	                $content = str_replace($match[0][$i],"img src=\"".$this->getUrlBase().$match[1][$i]."\">",$content);
+	            }else{ //拼相对路径
+	                $content = str_replace($match[0][$i],"img src=\"".$this->getUrlRelativePath().$match[1][$i]."\">",$content);
 	            }
 	        }
 	    }	    

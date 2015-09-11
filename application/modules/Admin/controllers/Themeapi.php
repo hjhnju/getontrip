@@ -123,11 +123,11 @@ class  ThemeapiController extends Base_Controller_Api{
                return $this->ajax($ret); 
             }
             return $this->ajaxError('');
-            return $this->ajaxError('100','修改话题的图片hash错误');  
+            return $this->ajaxError('400','修改话题的图片hash错误');  
           }
           return $this->ajax($ret); 
         }
-        return $this->ajaxError('101','裁剪图片错误错误');  
+        return $this->ajaxError('401','裁剪图片错误错误');  
     }
     
      /**

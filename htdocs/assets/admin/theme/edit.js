@@ -46,12 +46,14 @@ $(document).ready(function() {
                 }
             },
             onChange: function(characters, editor, $editable) {
-                if (!$('#id').val()) {
-                    localStorage.themeContent = $('#summernote').code();
-                } else {
+                localStorage.themeContent = $('#summernote').code();
+                if ($('#id').val()) {
                     $(window).bind('beforeunload', function() {
-                        return '您输入的内容尚未保存';
+                        if (localStorage.themeContent) {
+                            return '等等!!您输入的正文内容尚未保存！!';
+                        }
                     });
+
                 }
             }
         });
@@ -97,7 +99,7 @@ $(document).ready(function() {
                 dataType: 'json',
                 success: function(res, status) { //当文件上传成功后，需要向数据库中插入数据
                     $('#image').val(res.data.image);
-                    $('#imageView').html('<img src="/pic/' + res.data.image.getNewImgByImg(190,140,'f')+'"  alt=""/>');
+                    $('#imageView').html('<img src="/pic/' + res.data.image.getNewImgByImg(190, 140, 'f') + '"  alt=""/>');
                     $('#imageView').removeClass('imageView');
                     $('#crop-img').removeClass('hidden');
 
@@ -109,7 +111,7 @@ $(document).ready(function() {
             })
         });
 
-         //确保图片上传后存上
+        //确保图片上传后存上
         $(window).bind('beforeunload', function() {
             if (localStorage.image) {
                 return '等等!!你刚刚上传了图片，不点最下面的保存就丢了!';
@@ -196,7 +198,7 @@ $(document).ready(function() {
                         if (response.status == 0) {
                             toastr.success('保存成功');
                             localStorage.themeContent = '';
-                             localStorage.image = '';
+                            localStorage.image = '';
                             if (url.indexOf('add') >= 0) {
                                 window.location.href = '/admin/theme/edit?action=edit&id=' + response.data;
                             } else {

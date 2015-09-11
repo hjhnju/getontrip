@@ -44,4 +44,30 @@ class AdminuserapiController extends Base_Controller_Api{
          $ret = $logic->signOut();
          $this->redirect('/admin/login');
     }
+    
+    /**
+     * 修改登录密码
+     * @return [type] [description]
+     */
+    public function changepwdAction()
+    {
+        $oldpasswd=isset($_REQUEST['oldpasswd'])?$_REQUEST['oldpasswd']:'';
+        $passwd=isset($_REQUEST['passwd'])?$_REQUEST['passwd']:'';
+        //判断是否登录 
+        $logicUser = new User_Logic_Login();
+        $userid = $logicUser->checkLogin();
+ 
+        //判断原始密码是否正确
+        $isOldPwd = Admin_Api::checkPasswd($userid, $oldpasswd);
+        if(!$isOldPwd){
+           return $this->ajaxError(400,'原密码不正确');
+        }
+        //修改新密码
+        $passwd   = Base_Util_Secure::encrypt($passwd);
+        $dbRet = Admin_Api::editAdmin($userid,array('passwd'=>$passwd));
+        if ($dbRet) {  
+            return $this->ajax(); 
+        }
+         return $this->ajaxError(); 
+    }
 }

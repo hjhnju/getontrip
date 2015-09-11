@@ -24,7 +24,7 @@ class Admin_Api{
      * @param array $arrParams
      * @return array
      */
-    public function listAdmin($page, $pageSize, $arrParams = array()){
+    public static function listAdmin($page, $pageSize, $arrParams = array()){
         $logicAdmin = new Admin_Logic_Admin();
         return $logicAdmin->listAdmin($page, $pageSize, $arrParams);
     }
@@ -35,7 +35,7 @@ class Admin_Api{
      * @param integer $adminId
      * @return array
      */
-    public function getAdminById($adminId){
+    public static function getAdminById($adminId){
         $logicAdmin = new Admin_Logic_Admin();
         return $logicAdmin->getAdminById($adminId);
     }
@@ -47,7 +47,7 @@ class Admin_Api{
      * @param array $arrParams
      * @return boolean
      */
-    public function addAdmin($arrParams){
+    public static function addAdmin($arrParams){
         $logicAdmin = new Admin_Logic_Admin();
         return $logicAdmin->addAdmin($arrParams);
     }
@@ -58,7 +58,7 @@ class Admin_Api{
      * @param integer $adminId
      * @return boolean
      */
-    public function delAdmin($adminId){
+    public static function delAdmin($adminId){
         $logicAdmin = new Admin_Logic_Admin();
         return $logicAdmin->delAdmin($adminId);
     }
@@ -70,8 +70,20 @@ class Admin_Api{
      * @param array $arrParams
      * @return boolean
      */
-    public function editAdmin($adminId,$arrParams){
+    public static function editAdmin($adminId,$arrParams){
         $logicAdmin = new Admin_Logic_Admin();
         return $logicAdmin->editAdmin($adminId, $arrParams);
+    }
+    
+    /**
+     * 接口7：Admin_Api::checkPasswd($adminId, $passwd)
+     * 检验用户密码是否正确
+     * @param integer $adminId
+     * @param string $passwd
+     * @return boolean
+     */
+    public static function checkPasswd($adminId, $passwd){
+        $logicAdmin = new Admin_Logic_Admin();
+        return $logicAdmin->checkPasswd($adminId, $passwd);
     }
 }

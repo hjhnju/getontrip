@@ -31,7 +31,14 @@ class User_Logic_Login {
         $arr = $objLogin->toArray();
         if(empty($arr)){
             $objUser = new User_Object_User();
+            $objUser->fetch(array('device_id' => $deviceId));
+            if(!empty($objUser->id)){
+                $userId  = $objUser->id;
+                $objUser = new User_Object_User();
+                $objUser->id = $userId;
+            }            
             $objUser->deviceId = $deviceId;
+            $objUser->type     = $type;
             $objUser->save();            
             $objLogin->openId   = $openId;
             $objLogin->userId   = $objUser->id;

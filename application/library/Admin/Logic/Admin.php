@@ -99,4 +99,20 @@ class Admin_Logic_Admin extends Base_Logic{
         $objAdmin->fetch(array('id' => $userId));
         return $objAdmin->name;
     }
+    
+    /**
+     * 检验用户密码是否正确
+     * @param integer $adminId
+     * @param string $passwd
+     * @return boolean
+     */
+    public function checkPasswd($adminId, $passwd){
+        $objAdmin = new Admin_Object_Admin();
+        $objAdmin->fetch(array('id' => $adminId));
+        $passwd   = Base_Util_Secure::encrypt($passwd);
+        if ($passwd == $objAdmin->passwd) {
+            return true;
+        }
+        return false;
+    }
 }

@@ -60,11 +60,11 @@ class User_Logic_User extends Base_Logic{
      * @param string $strParam
      * @return boolean
      */
-    public function editUserInfo($userId,$strParam){
+    public function editUserInfo($userId, $type, $strParam){
         $image = '';
         $type  = '';
         $objUser  = new User_Object_User();
-        $objUser->fetch(array('id' => $userId));
+        $objUser->fetch(array('id' => $userId,'type' => $type));
         $arrData  = implode(",",$strParam);
         foreach ($arrData as $val){
             $arrTemp = implode(":", $val);
@@ -92,9 +92,9 @@ class User_Logic_User extends Base_Logic{
      * @param string $strParam
      * @return boolean
      */
-    public function addUserInfo($userId,$strParam){
+    public function addUserInfo($userId, $type, $strParam){
         $objUser  = new User_Object_User();
-        $objUser->fetch(array('id' => $userId));
+        $objUser->fetch(array('id' => $userId,'type' => $type));
         $arrData  = implode(",",$strParam);
         foreach ($arrData as $val){
             $arrTemp = implode(":", $val);

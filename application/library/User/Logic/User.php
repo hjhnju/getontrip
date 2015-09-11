@@ -61,8 +61,7 @@ class User_Logic_User extends Base_Logic{
      * @param string $strParam
      * @return boolean
      */
-    public function editUserInfo($userId, $type, $strParam){
-        $image = '';
+    public function editUserInfo($userId, $type, $strParam, $image = ''){
         $type  = '';
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId,'type' => $type));
@@ -71,10 +70,7 @@ class User_Logic_User extends Base_Logic{
             $arrTemp = implode(":", $val);
             if(isset($arrTemp[0]) && isset($arrTemp[1])){
                 $key           = $this->getprop($arrTemp[0]);
-                if($key == 'image'){
-                    $image = $arrTemp[1];
-                    continue;
-                }elseif($key == 'type'){
+                if($key == 'type'){
                     $type = $arrTemp[1];
                 }else{
                     $objUser->$key = $arrTemp[1];

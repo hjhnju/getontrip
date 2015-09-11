@@ -112,17 +112,19 @@ class ApiController extends Base_Controller_Page{
      * 用户信息修改接口
      * @param integer userid
      * @param integer type,第三方登录类型，1:qq,2:weixin,3:weibo
-     * @param string  param,eg: param=nick_name:aa,image:bb,type:jpg,sex:1
+     * @param string  param,eg: param=nick_name:aa,type:jpg,sex:1
+     * @param string  image,图像的二进行数据
      * @return json
      */
     public function editinfoAction(){
         $userId     = isset($_REQUEST['userid'])?trim($_REQUEST['userid']):'';
         $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         $strParam   = isset($_REQUEST['param'])?trim($_REQUEST['param']):'';
+        $image      = isset($_REQUEST['image'])?$_REQUEST['image']:'';
         if(empty($deviceId) || empty($strParam) || empty($type)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $ret        = $this->logicUser->editUserInfo($userId, $type, $strParam);
+        $ret        = $this->logicUser->editUserInfo($userId, $type, $strParam, $image);
         if($ret){
             return $this->ajax();
         }

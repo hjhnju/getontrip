@@ -161,4 +161,27 @@ class Landscape_Logic_Landscape extends Base_Logic{
         $ret['topics']   = $arrTopics['list'];
         return $ret;
     }
+    
+    /**
+     * 查询与一个景观相关的各种主题数
+     * @param integer $id
+     * @return array
+     */
+    public  function getLandscapeThemeNum($id){
+        $arrRet = array(
+            Theme_Type_Status::NOTPUBLISHED => 0,
+            Theme_Type_Status::PUBLISHED    => 0,
+        );
+        $listLandscapeTheme = new Theme_List_Landscape();
+        $listLandscapeTheme->setFilter(array('landscape_id' => $id));
+        $listLandscapeTheme->setPagesize(PHP_INT_MAX);
+        $arrLandscapeTheme = $listLandscapeTheme->toArray();
+        foreach ($arrLandscapeTheme['list'] as $val){
+            $objTheme = new Theme_Object_Theme();
+            $objTheme->fetch(array('id' => $val['theme_id']));
+            $status = $objTheme->status;
+            $arrRet[$status] += 1;
+        }
+        return $arrRet;
+    }
 }

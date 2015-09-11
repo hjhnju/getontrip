@@ -63,4 +63,15 @@ class Landscape_Api{
         $logic = new Landscape_Logic_Landscape();
         return $logic->queryLandscapeById($id);
     }
+    
+    /**
+     * 接口6：Landscape_Api::getLandscapeThemeNum($id)
+     * 查询与一个景观相关的各种主题数
+     * @param integer $id
+     * @return array
+     */
+    public static function getLandscapeThemeNum($id){
+        $logic = new Landscape_Logic_Landscape();
+        return $logic->getLandscapeThemeNum($id);
+    }
 }

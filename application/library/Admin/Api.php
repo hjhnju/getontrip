@@ -90,10 +90,20 @@ class Admin_Api{
     /**
      * 接口8：Admin_Api::checkLogin()
      * 检验用户是否登录
-     * @return string userid|''
+     * @return integer userid|''
      */
     public static function checkLogin(){
         $logicAdmin = new Admin_Logic_Admin();
         return $logicAdmin->checkLogin();
+    }
+    
+    /**
+     * 接口9：Admin_Api::getLoggedUser()
+     * 获取登录的用户信息
+     * @return array
+     */
+    public static function getLoggedUser(){
+        $logicAdmin = new Admin_Logic_Admin();
+        return $logicAdmin->getLoggedUser();
     }
 }

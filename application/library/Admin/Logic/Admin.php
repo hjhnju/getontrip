@@ -128,4 +128,13 @@ class Admin_Logic_Admin extends Base_Logic{
         }
         return '';
     }
+    
+    /**
+     * 获取登录的用户信息
+     * @return array
+     */
+    public function getLoggedUser(){
+        $userId = $this->checkLogin();
+        return $this->getAdminById($userId);
+    }
 }

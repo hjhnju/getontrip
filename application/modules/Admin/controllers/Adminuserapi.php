@@ -70,4 +70,92 @@ class AdminuserapiController extends Base_Controller_Api{
         }
          return $this->ajaxError(); 
     }
+
+     /**
+     * 重置登录密码
+     * @return [type] [description]
+     */
+    public function setpwdAction()
+    { 
+        $userid=isset($_REQUEST['id'])?$_REQUEST['id']:''; 
+        if (empty($userid)) {
+            return $this->ajaxError(Base_RetCode::PARAM_ERROR);
+        }
+        //修改新密码
+        $passwd   = Base_Util_Secure::encrypt('Asd123');
+        $dbRet = Admin_Api::editAdmin($userid,array('passwd'=>$passwd));
+        if ($dbRet) {  
+            return $this->ajax(); 
+        }
+        return $this->ajaxError(); 
+    }
+
+    public function listAction()
+    { 
+         //第一条数据的起始位置，比如0代表第一条数据
+        //
+        $start =isset($_REQUEST['start'])?$_REQUEST['start']:0; 
+        $pageSize = isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX; 
+        $page = ($start/$pageSize)+1; 
+         
+        $arrParams = isset($_REQUEST['params'])?$_REQUEST['params']:array();
+
+        $List = Admin_Api::listAdmin($page, $pageSize, $arrParams);;
+
+        $tmpList=$List['list'];
+
+        //添加城市名称
+       
+        if (count($tmpList)>0) { 
+            for($i=0;$i<count($tmpList);$i++){ 
+
+            //处理角色名称
+            $tmpList[$i]['role_name'] = Admin_Type_Role::getTypeName($tmpList[$i]['role']); 
+           }
+        } 
+
+        $List['list']=$tmpList; 
+         
+    
+        $retList['recordsFiltered'] =$List['total'];
+        $retList['recordsTotal'] = $List['total']; 
+        $retList['data'] =$List['list'];
+ 
+        return $this->ajax($retList);
+    }
+ 
+
+     /**
+     * 编辑保存
+     */
+    function saveAction(){
+        $id =isset($_REQUEST['id'])?$_REQUEST['id']:'';
+        if($id==''){
+            $dbRet=Admin_Api::addAdmin($_REQUEST);
+        }
+        else{ 
+          $dbRet=Admin_Api::editAdmin($id,$_REQUEST);
+        }
+        if ($dbRet) {
+            return $this->ajax();
+        }
+        return $this->ajaxError();
+    }
+
+    /**
+     * 编辑保存
+    */
+    function delAction(){
+        $id =isset($_REQUEST['id'])?$_REQUEST['id']:'';
+        if($id==''){
+           return $this->ajaxError();
+        }
+         
+        $dbRet=Admin_Api::delAdmin($id,$id);
+        
+        if ($dbRet) {
+            return $this->ajax();
+        }
+        return $this->ajaxError();
+    }
 }

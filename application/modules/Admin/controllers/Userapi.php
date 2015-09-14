@@ -50,7 +50,7 @@ class UserapiController extends Base_Controller_Api{
         $retList['recordsTotal'] = $List['total']; 
         $retList['data'] =$List['list'];
  
-		$this->ajax($retList);
+        return $this->ajax($retList);
          
     }
  

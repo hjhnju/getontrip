@@ -115,4 +115,17 @@ class Admin_Logic_Admin extends Base_Logic{
         }
         return false;
     }
+    
+    /**
+     * 判断用户的登录状态
+     * @return userid || false
+     */
+    public function checkLogin(){
+        $userid = Yaf_Session::getInstance()->get(User_Keys::getLoginUserKey());
+        if(!empty($userid)){
+            $userid = intval($userid);
+            return $userid;
+        }
+        return '';
+    }
 }

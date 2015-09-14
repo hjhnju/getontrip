@@ -86,4 +86,14 @@ class Admin_Api{
         $logicAdmin = new Admin_Logic_Admin();
         return $logicAdmin->checkPasswd($adminId, $passwd);
     }
+    
+    /**
+     * 接口8：Admin_Api::checkLogin()
+     * 检验用户是否登录
+     * @return string userid|''
+     */
+    public static function checkLogin(){
+        $logicAdmin = new Admin_Logic_Admin();
+        return $logicAdmin->checkLogin();
+    }
 }

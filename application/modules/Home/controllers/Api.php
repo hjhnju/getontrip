@@ -20,6 +20,7 @@ class ApiController extends Base_Controller_Api {
      * @param double y，纬度
      * @param integer page，页码
      * @param integer pageSize，页面大小
+     * @param string deviceId，设备ID
      * @param integer city,城市ID，如果不能给出经纬度可给出城市ID，默认是北京
      * @return json
      */
@@ -28,6 +29,7 @@ class ApiController extends Base_Controller_Api {
         $y         = isset($_REQUEST['y'])?doubleval($_REQUEST['y']):'';
         $city      = isset($_REQUEST['city'])?intval($_REQUEST['city']):2;
         $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $deviceId  = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
         $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
         if(empty($x) || empty($y)){
             Yaf_Session::getInstance()->set(Home_Keys::SESSION_USER_CITY,$city);
@@ -37,7 +39,7 @@ class ApiController extends Base_Controller_Api {
             $y         = $arr['y'];
         }                       
         $logic = new Home_Logic_List();
-        $ret = $logic->getNearSight($x,$y,$page,$pageSize);
+        $ret = $logic->getNearSight($x,$y,$page,$pageSize,$deviceId);
         return $this->ajax($ret);
     }  
 }

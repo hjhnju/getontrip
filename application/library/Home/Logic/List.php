@@ -34,7 +34,7 @@ class Home_Logic_List{
      * @param integer $pageSize
      * @return array $arr
      */
-    public function getNearSight($x,$y,$page,$pageSize){
+    public function getNearSight($x,$y,$page,$pageSize,$deviceId = ''){
         $arr   = array();
         $redis = Base_Redis::getInstance();
         $model = new TopicModel();
@@ -49,13 +49,22 @@ class Home_Logic_List{
         foreach ($arr as $index => $val){
             $objCity = new City_Object_City();
             $objCity->fetch(array('id' => $val['city_id']));
-            $arr[$index]['city']  = $objCity->name;                     
+            $arr[$index]['city']  = $objCity->name;       
+
+            //是否收藏过
+            $logicCollect = new Collect_Logic_Collect();
+            if(!empty($deviceId)){
+                $arr[$index]['collected'] = strval($logicCollect->checkCollect(Collect_Type::SIGHT, $deviceId, $val['id']));
+            }else{
+                $arr[$index]['collected'] = '';
+            }
+            
             $arr[$index]['topic'] = $this->_logicTopic->getHotTopic($val['id']);                                
             //图片用全路径               
             $arr[$index]['image']  = Base_Image::getUrlByName($val['image']);
                      
             //距离转换成字符串
-            $arr[$index]['dis'] = Base_Util_Number::getDis($val['dis']);          
+            $arr[$index]['dis'] = Base_Util_Number::getDis($val['dis']);             
         }        
         return $arr; 
     }

@@ -188,10 +188,13 @@ class City_Logic_City{
      * @param integer $pageSize
      * @return array
      */
-    public function queryCityPrefix($str,$page,$pageSize){
+    public function queryCityPrefix($str,$page,$pageSize,$arrParms = array()){
         $listCity = new City_List_City();
         $strFileter = "`cityid` = 0 and `provinceid` != 0 and name like '".$str."%'";
-        $listCity->setFilterString("$strFileter");
+        foreach ($arrParms as $key => $val){
+            $strFileter .=" and `".$key."`=".$val;
+        }
+        $listCity->setFilterString($strFileter);
         $listCity->setFields(array('id','name','pid'));
         $listCity->setPage($page);
         $listCity->setPagesize($pageSize);

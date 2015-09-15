@@ -78,16 +78,17 @@ class City_Api{
     }
     
     /**
-     * 接口7：City_Api::queryCityPrefix($str,$page,$pageSize)
+     * 接口7：City_Api::queryCityPrefix($str,$page,$pageSize,$arrParms = array())
      * 城市名前缀模糊查询
      * @param string $str
      * @param integer $page
      * @param integer $pageSize
+     * @param array   $arrParms,过滤条件
      * @return array
      */
-    public static function queryCityPrefix($str,$page,$pageSize){
+    public static function queryCityPrefix($str,$page,$pageSize,$arrParms = array()){
         $logicCity = new City_Logic_City();
-        return $logicCity->queryCityPrefix($str, $page, $pageSize);
+        return $logicCity->queryCityPrefix($str, $page, $pageSize, $arrParms);
     }
     
     /**

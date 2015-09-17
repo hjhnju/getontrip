@@ -9,14 +9,14 @@
         "processing": true, //载入数据的时候是否显示“载入中”
         "pageLength": 5, //首次加载的数据条数  
         "searching": false,
-        "ordering":false,
+        "ordering": false,
         "ajax": {
             "url": "/admin/cityapi/list",
             "type": "POST",
-            "data": function ( d ) {
-                   //添加额外的参数传给服务器
-                   d.pid = $("#form-province").attr('data-pid');
-               }
+            "data": function(d) {
+                //添加额外的参数传给服务器
+                d.pid = $("#form-province").attr('data-pid');
+            }
         },
         "columnDefs": [{
             "targets": [],
@@ -35,6 +35,15 @@
             "data": "y"
         }, {
             "data": function(e) {
+                if (e.statusName == '未发布') {
+                    return e.statusName + '<button type="button" class="btn btn-primary btn-xs publish" title="发布" data-toggle="tooltip" ><i class="fa fa-check-square-o"></i></button>';
+                } else {
+                    return e.statusName + '<button type="button" class="btn btn-warning btn-xs cel-publish" title="取消发布" data-toggle="tooltip" ><i class="fa fa-close"></i></button>';
+                }
+
+            }
+        }, {
+            "data": function(e) {
                 return editBtn;
             }
         }],
@@ -42,8 +51,8 @@
 
         }
     });
-    
-    var api=oTable.api();
+
+    var api = oTable.api();
 
     //绑定draw事件
     $('#editable').on('draw.dt', function() {
@@ -52,15 +61,15 @@
     });
 
     // 模态框从远端的数据源加载完数据之后触发该事件
-/*    $('#mapModal').on('loaded.bs.modal', function(e) {
-        var data = oTable.api().row(currentRow).data();
-        oldXY.x = data.x;
-        oldXY.y = data.y;
-        $("#txtSearch").val(data.name);
-        $("#cityName").val(data.name);
-        $('#mapModal .btn-search').click();
-    });
-*/
+    /*    $('#mapModal').on('loaded.bs.modal', function(e) {
+            var data = oTable.api().row(currentRow).data();
+            oldXY.x = data.x;
+            oldXY.y = data.y;
+            $("#txtSearch").val(data.name);
+            $("#cityName").val(data.name);
+            $('#mapModal .btn-search').click();
+        });
+    */
     //模态框 点击确定之后立即触发该事件。
     $('#mapModal').delegate('.btn-submit', 'click', function(event) {
         var valXY = $.trim($("#txtCoordinate").val());
@@ -76,7 +85,7 @@
 
         //工具提示框
         $('[data-toggle="tooltip"]').tooltip();
-        
+
         //手工关闭模态框
         $('#mapModal').modal('hide');
     });
@@ -87,7 +96,7 @@
         currentRow = $(this).parents('tr')[0];
         //打开模态框
         $('#mapModal').modal({
-           // remote: '/admin/utils/map'
+            // remote: '/admin/utils/map'
         });
         var data = oTable.api().row(currentRow).data();
         oldXY.x = data.x;
@@ -126,26 +135,49 @@
         display: 'name',
         val: 'id',
         ajax: {
-            url: '/admin/cityapi/getProvinceList', 
+            url: '/admin/cityapi/getProvinceList',
             triggerLength: 1
         },
-        itemSelected:function(item,val,text){ 
-           /* item: the HTML element that was selected
-            val: value of the *val* property
-            text: value of the *display* property*/
+        itemSelected: function(item, val, text) {
+            /* item: the HTML element that was selected
+             val: value of the *val* property
+             text: value of the *display* property*/
             $("#form-province").val(text);
-            $("#form-province").attr('data-pid',val);
+            $("#form-province").attr('data-pid', val);
             //触发dt的重新加载数据的方法
             api.ajax.reload();
-        } 
-    }); 
-/*    $('#form-search').click(function(event) {
-         //触发dt的重新加载数据的方法
-           api.ajax.reload();
-           //获取dt请求参数
-           var args = api.ajax.params();
-          // console.log("额外传到后台的参数值extra_search为："+args.pid);
-    });*/
+        }
+    });
+
+    //发布操作
+    $('#editable button.publish,#editable button.cel-publish').live('click', function(e) {
+        e.preventDefault();
+        var nRow = $(this).parents('tr')[0];
+        var data = oTable.api().row(nRow).data();
+        var action;
+        if ($(this).hasClass('publish')) { 
+            action = 'PUBLISHED';
+        } else {
+            action = 'NOTPUBLISHED';
+        }
+        var publish = new Remoter('/admin/cityapi/publish');
+        publish.remote({
+            id: data.id,
+            action: action
+        });
+        publish.on('success', function(data) {
+            //刷新当前页
+            oTable.fnRefresh();
+        });
+    });
+
+    /*    $('#form-search').click(function(event) {
+             //触发dt的重新加载数据的方法
+               api.ajax.reload();
+               //获取dt请求参数
+               var args = api.ajax.params();
+              // console.log("额外传到后台的参数值extra_search为："+args.pid);
+        });*/
     //表格筛选结束
     function saveRow(oTable, nRow) {
         restoreRow(oTable, nRow);
@@ -184,5 +216,3 @@
 
     }
 }(window, document));
-
- 

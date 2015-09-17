@@ -16,7 +16,7 @@ class Admin_Type_Role  extends Base_Type{
      */
     const SUPER   = 2;
  
-    protected static $names  = array(
+    public static $names  = array(
         self::GENERAL => '普通管理员',
         self::SUPER   => '超级用户',
     );

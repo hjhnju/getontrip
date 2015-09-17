@@ -174,7 +174,10 @@ class Topic_Logic_Topic extends Base_Logic{
         //添加redis中话题访问次数统计，直接让其失效，下次从数据库中获取
         $redis = Base_Redis::getInstance();
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getTotalKey($topicId));
-        $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateKey($topicId,'*'));        
+        $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateKey($topicId,'*'));  
+
+        $redis->hDel(Topic_Keys::getTopicHotKey(),Topic_Keys::getTotalKey($topicId));
+        $redis->hDel(Topic_Keys::getTopicHotKey(),Topic_Keys::getLateKey($topicId,'*'));
         
         $logicTag = new Tag_Logic_Tag();
         $arrRet['tags'] = $logicTag->getTopicTags($topicId);

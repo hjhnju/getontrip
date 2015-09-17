@@ -61,24 +61,38 @@ class User_Logic_User extends Base_Logic{
      * @param string $strParam
      * @return boolean
      */
-    public function editUserInfo($userId, $type, $strParam, $image = ''){
-        $type  = '';
+    public function editUserInfo($userId, $type, $strParam, $file = ''){
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId,'type' => $type));
         $arrData  = implode(",",$strParam);
         foreach ($arrData as $val){
             $arrTemp = implode(":", $val);
             if(isset($arrTemp[0]) && isset($arrTemp[1])){
-                $key           = $this->getprop($arrTemp[0]);
-                if($key == 'type'){
-                    $type = $arrTemp[1];
-                }else{
-                    $objUser->$key = $arrTemp[1];
-                }
+                $key           = $this->getprop($arrTemp[0]);                
+                $objUser->$key = $arrTemp[1];
             }            
         }
-        if(!empty($image)){
-            $this->uploadUserAvatar($image, $type);
+        if(!empty($file)){
+            $ext = explode("/",$file['type']);
+            if (!isset($ext[1])||!in_array($ext[1], array('jpg', 'gif', 'jpeg','png'))) {
+                 return false;
+            }
+              
+            $hash = md5(microtime(true));
+            $hash = substr($hash, 8, 16);
+            if(trim($ext[1]) == 'gif'){
+                $filename = $hash . '.gif';
+            }else{
+                $filename = $hash . '.jpg';
+            }        
+            
+            $oss = Oss_Adapter::getInstance();
+            $res = $oss->writeFile($filename, $file['tmp_name']);
+            if($res){
+                $objUser->image = $filename;
+            }else{
+                return false;
+            }
         }
         return $objUser->save();
     }

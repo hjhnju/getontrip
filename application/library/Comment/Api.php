@@ -7,16 +7,18 @@
 class Comment_Api{
     
     /**
-     * 接口1：Comment_Api::getComments($page,$pageSize,$arrParam = array(),$topicId='')
-     * 获取话题的评论列表
-     * @param integer $topicId
+     * 接口1：Comment_Api::getComments($page,$pageSize,$arrParam = array(),$type = '', $objId='')
+     * 获取评论列表
      * @param integer $page
      * @param integer $pageSize
+     * @param array   $arrParam
+     * @param integer $type
+     * @param integer $objId
      * @return array
      */
-    public static function getComments($page,$pageSize,$arrParam = array(),$topicId = ''){
+    public static function getComments($page,$pageSize,$arrParam = array(),$type = '', $objId = ''){
         $logicComment = new Comment_Logic_Comment();
-        return $logicComment->getComments($page,$pageSize,$arrParam,$topicId);
+        return $logicComment->getComments($page,$pageSize,$arrParam,$type,$objId);
     }
     
     /**
@@ -31,18 +33,18 @@ class Comment_Api{
     }
     
     /**
-     * 接口3：Comment_Api::addComment($topicId,$deviceId,$toUserId,$content)
+     * 接口3：Comment_Api::addComment($objId,$deviceId,$toUserId,$content)
      * 添加评论信息
-     * @param integer $topicId
+     * @param integer $objId
      * @param integer $upId,上层评论ID
      * @param string $deviceId
      * @param integer $toUserId
      * @param string $content
      * @return boolean
      */
-    public function  addComment($topicId,$upId,$deviceId,$toUserId,$content){
+    public function  addComment($objId,$upId,$deviceId,$toUserId,$content,$type){
         $logicComment = new Comment_Logic_Comment();
-        return $logicComment->addComment($topicId,$upId,$deviceId, $toUserId, $content);
+        return $logicComment->addComment($objId,$upId,$deviceId, $toUserId, $content,$type);
     }
     
     /**

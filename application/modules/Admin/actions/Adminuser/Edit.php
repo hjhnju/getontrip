@@ -23,9 +23,9 @@ class EditAction extends Yaf_Action_Abstract {
            
         }
 
-        $roleArray=Admin_Type_Role::$names; 
-
+        $roleArray=Admin_Type_Role::$names;  
         $this->getView()->assign('roleArray', $roleArray); 
+        
         $this->getView()->assign('action', Admin_Type_Action::getTypeName($action));
     }
 }

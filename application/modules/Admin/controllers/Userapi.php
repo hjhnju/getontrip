@@ -62,16 +62,9 @@ class UserapiController extends Base_Controller_Api{
     public function getUserRegTimeLineAction()
     {
         $userName = $this->objUser->displayname;
-          if(!isset($this->huifuid)) {
-              $data = array(
-                'name' => $userName,
-              );
-              $this->outputView = 'test/noThirdPay.phtml';
-              $this->output($data);
-              return;
-          }
+         
 
-        $arrRet = Invest_Api::getEarningsMonthly($this->userid);                          
+          $arrRet = Invest_Api::getEarningsMonthly($this->userid);                          
           foreach ($arrRet as $key => $value) {
               $x[] = $key;
               $y[] = intval($value);

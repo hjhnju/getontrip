@@ -15,7 +15,8 @@ $(document).ready(function() {
             "url": "/admin/Commentapi/list",
             "type": "POST",
             "data": function(d) {
-                d.topicId = $.trim($('#topicId').val());
+                d.obj_id = $.trim($('#form-obj_id').val());
+                d.type=$.trim($('#form-type').val())
                 d.params = {};
                 //添加额外的参数传给服务器 
                 if ($("#form-status").val()) {
@@ -41,7 +42,7 @@ $(document).ready(function() {
         }, {
             "data": "id"
         }, {
-            "data": 'topic_id'
+            "data": 'obj_id'
         }, {
             "data": function(e) {
                 return '<a href="#?id=' + e.from_user_id + '" title="' + e.from_name + '">' + e.from_name.subString(10) + '</a>';

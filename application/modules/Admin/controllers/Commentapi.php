@@ -21,14 +21,15 @@ class CommentapiController extends Base_Controller_Api{
         $pageSize = isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX; 
         $page = ($start/$pageSize)+1;
 
-        $topicId = isset($_REQUEST['topicId'])?$_REQUEST['topicId']:0;
+        $obj_id = isset($_REQUEST['obj_id'])?$_REQUEST['obj_id']:'';
+        $type  = isset($_REQUEST['type'])?$_REQUEST['type']:'';
         $arrParam = isset($_REQUEST['params'])?$_REQUEST['params']:array();
         /*if(!empty($topicId)){
            $arrInfo=array('topicId' => $topicId); 
         } else{
              $arrInfo = array();
         }*/
-        $List = Comment_Api::getComments($page,$pageSize,$arrParam,$topicId);
+        $List = Comment_Api::getComments($page,$pageSize,$arrParam,$type,$obj_id);
         $tmpList=$List['list'];
         if (count($tmpList)>0) { 
             for($i=0;$i<count($tmpList);$i++){ 

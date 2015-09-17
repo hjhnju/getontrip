@@ -21,14 +21,14 @@
              */
             option: {
                 title: {
-                    text: '用户注册情况和登录情况',
+                    text: '用户注册情况',
                     subtext: '最近一年记录'
                 },
                 tooltip: {
                     trigger: 'axis'
                 },
                 legend: {
-                    data: ['注册情况', '登录情况']
+                    data: ['注册情况', '']
                 },
                 toolbox: {
                     show: true,
@@ -81,31 +81,6 @@
                             name: '平均值'
                         }]
                     }
-                }, {
-                    name: '降水量',
-                    type: 'bar',
-                    data: []
-                        //data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3],
-                        /* markPoint: {
-                             data: [{
-                                 name: '年最高',
-                                 value: 182.2,
-                                 xAxis: 7,
-                                 yAxis: 183,
-                                 symbolSize: 18
-                             }, {
-                                 name: '年最低',
-                                 value: 2.3,
-                                 xAxis: 11,
-                                 yAxis: 3
-                             }]
-                         },
-                         markLine: {
-                             data: [{
-                                 type: 'average',
-                                 name: '平均值'
-                             }]
-                         }*/
                 }]
             },
 

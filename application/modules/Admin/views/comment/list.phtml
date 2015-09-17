@@ -16,7 +16,7 @@
             <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
             <!-- BEGIN PAGE HEADER-->
             <h3 class="page-title">
-              评论列表 <small>reports & statistics</small>
+              {%$typeName%}列表 <small>reports & statistics</small>
             </h3>
             <div class="page-bar">
                 <ul class="page-breadcrumb">
@@ -26,25 +26,26 @@
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
-                        <a href="#">评论列表</a>
+                        <a href="#">{%$typeName%}列表</a>
                     </li>
                 </ul>
             </div>
             <!-- END PAGE HEADER-->
             <!-- BEGIN content STATS --> 
-            <div class="adv-table editable-table ">
-              <input type="hidden" id="topicId" value="{%$topicId%}">
-                 <div class="clearfix">  
+            <div class="adv-table editable-table "> 
+              <input type="hidden" id="form-obj_id" value="{%$obj_id%}">
+              <input type="hidden" id="form-type" value="{%$type%}">  
+                 <div class="clearfix">
                     <div class="col-xs-2 pull-right">   
                         <div class="input-group ">
                           <select name="" id="form-status">
                              <option value="">全部状态</option>   
-                             {%foreach $statusTypeArray as $key=>$item%} 
+                             {%foreach $statusArray as $key=>$item%} 
                                   <option value="{%$key%}">{%$item%}</option> 
                              {%/foreach%}  
                           </select>
                        </div>
-                  </div> 
+                   </div>  
                 </div>  
                  
                <table class="table table-striped table-hover table-bordered dataTable" id="editable">

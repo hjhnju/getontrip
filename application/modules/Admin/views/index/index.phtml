@@ -42,71 +42,68 @@
 			</div>
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN DASHBOARD STATS -->  
-		    <div class="row state-overview">
-                <!--   <div class="col-lg-3 col-sm-6">
-                    <section class="panel">
-                        <div class="symbol terques">
-                            <i class="fa fa-user"></i>
-                        </div>
-                        <div class="value">
-                            <h1 class="count"></h1>
-                            <p>总用户</p>
-                        </div>
-                    </section>
-                </div> -->
-                  <div class="col-lg-3 col-sm-6">
-                      <section class="panel">
-                          <div class="symbol terques">
-                              <i class="fa fa-connectdevelop"></i>
-                          </div>
-                          <div class="value">
-                              <h1 class="count2" id="topicNum">{%$topicNum%}</h1>
-                              <p>总话题数(已发布)</p>
-                          </div>
-                      </section>
-                  </div>
-                  <div class="col-lg-3 col-sm-6">
-                      <section class="panel">
-                          <div class="symbol yellow">
-                              <i class="fa fa-photo"></i>
-                          </div>
-                          <div class="value">
-                              <h1 class=" count3" id="sightNum">{%$sightNum%}</h1>
-                              <p>总景点数(已发布)</p>
-                          </div>
-                      </section>
-                  </div>
-                  <div class="col-lg-3 col-sm-6">
-                      <section class="panel">
-                          <div class="symbol red">
-                              <i class="fa fa-forumbee"></i>
-                          </div>
-                          <div class="value">
-                              <h1 class=" count4"></h1>
-                              <p>主题数(已发布)</p>
-                          </div>
-                      </section>
-                  </div>
-                  <div class="col-lg-3 col-sm-6">
-                      <section class="panel">
-                          <div class="symbol blue">
-                              <i class="fa fa-user"></i>
-                          </div>
-                          <div class="value">
-                              <h1 class=" count3" id="sightNum"></h1>
-                              <p>用户数</p>
-                          </div>
-                      </section>
-                  </div>
-              </div>
+		    <div class="row state-overview"> 
+            <div class="col-lg-3 col-sm-6">
+                <section class="panel">
+                    <div class="symbol terques">
+                        <i class="fa fa-connectdevelop"></i>
+                    </div>
+                    <div class="value">
+                        <h1 class="count2" id="topicNum">{%$topicNum%}</h1>
+                        <p>总话题数(已发布)</p>
+                    </div>
+                </section>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <section class="panel">
+                    <div class="symbol yellow">
+                        <i class="fa fa-photo"></i>
+                    </div>
+                    <div class="value">
+                        <h1 class=" count3" id="sightNum">{%$sightNum%}</h1>
+                        <p>总景点数(已发布)</p>
+                    </div>
+                </section>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <section class="panel">
+                    <div class="symbol red">
+                        <i class="fa fa-forumbee"></i>
+                    </div>
+                    <div class="value">
+                        <h1 class=" count4"></h1>
+                        <p>主题数(已发布)</p>
+                    </div>
+                </section>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <section class="panel">
+                    <div class="symbol blue">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="value">
+                        <h1 class=" count3" id="sightNum"></h1>
+                        <p>用户数</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="row">
+           <div class="col-lg-8"> 
+               <div id="userRegTime-line"></div>
+           </div>
+        </div>
 			<!-- END DASHBOARD STATS -->
 		</div>
 	</div>
 {%/block%}
 {%block name='script'%}  
 <script src="{%$feroot%}s/global/plugins/countup/countup.min.js" type="text/javascript"></script>
+<script src="{%$feroot%}s/global/plugins/echarts/echarts-all.js" type="text/javascript"></script> 
 <script>
    var sightNum = new CountUp("sightNum", 0, $('#sightNum').text()).start(); 
    var topicNum = new CountUp("topicNum", 0, $('#topicNum').text()).start(); 
+
+  
 </script>  
 {%/block%}

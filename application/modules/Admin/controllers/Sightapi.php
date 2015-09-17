@@ -130,7 +130,9 @@ class  SightapiController extends Base_Controller_Api{
         $page=($start/$pageSize)+1;
          
         $arrInfo =isset($_REQUEST['params'])?$_REQUEST['params']:array();
-         
+        if(isset($arrInfo['city_id'])){
+            $arrInfo['city_id']=intval($arrInfo['city_id']);
+        } 
         $List =Sight_Api::querySights($arrInfo,$page, $pageSize);
     
         if(count($List['list'])>0){

@@ -53,5 +53,39 @@ class UserapiController extends Base_Controller_Api{
         return $this->ajax($retList);
          
     }
+
+
+    /**
+     * 获取用户注册时间的的柱形图
+     * @return [type] [description]
+     */
+    public function getUserRegTimeLineAction()
+    {
+        $userName = $this->objUser->displayname;
+          if(!isset($this->huifuid)) {
+              $data = array(
+                'name' => $userName,
+              );
+              $this->outputView = 'test/noThirdPay.phtml';
+              $this->output($data);
+              return;
+          }
+
+        $arrRet = Invest_Api::getEarningsMonthly($this->userid);                          
+          foreach ($arrRet as $key => $value) {
+              $x[] = $key;
+              $y[] = intval($value);
+          }
+          $ret = array(
+              'x' => $x,
+              'y' => $y,
+          );         
+          if($ret==false) {
+              $this->outputError(Account_RetCode::GET_PROFIT_CURVE_FAIL,
+                  Account_RetCode::getMsg(Account_RetCode::GET_PROFIT_CURVE_FAIL));
+              return;
+          }                        
+          $this->output($ret);
+    }
  
 }

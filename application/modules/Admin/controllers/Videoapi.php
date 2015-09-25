@@ -19,23 +19,15 @@ class VideoapiController extends Base_Controller_Api{
          
         $sight_id =isset($_REQUEST['sight_id'])?intval($_REQUEST['sight_id']):1;
         
-        $List =Video_Api::getVideos($sight_id,$page);
+        $List =Video_Api::getVideos($sight_id,$page,$pageSize);
         
-
-        $tmpList=$List;
-        if (count($tmpList)>0) { 
-            for($i=0;$i<count($tmpList);$i++){
-                //处理类型
-               $tmpList[$i]['typeName'] = Video_Type_Type::getTypeName($tmpList[$i]["type"]);
-               //处理状态值
-                $tmpList[$i]["statusName"] = Video_Type_Status::getTypeName($tmpList[$i]["status"]); 
-            } 
-            $retList['recordsTotal'] = $List[0]['totalNum'];
-            $retList['recordsFiltered'] =$List[0]['totalNum'];  
+        foreach ($List['list'] as $key => $val){
+            $List['list'][$key]['typeName']   = Video_Type_Type::getTypeName($val["type"]);
+            $List['list'][$key]['statusName'] = Video_Type_Status::getTypeName($val["status"]);
         }
-        $List =  $tmpList;
- 
-        $retList['data'] =$List; 
+        $retList['recordsTotal']    = $List['total'];
+        $retList['recordsFiltered'] = $List['total'];
+        $retList['data'] = $List['list']; 
         return $this->ajax($retList);
     }
 

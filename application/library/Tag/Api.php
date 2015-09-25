@@ -6,38 +6,39 @@
 class Tag_Api{
     
     /**
-     * 接口1: Tag_Api::getTagList($page, $pageSize)
+     * 接口1: Tag_Api::getTagList($page, $pageSize,$arrParam = array())
      * 获取标签信息
      * @param integer $page
      * @param integer $pageSize
+     * @param array   $arrParam
      * @return array
      */
-    public static function getTagList($page, $pageSize){
+    public static function getTagList($page, $pageSize, $arrParam = array()){
        $logicTag = new Tag_Logic_Tag();
-       return $logicTag->getTagList($page, $pageSize);
+       return $logicTag->getTagList($page, $pageSize, $arrParam);
     }
     
     /**
-     * 接口2: Tag_Api::editTag($id, $name)
+     * 接口2: Tag_Api::editTag($id, $arrInfo)
      * 编辑标签信息
      * @param integer $id
-     * @param string $name
+     * @param array $arrInfo
      * @return boolean
      */
-    public static function editTag($id, $name){
+    public static function editTag($id, $arrInfo){
         $logicTag = new Tag_Logic_Tag();
-        return $logicTag->editTag($id, $name);
+        return $logicTag->editTag($id, $arrInfo);
     }
     
     /**
-     * 接口3：Tag_Api::saveTag($name)
+     * 接口3：Tag_Api::saveTag($arrInfo)
      * 添加标签信息
-     * @param string $name
+     * @param array $arrInfo
      * @return boolean
      */
-    public static function saveTag($name){
+    public static function saveTag($arrInfo){
         $logicTag = new Tag_Logic_Tag();
-        return $logicTag->saveTag($name);
+        return $logicTag->saveTag($arrInfo);
     }
     
     /**

@@ -14,21 +14,26 @@ class Base_Controller_Api extends Base_Controller_Abstract {
         Yaf_Dispatcher::getInstance()->disableView();
 
         //统一验证csrf token
-        $token     = isset($_POST['token']) ? trim($_POST['token']) : '';
-        $csrftoken = Yaf_Session::getInstance()->get(Base_Keys::getCsrfTokenKey());
-        if($token !== $csrftoken){
+        $token     = isset($_REQUEST['token']) ? trim($_REQUEST['token']) : '';
+        $bCheck    = $this->checkToken($token);
+        $bCheck    = true;
+        if(!$bCheck){
             Base_Log::warn(array(
                 'msg'        => 'Csrf token invalid', 
                 'post_token' => $token,
-                'csrf_token' => $csrftoken,
             ));
-            return $this->ajaxError(Base_RetCode::CSRFTOKEN_INVALID,
-                Base_RetCode::getMsg(Base_RetCode::CSRFTOKEN_INVALID));
+            @header("Content-Type: application/json; charset=UTF-8");
+            $arrRtInfo = array();
+            $arrRtInfo['status'] = Base_RetCode::CSRFTOKEN_INVALID;
+            $arrRtInfo['statusInfo'] = Base_RetCode::getMsg(Base_RetCode::CSRFTOKEN_INVALID);
+            $arrRtInfo['data'] = array();
+            $output = json_encode($arrRtInfo);
+            echo $output;
+            exit;
         }else{
             Base_Log::debug(array(
                 'msg'        => 'Csrf token valid', 
                 'post_token' => $token,
-                'csrf_token' => $csrftoken,
             ));
         }
     }

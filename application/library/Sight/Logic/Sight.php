@@ -1,9 +1,11 @@
 <?php
-class Sight_Logic_Sight{
+class Sight_Logic_Sight extends Base_Logic{
     
-    protected $modelSight;
+    private $_fileds = array('id','name','describe','level','city_id','x','y','image','hastopic','create_user','create_time','update_user','update_time','status');    
     
     protected $logicTopic;
+    
+    protected $logicSightTag;
     
     const DEFAULT_HOT_PERIOD = 30;
     
@@ -14,8 +16,8 @@ class Sight_Logic_Sight{
     const ORDER_NEW = 2;
     
     public function __construct(){
-        $this->modelSight = new SightModel();
-        $this->logicTopic = new Topic_Logic_Topic();
+        $this->logicTopic    = new Topic_Logic_Topic();
+        $this->logicSightTag = new Sight_Logic_Tag();
     }
     
     /**
@@ -24,8 +26,9 @@ class Sight_Logic_Sight{
      * @return array
      */
     public function getSightById($sightId){
-        $arr = $this->modelSight->getSightById($sightId);
-        return $arr;
+        $objSight = new Sight_Object_Sight();
+        $objSight->fetch(array('id' => $sightId));
+        return $objSight->toArray();
     }
     
     /**
@@ -36,9 +39,13 @@ class Sight_Logic_Sight{
      * @param string $strTags
      * @return array
      */
-    public function getSightDetail($sightId,$page,$pageSize,$order,$strTags=''){
+    public function getSightDetail($sightId,$page,$pageSize,$order,$strTags = ''){
         $arrRet  = array();
-        $redis   = Base_Redis::getInstance();
+        $arrTags = $this->logicSightTag->getTagsBySight($sightId);
+        if(empty($strTags)){
+            $strTags = isset($arrTags['common'][0]['id'])?$arrTags['common'][0]['id']:$arrTags['general'][0]['id'];
+        }
+        $redis   = Base_Redis::getInstance();        
         if(self::ORDER_NEW == $order){
              $arrRet =  $this->logicTopic->getNewTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);                                          
         }else{
@@ -48,7 +55,10 @@ class Sight_Logic_Sight{
         foreach ($arrRet as $key => $val){            
             $arrRet[$key]['tags'] = $logicTag->getTopicTags($val['id']);
         }      
-        return $arrRet;
+        return array(
+            'tags'=>$arrTags,
+            'data'=>$arrRet,           
+        );
     }
     
     /**
@@ -59,16 +69,14 @@ class Sight_Logic_Sight{
      * @return array
      */
     public function getSightListByCity($page,$pageSize,$cityId){
-        $arrRet = array();
-        if(empty($cityId)){
-            $arrSight = $this->modelSight->getSightList($page,$pageSize);
-        }else{
-            $arrSight = $this->modelSight->getSightByCity($page,$pageSize,$cityId);
-        }
-        foreach ($arrSight as $index => $val){
-            $arrRet[$index]['id']   = $val['id'];
-            $arrRet[$index]['name'] = $val['name'];
-        }
+        $arrRet    = array();
+        $listSight = new Sight_List_Sight();
+        if(!empty($cityId)){
+            $listSight->setFilter(array('city_id' => $cityId));
+        }        
+        $listSight->setPage($page);
+        $listSight->setPagesize($pageSize);
+        $arrRet  = $listSight->toArray();  
         return $arrRet;
     }
     
@@ -79,13 +87,11 @@ class Sight_Logic_Sight{
      * @return array
      */
     public function getSightList($page,$pageSize,$status){
-        $arr = $this->modelSight->getSightList($page,$pageSize,$status);
-        $num = $this->modelSight->getSightNum($status);
-        $arrRet['page']     = $page;
-        $arrRet['pagesize'] = $pageSize;
-        $arrRet['pageall']  = ceil($num/$pageSize);
-        $arrRet['total']    = $num;
-        $arrRet['list']     = $arr;
+        $listSight = new Sight_List_Sight();
+        $listSight->setPage($page);
+        $listSight->setPagesize($pageSize);
+        $listSight->setFilter(array('status' => $status));
+        $arrRet = $listSight->toArray();
         return $arrRet;
     }
     
@@ -113,31 +119,62 @@ class Sight_Logic_Sight{
      * @param integer $pageSize
      * @return array
      */
-    public function querySights($arrInfo,$page,$pageSize){
-        $ret   = $this->modelSight->query($arrInfo,1,PHP_INT_MAX);
-        $num   = count($ret);
-        $arrRet['page']     = $page;
-        $arrRet['pagesize'] = $pageSize;
-        $arrRet['pageall']  = ceil($num/$pageSize);
-        $arrRet['total']    = $num;
-        $arrRet['list']     = array_slice($ret,($page-1)*$pageSize,$pageSize);
+    public function querySights($arrInfo,$page,$pageSize){        
+        $listSight = new Sight_List_Sight();
+        if(isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::ALL)){
+            unset($arrInfo['status']);
+        }
+        $listSight->setFilter($arrInfo);
+        $listSight->setPage($page);
+        $listSight->setPagesize($pageSize);
+        $arrRet = $listSight->toArray();
         return $arrRet;
     }
     
     /**
-     * 对景点中的标题内容进行模糊查询
+     * 对景点进行搜索
      * @param string $query
      * @param integer $page
      * @param integer $pageSize
      * @return array
      */
-    public function search($query,$page,$pageSize,$x='',$y=''){
-        $redis = Base_Redis::getInstance();
-        $ret = $this->modelSight->search($query, $page, $pageSize,$x,$y);
-        foreach ($ret as $key => $val){
-            $ret[$key]['topicNum'] = $redis->zSize(Sight_Keys::getSightTopicKey($val['id']));
+    public function search($query,$page,$pageSize){
+        $logicCollect = new Collect_Logic_Collect();
+        $logicComment = new Comment_Logic_Comment();
+        $logicTopic   = new Topic_Logic_Topic();  
+        $arrSight     = Base_Search::Search('sight', $query, $page, $pageSize, array('id'));
+        foreach ($arrSight as $key => $val){
+            $sight = $this->getSightById($val['id']);
+            $arrSight[$key]['name']  = trim($sight['name']);
+            $arrSight[$key]['image'] = isset($sight['image'])?Base_Image::getUrlByName($sight['image']):'';
+        
+            $strTopicIds   = $logicTopic->getTopicIdBySight($val['id']);
+            $arrTopicIds   = explode(",",$strTopicIds);
+            $count         = 0;
+            foreach ($arrTopicIds as $id){
+                $count    += $logicComment->getTotalCommentNum($val['id']);
+            }
+            $topic_num     = $this->getTopicNum($val['id']);
+            $arrSight[$key]['desc']  = sprintf("评论数:%d，话题数:%d",$count,$topic_num);
         }
-        return $ret;
+        return $arrSight;
+    }
+    
+    public function querySightByPrefix($query,$page,$pageSize){
+        $arrRet = array();
+        $filter = "`name` like '$query"."%'";
+        $listSight = new Sight_List_Sight();
+        $listSight->setFilterString($filter);
+        $listSight->setPage($page);
+        $listSight->setPagesize($pageSize);
+        $ret = $listSight->toArray();
+        foreach ($ret['list'] as $val){
+            $arrRet[] = array(
+                'id'   => $val['id'],
+                'name' => $val['name'],
+            );
+        }
+        return $arrRet;
     }
     
     /**
@@ -146,8 +183,10 @@ class Sight_Logic_Sight{
      * @return boolean
      */
     public function delSight($id){
-        $ret = $this->modelSight->delSight($id);
-    
+        $objSight = new Sight_Object_Sight();
+        $objSight->fetch(array('id' => $id));
+        $ret = $objSight->remove();
+        
         //删除景点话题关系
         $redis = Base_Redis::getInstance();
         $listSightTopic = new Sight_List_Topic();
@@ -162,6 +201,39 @@ class Sight_Logic_Sight{
         //删除redis缓存
         $redis->delete(Sight_Keys::getSightTopicKey($id));
         
+        //删除景点书籍关系
+        $listSightBook = new Sight_List_Book();
+        $listSightBook->setFilter(array('sight_id' => $id));
+        $listSightBook->setPagesize(PHP_INT_MAX);
+        $arrSightBook = $listSightBook->toArray();
+        foreach ($arrSightBook['list'] as $val){
+            $objSightBook = new Sight_Object_Book();
+            $objSightBook->fetch(array('id' => $val['id']));
+            $objSightBook->remove();
+        }
+        
+        //删除景点标签关系
+        $listSightTag = new Sight_List_Tag();
+        $listSightTag->setFilter(array('sight_id' => $id));
+        $listSightTag->setPagesize(PHP_INT_MAX);
+        $arrSightTag = $listSightTag->toArray();
+        foreach ($arrSightTag['list'] as $val){
+            $objSightTag = new Sight_Object_Tag();
+            $objSightTag->fetch(array('id' => $val['id']));
+            $objSightTag->remove();
+        }
+        
+        //删除景点搜索标签关系        
+        $listSightSearch = new Search_List_Label();
+        $listSightSearch->setFilter(array('obj_id' => $id,'type' => Search_Type_Label::SIGHT));
+        $listSightSearch->setPagesize(PHP_INT_MAX);
+        $arrSightSearch = $listSightSearch->toArray();
+        foreach ($arrSightSearch['list'] as $val){
+            $objSightSearch = new Search_Object_Label();
+            $objSightSearch->fetch(array('id' => $val['id']));
+            $objSightSearch->remove();
+        }
+        
         //删除景点词条
         $listKeyword = new Keyword_List_Keyword();
         $listKeyword->setFilter(array('sight_id' => $id));
@@ -172,8 +244,8 @@ class Sight_Logic_Sight{
             $objKeyword->fetch(array('id' => $val['id']));
             $objKeyword->remove();
         }
-        $keys = $redis->keys(Wiki_Keys::getWikiInfoName($id, '*'));
-        $keys = array_merge($keys,$redis->keys(Wiki_Keys::getWikiCatalogName($id, '*','*')));
+        $keys = $redis->keys(Keyword_Keys::getWikiInfoName($id, '*'));
+        $keys = array_merge($keys,$redis->keys(Keyword_Keys::getWikiCatalogName($id, '*','*')));
         foreach ($keys as $key){
             $redis->delete($key);
         }
@@ -186,7 +258,15 @@ class Sight_Logic_Sight{
      * @return integer:更新影响的行数，返回非零值正确
      */
     public function addSight($arrInfo){
-        $ret = $this->modelSight->addNewSight($arrInfo);
+        $objSight = new Sight_Object_Sight();
+        foreach ($arrInfo as $key => $val){
+            $key = $this->getprop($key);
+            if(in_array($key,$this->_fileds)){
+                $objSight->$key = $val;
+            }
+           
+        }
+        $ret = $objSight->save();
         if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
             $data = $this->modelSight->query(array('name' => $arrInfo['name']), 1, 1);
             $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
@@ -204,8 +284,16 @@ class Sight_Logic_Sight{
      * @param array $_updateData: array('describe' =>'xxx','name' => 'xxx');
      * @return integer:更新影响的行数，返回非零值正确
      */
-    public function editSight($sightId,$_updateData){
-        $ret = $this->modelSight->eddSight($sightId, $_updateData);
+    public function editSight($sightId,$arrInfo){
+        $objSight = new Sight_Object_Sight();
+        foreach ($arrInfo as $key => $val){
+            $key = $this->getprop($key);
+            if(in_array($key,$this->_fileds)){
+                $objSight->$key = $val;
+            }
+           
+        }
+        $ret = $objSight->save();
         if($ret && isset($_updateData['status']) && ($_updateData['status'] == Sight_Type_Status::PUBLISHED)){
             $data = $this->modelSight->query(array('id' => $sightId), 1, 1);
             $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
@@ -258,8 +346,15 @@ class Sight_Logic_Sight{
      * @param array $arrInfo
      * @return integer
      */
-    public function getSightsNum($arrInfo){
-        return $this->modelSight->getSightNumByWhere($arrInfo);
+    public function getSightsNum($arrInfo,$cityId = ''){
+        $listSight = new Sight_List_Sight();
+        if(!empty($cityId)){
+            $arrInfo = array_merge($arrInfo,array('city_id' => $cityId));
+        }
+        $listSight->setFilter($arrInfo);
+        $listSight->setPagesize(PHP_INT_MAX);
+        $arrRet    = $listSight->toArray();        
+        return $arrRet['total'];
     }
     
     /**

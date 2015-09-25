@@ -1,6 +1,8 @@
 <?php
 class Keyword_Logic_Keyword extends Base_Logic{
     
+    const WIKI_CATALOG_NUM = 4;
+    
     protected $_fields;
     
     public function __construct(){
@@ -196,5 +198,203 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $objKeyword->save();
         }
         return $ret;
+    }
+    
+    public function getKeywordByInfo($keywordId){
+        $objKeyword = new Keyword_Object_Keyword();
+        $objKeyword->fetch(array('id' => $keywordId));
+        return $objKeyword->toArray();
+    }
+    
+    public function search($query, $page, $pageSize){
+        $arrKeyword  = Base_Search::Search('wiki', $query, $page, $pageSize, array('id'));
+        foreach ($arrKeyword as $key => $val){
+            $keyword = $this->getKeywordByInfo($val['id']);
+            $arrKeyword[$key]['name']  = trim($keyword['name']);
+            $arrKeyword[$key]['desc']  = trim($keyword['content']);
+            $arrKeyword[$key]['image'] = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
+        }
+        return $arrKeyword;
+    }
+
+    
+    /**
+     * 获取景点百科信息，并拼接上百科目录,供线上使用
+     * @param integer $sightId
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function getKeywords($sightId,$page,$pageSize,$arrParma = array()){
+        $listKeyword  = new Keyword_List_Keyword();
+        $arrFilter = array_merge(array('sight_id' => $sightId),$arrParma);
+        $listKeyword->setFields(array('id','sight_id','name','url','content','image'));
+        $listKeyword->setFilter($arrFilter);
+        $listKeyword->setPage($page);
+        $listKeyword->setPagesize($pageSize);
+        $arrRet = $listKeyword->toArray();
+        foreach ($arrRet['list'] as $key => $val){
+            $listKeywordCatalog = new Keyword_List_Catalog();
+            $listKeywordCatalog->setFields(array('id','name','url'));
+            $listKeywordCatalog->setFilter(array('keyword_id' => $val['id']));
+            $listKeywordCatalog->setPagesize(self::WIKI_CATALOG_NUM);
+            $arrCatalog = $listKeywordCatalog->toArray();
+            $arrRet['list'][$key]['catalog'] = $arrCatalog['list'];
+            $arrRet['list'][$key]['image']   = Base_Image::getUrlByName($val['image']);
+        }
+        return $arrRet;
+    }
+    
+    
+    /**
+     * 获取词条的百科信息,并将数据写入数据库
+     * @param string $word
+     * @return array
+     */
+    public function getKeywordSource($sightId,$page,$pageSize,$status = Keyword_Type_Status::PUBLISHED){
+        $arrItems  = array();
+        $arrRet    = array();
+        $arrTemp   = array();
+        $hash      = '';
+        require_once(APP_PATH."/application/library/Base/HtmlDom.php");
+        $arrsight     = Keyword_Api::queryKeywords($page,$pageSize,array('status'=>$status,'sight_id'=>$sightId));
+        foreach ($arrsight['list'] as $key  => $sight){
+            $arrItems    = array();
+            $redis       = Base_Redis::getInstance();
+            $index       = ($page-1)*$pageSize+$key+1;
+            $word        = urlencode(trim($sight['name']));
+    
+            $wikiUrl     = "http://baike.baidu.com/search/word?word=".$word;
+            $html        = file_get_html($wikiUrl);
+            $image       = $html->find('img');
+            $name        = '';
+            foreach ($image as $e){
+                $val = $e->getAttribute('data-src');
+                if(!empty($val)){
+                    $name  = $val;
+                    break;
+                }
+            }
+            if(empty($name)){
+                foreach ($image as $tempInd => $e){
+                    if ($tempInd <= 1) {
+                        continue;
+                    }
+                    $val = $e->getAttribute('src');
+                    if(!empty($val)){
+                        $name  = $val;
+                        break;
+                    }
+                }
+            }
+            if(!empty($name)){
+                $hash  = $this->uploadPic($name,$wikiUrl);
+            }else{
+                $hash  = $name;
+            }
+    
+            $content   = $html->find('div.card-summary-content div.para',0);
+    
+            if(empty($content)){
+                $content = $html->find('div[class="lemmaWgt-lemmaSummary lemmaWgt-lemmaSummary-light"]',0);
+                if(empty($content)){
+                    $content = $html->find('div.lemma-summary div.para',0);
+                    $content     = strip_tags($content->innertext);
+                }
+                foreach($html->find('li[class="level1"]') as $e){
+                    $ret  = $e->find("a",0);
+                    $url  = $ret->getAttribute("href")."\t";
+                    $name = html_entity_decode($ret->innertext)."\r\n";
+                    $arrItems[] = array(
+                        'name' => $name,
+                        'url'  => $wikiUrl.$url,
+                    );
+                    if(count($arrItems) >= self::WIKI_CATALOG_NUM){
+                        break;
+                    }
+                }
+            }else{
+                $content  = strip_tags($content->innertext);
+                foreach($html->find('div[class^="catalog-item "]') as $e){
+                    $ret  = $e->find("p a",0);
+                    $url  = $ret->getAttribute("href")."\t";
+                    $name = html_entity_decode($ret->innertext)."\r\n";
+                    $arrItems[] = array(
+                        'name' => $name,
+                        'url'  => $wikiUrl.$url,
+                    );
+                    if(count($arrItems) >= self::WIKI_CATALOG_NUM){
+                        break;
+                    }
+                }
+            }
+            $arrTemp['title']       = $sight['name'];
+            $arrTemp['content']     = Base_Util_String::trimall($content);
+            $arrTemp['image']       = $hash;
+            $arrTemp['url']         = $wikiUrl;
+            $arrTemp['status']      = Keyword_Type_Status::PUBLISHED;
+            
+            $objKeyword = new Keyword_Object_Keyword();
+            $objKeyword->fetch(array('id' => $sight['id']));
+            $objKeyword->content = $arrTemp['content'];
+            $objKeyword->image   = $arrTemp['image'];
+            $objKeyword->status  = $arrTemp['status'];
+            $objKeyword->save();
+    
+            foreach ($arrItems as $id => $item){
+                $objKeywordCatalog            = new Keyword_Object_Catalog();
+                $objKeywordCatalog->name      = $item['name'];
+                $objKeywordCatalog->url       = $item['url'];
+                $objKeywordCatalog->keywordId = $objKeyword->id;
+                $objKeywordCatalog->save();
+            }
+            $arrRet[] = $arrTemp;
+            $html->clear();
+        }
+        return $arrRet;
+    }
+    
+    /**
+     * 修改百科数据
+     * @param integer $keywordId
+     * @param array $arrInfo
+     * @return boolean
+     */
+    public function editWiki($keywordId,$arrInfo){
+        $redis        = Base_Redis::getInstance();
+        $ret          = false;
+        $arrCatalog   = array();
+        $logicKeyword = new Keyword_Logic_Keyword();
+        $sightId      = $logicKeyword->getSightId($keywordId);
+        if(!empty($sightId)){
+            $arr      = $redis->hGetAll(Keyword_Keys::getWikiInfoName($sightId, $keywordId));
+            if(isset($arrInfo['catalog'])){
+                $arrCatalog = $arrInfo['catalog'];
+                unset($arrInfo['catalog']);
+            }
+            $arrKeys  = array_keys($arr);
+            foreach ($arrInfo as $key => $val){
+                if(in_array($key,$arrKeys)){
+                    $arr[$key] = $val;
+                }
+            }
+            $ret1 = $redis->hMset(Keyword_Keys::getWikiInfoName($sightId, $keywordId),$arr);
+        }
+        //修改百科目录
+        if(!empty($arrCatalog)){
+            foreach ($arrCatalog as $index => $val){
+                $id = $val['id'];
+                unset($val['id']);
+                $arr      = $redis->hGetAll(Keyword_Keys::getWikiCatalogName($sightId, $keywordId, $id));
+                $arrKeys  = array_keys($arr);
+                foreach ($val as $key => $data){
+                    if(in_array($key,$arrKeys)){
+                        $val[$key] = $data;
+                    }
+                }
+                $ret2 = $redis->hMset(Keyword_Keys::getWikiCatalogName($sightId, $keywordId, $id));
+            }
+        }
+        return $ret1&&$ret2;
     }
 }

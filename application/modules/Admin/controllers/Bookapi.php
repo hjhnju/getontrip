@@ -22,24 +22,18 @@ class BookapiController extends Base_Controller_Api{
         
         $List =Book_Api::getJdBooks($sight_id,$page,$pageSize);
         
-        $total=0;
-        $tmpList=$List;
-        if (count($tmpList)>0) { 
-            for($i=0;$i<count($tmpList);$i++){ 
-               //处理状态值
-                $tmpList[$i]["statusName"] = Book_Type_Status::getTypeName($tmpList[$i]["status"]); 
-            }
-            $total=$List[0]['totalNum'];
-           
+        foreach ($List['list'] as $key => $val){
+            $List['list'][$key]['statusName'] = Book_Type_Status::getTypeName($val["status"]); 
         }
+        $total = $List['total'];
         $retList['recordsTotal'] = $total;
         $retList['recordsFiltered'] =$total;
         
-        $List =  $tmpList;
+        //$List =  $tmpList;
 
         
        
-        $retList['data'] =$List; 
+        $retList['data'] =$List['list']; 
         return $this->ajax($retList);
     }
 

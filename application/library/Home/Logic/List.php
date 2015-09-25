@@ -12,18 +12,23 @@ class Home_Logic_List{
     
     protected $_logicSight;
     
+    protected $_logicCollect;
+    
     const REDIS_TIMEOUT = 3600;
     
     const ORDER_HOT = 1;
     
     const ORDER_NEW = 2;
     
-    const PAGE_SIZE = 2;
+    const PAGE_SIZE = 4;
+    
+    const DEFAULT_CITY_ID = 2; //默认城市北京
     
     public function __construct(){
-        $this->_model      = new GisModel();
-        $this->_logicTopic = new Topic_Logic_Topic();
-        $this->_logicSight = new Sight_Logic_Sight();
+        $this->_model        = new GisModel();
+        $this->_logicTopic   = new Topic_Logic_Topic();
+        $this->_logicSight   = new Sight_Logic_Sight();
+        $this->_logicCollect = new Collect_Logic_Collect();
     }
     
     /**
@@ -81,5 +86,48 @@ class Home_Logic_List{
         $arr   = array();
         $arr   = $this->_logicSight->getSightDetail($sight,$page,$pageSize,$order,$strTags);           
         return $arr;
+    }
+    
+    /**
+     * 城市中间页入口一
+     * @param string $city
+     * @param string $deviceId
+     */
+    public function getHomeData($city, $deviceId){
+        //城市信息
+        $tmpCity   = City_Api::queryCityPrefix($city, 1, 1);
+        $cityId    = isset($tmpCity['list'][0]['id'])?intval($tmpCity['list'][0]['id']):self::DEFAULT_CITY_ID;
+
+        $collected = $this->_logicCollect->checkCollect(Collect_Type::CITY, $deviceId, $cityId);
+        $arrCity = array(
+            'id'      => isset($tmpCity['list'][0]['id'])?strval($tmpCity['list'][0]['id']):'',
+            'name'    => isset($tmpCity['list'][0]['name'])?trim($tmpCity['list'][0]['name']):'',
+            'image'   => isset($tmpCity['list'][0]['image'])?Base_Image::getUrlByName($tmpCity['list'][0]['image']):'', 
+            'collect' => strval($collected),         
+        );
+        $arrCity['name']  = str_replace("市","",$arrCity['name']);
+        //景点信息
+        $arrSight = array();
+        $sight    = Sight_Api::getSightByCity($cityId, 1, PHP_INT_MAX);
+        foreach ($sight['list'] as $key => $val){
+            $arrSight[$key]['id']    = strval($val['id']);
+            $arrSight[$key]['name']  = trim($val['name']);
+            $arrSight[$key]['image'] = Base_Image::getUrlByName($val['image']);
+            
+            $topic_num     = $this->_logicSight->getTopicNum($val['id']);
+            $collect       = $this->_logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $val['id']);
+            $arrSight[$key]['desc']  = sprintf("%d个内容|%d人收藏",$topic_num,$collect);
+        }
+        
+        //话题信息
+        $cityTopic = new City_Logic_City();
+        $arrTopic  = $cityTopic->getHotTopic($cityId);
+        
+        $arrRet = array(
+            'city'  => $arrCity,
+            'sight' => $arrSight,
+            'topic' => $arrTopic,
+        );
+        return $arrRet;
     }
 }

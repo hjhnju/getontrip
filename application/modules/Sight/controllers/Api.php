@@ -19,8 +19,9 @@ class ApiController extends Base_Controller_Api {
      * @param integer sightId
      * @param integer page
      * @param integer pageSize
-     * @param string tags:逗号隔开的id串，如："1,2"
-     * @param integer order,次序，1：人气最高，2：最近更新，默认可以不传
+     * @param string tags:逗号隔开的id串，如："1,2"。
+     * 对于用户点击通用标签的时候，不要传景点ID，只传通用标签ID及页码信息。
+     * 对于用户点击书籍标签，视频标签，景观标签，分别调用书籍模块，景观模块，视频模块的接口。
      * @return json
      */
     public function detailAction() {
@@ -29,7 +30,7 @@ class ApiController extends Base_Controller_Api {
         $sightId    = isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
         $strTags    = isset($_REQUEST['tags'])?trim($_REQUEST['tags']):'';
         $intOrder   = isset($_REQUEST['order'])?intval($_REQUEST['order']):2;
-        if(empty($sightId)){
+        if(empty($sightId) && empty($strTags)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $logic      = new Sight_Logic_Sight();
@@ -51,7 +52,7 @@ class ApiController extends Base_Controller_Api {
         if(!empty($cityId)){
             $ret  =  Sight_Api::getSightByCity($cityId,$page,$pageSize);
         }else{           
-            $ret  =  Sight_Api::getSightList($page, $pageSize);
+            $ret  =  Sight_Api::getSightList($page, $pageSize, Sight_Type_Status::PUBLISHED);
         }   
         $this->ajax($ret['list']);
     }

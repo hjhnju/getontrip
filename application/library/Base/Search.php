@@ -18,7 +18,11 @@ class Base_Search {
     //支持的检索表
     protected static $arrTypes = array(
         'topic',
-        'theme',  
+        'sight',
+        'book',
+        'video',  
+        'wiki',
+        'city',
     );
     
     /**
@@ -30,7 +34,11 @@ class Base_Search {
      * @param array $arrNeedKey,需要返回的key
      */
     public static function Search($type,$word,$page = 1,$pageSize = self::PAGE_SIZE, $arrNeedKey = array()){
-        $query  = '';
+        $query         = '';
+        $searchSizeMax = 10000;
+        if($pageSize >= $searchSizeMax){
+            $pageSize = $searchSizeMax;
+        }
         $arrRet = array();
         if(!in_array(trim($type),self::$arrTypes)){
             return $arrRet;
@@ -44,6 +52,7 @@ class Base_Search {
         $arrParams = array(
             'id',
             'name',
+            'title',
         );
         if(empty($arrNeedKey)){
             $param = implode(",",self::$arrPrams);

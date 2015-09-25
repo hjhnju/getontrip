@@ -15,7 +15,7 @@ class ApiController extends Base_Controller_Api {
     
     /**
      * 接口1：/Api/book
-     * 书籍详情接口
+     * 书籍列表接口
      * @param integer page
      * @param integer pageSize
      * @param integer sightId,景点ID
@@ -29,7 +29,23 @@ class ApiController extends Base_Controller_Api {
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $logic      = new Book_Logic_Book();
-        $ret        = $logic->getBooks($sightId,$page,$pageSize);
+        $ret        = $logic->getBooks($sightId,$page,$pageSize,array('status' => Book_Type_Status::PUBLISHED));
         $this->ajax($ret);
-    }   
+    } 
+    
+    /**
+     * 接口2:/Api/book/detail
+     * 书籍详情接口
+     * @param integer book,书籍ID
+     * @return json
+     */
+    public function detailAction(){
+        $bookId   = isset($_REQUEST['book'])?intval($_REQUEST['book']):'';
+        if(empty($bookId)){
+            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
+        }
+        $logic    = new Book_Logic_Book();
+        $ret      = $logic->getBookById($bookId);
+        $this->ajax($ret);
+    }
 }

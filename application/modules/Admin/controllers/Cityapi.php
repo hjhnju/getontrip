@@ -28,17 +28,14 @@ class CityapiController extends Base_Controller_Api{
              $arrInfo = array();
         }
         $List =City_Api::queryCity($arrInfo,$page, $pageSize);
-
-        $tmpList=$List['list'];
-        //处理状态值 
-        for($i=0; $i<count($tmpList); $i++) { 
-            $tmpList[$i]["statusName"] = City_Type_Status::getTypeName($tmpList[$i]["status"]);  
+        
+        foreach ($List['list'] as $key => $val){
+            $List['list'][$key]['statusName'] = City_Type_Status::getTypeName($val["status"]); 
         }
-        $List['list']=$tmpList;
     
-        $retList['recordsFiltered'] =$List['total'];
-        $retList['recordsTotal'] = $List['total']; 
-        $retList['data'] =$List['list'];
+        $retList['recordsFiltered'] = $List['total'];
+        $retList['recordsTotal']    = $List['total']; 
+        $retList['data']            = $List['list'];
  
 		$this->ajax($retList);
          

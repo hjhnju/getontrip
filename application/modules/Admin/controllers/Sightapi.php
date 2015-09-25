@@ -23,7 +23,6 @@ class  SightapiController extends Base_Controller_Api{
          
         $arrInfo =isset($_REQUEST['params'])?$_REQUEST['params']:array();
         
-    
         $List =Sight_Api::querySights($arrInfo,$page, $pageSize);
     
     
@@ -109,9 +108,9 @@ class  SightapiController extends Base_Controller_Api{
       * @return [type] [description]
     */
     public function getSightListAction(){ 
-        $str=isset($_REQUEST['query'])?$_REQUEST['query']:'天'; 
+        $str=isset($_REQUEST['query'])?$_REQUEST['query']:''; 
         //最大值 PHP_INT_MAX   
-        $List = Sight_Api::search('',1,PHP_INT_MAX); 
+        $List = Sight_Api::querySightByPrefix($str,1,PHP_INT_MAX); 
       
         return $this->ajax($List);   
     }

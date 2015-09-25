@@ -34,15 +34,7 @@ class Sight_Api{
      */
     public static function getSightByCity($cityId,$page,$pageSize){
         $logicSight = new Sight_Logic_Sight();
-        $arr        = $logicSight->getSightListByCity($page, $pageSize, $cityId);
-        $num        = count($arr);
-        
-        $arrRet['page']     = $page;
-        $arrRet['pagesize'] = $pageSize;
-        $arrRet['pageall']  = ceil($num/$pageSize);
-        $arrRet['total']    = $num;
-        $arrRet['list']     = $arr;
-        return $arrRet;
+        return  $logicSight->getSightListByCity($page, $pageSize, $cityId);
     }
     
     /**
@@ -148,5 +140,18 @@ class Sight_Api{
     public static function checkSightName($name){
         $logicSight = new Sight_Logic_Sight();
         return $logicSight->checkSightName($name);
+    }
+    
+    /**
+     * 接口13：querySightByPrefix($query,$page,$pageSize)
+     * 根据景点名称模糊查询景点ID
+     * @param string $query
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function querySightByPrefix($query,$page,$pageSize){
+        $logicSight = new Sight_Logic_Sight();
+        return $logicSight->querySightByPrefix($query, $page, $pageSize);
     }
 }

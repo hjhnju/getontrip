@@ -26,7 +26,7 @@ class Keyword_Object_Keyword extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'sight_id', 'name', 'url', 'weight', 'status', 'create_user', 'update_user', 'create_time', 'update_time', 'x', 'y');
+    protected $fields = array('id', 'sight_id', 'name', 'url', 'weight', 'status', 'create_user', 'update_user', 'create_time', 'update_time', 'x', 'y', 'content', 'image');
 
     /**
      * 字段与属性隐射关系
@@ -45,6 +45,8 @@ class Keyword_Object_Keyword extends Base_Object {
         'update_time' => 'updateTime',
         'x'           => 'x',
         'y'           => 'y',
+        'content'     => 'content',
+        'image'       => 'image',
     );
 
     /**
@@ -141,5 +143,17 @@ class Keyword_Object_Keyword extends Base_Object {
      * @var 
      */
     public $y;
+
+    /**
+     * 百科内容
+     * @var string
+     */
+    public $content;
+
+    /**
+     * 百科中的图片
+     * @var string
+     */
+    public $image;
 
 }

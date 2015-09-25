@@ -14,7 +14,7 @@ class ApiController extends Base_Controller_Page{
 
         parent::init();
         
-        $this->logicLogin = new User_Logic_Login();
+        $this->logicLogin = new User_Logic_Third();
         
         $this->logicUser  = new User_Logic_User();
     } 

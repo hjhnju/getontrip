@@ -11,9 +11,13 @@ class EditAction extends Yaf_Action_Abstract {
         
  
         //获取所有标签
-        $tagList = Tag_Api::getTagList(1, PHP_INT_MAX);
+        $tagList = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::NORMAL));
         $tagList=$tagList['list'];
       
+        $generalTag = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::GENERAL));
+        $generalTag = $generalTag['list'];
+        
+        
         $sightList=array();
 
         $postid = isset($_REQUEST['id']) ? $_REQUEST['id'] : '0';
@@ -87,6 +91,7 @@ class EditAction extends Yaf_Action_Abstract {
         $this->getView()->assign('tag_id_array', $tag_id_array);
         $this->getView()->assign('action', Admin_Type_Action::getTypeName($action));
         $this->getView()->assign('tagList', $tagList);
+        $this->getView()->assign('generalTag',$generalTag);
         $this->getView()->assign('sightList', $sightList);
     }
 }

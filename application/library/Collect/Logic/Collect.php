@@ -105,15 +105,14 @@ class Collect_Logic_Collect{
                     $arrRet[]         = $temp;
                 }
                 break;
-            case Collect_Type::THEME:
-                $logicTheme = new Theme_Logic_Theme();
+            case Collect_Type::CITY:
+                $logicCity = new City_Logic_City();
                 foreach ($arrCollect['list'] as $val){
                     $temp['id']      = $val['obj_id'];
-                    $theme           = $logicTheme->queryThemeById($val['obj_id']);
-                    $temp['image']   = $theme['image'];
-                    $temp['name']    = $theme['name'];
-                    $temp['period']  = $theme['period'];
-                    $temp['collect'] = strval($this->getTotalCollectNum(Collect_Type::THEME, $val['obj_id']));
+                    $city            = $logicCity->getCityById($val['obj_id']);
+                    $temp['image']   = Base_Image::getUrlByName($city['image']);
+                    $temp['name']    = $city['name'];
+                    $temp['collect'] = strval($this->getTotalCollectNum(Collect_Type::CITY, $val['obj_id']));
                     $arrRet[]        = $temp;
                 }
                 break;

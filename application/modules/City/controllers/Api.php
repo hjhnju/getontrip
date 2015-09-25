@@ -8,6 +8,8 @@ class ApiController extends Base_Controller_Page {
     
     const PAGE_SIZE = 8;
     
+    const INDEX_TOPIC_NUM = 4;
+    
     protected $_logicCity;
     
     public function init() {
@@ -50,6 +52,24 @@ class ApiController extends Base_Controller_Page {
         $page     = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGE_SIZE;
         $ret = City_Api::getCityInfo($page, $pageSize,$filter);
+        return $this->ajax($ret);
+    }
+    
+    /**
+     * 接口3：/api/city/topic
+     * 获取城市话题,首页中使用
+     * @param string device，用户的设备ID
+     * @param integer page,页码
+     * @param integer pageSize,页面大小
+     * @return json
+     */
+    public function topicAction(){
+        $filter    = isset($_REQUEST['device'])?trim($_REQUEST['device']):'';
+        $city      = isset($_REQUEST['city'])?trim($_REQUEST['city']):'北京';
+        $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::INDEX_TOPIC_NUM;
+        $logicCity = new City_Logic_City();
+        $ret       = $logicCity->getHotTopic($city,$page,$pageSize);
         return $this->ajax($ret);
     }
 }

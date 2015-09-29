@@ -21,7 +21,7 @@ class Search_Type_Label extends Base_Type {
      * @var array
      */
     public static $names = array(
-        self::SIGHT      => '景点搜索标签',
-        self::CITY       => '城市搜索标签',
+        self::SIGHT      => '景点',
+        self::CITY       => '城市',
     );
 }

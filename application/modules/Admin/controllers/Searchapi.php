@@ -23,10 +23,15 @@ class SearchapiController extends Base_Controller_Api{
         $labelId  = isset($_REQUEST['id'])?$_REQUEST['id']:'';
         if(empty($labelId)){
             $list = Search_Api::listLabel(1, PHP_INT_MAX);
-            $labelId = isset($list['list'][0]['id'])?$list['list'][0]:'';
+            $labelId = isset($list['list'][0]['id'])?$list['list'][0]['id']:'';
         }
-          
-        $List     = Search_Api::getLabel($labelId, $page, $pageSize);
+        if(!empty($labelId)){
+            $List     = Search_Api::getLabel($labelId, $page, $pageSize);
+        }else{
+            $List['total'] = 0;
+            $List['list']  = array();
+        }
+        
 
         $retList['recordsFiltered'] =$List['total'];
         $retList['recordsTotal'] = $List['total']; 

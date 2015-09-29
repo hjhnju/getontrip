@@ -8,6 +8,10 @@ class CityModel{
     
     protected $db;
     
+    protected $_fields_info = array('id', 'status', 'x', 'y', 'create_time', 'update_time', 'create_user', 'update_user', 'image');
+    
+    protected $_fields_meta = array('id', 'name', 'pinyin', 'pid', 'provinceid', 'cityid');
+    
     public function __construct(){
         $this->db = Base_Db::getInstance('getontrip');
     }
@@ -21,13 +25,18 @@ class CityModel{
      */
     public function queryCity($arrInfo,$page,$pageSize){
         $from   = ($page-1)*$pageSize;
-        $filter = '';
+        $filterInfo = '';
+        $filterMeta = '';        
         foreach ($arrInfo as $key => $val){
-            $filter  = 'a.`'.$key."` = ".$val." AND ";
+            if(in_array($key, $this->_fields_info)){
+                $filterInfo .= 'city.`'.$key."` = ".$val." AND ";
+            }else{
+                $filterMeta .= 'city_meta.`'.$key."` = ".$val." AND ";
+            }
         }
-        $filter .= "b.`cityid` = 0 AND b.`provinceid` != 0 and a.`id` = b.`id`";
-        $sql  = 'SELECT a.*, b.* FROM  `city` a, `city_meta` b WHERE '.$filter." limit $from,$pageSize";
-        try {                 	
+        $filter = $filterInfo . $filterMeta . " city_meta.`cityid` = 0 AND city_meta.`provinceid` != 0";
+        $sql  = 'SELECT * FROM  `city` right join `city_meta` ON city_meta.`id` = city.`id` where '.$filter." limit $from,$pageSize";
+        try {                	
             $data = $this->db->fetchAll($sql);          
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());          
@@ -43,14 +52,19 @@ class CityModel{
      * @return number
      */
     public function getCityNum($arrInfo = array(), $str = ''){
-        $filter = '';
+        $filterInfo = '';
+        $filterMeta = '';        
         foreach ($arrInfo as $key => $val){
-            $filter  = 'a.`'.$key."` = ".$val." AND ";
+            if(in_array($key, $this->_fields_info)){
+                $filterInfo .= 'city.`'.$key."` = ".$val." AND ";
+            }else{
+                $filterMeta .= 'city_meta.`'.$key."` = ".$val." AND ";
+            }
         }
-        $filter .= "b.`cityid` = 0 AND b.`provinceid` != 0 and a.`id` = b.`id`";
-        $sql  = 'SELECT count(*) FROM `city` a, `city_meta` b WHERE '.$filter;
+        $filter = $filterInfo . $filterMeta . " city_meta.`cityid` = 0 AND city_meta.`provinceid` != 0";
+        $sql  = 'SELECT count(*) FROM `city` right join `city_meta` ON city_meta.`id` = city.`id` where '.$filter;
         if(!empty($str)){
-            $sql .= " and b.`name` like '".$str."%'";
+            $sql .= " and city_meta.`name` like '".$str."%'";
         }
         try {
             $data = $this->db->fetchOne($sql);
@@ -70,12 +84,18 @@ class CityModel{
      */
     public function queryCityPrefix($str,$page,$pageSize,$arrInfo = array()){
         $from   = ($page-1)*$pageSize;
-        $filter = '';
+        $filterInfo = '';
+        $filterMeta = '';        
         foreach ($arrInfo as $key => $val){
-            $filter  = 'a.`'.$key."` = ".$val." AND ";
+            if(in_array($key, $this->_fields_info)){
+                $filterInfo .= 'city.`'.$key."` = ".$val." AND ";
+            }else{
+                $filterMeta .= 'city_meta.`'.$key."` = ".$val." AND ";
+            }
         }
-        $filter .= "b.`cityid` = 0 and b.`provinceid` != 0 and b.`name` like '".$str."%' and a.`id` = b.`id`";
-        $sql  = 'SELECT a.*,b.* FROM `city` a, `city_meta` b WHERE '.$filter." limit $from,$pageSize";
+        $filter = $filterInfo . $filterMeta . " city_meta.`cityid` = 0 AND city_meta.`provinceid` != 0 ";
+        $filter .= "city_meta.`cityid` = 0 and city_meta.`provinceid` != 0 and city_meta.`name` like '".$str."%'";
+        $sql  = 'SELECT * FROM `city` right join `city_meta` ON city.`id` = city_meta.`id` where '.$filter." limit $from,$pageSize";
         try {
             $data = $this->db->fetchAll($sql);
         } catch (Exception $ex) {

@@ -29,6 +29,11 @@ class TagapiController extends Base_Controller_Api{
          
        
         $List=Tag_Api::getTagList($page, $pageSize);
+        
+        foreach ($List['list'] as $key => $val){
+            $List['list'][$key]['type_name'] = Tag_Type_Tag::getTypeName($val['type']);
+        }
+        
     
         $retList['recordsFiltered'] =$List['total'];
         $retList['recordsTotal'] = $List['total']; 
@@ -44,12 +49,21 @@ class TagapiController extends Base_Controller_Api{
     public function saveAction()
     {   
       //判断是否有ID
-       $id=isset($_REQUEST['id'])?$_REQUEST['id']:'';
-       $name = isset($_REQUEST['name'])?$_REQUEST['name']:''; 
+       $arrPram = array();
+       $id      = isset($_REQUEST['id'])?$_REQUEST['id']:'';
+       $name    = isset($_REQUEST['name'])?$_REQUEST['name']:''; 
+       if(!empty($name)){
+           $arrPram = array('name' => $name);
+       }
+       $type_name     = isset($_REQUEST['type_name'])?trim($_REQUEST['type_name']):'';
+       if(!empty($type_name)){
+           $type      = Tag_Type_Tag::getTypeId($type_name);
+           $arrPram   = array_merge($arrPram,array('type' => $type));
+       }
        if($id!=""){
-           $bRet = Tag_Api::editTag($id,$name);
+           $bRet = Tag_Api::editTag($id,$arrPram);
        }else{ 
-           $bRet = Tag_Api::saveTag($name);
+           $bRet = Tag_Api::saveTag($arrPram);
        } 
 
         if($bRet){

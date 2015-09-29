@@ -19,8 +19,10 @@ class Sight_Logic_Tag extends Base_Logic{
         $listSightTag->setPagesize(PHP_INT_MAX);
         $arrTemp = $listSightTag->toArray();
         foreach ($arrTemp['list'] as $key => $val){
-            $arrGeneralTag[$key]['id']   = trim($val['id']);
-            $arrGeneralTag[$key]['name'] = trim($val['name']);
+            $arrGeneralTag[$key]['id']   = trim($val['tag_id']);
+            $tag  = $this->_logicTag->getTagById($val['tag_id']);
+            $arrGeneralTag[$key]['type'] = strval(Tag_Type_Tag::GENERAL);
+            $arrGeneralTag[$key]['name'] = trim($tag['name']);
         }
        
         $strTopicIds = $this->_logicTopic->getTopicIdBySight($sightId);
@@ -28,28 +30,30 @@ class Sight_Logic_Tag extends Base_Logic{
         foreach ($arrTopicIds as $id){
             $arrTags = $this->_logicTag->getTopicTags($id);
             foreach ($arrTags as $val){
-                $tag = $this->_logicTag->getTagByName($val);
-                $temp['id']     = $tag['id'];
-                $temp['name']   = $val;
-                if(!in_array($temp,$arrCommonTag)){
-                    $arrCommonTag[] = $temp;
-                }
+                $temp = array();
+                $tag  = $this->_logicTag->getTagByName($val);
+                if($tag['type'] == Tag_Type_Tag::CLASSIFY || $tag['type'] == Tag_Type_Tag::GENERAL){
+                    $temp['id']     = strval($tag['id']);
+                    $temp['type']   = strval($tag['type']);
+                    $temp['name']   = $val;  
+                    if(!in_array($temp,$arrCommonTag)){
+                        $arrCommonTag[] = $temp;
+                    }
+                }                    
             }
         }
         
         //判断有无视频,书籍,而增加相应标签
-        $arrCommonTag[] = array('id' => 'wiki','name' => '景观');
+        $arrCommonTag[] = array('id' => 'wiki','type' => strval(Tag_Type_Tag::NORMAL), 'name' => '景观');
         
         $book  = Book_Api::getJdBooks($sightId, 1, 1);
         $video = Video_Api::getVideos($sightId, 1, 1);
         if(!empty($book['list'])){
-            $arrCommonTag[] = array('id' => 'book','name' => '书籍');
+            $arrCommonTag[] = array('id' => 'book','type' => strval(Tag_Type_Tag::NORMAL), 'name' => '书籍');
         }
         if(!empty($video['list'])){
-            $arrCommonTag[] = array('id' => 'video','name' => '视频');
-        }
-        $arrRet['common']  = $arrCommonTag;
-        $arrRet['general'] = $arrGeneralTag;        
-        return $arrRet;
+            $arrCommonTag[] = array('id' => 'video','type' => strval(Tag_Type_Tag::NORMAL), 'name' => '视频');
+        }        
+        return array_merge($arrCommonTag,$arrGeneralTag);
     }
 }

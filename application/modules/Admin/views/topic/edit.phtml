@@ -117,7 +117,7 @@
                           <div class="col-lg-10">  
                               {%foreach $tagList as $key=>$item%}
                               <label class="checkbox-inline">
-                                <input type=radio name="radio" data-name="form-tag" id="" value="{%$item.id%}" {%if isset($item.selected)%}checked{%/if%}>{%$item.name%}
+                                <input type=checkbox name="" data-name="form-tag" id="" value="{%$item.id%}" {%if isset($item.selected)%}checked{%/if%}>{%$item.name%}
                               </label>
                               {%/foreach%} 
                               <span class="help-inline">
@@ -140,6 +140,7 @@
                           <label for="sight_name" class="control-label col-lg-2">新标签</label>
                           <div class="col-lg-3"> 
                               <input class="form-control" id="tag_name"    type="text"  autocomplete="off"  placeholder="输入新标签名称"/>
+                              <input class="form-control" id="type_name"   type="hiden"/>
                             </div>
                            <div class="col-lg-3"> 
                               <button type="button" class="btn btn-primary" id="addTag-btn">创建</button>

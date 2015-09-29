@@ -9,7 +9,7 @@ $(document).ready(function() {
     var oTable = $('#editable').dataTable({
         "serverSide": true, //分页，取数据等等的都放到服务端去
         "processing": true, //载入数据的时候是否显示“载入中”
-        "pageLength": 20, //首次加载的数据条数  
+        "pageLength": 10, //首次加载的数据条数  
         "searching": false, //是否开启本地分页
         "ordering": false,
         "ajax": {
@@ -35,7 +35,7 @@ $(document).ready(function() {
         }, {
             "data": function(e) {
                 if (e.image) { 
-                    return '<a href="' + e.image + '" target="_blank"><img alt="" src="' + e.image.getNewUrlByUrl(80,22,'f') + '"/></a>';
+                    return '<a href="/pic/' +  e.image + '" target="_blank"><img alt="" src="' + e.image.getNewUrlByUrl(80,22,'f') + '"/></a>';
                 }
                 return '暂无';
             }

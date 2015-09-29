@@ -1,0 +1,93 @@
+{%extends file='common/layout.phtml'%}
+{%block name='content'%} 
+	<div class="page-content-wrapper">
+		<div class="page-content">
+			<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog  modal-lg">
+					<div class="modal-content"> 
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
+			<!-- /.modal -->
+			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<!-- BEGIN PAGE HEADER-->
+			<h3 class="page-title">
+			  新建搜索标签 <small>reports & statistics</small>
+			</h3>
+			<div class="page-bar">
+				<ul class="page-breadcrumb">
+					<li>
+						<i class="fa fa-home"></i>
+						<a href="/admin">Home</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
+					<li>
+						<i class="fa fa-list-ul"></i>
+						<a href="/admin/msg/list">搜索标签管理</a>
+						<i class="fa fa-angle-right"></i>
+					</li>
+					<li>
+						<a href="#">新建搜索标签</a>
+					</li>
+				</ul>
+			</div>
+			<!-- END PAGE HEADER-->
+			<!-- BEGIN content STATS --> 
+		     <div class=" form">
+                  <form class="cmxform form-horizontal tasi-form" id="Form" method="post" action="/admin/search/edit" novalidate="novalidate" > 
+                      <div class="form-group ">
+                          <label for="title" class="control-label col-lg-2">标签名称</label>
+                          <div class="col-lg-5">
+                              <input class="form-control" id="name" name="name"  type="text" required="" value=""/>
+                              <label for="title" class="error"></label> 
+                          </div>
+                      </div>  
+                      
+                      <div class="form-group ">
+                          <label for="title" class="control-label col-lg-2">标签类型</label>
+                          <div class="col-lg-5">
+                          {%if $type==1 %}
+                             <label><input name="type" type="radio" class="form-control" value="2"  onclick="change(2)" />城市搜索标签 </label>
+                             <label><input name="type" type="radio" class="form-control" value="1"  onclick="change(1)" checked="checked" />景点搜索标签 </label>                       
+                          {%else%}
+                             <label><input name="type" type="radio" class="form-control" value="2"  onclick="change(2)" checked="checked" />城市搜索标签 </label>
+                             <label><input name="type" type="radio" class="form-control" value="1"  onclick="change(1)" />景点搜索标签 </label>                       
+                          {%/if%}
+                          </div>
+                      </div> 
+                      
+                       <div class="form-group ">
+                         <label for="tag_name" class="control-label col-lg-2">对象列表：</label>
+                          <div class="col-lg-10">  
+                              {%foreach $data as $key=>$item%}
+                              <label class="checkbox-inline">
+                                <input type=checkbox name="objid" data-name="objid" id="" value="{%$item.id%}">{%$item.name%}
+                              </label>
+                              {%/foreach%} 
+                           </div> 
+                      </div> 
+                      
+                      <div class="form-group">
+                          <div class="col-lg-offset-2 col-lg-10">
+                                <button class="btn btn-danger" type="submit" data-action="send">保存</button>
+                               <!--  <button class="btn btn-danger" type="submit" id="" data-status="2">定时发送</button> -->
+                                <button class="btn btn-default"  name="reset"  type="reset">重置</button>  
+                          </div>
+                      </div>
+                  </form>
+              </div>
+			<!-- END content STATS -->
+		</div>
+	</div>
+
+{%/block%}
+{%block name='script'%}  
+<script src="{%$feroot%}s/global/plugins/typeahead/bootstrap-typeahead.js" type="text/javascript"></script> 
+<script src="{%$feroot%}s/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>  
+<script src="{%$feroot%}s/admin/search/edit.js" type="text/javascript"></script> 
+
+ 
+{%/block%}

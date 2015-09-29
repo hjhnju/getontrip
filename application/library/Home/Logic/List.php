@@ -97,6 +97,9 @@ class Home_Logic_List{
         //城市信息
         $tmpCity   = City_Api::queryCityPrefix($city, 1, 1);
         $cityId    = isset($tmpCity['list'][0]['id'])?intval($tmpCity['list'][0]['id']):self::DEFAULT_CITY_ID;
+        if(!isset($tmpCity['list'][0]['id'])){
+            $tmpCity   = City_Api::queryCityPrefix('北京', 1, 1);
+        }
 
         $collected = $this->_logicCollect->checkCollect(Collect_Type::CITY, $deviceId, $cityId);
         $arrCity = array(

@@ -37,7 +37,7 @@ $(document).ready(function() {
         }, {
             "data": function(e) {
                 if (e.image) {
-                    return '<a href="' + e.image + '" target="_blank"><img alt="" src="' + e.image.getNewUrlByUrl(80,22,'f') + '"/></a>';
+                    return '<a href="/pic/' + e.image + '" target="_blank"><img alt="" src="' + e.image.getNewUrlByUrl(80,22,'f') + '"/></a>';
                 }
                 return '暂无';
             }

@@ -21,6 +21,7 @@ class CityapiController extends Base_Controller_Api{
         $page = ($start/$pageSize)+1;
 
         $pid = isset($_REQUEST['pid'])?$_REQUEST['pid']:"";
+        $type = isset($_REQUEST['raw']);
         
         if(!empty($pid)){
            $arrInfo=array('pid' => $pid); 
@@ -111,15 +112,37 @@ class CityapiController extends Base_Controller_Api{
     public function getStatusByActionStr($action){
         switch ($action) {
          case 'NOTPUBLISHED':
-           $status = Theme_Type_Status::NOTPUBLISHED;
+           $status = City_Type_Status::NOTPUBLISHED;
            break;
          case 'PUBLISHED':
-           $status = Theme_Type_Status::PUBLISHED;
+           $status = City_Type_Status::PUBLISHED;
            break;
          default:
-           $status = Theme_Type_Status::NOTPUBLISHED;
+           $status = City_Type_Status::NOTPUBLISHED;
            break;
        } 
        return   $status;
+    }
+    
+    public function situationListAction(){
+        $arrInfo  = array();
+        $start    = isset($_REQUEST['start'])?$_REQUEST['start']:0;
+        $pageSize = isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX;
+        $page     = ($start/$pageSize)+1;
+        $city_id  = isset($_REQUEST['city_id'])?intval($_REQUEST['city_id']):'';
+        $user_id  = isset($_REQUEST['create_user'])?intval($_REQUEST['create_user']):'';
+        if(!empty($city_id)){
+            $arrInfo = array_merge($arrInfo,array('id' => $city_id));
+        }
+        if(!empty($user_id)){
+            $arrInfo = array_merge($arrInfo,array('create_user' => $user_id));
+        }
+        $List = Tongji_Api::city($arrInfo, $page, $pageSize);
+        
+        $retList['recordsFiltered'] = $List['total'];
+        $retList['recordsTotal']    = $List['total'];
+        $retList['data']            = $List['list'];
+        
+        $this->ajax($retList);
     }
 }

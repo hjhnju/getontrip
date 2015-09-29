@@ -124,6 +124,17 @@ class Tag_Logic_Tag extends Base_Logic{
     }
     
     /**
+     * 根据ID获取标签信息
+     * @param string $id
+     * @return array
+     */
+    public function getTagById($id){
+        $objTag = new Tag_Object_Tag();
+        $objTag->fetch(array('id' => $id));
+        return $objTag->toArray();
+    }
+    
+    /**
      * 根据话题ID获取话题标签名
      * @param integer $topicId
      */

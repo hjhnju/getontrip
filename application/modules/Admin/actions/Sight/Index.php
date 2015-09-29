@@ -10,5 +10,12 @@ class IndexAction extends Yaf_Action_Abstract {
         $statusTypeArray=Sight_Type_Status::$names;
         $statusTypeArray=array_reverse($statusTypeArray,true);
     	$this->getView()->assign('statusTypeArray', $statusTypeArray); 
+    	
+    	//处理传递过来的景点
+    	$city_id  = isset($_REQUEST['id'])?intval($_REQUEST['id']):'';
+    	if($city_id!=''){;
+    	    $arrCity = City_Api::getCityById($city_id);
+    	    $this->getView()->assign('city', $arrCity);
+    	}
     }
 }

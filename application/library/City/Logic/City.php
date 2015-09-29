@@ -163,6 +163,10 @@ class City_Logic_City{
         $arrRet['list']  = $modelCity->queryCity($arrInfo, $page, $pageSize);
         foreach ($arrRet['list'] as $key => $val){
             $ret  = $this->getCityById($val['id']);
+            $arrRet['list'][$key]['x']       = isset($ret['x'])?$ret['x']:'';
+            $arrRet['list'][$key]['y']       = isset($ret['y'])?$ret['y']:'';
+            $arrRet['list'][$key]['image']   = isset($ret['image'])?$ret['image']:'';
+            $arrRet['list'][$key]['status']  = isset($ret['status'])?$ret['status']:'';
             $arrRet['list'][$key]['pidname'] = $ret['pidname'];
         }
         return $arrRet;
@@ -193,7 +197,6 @@ class City_Logic_City{
     public function queryCityPrefix($str,$page,$pageSize,$arrParms = array()){
         $model   = new CityModel();
         $arrRet  = array();
-        $arrCity = $model->queryCityPrefix($str, $page, $pageSize, $arrParms);
         $logicCollect = new Collect_Logic_Collect();
         
         $arrRet['total'] = $model->getCityNum($arrParms,$str);
@@ -243,7 +246,7 @@ class City_Logic_City{
         $redis = Base_Redis::getInstance();
         $ret   = $this->_modeSight->getSightByCity(1,PHP_INT_MAX,$cityId);
         foreach ($ret as $val){
-            $count += $redis->zSize(Sight_Keys::getSightTopicKey($val['id']));
+            $count += $redis->sSize(Sight_Keys::getSightTopicKey($val['id']));
         }
         return $count;
     }
@@ -285,8 +288,7 @@ class City_Logic_City{
      * @param integer $size
      * @return array
      */
-    public function getHotTopic($city,$page = 1,$pageSize = self::DEFAULT_SIZE){
-        $cityId     = $this->getCityIdByName($city);
+    public function getHotTopic($cityId,$page = 1,$pageSize = self::DEFAULT_SIZE){
         $arrRet     = $this->_modelTopic->getHotTopicIdsByCity($cityId,$page,$pageSize);
         $logicTopic = new Topic_Logic_Topic();
         foreach($arrRet as $key => $val){

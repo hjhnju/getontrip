@@ -41,11 +41,14 @@ class Sight_Logic_Sight extends Base_Logic{
      */
     public function getSightDetail($sightId,$page,$pageSize,$order,$strTags = ''){
         $arrRet  = array();
-        $arrTags = $this->logicSightTag->getTagsBySight($sightId);
-        if(empty($strTags)){
-            $strTags = isset($arrTags['common'][0]['id'])?$arrTags['common'][0]['id']:$arrTags['general'][0]['id'];
+        $strTags = '';
+        if(!empty($sightId)){
+            $arrTags = $this->logicSightTag->getTagsBySight($sightId);
         }
-        $redis   = Base_Redis::getInstance();        
+        if(empty($strTags)){//默认选中第一个标签来筛选话题
+            $strTags = isset($arrTags[0]['id'])?$arrTags[0]['id']:'';
+        }
+        $redis       = Base_Redis::getInstance();        
         if(self::ORDER_NEW == $order){
              $arrRet =  $this->logicTopic->getNewTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);                                          
         }else{

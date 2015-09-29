@@ -26,6 +26,8 @@ $(document).ready(function() {
         }, {
             "data": "name"
         }, {
+            "data": "type_name"
+        },{
             "data": function(e) {
                 if (e.create_time) {  
                     return  moment.unix(e.create_time).format(FORMATER);
@@ -58,6 +60,7 @@ $(document).ready(function() {
         var aiNew = oTable.fnAddData({
             "id": '',
             "name": '',
+            "type_name": '',
             "create_time": '',
             "update_time": '',
             "opt": 'new'

@@ -398,7 +398,11 @@ class Topic_Logic_Topic extends Base_Logic{
             $listTopictag->setFilter(array('topic_id' => $val['id']));
             $listTopictag->setPagesize(PHP_INT_MAX);
             $arrTag = $listTopictag->toArray();
-            $arrRet['list'][$key]['tags'] = $arrTag['list'];
+            foreach ($arrTag['list'] as $index => $data){
+                $objTag = new Tag_Object_Tag();
+                $objTag->fetch(array('id' => $data['tag_id']));
+                $arrRet['list'][$index]['tags'][] = $objTag->toArray();
+            }
     
             $listSighttopic = new Sight_List_Topic();
             if(!empty($sight_id)){

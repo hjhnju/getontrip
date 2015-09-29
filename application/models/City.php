@@ -25,8 +25,8 @@ class CityModel{
         foreach ($arrInfo as $key => $val){
             $filter  = 'a.`'.$key."` = ".$val." AND ";
         }
-        $filter .= "a.`id` = b.`id` and b.`cityid` = 0 AND b.`provinceid` != 0";
-        $sql  = 'SELECT a.*, b.* FROM `city`  a, `city_meta` b WHERE '.$filter." limit $from,$pageSize";
+        $filter .= "b.`cityid` = 0 AND b.`provinceid` != 0 and a.`id` = b.`id`";
+        $sql  = 'SELECT a.*, b.* FROM  `city` a, `city_meta` b WHERE '.$filter." limit $from,$pageSize";
         try {                 	
             $data = $this->db->fetchAll($sql);          
         } catch (Exception $ex) {
@@ -47,8 +47,8 @@ class CityModel{
         foreach ($arrInfo as $key => $val){
             $filter  = 'a.`'.$key."` = ".$val." AND ";
         }
-        $filter .= "a.`id` = b.`id` and b.`cityid` = 0 AND b.`provinceid` != 0";
-        $sql  = 'SELECT count(*) FROM `city`  a, `city_meta` b WHERE '.$filter;
+        $filter .= "b.`cityid` = 0 AND b.`provinceid` != 0 and a.`id` = b.`id`";
+        $sql  = 'SELECT count(*) FROM `city` a, `city_meta` b WHERE '.$filter;
         if(!empty($str)){
             $sql .= " and b.`name` like '".$str."%'";
         }
@@ -74,13 +74,19 @@ class CityModel{
         foreach ($arrInfo as $key => $val){
             $filter  = 'a.`'.$key."` = ".$val." AND ";
         }
-        $filter .= "a.`id` = b.`id` and b.`cityid` = 0 and b.`provinceid` != 0 and b.`name` like '".$str."%'";
-        $sql  = 'SELECT a.*, b.* FROM `city`  a, `city_meta` b WHERE '.$filter." limit $from,$pageSize";
+        $filter .= "b.`cityid` = 0 and b.`provinceid` != 0 and b.`name` like '".$str."%' and a.`id` = b.`id`";
+        $sql  = 'SELECT a.*,b.* FROM `city` a, `city_meta` b WHERE '.$filter." limit $from,$pageSize";
         try {
             $data = $this->db->fetchAll($sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return array();
+        }
+        foreach ($data as $key => $val){
+            $city = new City_Object_City();
+            $city->fetch(array('id' => $val['id']));
+            $arrCity = $city->toArray();
+            $data[$key]['image'] = isset($arrCity['image'])?$arrCity['image']:'';
         }
         return $data;
     }

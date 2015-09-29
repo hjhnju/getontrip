@@ -26,6 +26,20 @@ class Base_Type {
     }
     
     /**
+     * 通过类型名称来获取类型ID
+     * @param string $name
+     * @return integer|''
+     */
+    public static function getTypeId($name){
+        foreach (static::$names as $key => $val){
+            if( $val == trim($name)){
+                return $key;
+            }
+        }
+        return '';
+    }
+    
+    /**
      * 将类型名附加到数据组中，会在数组中增加一个key值
      * @param array $data
      * @param string $key

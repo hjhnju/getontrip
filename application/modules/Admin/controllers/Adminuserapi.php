@@ -40,7 +40,7 @@ class AdminuserapiController extends Base_Controller_Api{
      *  
      */    
     public function logoutAction(){  
-         $logic   = new User_Logic_Login();
+         $logic   = new User_Logic_Third();
          $ret = $logic->signOut();
          $this->redirect('/admin/login');
     }
@@ -54,7 +54,7 @@ class AdminuserapiController extends Base_Controller_Api{
         $oldpasswd=isset($_REQUEST['oldpasswd'])?$_REQUEST['oldpasswd']:'';
         $passwd=isset($_REQUEST['passwd'])?$_REQUEST['passwd']:'';
         //判断是否登录 
-        $logicUser = new User_Logic_Login();
+        $logicUser = new User_Logic_Third();
         $userid = $logicUser->checkLogin();
  
         //判断原始密码是否正确
@@ -100,7 +100,7 @@ class AdminuserapiController extends Base_Controller_Api{
          
         $arrParams = isset($_REQUEST['params'])?$_REQUEST['params']:array();
 
-        $List = Admin_Api::listAdmin($page, $pageSize, $arrParams);;
+        $List = Admin_Api::listAdmin($page, $pageSize, $arrParams);
 
         $tmpList=$List['list'];
 

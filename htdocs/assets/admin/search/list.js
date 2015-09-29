@@ -81,7 +81,7 @@ $(document).ready(function() {
     var api = oTable.api();
     filters();
     bindEvents();
-	addObj(type);
+	addObj();
 
     function bindEvents() {
         //绑定draw事件
@@ -127,7 +127,7 @@ $(document).ready(function() {
 
     }
 
-    function addObj(type) {
+    function addObj() {
         $.validator.setDefaults({
             submitHandler: function(data) {
                 //序列化表单  

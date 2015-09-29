@@ -124,18 +124,6 @@
                                   没有想要的标签？<a href="#" class="addTag">创建</a>一个
                               </span> 
                            </div> 
-                           <label for="tag_name" class="control-label col-lg-2">通用标签：</label>
-                          <div class="col-lg-10">  
-                              {%foreach $generalTag as $key=>$item%}
-                              <label class="checkbox-inline">
-                                <input type=radio name="radio" data-name="form-tag" id="" value="{%$item.id%}" {%if isset($item.selected)%}checked{%/if%}>{%$item.name%}
-                              </label>
-                              {%/foreach%} 
-                              <span class="help-inline">
-                                  没有想要的标签？<a href="#" class="addTag">创建</a>一个
-                              </span> 
-                           </div>  
-                      </div>
                       <div class="form-group" id="addTag" style="display:none">
                           <label for="sight_name" class="control-label col-lg-2">新标签</label>
                           <div class="col-lg-3"> 

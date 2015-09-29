@@ -23,7 +23,7 @@ class SearchapiController extends Base_Controller_Api{
         $labelId  = isset($_REQUEST['id'])?$_REQUEST['id']:'';
         if(empty($labelId)){
             $list = Search_Api::listLabel(1, PHP_INT_MAX);
-            $labelId = $list['list'][0]['id'];
+            $labelId = isset($list['list'][0]['id'])?$list['list'][0]:'';
         }
           
         $List     = Search_Api::getLabel($labelId, $page, $pageSize);

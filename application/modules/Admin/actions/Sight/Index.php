@@ -15,6 +15,9 @@ class IndexAction extends Yaf_Action_Abstract {
     	$city_id  = isset($_REQUEST['id'])?intval($_REQUEST['id']):'';
     	if($city_id!=''){;
     	    $arrCity = City_Api::getCityById($city_id);
+    	    if(empty($arrCity)){
+    	        $this->getView()->assign('city', '');
+    	    }
     	    $this->getView()->assign('city', $arrCity);
     	}
     }

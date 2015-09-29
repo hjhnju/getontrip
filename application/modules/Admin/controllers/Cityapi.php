@@ -137,6 +137,7 @@ class CityapiController extends Base_Controller_Api{
         if(!empty($user_id)){
             $arrInfo = array_merge($arrInfo,array('create_user' => $user_id));
         }
+        $arrInfo = array_merge(array('status' => City_Type_Status::PUBLISHED,$arrInfo));
         $List = Tongji_Api::city($arrInfo, $page, $pageSize);
         
         $retList['recordsFiltered'] = $List['total'];

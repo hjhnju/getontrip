@@ -11,8 +11,12 @@ class EditAction extends Yaf_Action_Abstract {
         
  
         //获取所有标签
-        $tagList = Tag_Api::getTagList(1, PHP_INT_MAX);
+        $tagList = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::NORMAL));
         $tagList=$tagList['list'];
+
+        //获取通用标签
+        $generalTag = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::GENERAL));
+        $generalTag = $generalTag['list'];
       
         $sightList=array();
 
@@ -58,7 +62,7 @@ class EditAction extends Yaf_Action_Abstract {
             $postInfo["fromName"]=$sourceInfo['name'];
             $postInfo["fromType"]=empty($sourceInfo['url'])?3:$sourceInfo['type'];
 
-
+  
             //处理图片名称 分割为hash 和 img_type 
             if(!empty($postInfo["image"])){
                $img=Base_Image::getImgParams($postInfo["image"]);
@@ -88,5 +92,6 @@ class EditAction extends Yaf_Action_Abstract {
         $this->getView()->assign('action', Admin_Type_Action::getTypeName($action));
         $this->getView()->assign('tagList', $tagList);
         $this->getView()->assign('sightList', $sightList);
+        $this->getView()->assign('generalTag',$generalTag); 
     }
 }

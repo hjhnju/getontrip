@@ -20,14 +20,15 @@ class CityapiController extends Base_Controller_Api{
         $pageSize = isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX; 
         $page = ($start/$pageSize)+1;
 
-        $pid = isset($_REQUEST['pid'])?$_REQUEST['pid']:"";
+        $arrInfo = isset($_REQUEST['params'])?$_REQUEST['params']: array();
+       /* $pid = isset($_REQUEST['pid'])?$_REQUEST['pid']:"";
         $type = isset($_REQUEST['raw']);
         
         if(!empty($pid)){
-           $arrInfo=array('pid' => $pid); 
+             $arrInfo=array('pid' => $pid); 
         } else{
              $arrInfo = array();
-        }
+        }*/
         $List =City_Api::queryCity($arrInfo,$page, $pageSize);
         
         foreach ($List['list'] as $key => $val){
@@ -38,29 +39,48 @@ class CityapiController extends Base_Controller_Api{
         $retList['recordsTotal']    = $List['total']; 
         $retList['data']            = $List['list'];
  
-		$this->ajax($retList);
+		    return $this->ajax($retList);
          
     }
 
 
     /**
-     * 保存城市坐标信息
+     * 编辑城市信息
      * @return [type] [description]
      */
     public function saveAction()
     {   
-      //判断是否有ID
-       $cityId=isset($_POST['id'])?$_POST['id']:''; 
-       $arrInfo = array(
-            'x' => $_POST['x'], 
-            'y'  => $_POST['y'] 
-       );
-       $bRet = City_Api::editCity($cityId,$arrInfo); 
+       //判断是否有ID
+       $cityId=isset($_REQUEST['id'])?$_REQUEST['id']:'';  
+       if(empty($cityId)){
+          return $this->ajaxError(); 
+       }
+       $_REQUEST['status'] = $this->getStatusByActionStr($_REQUEST['action']);
 
-        if($bRet){
+       $bRet = City_Api::editCity($cityId,$_REQUEST); 
+
+       if($bRet){
             return $this->ajax();
-        }
-        return $this->ajaxError(); 
+       }
+       return $this->ajaxError(); 
+
+    }
+
+     /**
+     * 添加城市信息
+     * @return [type] [description]
+     */
+    public function addAction()
+    {   
+       //判断是否有ID 
+       $_REQUEST['status'] = $this->getStatusByActionStr($_REQUEST['action']);
+       
+       $bRet = City_Api::addCity($_REQUEST); 
+
+       if($bRet){
+            return $this->ajax();
+       }
+       return $this->ajaxError(); 
 
     }
 

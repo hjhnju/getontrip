@@ -35,7 +35,7 @@ $(document).ready(function() {
             "data": 'info'
         }, {
             "data": function(e) {
-                return '<a href="/admin/cityapi/publish?id='+e.id+'&action=NOTPUBLISHED" target="_blank" class="btn btn-warning btn-xs" title="关闭" data-toggle="tooltip"><i class="fa fa-remove"></i></a> <a href="/admin/sight?id='+e.id+'"  target="_blank" class="btn btn-primary btn-xs" title="景点列表" data-toggle="tooltip"><i class="fa fa-eye"></i></button><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/topic/edit?action=edit&id=' + e.id + '" target="_blank"><i class="fa fa-pencil"></i></a></button>';
+                return '<button    class="btn btn-warning btn-xs cel-publish" title="关闭" data-toggle="tooltip"><i class="fa fa-remove"></i></button> <a href="/admin/sight?city_id='+e.id+'"  target="_blank" class="btn btn-primary btn-xs" title="景点列表" data-toggle="tooltip"><i class="fa fa-eye"></i></button><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/city/edit?action=edit&id=' + e.id + '" target="_blank"><i class="fa fa-pencil"></i></a></button>';
             }
         }],
         "initComplete": function(setting, json) {
@@ -59,7 +59,27 @@ $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip();
         });
 
-
+        //开通、关闭操作
+        $('#editable button.publish,#editable button.cel-publish').live('click', function(e) {
+            e.preventDefault();
+            var nRow = $(this).parents('tr')[0];
+            var data = oTable.api().row(nRow).data();
+            var action;
+            if ($(this).hasClass('publish')) {
+                action = 'PUBLISHED';
+            } else {
+                action = 'NOTPUBLISHED';
+            } 
+            var publish = new Remoter('/admin/cityapi/publish');
+            publish.remote({
+                id: data.id,
+                action: action
+            });
+            publish.on('success', function(data) {
+                //刷新当前页
+                oTable.fnRefresh();
+            });
+        });
     }
 
 

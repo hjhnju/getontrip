@@ -16,10 +16,7 @@ class EditAction extends Yaf_Action_Abstract {
 
         //获取通用标签
         $generalTag = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::GENERAL));
-        $generalTag = $generalTag['list'];
-      
-        $generalTag = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::GENERAL));
-        $generalTag = $generalTag['list'];
+        $generalTag = $generalTag['list']; 
         
         
         $sightList=array();

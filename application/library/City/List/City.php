@@ -20,7 +20,7 @@ class City_List_City extends Base_List {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'pinyin', 'status', 'pid', 'provinceid', 'cityid', 'x', 'y', 'create_time', 'update_time');
+    protected $fields = array('id', 'status', 'x', 'y', 'create_time', 'update_time', 'create_user', 'update_user', 'image');
 
     /**
      * 整数类型的字段
@@ -29,11 +29,10 @@ class City_List_City extends Base_List {
     protected $intProps = array(
         'id'          => 1,
         'status'      => 1,
-        'pid'         => 1,
-        'provinceid'  => 1,
-        'cityid'      => 1,
         'create_time' => 1,
         'update_time' => 1,
+        'create_user' => 1,
+        'update_user' => 1,
     );
 
     /**

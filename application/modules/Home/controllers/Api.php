@@ -15,31 +15,17 @@ class ApiController extends Base_Controller_Api {
     
     /**
      * 接口1：/api/home
-     * 首页数据获取接口
-     * @param double x，经度
-     * @param double y，纬度
-     * @param integer page，页码
-     * @param integer pageSize，页面大小
+     * 城市中间页首页接口
      * @param string deviceId，设备ID
-     * @param integer city,城市ID，如果不能给出经纬度可给出城市ID，默认是北京
+     * @param string city,城市名称，如果不能给出城市名称，默认是北京
      * @return json
      */
     public function indexAction() {
-        $x         = isset($_REQUEST['x'])?doubleval($_REQUEST['x']):'';
-        $y         = isset($_REQUEST['y'])?doubleval($_REQUEST['y']):'';
-        $city      = isset($_REQUEST['city'])?intval($_REQUEST['city']):2;
-        $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $city      = isset($_REQUEST['city'])?trim($_REQUEST['city']):'北京';
         $deviceId  = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
-        $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
-        if(empty($x) || empty($y)){
-            Yaf_Session::getInstance()->set(Home_Keys::SESSION_USER_CITY,$city);
-            $logicCity = new City_Logic_City();
-            $arr       = $logicCity->getCityLoc($city);
-            $x         = $arr['x'];
-            $y         = $arr['y'];
-        }                       
+                      
         $logic = new Home_Logic_List();
-        $ret = $logic->getNearSight($x,$y,$page,$pageSize,$deviceId);
+        $ret = $logic->getHomeData($city,$deviceId);
         return $this->ajax($ret);
     }  
 }

@@ -19,21 +19,16 @@ class WikiapiController extends Base_Controller_Api{
          
         $sight_id =isset($_REQUEST['sight_id'])?intval($_REQUEST['sight_id']):1;
        
-        $List = Wiki_Api::getWiki($sight_id,$page,$pageSize);
+        $List = Keyword_Api::queryKeywords($page,$pageSize,array('sight_id' => $sight_id));  
         
-
-        $tmpList=$List;
-        if (count($tmpList)>0) { 
-            for($i=0;$i<count($tmpList);$i++){ 
-               //处理状态值
-                $tmpList[$i]["statusName"] = Wiki_Type_Status::getTypeName($tmpList[$i]["status"]); 
-            }  
+        foreach ($List['list'] as $key => $val){
+            $List['list'][$key]['statusName'] = Keyword_Type_Status::getTypeName($val["status"]);
+            $List['list'][$key]['title']      = $val['name'];
         }
-        $List =  $tmpList;
-
-        $retList['recordsFiltered'] =count($List);
-        $retList['recordsTotal'] = count($List); 
-        $retList['data'] =$List; 
+        
+        $retList['recordsFiltered'] = $List['total'];
+        $retList['recordsTotal'] = $List['total']; 
+        $retList['data'] = $List['list']; 
         return $this->ajax($retList);
     }
 

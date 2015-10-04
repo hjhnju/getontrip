@@ -35,11 +35,13 @@ class Base_Controller_Abstract extends Yaf_Controller_Abstract
         
         $this->baselog();
         //未登录自动跳转
-        $logicUser = new User_Logic_Login();
+        $logicUser = new User_Logic_Third();
         $this->userid = $logicUser->checkLogin();
         if(!empty($this->userid)){
-            $logicAdmin = new Admin_Logic_Admin;
-            $name  = $logicAdmin->getUserName($this->userid);
+            //为页面统一assign用户信息
+            $logicUser = new User_Logic_User();
+            $this->getView()->assign("username",$logicUser->getUserName($this->userid));
+            $this->getView()->assign("userid",$this->userid);
         }
       
         
@@ -55,15 +57,28 @@ class Base_Controller_Abstract extends Yaf_Controller_Abstract
             }else{
                 return $this->redirect($loginUrl);
             }
+        }        
+    }
+    
+    /**
+     * 检测token
+     * @param string $token
+     * @return boolean
+     */
+    protected function checkToken($token){
+        if(empty($token)){
+            return false;
         }
-        
-        //为页面统一assign用户信息
-        if(!empty($name)){
-        	$this->getView()->assign("username",$name);
-        	$this->getView()->assign("userid",$this->userid);
+        $len       = strlen($token);
+        $secretVal = substr($token,0,32);
+        $time      = substr($token,32,$len);
+        $secretKey = Base_Config::getConfig('app')->secret;
+        if(time() - $time >= 60){
+            return false;
+        }elseif(md5($secretKey.$time) == $secretVal){
+            return true;
         }
-       
-        
+        return false;
     }
     
     /**

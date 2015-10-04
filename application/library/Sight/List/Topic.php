@@ -37,7 +37,7 @@ class Sight_List_Topic extends Base_List {
     /**
      * 获取数据的对象数组
      * @return array|Sight_Object_Topic[]
-     * 返回的是一个数组，每个元素是一个Sight_Object_Topic对象
+     * 返回的是一个数组，每个元素是一个Loan_Object_Attach对象
      */
     public function getObjects() {
         return parent::getObjects('Sight_Object_Topic');

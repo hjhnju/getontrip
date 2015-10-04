@@ -8,7 +8,7 @@ class City_Api{
     
     /**
      * 接口1：City_Api::getCityInfo($page, $pageSize)
-     * 获取城市信息
+     * 获取城市信息，供前端使用
      * @param integer $page
      * @param integer $pageSize
      * @return array

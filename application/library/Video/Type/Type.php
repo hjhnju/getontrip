@@ -16,13 +16,7 @@ class Video_Type_Type extends Base_Type {
      * @var integer
      */
     const VIDEO  = 2;
-    
-    /**
-     * 3 所有类型
-     * @var integer
-     */
-    const ALL    = 3;
-    
+   
     /**
      * 状态名
      * @var array
@@ -30,6 +24,5 @@ class Video_Type_Type extends Base_Type {
     public static $names = array(
         self::ALBUM     => '专辑',
         self::VIDEO     => '单视频',
-        self::ALL       => '所有的',
     );
 }

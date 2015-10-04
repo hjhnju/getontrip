@@ -26,7 +26,7 @@ class City_Object_City extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'pinyin', 'status', 'pid', 'provinceid', 'cityid', 'x', 'y', 'create_time', 'update_time');
+    protected $fields = array('id', 'status', 'x', 'y', 'create_time', 'update_time', 'create_user', 'update_user', 'image');
 
     /**
      * 字段与属性隐射关系
@@ -34,16 +34,14 @@ class City_Object_City extends Base_Object {
      */
     public $properties = array(
         'id'          => 'id',
-        'name'        => 'name',
-        'pinyin'      => 'pinyin',
         'status'      => 'status',
-        'pid'         => 'pid',
-        'provinceid'  => 'provinceid',
-        'cityid'      => 'cityid',
         'x'           => 'x',
         'y'           => 'y',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
+        'create_user' => 'createUser',
+        'update_user' => 'updateUser',
+        'image'       => 'image',
     );
 
     /**
@@ -53,11 +51,10 @@ class City_Object_City extends Base_Object {
     protected $intProps = array(
         'id'          => 1,
         'status'      => 1,
-        'pid'         => 1,
-        'provinceid'  => 1,
-        'cityid'      => 1,
         'create_time' => 1,
         'update_time' => 1,
+        'create_user' => 1,
+        'update_user' => 1,
     );
 
     /**
@@ -75,40 +72,10 @@ class City_Object_City extends Base_Object {
     public $id;
 
     /**
-     * 名称
-     * @var string
-     */
-    public $name;
-
-    /**
-     * 拼音
-     * @var string
-     */
-    public $pinyin;
-
-    /**
      * 状态
      * @var integer
      */
     public $status;
-
-    /**
-     * 父ID 0为省
-     * @var integer
-     */
-    public $pid;
-
-    /**
-     * 所属省
-     * @var integer
-     */
-    public $provinceid;
-
-    /**
-     * 所属市
-     * @var integer
-     */
-    public $cityid;
 
     /**
      * 经度
@@ -133,5 +100,23 @@ class City_Object_City extends Base_Object {
      * @var integer
      */
     public $updateTime;
+
+    /**
+     * 城市创建人ID
+     * @var integer
+     */
+    public $createUser;
+
+    /**
+     * 城市修改人ID
+     * @var integer
+     */
+    public $updateUser;
+
+    /**
+     * 城市图像
+     * @var string
+     */
+    public $image;
 
 }

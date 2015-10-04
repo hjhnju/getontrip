@@ -1,19 +1,26 @@
 <?php
-class Tag_Logic_Tag{
+class Tag_Logic_Tag extends Base_Logic{
+    
+    protected $_fileds;
+    
     public function __construct(){
-        
+        $this->_fileds = array('id', 'name', 'create_user', 'update_user', 'create_time', 'update_time', 'type');
     }
     
     /**
      * 获取标签信息列表
      * @param integer $page
      * @param integer $pageSize
+     * @param array   $arrParam
      * @return array
      */
-    public function getTagList($page, $pageSize){
+    public function getTagList($page, $pageSize, $arrParam = array()){
         $listTag = new Tag_List_Tag();
         $listTag->setPage($page);
         $listTag->setPagesize($pageSize);
+        if(!empty($arrParam)){
+            $listTag->setFilter($arrParam);
+        }
         return $listTag->toArray();
     }
     
@@ -39,34 +46,46 @@ class Tag_Logic_Tag{
     /**
      * 编辑标签信息
      * @param integer $id
-     * @param string $name
+     * @param array $arrInfo
      * @return boolean
      */
-    public function editTag($id, $name){
+    public function editTag($id, $arrInfo){
         $objTag = new Tag_Object_Tag();
         $objTag->fetch(array('id' => $id));
-        $objTag->name = $name;
-        $ret1 = $objTag->save();
-        
-        $redis = Base_Redis::getInstance();
-        $ret2 = $redis->hSet(Tag_Keys::getTagInfoKey($id),'name',$name);
-        return $ret1&&$ret2;
+        foreach ($arrInfo as $key => $val){
+            $key = $this->getprop($key);
+            if(in_array($key,$this->_fileds)){
+                $objTag->$key = $val;
+            } 
+        }
+        $ret = $objTag->save();        
+        if(isset($arrInfo['name'])){
+            $redis = Base_Redis::getInstance();
+            $redis->hSet(Tag_Keys::getTagInfoKey($id),'name',$arrInfo['name']);
+        }      
+        return $ret;
     }
     
     /**
      * 添加标签信息
-     * @param string $name
+     * @param array $arrInfo
      * @return boolean
      */
-    public static function saveTag($name){
+    public function saveTag($arrInfo){
         $objTag       = new Tag_Object_Tag();
-        $objTag->name = $name;
-     
-        $ret1 = $objTag->save();
-    
-        $redis = Base_Redis::getInstance();
-        $ret2 = $redis->hSet(Tag_Keys::getTagInfoKey($objTag->id),'name',$objTag->name);
-        return $ret1&&$ret2;
+        foreach ($arrInfo as $key => $val){
+            $key = $this->getprop($key);
+            if(in_array($key,$this->_fileds)){
+                $objTag->$key = $val;
+            } 
+        }
+        $ret = $objTag->save();
+        
+        if(isset($arrInfo['name'])){
+            $redis = Base_Redis::getInstance();
+            $redis->hSet(Tag_Keys::getTagInfoKey($objTag->id),'name',$arrInfo['name']);
+        }
+        return $ret;
     }
     
     /**
@@ -101,6 +120,17 @@ class Tag_Logic_Tag{
     public function getTagByName($name){
         $objTag = new Tag_Object_Tag();
         $objTag->fetch(array('name' => $name));
+        return $objTag->toArray();
+    }
+    
+    /**
+     * 根据ID获取标签信息
+     * @param string $id
+     * @return array
+     */
+    public function getTagById($id){
+        $objTag = new Tag_Object_Tag();
+        $objTag->fetch(array('id' => $id));
         return $objTag->toArray();
     }
     

@@ -7,11 +7,12 @@ class Book_Api{
      * @param string $sightId，景点ID
      * @param integer $page
      * @param integer $pageSize
+     * @param array   $arrParam，过滤条件
      * @return array
      */
-    public static function getJdBooks($sightId,$page,$pageSize,$status=Book_Type_Status::ALL){
+    public static function getJdBooks($sightId,$page,$pageSize,$arrParam = array()){
         $logicBook = new Book_Logic_Book();
-        return  $logicBook->getBooks($sightId, $page, $pageSize,$status);
+        return  $logicBook->getBooks($sightId, $page, $pageSize,$arrParam);
     }
     
     /**

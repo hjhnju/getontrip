@@ -58,7 +58,7 @@ class TopicModel{
             }
         }else{
             if($during == self::MONTH){
-                $sql = "SELECT a.id FROM `topic`  a,`topic_tag`  b,`sight_topic` c WHERE a.status = ".Topic_Type_Status::PUBLISHED." a.id=b.topic_id=c.topic_id AND c.sight_id = $sightId AND b.tag_id in(".$strTags.") ORDER by a.hot2 desc, a.update_time desc limit $from,$pageSize";
+                $sql = "SELECT a.id FROM `topic`  a,`topic_tag`  b,`sight_topic` c WHERE a.status = ".Topic_Type_Status::PUBLISHED." a.id=b.topic_id and b.topic_id=c.topic_id AND c.sight_id = $sightId AND b.tag_id in(".$strTags.") ORDER by a.hot2 desc, a.update_time desc limit $from,$pageSize";
             }elseif($during == self::WEEK){
                 $sql = "SELECT a.id FROM `topic`  a,`topic_tag`  b WHERE a.status = ".Topic_Type_Status::PUBLISHED." a.id=b.topic_id AND b.tag_id in(".$strTags.") ORDER by a.hot1 desc, a.update_time desc limit $from,$pageSize";
             }
@@ -93,7 +93,7 @@ class TopicModel{
     public function getNewTopicIds($sightId,$strTags,$page,$pageSize){
         $redis = Base_Redis::getInstance();
         $ret   =  '';
-        if(($page <= self::CACHE_PAGES)){
+        if(($page <= self::CACHE_PAGES) && empty($strTags)){
             $ret = $redis->get(Sight_Keys::getNewTopicKey($sightId, $page));
         }
         if(!empty($ret)){
@@ -103,7 +103,7 @@ class TopicModel{
         if(empty($strTags)){
             $sql = "SELECT a.id FROM `topic` a, `sight_topic` b   WHERE  a.id = b.topic_id and b.sight_id = $sightId and a.status = ".Topic_Type_Status::PUBLISHED." ORDER BY a.update_time desc limit $from,$pageSize";
         }else{
-            $sql = "SELECT a.id FROM `topic`  a,`topic_tag`  b, `sight_topic` c WHERE a.id=b.topic_id=c.topic_id AND c.sight_id = $sightId AND b.tag_id in(".$strTags.") and a.status = ".Topic_Type_Status::PUBLISHED." ORDER by a.update_time desc limit $from,$pageSize";
+            $sql = "SELECT a.id FROM `topic` a,`topic_tag`  b, `sight_topic` c WHERE a.id=b.topic_id and b.topic_id=c.topic_id AND c.sight_id = $sightId AND b.tag_id in(".$strTags.") and a.status = ".Topic_Type_Status::PUBLISHED." ORDER by a.update_time desc limit $from,$pageSize";
         }
         try {
             $data = $this->db->fetchAll($sql);
@@ -111,11 +111,41 @@ class TopicModel{
             Base_Log::error($ex->getMessage());
             return array();
         }
-        if(($page <= self::CACHE_PAGES)){
+        if(($page <= self::CACHE_PAGES) && empty($strTags)){
             $redis->setex(Sight_Keys::getNewTopicKey($sightId,$page),self::REDIS_TIMEOUT,json_encode($data));
         }
         return $data;
     }
+    
+    /**
+     * 获取热门话题
+     * @param string $strTopicId
+     * @param string $strTags
+     * @param integer $size
+     * @return array
+     */
+    public function getHotTopicIdsByCity($cityId,$page, $pageSize){
+        $redis = Base_Redis::getInstance();
+        $ret   = $redis->get(City_Keys::getCityTopicKey($cityId, $page, $pageSize));
+
+        if(!empty($ret)){
+            return json_decode($ret,true);
+        }
+    
+        $from = ($page-1)*$pageSize;
+        if(empty($strTags)){
+            $sql = "SELECT a.id FROM `topic`  a, `sight_topic` b ,`sight` c WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.sight_id = c.id and c.city_id = $cityId ORDER BY a.hot2 desc, a.update_time desc limit $from,$pageSize";            
+        }
+        try {
+            $data = $this->db->fetchAll($sql);
+        } catch (Exception $ex) {
+            Base_Log::error($ex->getMessage());
+            return array();
+        }       
+        $redis->setex(City_Keys::getCityTopicKey($cityId, $page),self::REDIS_TIMEOUT,json_encode($data));
+        return $data;
+    }
+    
     
     /**
      * 供需要进行缓存的话题详情接口使用

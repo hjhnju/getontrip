@@ -1,6 +1,11 @@
 <?php
 require_once(APP_PATH."/application/library/Base/HtmlDom.php");
 class Book_Logic_Book extends Base_Logic{  
+    
+    const PAGE_SIZE   = 20;
+    
+    const CONTENT_LEN = 40;
+    
     public function __construct(){
         
     }
@@ -12,28 +17,25 @@ class Book_Logic_Book extends Base_Logic{
      * @param integer $pageSize
      * @return array
      */
-    public function getBooks($sightId,$page,$pageSize,$status = Book_Type_Status::PUBLISHED){
-        $redis  = Base_Redis::getInstance();
-        $from   = ($page-1)*$pageSize+1;
-        $to     = $page*$pageSize;
-        $ret    = array();
-        $arrRet = array();
-        $arrBookKeys = array();
-        $num    = 1;
-        $arrBookKeys = $redis->keys(Book_Keys::getBookInfoName($sightId, "*"));
-        $arrBookKeys = $this->keySort($arrBookKeys);
-        $count       = count($arrBookKeys);
-        foreach ($arrBookKeys as  $key){
-            $ret = $redis->hGetAll($key);
-            if (($num >= $from)&&($num <= $to)){
-                if ($status == Book_Type_Status::ALL || $status == $ret['status']){
-                    $ret['totalNum'] = $count;
-                    $arrRet[] = $ret;
-                }
+    public function getBooks($sightId,$page,$pageSize,$arrParam = array()){
+        $listSightBook   = new Sight_List_Book();
+        $objBook         = new Book_Object_Book();
+        $arrRet          = array();
+        $listSightBook->setFilter(array('sight_id' => $sightId));
+        $listSightBook->setPage($page);
+        $listSightBook->setPagesize($pageSize);
+        $ret = $listSightBook->toArray();
+        foreach ($ret['list'] as $val){
+            $arrFilter = array_merge($arrParam,array('id' => $val['book_id']));
+            $objBook->fetch($arrFilter);
+            $data = $objBook->toArray();
+            if(!empty($data)){
+                $data['content_desc'] = trim(Base_Util_String::getSubString($data['content_desc'], self::CONTENT_LEN));
+                $arrRet[] = $data;
             }
-            $num += 1;
         }
-        return $arrRet; 
+        $ret['list']  = $arrRet;
+        return $ret;
     }
     
     /**
@@ -47,12 +49,12 @@ class Book_Logic_Book extends Base_Logic{
         Base_JosSdk::register();
         $temp      = array();
         $arrIds    = array();
-        $conf      = new Yaf_Config_INI(CONF_PATH. "/jd.ini");
+        $conf      = new Yaf_Config_INI(CONF_PATH. "/Key.ini");
         $sight     = Sight_Api::getSightById($sightId);
         $name      = trim($sight['name']);
 
-        $appKey    = $conf['appKey'];
-        $appSecret = $conf['appSecret'];
+        $appKey    = $conf['jd']['appKey'];
+        $appSecret = $conf['jd']['appSecret'];
         
         $c = new JosClient();
         $c->appkey = $appKey;
@@ -68,29 +70,20 @@ class Book_Logic_Book extends Base_Logic{
                 $arrIds[] = $match[1];
             }
         }
-        
-        //书籍总数
-        //$item = $html->find('div.total span strong',0);
-        //$totalCount = intval($item->innertext);
-        
-        $url = "http://search.jd.com/s.php?keyword=".$name."&enc=utf-8&book=y&page=".($page+1)."&start=".count($arrIds);
-        $html = file_get_html($url);
-        $items  = $html->find('li.item-book div.p-img a');
-        foreach ($items as $item){
-            $str = $item->getAttribute('href');
-            preg_match("/\/(\d+).htm/is", $str, $match);
-            if(isset($match[1])){
-                $arrIds[] = $match[1];
+        if(count($arrIds) >= self::PAGE_SIZE){
+            $url = "http://search.jd.com/s.php?keyword=".$name."&enc=utf-8&book=y&page=".($page+1)."&start=".count($arrIds);
+            $html = file_get_html($url);
+            $items  = $html->find('li.item-book div.p-img a');
+            foreach ($items as $item){
+                $str = $item->getAttribute('href');
+                preg_match("/\/(\d+).htm/is", $str, $match);
+                if(isset($match[1])){
+                    $arrIds[] = $match[1];
+                }
             }
         }
-        
-        $logicBlack = new Black_Logic_Black();        
-        $arrBlackId = $logicBlack->getList(Black_Type_Type::BOOK);
         $key        = 0;
         foreach ($arrIds as $val){
-            if (in_array($val,$arrBlackId)) {
-                continue;
-            }
             $base = new WareProductDetailSearchListGetRequest();
             $base->setSkuId($val);
             $base->setIsLoadWareScore("false");
@@ -99,7 +92,7 @@ class Book_Logic_Book extends Base_Logic{
             $temparr = json_decode($ret->resp,true);
            
             $arr   = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['productInfo'];
-            $image = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['imagePaths'][0];
+            //$image = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['imagePaths'][0];
             if(!$arr['isbook']){
                 continue;
             }
@@ -110,25 +103,37 @@ class Book_Logic_Book extends Base_Logic{
             $ret = $detail->resp;
             $arrBook = json_decode($ret,true);
             $detail =  $arrBook['jingdong_ware_basebook_get_responce']['BookEntity'][0]['book_info'];
-            
-            $temp[$key]['title'] = $arr['wname'];
-            
-            $temp[$key]['author'] = isset($detail['author'])?$detail['author']:'';
-            
-            $temp[$key]['price_mart'] = isset($arr['marketPrice'])?$arr['marketPrice']:'';
-            
-            $temp[$key]['price_jd'] = isset($arr['jdPrice'])?$arr['jdPrice']:'';
-            
-            $temp[$key]['press'] = isset($detail['publishers'])?$detail['publishers']:'';
             $temp[$key]['isbn'] = isset($detail['isbn'])?$detail['isbn']:'';
             
+            //从豆瓣网获取图片及摘要,目录
+            $conf      = new Yaf_Config_Ini(CONF_PATH. "/Key.ini");
+            $doubanKey = $conf['douban']['appKey'];
             
-            $temp[$key]['image']  = Base_Image::getUrlByName($this->uploadPic($image['bigpath']));
+            $ret       = file_get_contents('https://api.douban.com/v2/book/isbn/'.$temp[$key]['isbn']."?apikey=".$doubanKey);
+            $arrDouban = json_decode($ret,true);
+            $author    = isset($arrDouban['author'][0])?trim($arrDouban['author'][0]):'';
+            $press     = isset($arrDouban['publisher'])?trim($arrDouban['publisher']):'';
+            $summary   = isset($arrDouban['summary'])?trim($arrDouban['summary']):'';
+            $image     = isset($arrDouban['images']['large'])?$arrDouban['images']['large']:'';
+            $catalog   = isset($arrDouban['catalog'])?trim($arrDouban['catalog']):'';
+            
+            $temp[$key]['title']      = $arr['wname'];
+            
+            $temp[$key]['author']     = isset($detail['author'])?$detail['author']:$author;           
+            $temp[$key]['price_mart'] = isset($arr['marketPrice'])?$arr['marketPrice']:'';            
+            $temp[$key]['price_jd']   = isset($arr['jdPrice'])?$arr['jdPrice']:'';            
+            $temp[$key]['press']      = isset($detail['publishers'])?$detail['publishers']:$press;
+               
+            if(empty($image)){
+                $image = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['imagePaths'][0];
+                $image = $image['bigpath'];
+            }
+            
+            $temp[$key]['image']  = $this->uploadPic($image);
             
             $temp[$key]['status'] = Book_Type_Status::PUBLISHED;
-            $temp[$key]['create_time'] = time();
             
-            $temp[$key]['pages']    = isset($detail['pages'])?$detail['pages']:'';
+            $temp[$key]['pages']  = isset($detail['pages'])?$detail['pages']:'';
             
             
             $obj = new WareBookbigfieldGetRequest();
@@ -136,37 +141,53 @@ class Book_Logic_Book extends Base_Logic{
             $detail = $c->execute($obj);
             $ret = $detail->resp;
             $arr = json_decode($ret,true);
-            $info =  $arr["jingdong_ware_bookbigfield_get_responce"]["BookBigFieldEntity"][0]["book_big_field_info"];
-            $temp[$key]['content_desc'] = isset($info["content_desc"])?html_entity_decode(strip_tags($info["content_desc"])):'';            
-            $temp[$key]['content_desc'] = Base_Util_String::trimall($temp[$key]['content_desc']);
+            $info =  isset($arr["jingdong_ware_bookbigfield_get_responce"]["BookBigFieldEntity"][0]["book_big_field_info"])?$arr["jingdong_ware_bookbigfield_get_responce"]["BookBigFieldEntity"][0]["book_big_field_info"]:'';
+            $temp[$key]['content_desc'] = isset($info["content_desc"])?trim($info["content_desc"]):''; 
+            $temp[$key]['catalog']      = isset($info['catalogue'])?trim($info['catalogue']):'';
             
-            
-            $redis = Base_Redis::getInstance();
-            $index = ($page-1)*$pageSize+$key+1;
-            
-            $picName = $redis->hget(Book_Keys::getBookInfoName($sightId, $index),'image');
-            if(!empty($picName)){
-                $this->delPic($picName);
+            if(empty($temp[$key]['content_desc'])){
+                $temp[$key]['content_desc'] = $summary;
             }
-            $redis->delete(Book_Keys::getBookInfoName($sightId, $index));
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'id',$index);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'title',$temp[$key]['title']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'author',$temp[$key]['author']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'price_mart',$temp[$key]['price_mart']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'price_jd',$temp[$key]['price_jd']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'press',$temp[$key]['press']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'isbn',$temp[$key]['isbn']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'url',$temp[$key]['url']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'image',$temp[$key]['image']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'pages',$temp[$key]['pages']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'content_desc',$temp[$key]['content_desc']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'status',$temp[$key]['status']);
-            $redis->hset(Book_Keys::getBookInfoName($sightId, $index),'create_time',$temp[$key]['create_time']);
+            
+            if(empty($temp[$key]['catalog'])){
+                $temp[$key]['catalog']      = $catalog;
+            }
+            
+            //摘要为空时,不取此条数据
+            if(empty($temp[$key]['content_desc'])){
+                $this->delPic($temp[$key]['image']);
+                continue;
+            }
     
-            $temp[$key]['id'] = $index;
-            if($key >= 10){
-                break;
+            $objBook = new Book_Object_Book();
+            $id      = $this->getBookIdByISBN($temp[$key]['isbn']);
+            if(!empty($id)){
+                $objBook->fetch(array('id' => $id));
+                //如果要更换图片,得先删除原有图片
+                if(isset($temp[$key]['image'])){
+                    $this->delPic($objBook->image);
+                }
             }
+            $objBook->title       = $temp[$key]['title'];
+            $objBook->author      = $temp[$key]['author'];
+            $objBook->priceJd     = $temp[$key]['price_jd'];
+            $objBook->priceMart   = $temp[$key]['price_mart'];
+            $objBook->press       = $temp[$key]['press'];
+            $objBook->isbn        = $temp[$key]['isbn'];
+            $objBook->url         = $temp[$key]['url'];
+            $objBook->image       = $temp[$key]['image'];
+            $objBook->pages       = $temp[$key]['pages'];
+            $objBook->contentDesc = $temp[$key]['content_desc'];
+            $objBook->catalog     = $temp[$key]['catalog'];
+            $objBook->save();
+            if(empty($id)){
+                $objBook->status  = $temp[$key]['status'];
+                
+                $objSightBook     = new Sight_Object_Book();
+                $objSightBook->sightId = $sightId;
+                $objSightBook->bookId  = $objBook->id;
+                $objSightBook->save();
+            }                       
             $key += 1;
         }
         return $temp;
@@ -201,14 +222,36 @@ class Book_Logic_Book extends Base_Logic{
      */
     public function delBook($sightId,$id){
         $redis        = Base_Redis::getInstance();
-        $logicBlack   = new Black_Logic_Black();
         $picName      = $redis->hget(Book_Keys::getBookInfoName($sightId, $id),'image');
         $id           = $redis->hget(Book_Keys::getBookInfoName($sightId, $id),'isbn');
-        $logicBlack->addBlack($id, Black_Type_Type::BOOK);
-        if(!empty($picName)){
-            $this->delPic($picName);
-        }
         $ret      = $redis->delete(Book_Keys::getBookInfoName($sightId, $id));
+        return $ret;
+    }
+    
+    public function getBookById($bookId){
+        $objBook = new Book_Object_Book();
+        $objBook->fetch(array('id' => $bookId));
+        return $objBook->toArray();
+    }
+    
+    public function search($query, $page, $pageSize){
+        $arrBook  = Base_Search::Search('book', $query, $page, $pageSize, array('id'));
+        foreach ($arrBook as $key => $val){
+            $book = $this->getBookById($val['id']);
+            $arrBook[$key]['name']  = trim($book['title']);
+            $arrBook[$key]['desc']  = trim($book['content_desc']);
+            $arrBook[$key]['image'] = isset($book['image'])?Base_Image::getUrlByName($book['image']):''; 
+        }
+        return $arrBook;
+    }
+    
+    public function getBookIdByISBN($strIsbn){
+        $ret     = '';
+        $objBook = new Book_Object_Book();
+        $objBook->fetch(array('isbn' => $strIsbn));
+        if(isset($objBook->id)){
+            $ret = $objBook->id;
+        }
         return $ret;
     }
 }

@@ -3,10 +3,13 @@ class City_Logic_City{
     
     const HOTPERIOD = 30;
     
+    const DEFAULT_SIZE = 4;
+    
     protected $_modeSight;
     
     public function __construct(){
-        $this->_modeSight = new SightModel();
+        $this->_modeSight  = new SightModel();
+        $this->_modelTopic = new TopicModel();
     }   
     
     /**
@@ -67,7 +70,7 @@ class City_Logic_City{
             $arrHot = $this->getHotCity();
         }
         if($pageSize-count($arrHot) > 0){
-            $listCity = new City_List_City();
+            $listCity = new City_List_Meta();
             $strFilter = "`cityid` = 0 and `provinceid` != 0";
             if(!empty($filter)){
                 $strFilter .=" and `pinyin` > '".strtolower($filter)."%'";
@@ -97,12 +100,17 @@ class City_Logic_City{
      * @return array
      */
     public function getCityById($cityId){
-        $objCity = new City_Object_City();
+        $objCity = new City_Object_Meta();
         $objCity->fetch(array('id' => $cityId));
         $ret = $objCity->toArray();
         if(!empty($ret)){
             $objCity->fetch(array('id' => $ret['pid']));
             $ret['pidname'] = $objCity->name;
+            
+            $objCityInfo = new City_Object_City();
+            $objCityInfo->fetch(array('id' => $ret['id']));
+            $arrRet      = $objCityInfo->toArray();
+            $ret         = array_merge($ret, $arrRet);
         }
         return $ret;
     }
@@ -146,20 +154,22 @@ class City_Logic_City{
      * @return array
      */
     public function queryCity($arrInfo,$page,$pageSize){
-        $listCity = new City_List_City();
-        $strFileter = "`cityid` = 0 and `provinceid` != 0";
-        foreach ($arrInfo as $key => $val){
-            $strFileter .=" and `".$key."` = $val";
+      $modelCity       = new CityModel();
+        $arrRet          = array();
+        $arrRet['total'] = $modelCity->getCityNum($arrInfo);
+        $arrRet['pageall'] = ceil($arrRet['total'] / $pageSize);
+        $arrRet['page']  = $page;
+        $arrRet['pagesize'] = $pageSize;
+        $arrRet['list']  = $modelCity->queryCity($arrInfo, $page, $pageSize);
+        foreach ($arrRet['list'] as $key => $val){
+            $ret  = $this->getCityById($val['id']);
+            $arrRet['list'][$key]['x']       = isset($ret['x'])?$ret['x']:'';
+            $arrRet['list'][$key]['y']       = isset($ret['y'])?$ret['y']:'';
+            $arrRet['list'][$key]['image']   = isset($ret['image'])?$ret['image']:'';
+            $arrRet['list'][$key]['status']  = isset($ret['status'])?$ret['status']:'';
+            $arrRet['list'][$key]['pidname'] = $ret['pidname'];
         }
-        $listCity->setFilterString("$strFileter");
-        $listCity->setPage($page);
-        $listCity->setPagesize($pageSize);
-        $arrCity = $listCity->toArray();
-        foreach ($arrCity['list'] as $key => $val){
-            $city = City_Api::getCityById($val['pid']);
-            $arrCity['list'][$key]['pidname'] = $city['name'];
-        }
-        return $arrCity;
+        return $arrRet;
     }
     
     /**
@@ -169,15 +179,11 @@ class City_Logic_City{
      * @return array
      */
     public function getProvinceList($page,$pageSize){
-        $listCity = new City_List_City();
+        $listCity = new City_List_Meta();
         $listCity->setFilter(array('provinceid' => 0));
         $listCity->setPage($page);
         $listCity->setPagesize($pageSize);
         $arrCity = $listCity->toArray();
-        foreach ($arrCity['list'] as $key => $val){
-            $city = City_Api::getCityById($val['pid']);
-            $arrCity['list'][$key]['pidname'] = $city['name'];
-        }
         return $arrCity;
     }
     
@@ -189,23 +195,24 @@ class City_Logic_City{
      * @return array
      */
     public function queryCityPrefix($str,$page,$pageSize,$arrParms = array()){
-        $listCity = new City_List_City();
-        $strFileter = "`cityid` = 0 and `provinceid` != 0 and name like '".$str."%'";
-        foreach ($arrParms as $key => $val){
-            $strFileter .=" and `".$key."`=".$val;
-        }
-        $listCity->setFilterString($strFileter);
-        $listCity->setFields(array('id','name','pid'));
-        $listCity->setPage($page);
-        $listCity->setPagesize($pageSize);
-        $arrCity = $listCity->toArray();
-        foreach ($arrCity['list'] as $key => $val){
+        $model   = new CityModel();
+        $arrRet  = array();
+        $logicCollect = new Collect_Logic_Collect();
+        
+        $arrRet['total'] = $model->getCityNum($arrParms,$str);
+        $arrRet['pageall'] = ceil($arrRet['total'] / $pageSize);
+        $arrRet['page']  = $page;
+        $arrRet['pagesize'] = $pageSize;
+        $arrRet['list']  = $model->queryCityPrefix($str, $page, $pageSize, $arrParms);
+   
+        foreach ($arrRet['list'] as $key => $val){
             $city = City_Api::getCityById($val['pid']);
-            $arrCity['list'][$key]['pidname'] = $city['name'];
-            $arrCity['list'][$key]['sight_num'] = $this->_modeSight->getSightNum($val['id']);
-            $arrCity['list'][$key]['topic_num'] = $this->getTopicNum($val['id']);
+            $arrRet['list'][$key]['pidname'] = $city['name'];
+            $arrRet['list'][$key]['sight_num'] = $this->_modeSight->getSightNum($val['id']);
+            $arrRet['list'][$key]['topic_num'] = $this->getTopicNum($val['id']);
+            $arrRet['list'][$key]['collect']   = $logicCollect->getTotalCollectNum(Collect_Type::CITY, $val['id']);
         }
-        return $arrCity;
+        return $arrRet;
     }
     
     /**
@@ -216,7 +223,7 @@ class City_Logic_City{
      * @return array
      */
     public function queryProvincePrefix($str,$page,$pageSize){
-        $listCity = new City_List_City();
+        $listCity = new City_List_Meta();
         $strFileter = "`provinceid` = 0 and name like '".$str."%'";
         $listCity->setFilterString("$strFileter");
         $listCity->setPage($page);
@@ -239,7 +246,7 @@ class City_Logic_City{
         $redis = Base_Redis::getInstance();
         $ret   = $this->_modeSight->getSightByCity(1,PHP_INT_MAX,$cityId);
         foreach ($ret as $val){
-            $count += $redis->zSize(Sight_Keys::getSightTopicKey($val['id']));
+            $count += $redis->sSize(Sight_Keys::getSightTopicKey($val['id']));
         }
         return $count;
     }
@@ -259,5 +266,77 @@ class City_Logic_City{
             array('id' =>972, 'name'=>'苏州'),
         );
         return $arrHotCity;
+    }
+    
+    /**
+     * 根据城市名称前缀获取城市ID
+     * @param string $strName
+     * @return integer
+     */
+    public function getCityIdByName($strName){
+        $cityId     = 2;
+        $city       = $this->queryCityPrefix($strName, 1, 1);
+        if(!empty($city['list'])){
+            $cityId     = $city['list'][0]['id'];
+        }
+        return $cityId;
+    }
+    
+    /**
+     * 获取最热门的话题，带景点ID、时间范围、大小、标签过滤，并加上答案等信息
+     * @param integer $sightId
+     * @param integer $size
+     * @return array
+     */
+    public function getHotTopic($cityId,$page = 1,$pageSize = self::DEFAULT_SIZE){
+        $arrRet     = $this->_modelTopic->getHotTopicIdsByCity($cityId,$page,$pageSize);
+        $logicTopic = new Topic_Logic_Topic();
+        foreach($arrRet as $key => $val){
+            $topicDetail = $this->_modelTopic->getTopicDetail($val['id'],$page);
+            $arrRet[$key]['title']     = trim($topicDetail['title']);
+            $arrRet[$key]['subtitle']  = trim($topicDetail['subtitle']);
+            $arrRet[$key]['desc']      = trim($topicDetail['desc']);
+            //话题访问人数
+            $arrRet[$key]['visit']     = strval($logicTopic->getTotalTopicVistUv($val['id']));
+    
+            //话题收藏数
+            $logicCollect            = new Collect_Logic_Collect();
+            $arrRet[$key]['collect'] = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $val['id']));
+    
+            //话题来源
+            $logicSource = new Source_Logic_Source();
+            $arrRet[$key]['from']    = $logicSource->getSourceName($topicDetail['from']);
+    
+            $arrRet[$key]['image']  = Base_Image::getUrlByName($topicDetail['image']);
+            
+            $logicSight             = new Sight_Logic_Sight();
+            $sightIds = $logicSight->getSightByTopic($val['id']);
+            $sightId  = $sightIds['list'][0]['sight_id'];
+            $sight    = $logicSight->getSightById($sightId);
+            $arrRet[$key]['sight']  = trim($sight['name']);
+            
+            $logicTag  = new Tag_Logic_Tag();
+            $arrTags   = $logicTag->getTopicTags($val['id']);
+            $arrRet[$key]['tag']    = isset($arrTags[0])?trim($arrTags[0]):'';
+        }
+        return $arrRet;
+    }
+    
+    /*
+     * 城市的搜索接口
+     */
+    public function search($query, $page, $pageSize){
+        $logicSight = new Sight_Logic_Sight();
+        $arrCity  = Base_Search::Search('city', $query, $page, $pageSize, array('id'));
+        foreach ($arrCity as $key => $val){
+            $city = $this->getCityById($val['id']);
+            $arrCity[$key]['name']  = trim($city['name']);
+            $arrCity[$key]['image'] = isset($city['image'])?Base_Image::getUrlByName($city['image']):'';
+            
+            $sight_num     = $logicSight->getSightsNum(array(),$val['id']);
+            $topic_num     = $this->getTopicNum($val['id']);
+            $arrCity[$key]['desc'] = sprintf("景点数:%d，话题数:%d",$sight_num,$topic_num);
+        }
+        return  $arrCity;
     }
 }

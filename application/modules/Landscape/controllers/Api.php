@@ -1,10 +1,12 @@
 <?php
 /**
- * 景观页接口
+ * 景观接口
  * @author huwei
  *
  */
 class ApiController extends Base_Controller_Api {
+    
+    const PAGESIZE = 6;
     
     public function init() {
         $this->setNeedLogin(false);
@@ -13,26 +15,21 @@ class ApiController extends Base_Controller_Api {
     
     /**
      * 接口1：/api/landscape
-     * 景观详情信息接口
-     * @param integer id，景观ID
-     * @param string deviceId，设备ID
-     * @param double  x,经度
-     * @param double  y，纬度
+     * 景观详情接口
+     * @param integer page
+     * @param integer pageSize
+     * @param integer sightId,景点ID
      * @return json
      */
     public function indexAction() {
-        $id         = isset($_REQUEST['id'])?intval($_REQUEST['id']):'';
-        $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
-        $x          = isset($_REQUEST['x'])?doubleval($_REQUEST['x']):'';
-        $y          = isset($_REQUEST['y'])?doubleval($_REQUEST['y']):'';
-        if(empty($id)||empty($x)||empty($y)){
+        $page       = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
+        $sightId    = isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
+        if(empty($sightId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $logic      = new Landscape_Logic_Landscape();
-        $ret        = $logic->queryLandscapeById($id,$x,$y,$deviceId);
-
-        $logicVist          = new Visit_Logic_Visit();
-        $logicVist->addVisit( Visit_Type::LANDSCAPE, $deviceId, $id);        
+        $logic      = new Keyword_Logic_Keyword();
+        $ret        = $logic->getKeywords($sightId,$page,$pageSize);
         $this->ajax($ret);
-    }    
+    }   
 }

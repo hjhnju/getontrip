@@ -1,7 +1,7 @@
 /*
-   景点编辑情况
+  城市编辑情况
    author:fyy
- */
+ */ 
 $(document).ready(function() {
     var oTable = $('#editable').dataTable({
         "serverSide": true, //分页，取数据等等的都放到服务端去
@@ -10,48 +10,32 @@ $(document).ready(function() {
         "searching": false, //是否开启本地分页
         "ordering": false,
         "ajax": {
-            "url": "/admin/sightapi/situationList",
+            "url": "/admin/cityapi/situationList",
             "type": "POST",
             "data": function(d) {
                 //添加额外的参数传给服务器
-                d.params = {};
-                if ($("#form-sight").attr('data-sight_id')) {
-                    d.params.id = $("#form-sight").attr('data-sight_id');
-                }
                 if ($("#form-city").attr('data-city_id')) {
-                    d.params.city_id = $("#form-city").attr('data-city_id');
+                    d.city_id = $("#form-city").attr('data-city_id');
                 }
                 if ($('#form-user_id').attr("checked")) {
-                    d.params.create_user = $('#form-user_id').val();
+                    d.create_user = $('#form-user_id').val();
                 }
             }
         },
         "columnDefs": [{
-            "targets": [0, 1],
+            "targets": [],
             "visible": false,
             "searchable": false
         }],
         "columns": [{
-            "data": "id"
-        }, {
-            "data": 'city_id'
-        }, {
+            "data": 'id'
+        },  {
             "data": "name"
         }, {
-            "data": 'city_name'
+            "data": 'info'
         }, {
             "data": function(e) {
-                return '共' + e.topicCount + '个' + '<a class="btn btn-success btn-xs" title="创建" data-toggle="tooltip" target="_blank" href="/admin/topic/edit?action=add&sight_id=' + e.id + '">创建</a><a class="btn btn-primary btn-xs" title="筛选" data-toggle="tooltip"  target="_blank"  href="/admin/topic/filter?sight_id=' + e.id + '">筛选</a><a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/topic/list?sight_id=' + e.id + '">列表</a>';
-            }
-        }, {
-            "data": function(e) {
-                if (e.keywordlist) {
-                    for (var i = 0; i < e.keywordlist.length; i++) {
-
-                    }
-                }
-                return '共' + e.keywordCount + '个' + '<a class="btn btn-success btn-xs" title="创建" data-toggle="tooltip" target="_blank" href="/admin/keyword/edit?action=add&sight_id=' + e.id + '">创建</a><a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/keyword/list?sight_id=' + e.id + '">列表</a>';
-
+                return '<a href="/admin/cityapi/publish?id='+e.id+'&action=NOTPUBLISHED" target="_blank" class="btn btn-warning btn-xs" title="关闭" data-toggle="tooltip"><i class="fa fa-remove"></i></a> <a href="/admin/sight?id='+e.id+'"  target="_blank" class="btn btn-primary btn-xs" title="景点列表" data-toggle="tooltip"><i class="fa fa-eye"></i></button><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/topic/edit?action=edit&id=' + e.id + '" target="_blank"><i class="fa fa-pencil"></i></a></button>';
             }
         }],
         "initComplete": function(setting, json) {
@@ -81,21 +65,6 @@ $(document).ready(function() {
 
 
     function filter() {
-        //景点输入框自动完成
-        $('#form-sight').typeahead({
-            display: 'name',
-            val: 'id',
-            ajax: {
-                url: '/admin/sightapi/getSightList',
-                triggerLength: 1
-            },
-            itemSelected: function(item, val, text) {
-                $("#form-sight").val(text);
-                $("#form-sight").attr('data-sight_id', val);
-                //触发dt的重新加载数据的方法
-                api.ajax.reload();
-            }
-        });
 
         //景点框后的清除按钮，清除所选的景点
         $('#clear-sight').click(function(event) {

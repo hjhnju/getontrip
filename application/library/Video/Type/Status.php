@@ -15,13 +15,7 @@ class Video_Type_Status extends Base_Type {
      * 2 已发布
      * @var integer
      */
-    const PUBLISHED    = 2;
-        
-    /**
-     * 3 所有的
-     * @var integer
-     */
-    const ALL    = 3;
+    const PUBLISHED    = 2;        
     
     /**
      * 状态名
@@ -30,6 +24,5 @@ class Video_Type_Status extends Base_Type {
     public static $names = array(
         self::NOTPUBLISHED     => '未发布',
         self::PUBLISHED        => '已发布',
-        self::ALL              => '所有的',
     );
 }

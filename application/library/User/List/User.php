@@ -14,7 +14,7 @@ class User_List_User extends Base_List {
      * 主键
      * @var string
      */
-    protected $prikey = 'id';
+    protected $prikey = 'type';
 
     /**
      * 对象包含的所有字段

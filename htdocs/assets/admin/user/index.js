@@ -53,14 +53,7 @@
                 }
                 return "未上传";
             }
-        }, {
-            "data": function(e) {
-                if (e.accept_pic) {
-                    return '关闭';
-                }
-                return "开启";
-            }
-        }, {
+        },  {
             "data": function(e) {
                 if (e.accept_msg) {
                     return '开启';

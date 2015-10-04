@@ -242,18 +242,18 @@ class Base_Object {
             }
         }
     
-        if ($this->properties['create_time'] && empty($data['create_time'])) {
+        if (isset($this->properties['create_time']) && empty($data['create_time'])) {
             $data['create_time'] = time();
         }
         if (isset($this->properties['update_time'])) {
             $data['update_time'] = time();
         }
         if (isset($this->properties['create_user']) && empty($data['create_user'])) {
-            $logicUser            = new User_Logic_Login();
+            $logicUser            = new User_Logic_Third();
             $data['create_user']  = $logicUser->checkLogin();
         }
         if (isset($this->properties['update_user'])) {
-            $logicUser           = new User_Logic_Login();
+            $logicUser           = new User_Logic_Third();
             $data['update_user'] = $logicUser->checkLogin();
         }
         return $data;

@@ -14,7 +14,7 @@ class User_Object_User extends Base_Object {
      * 主键
      * @var string
      */
-    protected $prikey = 'id';
+    protected $prikey = 'type';
 
     /**
      * 类名

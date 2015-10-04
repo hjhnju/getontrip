@@ -39,8 +39,14 @@ class SightModel extends PgBaseModel
      * @return boolean|multitype:
      */
     public function getSightByCity($page,$pageSize,$cityId){
-        $from = ($page-1)*$pageSize;
-        $sql = "SELECT id,name,image FROM sight WHERE city_id = $cityId  ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
+        $listSight = new Sight_List_Sight();
+        $listSight->setFilter(array('city_id' => $cityId));
+        $listSight->setPage($page);
+        $listSight->setPagesize($pageSize);
+        $arrSight = $listSight->toArray();
+        return $arrSight['list'];
+        /*$from = ($page-1)*$pageSize;
+        $sql  = "SELECT `id`,`name`,`image` FROM `sight` WHERE `city_id` = $cityId  ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
         try {
             $sth = $this->db->prepare($sql);
             $sth->execute();
@@ -49,7 +55,7 @@ class SightModel extends PgBaseModel
             Base_Log::error($ex->getMessage());
             return false;
         }
-        return $ret;
+        return $ret;*/
     }
     
     /**

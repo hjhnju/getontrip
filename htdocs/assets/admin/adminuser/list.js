@@ -53,8 +53,8 @@
                     }
                 }, {
                     "data": function(e) {
-                        if (e.logintime) {
-                            return moment.unix(e.logintime).format(FORMATER);
+                        if (e.login_time) {
+                            return moment.unix(e.login_time).format(FORMATER);
                         }
                         return "-";
                     }

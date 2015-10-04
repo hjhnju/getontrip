@@ -475,7 +475,7 @@ var Metronic = function() {
             if(quality){
                 url=url+'_'+quality;
             }
-            return url; 
+            return '/pic/' + url; 
         }
         String.prototype.getNewImgByImg = function(width, height,type,quality) {
             var img=this.toString();

@@ -20,9 +20,9 @@ class InitDataController extends Base_Controller_Page {
      
         //获取景点ID数组
         if(empty($sightId)){
-            $model = new SightModel();
-            $arr   = $model->getSightList(1, PHP_INT_MAX);
-            foreach ($arr as $val){
+            $logic = new Sight_Logic_Sight();
+            $arr   = $logic->getSightList(1, PHP_INT_MAX, Sight_Type_Status::PUBLISHED);
+            foreach ($arr['list'] as $val){
                 $arrSight[] = $val['id'];
             }
         }else{
@@ -45,19 +45,19 @@ class InitDataController extends Base_Controller_Page {
                     }
                     break;
                 case 'Wiki':
-                    $logicWiki = new Wiki_Logic_Wiki();
-                    $logicWiki->getWikiSource($id,1,$num,Wiki_Type_Status::PUBLISHED);
+                    $logicWiki = new Keyword_Logic_Keyword();
+                    $logicWiki->getKeywordSource($id,1,$num,Keyword_Type_Status::PUBLISHED);
                     break;
                 case 'All':
                     $logicBook  = new Book_Logic_Book();
                     $logicVideo = new Video_Logic_Video();
-                    $logicWiki  = new Wiki_Logic_Wiki();
+                    $logicWiki  = new Keyword_Logic_Keyword();
                     $page       = ceil($num/self::PAGE_SIZE);
                     for( $i = 1; $i <= $page; $i++ ){
                         $logicBook->getJdBooks($id, $i,self::PAGE_SIZE);
                         $logicVideo->getAiqiyiSource($id, $i);
                     }
-                    $logicWiki->getWikiSource($id,1,$num,Wiki_Type_Status::PUBLISHED);
+                    $logicWiki->getKeywordSource($id,1,$num,Keyword_Type_Status::PUBLISHED);
                     break;
                 default:
                     break;

@@ -25,7 +25,6 @@ class  TopicapiController extends Base_Controller_Api{
         $arrParam = isset($_REQUEST['params'])?$_REQUEST['params']:array();
         //$query =isset($_REQUEST['params']['content'])?$_REQUEST['params']['content']:'';
         
-         
         
         $List = Topic_Api::search($arrParam,$page,$pageSize);
 
@@ -34,7 +33,6 @@ class  TopicapiController extends Base_Controller_Api{
         for($i=0; $i<count($tmpList); $i++) { 
             $tmpList[$i]["statusName"] = Topic_Type_Status::getTypeName($tmpList[$i]["status"]);  
          }
-
         //处理景点名称
         $sightArray=array(); 
         for($i=0; $i<count($tmpList); $i++){

@@ -137,7 +137,7 @@ class User_Logic_User extends Base_Logic{
         }
         $arrRet =  $listUser->toArray();
         foreach ($arrRet['list'] as $key => $val){
-            $objLogin = new User_Object_Login();
+            $objLogin = new User_Object_Third();
             $objLogin->fetch(array('id' => $val['id']));
             if(!empty($objLogin->id)){
                 $arrRet['list'][$key]['logintime'] = $objLogin->loginTime;
@@ -158,7 +158,7 @@ class User_Logic_User extends Base_Logic{
         $objUser->fetch(array('id' => $userId));
         $ret = $objUser->toArray();
         if(!empty($ret)){ 
-            $objLogin = new User_Object_Login();
+            $objLogin = new User_Object_Third();
             $objLogin->fetch(array('id' => $ret['id']));
             if(!empty($objLogin->id)){
                 $ret['logintime'] = $objLogin->loginTime;

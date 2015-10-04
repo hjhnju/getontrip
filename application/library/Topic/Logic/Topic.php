@@ -6,7 +6,7 @@
  */
 class Topic_Logic_Topic extends Base_Logic{
     
-    const DEFAULT_SIZE  = 2;
+    const DEFAULT_SIZE  = 4;
     
     const DEFAULT_DAYS  = 30;    
     
@@ -60,24 +60,28 @@ class Topic_Logic_Topic extends Base_Logic{
      * @return array
      */
     public function getHotTopic($sightId,$period=self::DEFAULT_DAYS,$page=1,$pageSize=self::DEFAULT_SIZE,$strTags=''){
-        $arrRet     = $this->model->getHotTopicIds($sightId,$strTags,$page,$pageSize,$period);
+        if(!empty($sightId)){
+            $arrRet     = $this->model->getHotTopicIds($sightId,$strTags,$page,$pageSize,$period);
+        }else{
+            $arrRet     = $this->getGeneralTopics($strTags, $page, $pageSize);
+        }       
         foreach($arrRet as $key => $val){
             $topicDetail = $this->model->getTopicDetail($val['id'],$page);          
             $arrRet[$key]['title']     = trim($topicDetail['title']);
             $arrRet[$key]['subtitle']  = trim($topicDetail['subtitle']);
-            $arrRet[$key]['desc']      = trim($topicDetail['desc']);
+            //$arrRet[$key]['desc']      = trim($topicDetail['desc']);
             //话题访问人数            
             $arrRet[$key]['visit']     = strval($this->getTotalTopicVistUv($val['id']));
             
             //话题收藏数
-            $logicCollect            = new Collect_Logic_Collect();
-            $arrRet[$key]['collect'] = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $val['id']));
+            $logicCollect              = new Collect_Logic_Collect();
+            $arrRet[$key]['collect']   = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $val['id']));
             
             //话题来源
             $logicSource = new Source_Logic_Source();         
-            $arrRet[$key]['from']    = $logicSource->getSourceName($topicDetail['from']);
+            $arrRet[$key]['from']      = $logicSource->getSourceName($topicDetail['from']);
             
-            $arrRet[$key]['image']  = Base_Image::getUrlByName($topicDetail['image']);
+            $arrRet[$key]['image']     = Base_Image::getUrlByName($topicDetail['image']);
                                 
         }
         return $arrRet;
@@ -89,13 +93,17 @@ class Topic_Logic_Topic extends Base_Logic{
      * @param integer $size
      * @return array
      */
-    public function getNewTopic($sightId,$period=self::DEFAULT_DAYS,$page,$pageSize,$strTags=''){ 
-        $arrRet     = $this->model->getNewTopicIds($sightId, $strTags, $page, $pageSize);
+    public function getNewTopic($sightId,$period=self::DEFAULT_DAYS,$page,$pageSize,$strTags=''){
+        if(!empty($sightId)){
+            $arrRet     = $this->model->getNewTopicIds($sightId, $strTags, $page, $pageSize);
+        }else{
+            $arrRet     = $this->getGeneralTopics($strTags, $page, $pageSize);
+        }        
         foreach($arrRet as $key => $val){    
             $topicDetail               = $this->model->getTopicDetail($val['id'],$page);
             $arrRet[$key]['title']     = trim($topicDetail['title']);
             $arrRet[$key]['subtitle']  = trim($topicDetail['subtitle']);
-            $arrRet[$key]['desc']      = trim($topicDetail['desc']);
+            //$arrRet[$key]['desc']      = trim($topicDetail['desc']);
 
             //话题收藏数
             $logicCollect      = new Collect_Logic_Collect();        
@@ -107,7 +115,7 @@ class Topic_Logic_Topic extends Base_Logic{
             $logicSource             = new Source_Logic_Source();
             $arrRet[$key]['from']    = $logicSource->getSourceName($topicDetail['from']);
             
-            $arrRet[$key]['image']  = Base_Image::getUrlByName($topicDetail['image']);
+            $arrRet[$key]['image']   = Base_Image::getUrlByName($topicDetail['image']);
         }        
         return $arrRet;
     }
@@ -120,7 +128,7 @@ class Topic_Logic_Topic extends Base_Logic{
      */
     public function getTopicDetail($topicId,$device_id){
         $objTopic = new Topic_Object_Topic();
-        $objTopic->setFileds(array('id','title','content','from','from_detail','image','url','x','y'));
+        $objTopic->setFileds(array('id','title','content','from','from_detail','image','url'));
         $objTopic->fetch(array('id' => $topicId));
         $arrRet                = $objTopic->toArray();
         if(empty($arrRet)){
@@ -128,29 +136,16 @@ class Topic_Logic_Topic extends Base_Logic{
         }
         $logicComment          = new Comment_Logic_Comment();
         $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
-        $arrRet['dis']         = '';
         $arrRet['title']       = trim($arrRet['title']);
         $arrRet['content']     = trim($arrRet['content']);
-        $gis                   = new GisModel();
-        $x                     = Yaf_Session::getInstance()->get(Home_Keys::SESSION_USER_X_NAME);
-        $y                     = Yaf_Session::getInstance()->get(Home_Keys::SESSION_USER_Y_NAME);
-        if(!empty($arrRet['x']) && !empty($arrRet['y'])){
-            $arrRet['dis'] = $gis->getEarthDistanceToPoint($x, $y, $arrRet['x'], $arrRet['y']);
-            $arrRet['dis'] = Base_Util_Number::getDis($arrRet['dis']);
-        }else{
-            $listSightTopic = new Sight_List_Topic();
-            $listSightTopic->setPagesize(1);
-            $listSightTopic->setFilter(array('topic_id' => $arrRet['id']));
-            $ret = $listSightTopic->toArray();
-            if(isset($ret['list'][0]['sight_id'])){
-                $sightId = $ret['list'][0]['sight_id'];
-                $arrRet['dis'] = $gis->getEarthDistanceToSight($x, $y, $sightId);
-                $arrRet['dis'] = Base_Util_Number::getDis($arrRet['dis']);
-            }
-        }   
+        $listSightTopic = new Sight_List_Topic();
+        $listSightTopic->setPagesize(1);
+        $listSightTopic->setFilter(array('topic_id' => $arrRet['id']));
+        $ret = $listSightTopic->toArray();
+            
         
-        $logicVist          = new Visit_Logic_Visit();
-        $logicVist->addVisit( Visit_Type::TOPIC, $device_id, $topicId);
+        $logicVist          = new Tongji_Logic_Visit();
+        $logicVist->addVisit( Tongji_Type_Visit::TOPIC, $device_id, $topicId);
         
         //话题来源
         $logicSource     = new Source_Logic_Source();
@@ -169,8 +164,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $logicCollect      = new Collect_Logic_Collect();
         $arrRet['collect'] = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $arrRet['id']));
         
-        unset($arrRet['x']);
-        unset($arrRet['y']);
+        
         //添加redis中话题访问次数统计，直接让其失效，下次从数据库中获取
         $redis = Base_Redis::getInstance();
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getTotalKey($topicId));
@@ -236,9 +230,9 @@ class Topic_Logic_Topic extends Base_Logic{
         if(!empty($ret)){
             return $ret;
         }
-        $list   = new Visit_List_Visit();
+        $list   = new Tongji_List_Visit();
         $list->setFields(array('device_id'));
-        $filter = "`obj_id` = $topicId and `create_time` >= $from and `type` = ".Visit_Type::TOPIC; 
+        $filter = "`obj_id` = $topicId and `create_time` >= $from and `type` = ".Tongji_Type_Visit::TOPIC; 
         $list->setPagesize(PHP_INT_MAX);
         $list->setFilterString($filter);
         $arrRet = $list->toArray();
@@ -265,8 +259,8 @@ class Topic_Logic_Topic extends Base_Logic{
         if(!empty($ret)){
             return $ret;
         }
-        $list   = new Visit_List_Visit();
-        $filter = "`obj_id` = $topicId and `create_time` >= $from and `type` = ".Visit_Type::TOPIC;
+        $list   = new Tongji_List_Visit();
+        $filter = "`obj_id` = $topicId and `create_time` >= $from and `type` = ".Tongji_Type_Visit::TOPIC;
         $list->setPagesize(PHP_INT_MAX);
         $list->setFilterString($filter);
         $arrRet = $list->toArray();
@@ -286,9 +280,9 @@ class Topic_Logic_Topic extends Base_Logic{
         if(!empty($ret)){
             return $ret;
         }
-        $list   = new Visit_List_Visit();
+        $list   = new Tongji_List_Visit();
         $list->setFields(array('device_id'));
-        $list->setFilter(array('obj_id' => $topicId,'type' => Visit_Type::TOPIC));
+        $list->setFilter(array('obj_id' => $topicId,'type' => Tongji_Type_Visit::TOPIC));
         $list->setPagesize(PHP_INT_MAX);
         $arrRet = $list->toArray();
         $arrTotal = array();
@@ -313,8 +307,8 @@ class Topic_Logic_Topic extends Base_Logic{
         if(!empty($ret)){
             return $ret;
         }
-        $list   = new Visit_List_Visit();
-        $list->setFilter(array('obj_id' => $topicId,'type' => Visit_Type::TOPIC));
+        $list   = new Tongji_List_Visit();
+        $list->setFilter(array('obj_id' => $topicId,'type' => Tongji_Type_Visit::TOPIC));
         $list->setPagesize(PHP_INT_MAX);
         $arrRet = $list->toArray();
         $redis->hSet(Topic_Keys::getTopicVisitKey(),Topic_Keys::getTotalKey($topicId),$arrRet['total']);
@@ -404,7 +398,11 @@ class Topic_Logic_Topic extends Base_Logic{
             $listTopictag->setFilter(array('topic_id' => $val['id']));
             $listTopictag->setPagesize(PHP_INT_MAX);
             $arrTag = $listTopictag->toArray();
-            $arrRet['list'][$key]['tags'] = $arrTag['list'];
+            foreach ($arrTag['list'] as $index => $data){
+                $objTag = new Tag_Object_Tag();
+                $objTag->fetch(array('id' => $data['tag_id']));
+                $arrRet['list'][$key]['tags'][] = $objTag->toArray();
+            }
     
             $listSighttopic = new Sight_List_Topic();
             if(!empty($sight_id)){
@@ -729,26 +727,20 @@ class Topic_Logic_Topic extends Base_Logic{
     
     /**
      * 根据话题名搜索话题，并且结果不包含标签、景点信息
-     * @param string $title
+     * @param string $query
      * @param integer $page
      * @param integer $pageSize
      * @return array
      */
-    public function searchTopic($title,$page,$pageSize){
-        $listTopic     = new Topic_List_Topic();
-        $logicCollect  = new Collect_Logic_Collect();
-        $filter = "`title` like '%".$title."%'";
-        $listTopic->setFields(array('id','title','image'));
-        $listTopic->setFilterString($filter);
-        $listTopic->setPage($page);
-        $listTopic->setPagesize($pageSize);
-        $arrRet = $listTopic->toArray();
-        
-        foreach ($arrRet['list'] as $key => $val){
-            $arrRet['list'][$key]['name'] = $val['title'];
-            unset($arrRet['list'][$key]['title']);
+    public function searchTopic($query,$page,$pageSize){
+        $arrTopic  = Base_Search::Search('topic', $query, $page, $pageSize, array('id'));
+        foreach ($arrTopic as $key => $val){
+            $topic = $this->getTopicById($val['id']);
+            $arrTopic[$key]['title']     = trim($topic['title']);
+            $arrTopic[$key]['subtitle']  = trim($topic['subtitle']);
+            $arrTopic[$key]['image'] = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
         }
-        return $arrRet;
+        return $arrTopic;
     }
     
     /**
@@ -809,6 +801,29 @@ class Topic_Logic_Topic extends Base_Logic{
             }
         }
         return $num;
+    }
+    
+    /**
+     * 获取通用标签所包含的话题ID集合
+     * @param string $strTag
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function getGeneralTopics($strTag,$page,$pageSize){
+        $arrTags       = explode(",",$strTag);
+        $listTopicTage = new Topic_List_Tag();
+        $arrRet        = array();
+        foreach ($arrTags as $tagId){
+            $listTopicTage->setFilter(array('tag_id' => $tagId));
+            $listTopicTage->setPage($page);
+            $listTopicTage->setPagesize($pageSize);
+            $ret = $listTopicTage->toArray();
+            foreach ($ret['list'] as $val){
+                $arrRet[] = array('id' => $val['topic_id']);
+            }
+        }        
+        return $arrRet;
     }
     
     /**

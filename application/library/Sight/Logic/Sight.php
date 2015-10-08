@@ -263,13 +263,13 @@ class Sight_Logic_Sight extends Base_Logic{
     public function addSight($arrInfo){
         $objSight = new Sight_Object_Sight();
         foreach ($arrInfo as $key => $val){
-            $key = $this->getprop($key);
             if(in_array($key,$this->_fileds)){
+                $key = $this->getprop($key);           
                 $objSight->$key = $val;
-            }
-           
+            }           
         }
         $ret = $objSight->save();
+        return $ret;
         if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
             $data = $this->modelSight->query(array('name' => $arrInfo['name']), 1, 1);
             $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);

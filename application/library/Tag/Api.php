@@ -86,4 +86,16 @@ class Tag_Api{
         $logicTag = new Tag_Logic_Tag();
         return $logicTag->queryTagPrefix($str, $page, $pageSize, $arrInfo);
     }
+    
+    /**
+     * 接口8：Tag_Api::getTagInfo($tagId, $sightId)
+     * 获取标签的信息
+     * @param integer $tagId
+     * @param integer $sightId
+     * @return array
+     */
+    public static function getTagInfo($tagId, $sightId){
+        $logicTag = new Tag_Logic_Tag();
+        return $logicTag->getTagInfo($tagId, $sightId);
+    }
 }

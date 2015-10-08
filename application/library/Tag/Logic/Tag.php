@@ -130,7 +130,7 @@ class Tag_Logic_Tag extends Base_Logic{
      */
     public function getTagById($id){
         $objTag = new Tag_Object_Tag();
-        $objTag->fetch(array('id' => $id));
+        $objTag->fetch(array('id' => $id));        
         return $objTag->toArray();
     }
     
@@ -263,5 +263,16 @@ class Tag_Logic_Tag extends Base_Logic{
         $objTag = new Tag_Object_Tag();
         $objTag->fetch(array('id' => intval($tagId)));
         return $objTag->type;
+    }
+    
+    public function getTagInfo($tagId, $sightId){
+        $arrRet = array();
+        $objTag = new Tag_Object_Tag();
+        $objTag->fetch(array('id' => intval($tagId)));
+        $arrRet = $objTag->toArray();
+        
+        $logicTopic = new Topic_Logic_Topic();
+        $arrRet['topic_num'] = $logicTopic->getTopicNumByTag($tagId, $sightId);
+        return $arrRet;
     }
 }

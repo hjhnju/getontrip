@@ -132,7 +132,7 @@ class SightModel extends PgBaseModel
     public function eddSight($sightId, $_updateData){
         $_setData = '';  
         $_where = "WHERE id = $sightId"; 
-        $logicUser = new User_Logic_Login();
+        $logicUser = new User_Logic_Third();
         $userId = $logicUser->checkLogin();
         if(!empty($userId)){
             $_updateData['update_user'] = $userId;

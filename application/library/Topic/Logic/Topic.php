@@ -78,8 +78,8 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrRet[$key]['collect']   = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $val['id']));
             
             //话题来源
-            $logicSource = new Source_Logic_Source();         
-            $arrRet[$key]['from']      = $logicSource->getSourceName($topicDetail['from']);
+            //$logicSource = new Source_Logic_Source();         
+            //$arrRet[$key]['from']      = $logicSource->getSourceName($topicDetail['from']);
             
             $arrRet[$key]['image']     = Base_Image::getUrlByName($topicDetail['image']);
                                 
@@ -112,8 +112,8 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrRet[$key]['collect'] = strval($logicCollect->getTotalCollectNum(Collect_Keys::TOPIC, $val['id']));
             
             //话题来源
-            $logicSource             = new Source_Logic_Source();
-            $arrRet[$key]['from']    = $logicSource->getSourceName($topicDetail['from']);
+            //$logicSource             = new Source_Logic_Source();
+            //$arrRet[$key]['from']    = $logicSource->getSourceName($topicDetail['from']);
             
             $arrRet[$key]['image']   = Base_Image::getUrlByName($topicDetail['image']);
         }        

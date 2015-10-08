@@ -213,4 +213,18 @@ class Tag_Logic_Tag extends Base_Logic{
             'normal'   => $arrNormal,
         );
     }
+    
+    public function queryTagPrefix($str, $page, $pageSize, $arrInfo = array()){
+        $listTag = new Tag_List_Tag();
+        if(!empty($str)){
+            $filter = "`name` like '".$str."%'";
+            foreach ($arrInfo as $key => $val){
+                $filter .= 'and `'.$key.'` ='.$val;
+            }
+            $listTag->setFilterString($filter);
+            $listTag->setPage($page);
+            $listTag->setPagesize($pageSize);
+        }
+        return $listTag->toArray();
+    }
 }

@@ -73,4 +73,17 @@ class Tag_Api{
         $logicTag = new Tag_Logic_Tag();
         return $logicTag->getTagBySight($sightId);
     }
+    
+    /**
+     * 接口7：Tag_Api::queryTagPrefix($str, $page, $pageSize, $arrInfo = array())
+     * @param string $str
+     * @param integer $page
+     * @param integer $pageSize
+     * @param array $arrInfo
+     * @return array
+     */
+    public static function queryTagPrefix($str, $page, $pageSize, $arrInfo = array()){
+        $logicTag = new Tag_Logic_Tag();
+        return $logicTag->queryTagPrefix($str, $page, $pageSize, $arrInfo);
+    }
 }

@@ -175,6 +175,7 @@ class Tag_Logic_Tag extends Base_Logic{
     public function getTagBySight($sightId){
         $arrClassfiyTag = array();
         $arrGeneralTag  = array();
+        $arrNormal      = array();
         //通用标签
         $listSightTag = new Sight_List_Tag();
         $listSightTag->setFilter(array('sight_id' => $sightId));
@@ -197,13 +198,19 @@ class Tag_Logic_Tag extends Base_Logic{
             foreach ($arrTag['list'] as $val){
                 $objTag = new Tag_Object_Tag();
                 $objTag->fetch(array('id' => $val['tag_id']));
-                $arrClassfiyTag[$val['tag_id']]['name'] = $objTag->name;
-                $arrClassfiyTag[$val['tag_id']]['num']  = isset($arrClassfiyTag[$val['tag_id']]['num'])?$arrClassfiyTag[$val['tag_id']]['num']+1:1;
+                if($objTag->type == Tag_Type_Tag::CLASSIFY){
+                    $arrClassfiyTag[$val['tag_id']]['name'] = $objTag->name;
+                    $arrClassfiyTag[$val['tag_id']]['num']  = isset($arrClassfiyTag[$val['tag_id']]['num'])?$arrClassfiyTag[$val['tag_id']]['num']+1:1;
+                }elseif($objTag->type == Tag_Type_Tag::NORMAL){
+                    $arrNormal[$val['tag_id']]['name'] = $objTag->name;
+                    $arrNormal[$val['tag_id']]['num']  = isset($arrNormal[$val['tag_id']]['num'])?$arrNormal[$val['tag_id']]['num']+1:1;
+                }                
             }  
         }        
         return array(
             'classify' => $arrClassfiyTag,
             'general'  => $arrGeneralTag,
+            'normal'   => $arrNormal,
         );
     }
 }

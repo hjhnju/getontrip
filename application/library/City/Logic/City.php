@@ -60,38 +60,25 @@ class City_Logic_City{
     
     /**
      * 获取城市信息
-     * @param integer $page
-     * @param integer $pageSize
      * @return array
      */
-    public function getCityInfo($page, $pageSize,$filter=''){
-        $arrHot = array();
-        if(($page == 1)&&(empty($filter)||(strtoupper($filter) == 'A'))){
-            $arrHot = $this->getHotCity();
-        }
-        if($pageSize-count($arrHot) > 0){
-            $listCity = new City_List_Meta();
+    public function getCityInfo(){
+        $arrRet        = array();
+        $arrRet['hot'] = $this->getHotCity();
+        for($char = 'a'; $char <= 'z'; $char++){
             $strFilter = "`cityid` = 0 and `provinceid` != 0";
-            if(!empty($filter)){
-                $strFilter .=" and `pinyin` > '".strtolower($filter)."%'";
-            }
+            $listCity = new City_List_Meta();
+            $strFilter .=" and `pinyin` like '".strtolower($char)."%'";
             $listCity->setFilterString($strFilter);
-            $listCity->setFields(array('name','pinyin','id'));
-            $listCity->setOrder("pinyin asc");
-            $listCity->setPage($page);
-            $listCity->setPagesize($pageSize-count($arrHot));
-            $arrCity = $listCity->toArray();     
+            $listCity->setFields(array('name','pinyin'));
+            $listCity->setPageSize(PHP_INT_MAX);
+            $arrCity = $listCity->toArray();
             foreach ($arrCity['list'] as $key => $val){
-                $index = strtoupper(substr($val['pinyin'],0,1));
-                unset($val['pinyin']);
-                unset($arrCity['list'][$key]);
-                $arrCity['list'][$index][] = $val;
-            } 
-        }
-        if(!empty($arrHot)){
-            $arrCity['list']['hot'] = $arrHot;
+                $arrCity['list'][$key]['pinYinHead'] = strtolower(Base_Util_String::pinyin_first($val['name']));
+            }
+            $arrRet[$char] = $arrCity['list'];
         }       
-        return $arrCity['list'];
+        return $arrRet;
     }
     
     /**
@@ -257,13 +244,13 @@ class City_Logic_City{
      */
     public function getHotCity(){
         $arrHotCity = array(
-            array('id' =>2,   'name'=>'北京'),
-            array('id' =>41,  'name'=>'上海'),
-            array('id' =>2185,'name'=>'广州'),
-            array('id' =>2211,'name'=>'深圳'),
-            array('id' =>925, 'name'=>'南京'),
-            array('id' =>1058,'name'=>'杭州'),
-            array('id' =>972, 'name'=>'苏州'),
+            array('id' =>2,   'name'=>'北京','pinyin' => 'beijing', 'pinYinHead' => 'bj'),
+            array('id' =>41,  'name'=>'上海','pinyin' => 'shanghai', 'pinYinHead' => 'sh'),
+            array('id' =>2185,'name'=>'广州','pinyin' => 'guangzhou', 'pinYinHead' => 'gz'),
+            array('id' =>2211,'name'=>'深圳','pinyin' => 'shenzhen', 'pinYinHead' => 'sz'),
+            array('id' =>925, 'name'=>'南京','pinyin' => 'nanjing', 'pinYinHead' => 'nj'),
+            array('id' =>1058,'name'=>'杭州','pinyin' => 'hangzhou', 'pinYinHead' => 'hz'),
+            array('id' =>972, 'name'=>'苏州','pinyin' => 'suzhou', 'pinYinHead' => 'sz'),
         );
         return $arrHotCity;
     }

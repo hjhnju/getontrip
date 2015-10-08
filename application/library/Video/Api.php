@@ -14,4 +14,15 @@ class Video_Api{
         $logicVideo = new Video_Logic_Video();
         return    $logicVideo->getVideos($sightId, $page,$pageSize,$arrParam);
     }
+    
+    /**
+     * 接口2：Video_Api::getVideoNum($sighId)
+     * 根据景点ID获取视频数量
+     * @param integer $sighId
+     * @return number
+     */
+    public static function getVideoNum($sighId){
+        $logicVideo = new Video_Logic_Video();
+        return $logicVideo->getVideoNum($sighId);
+    }
 }

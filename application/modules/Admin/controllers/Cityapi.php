@@ -104,7 +104,7 @@ class CityapiController extends Base_Controller_Api{
     public function getCityListAction(){ 
         $str=$_REQUEST['query'];
         //最大值 PHP_INT_MAX  
-        $List =City_Api::queryCityPrefix($str,1,PHP_INT_MAX,array('status'=>City_Type_Status::PUBLISHED)); 
+        $List =City_Api::queryCityPrefix($str,1,PHP_INT_MAX); 
 
         return $this->ajax($List["list"]);  
     }

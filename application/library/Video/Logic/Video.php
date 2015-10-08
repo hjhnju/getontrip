@@ -113,4 +113,11 @@ class Video_Logic_Video extends Base_Logic{
         }
         return $arrVideo;
     }
+    
+    public function getVideoNum($sighId){
+        $listVideo = new Video_List_Video();
+        $listVideo->setFilter(array('sight_id' => $sighId));
+        $listVideo->setPagesize(PHP_INT_MAX);
+        return $listVideo->countAll();
+    }
 }

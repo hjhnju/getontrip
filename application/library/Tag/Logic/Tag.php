@@ -166,4 +166,51 @@ class Tag_Logic_Tag extends Base_Logic{
         }
         return $arrTags;
     }
+    
+    /**
+     * 根据景点ID获取标签信息
+     * @param integer $sightId
+     * @return array
+     */
+    public function getTagBySight($sightId){
+        $arrClassfiyTag = array();
+        $arrGeneralTag  = array();
+        $arrNormal      = array();
+        //通用标签
+        $listSightTag = new Sight_List_Tag();
+        $listSightTag->setFilter(array('sight_id' => $sightId));
+        $listSightTag->setPagesize(PHP_INT_MAX);
+        $arrSightTag = $listSightTag->toArray();
+        foreach ($arrSightTag['list'] as $val){
+            $objTag = new Tag_Object_Tag();
+            $objTag->fetch(array('id' => $val['tag_id']));
+            $arrGeneralTag[] = $objTag->name;
+        }
+        //分类标签
+        $logicTopic = new Topic_Logic_Topic();
+        $strTopics  = $logicTopic->getTopicIdBySight($sightId);
+        $arrTopics  = explode(",",$strTopics);
+        foreach ($arrTopics as $id){
+            $listTopicTag = new Topic_List_Tag();
+            $listTopicTag->setFilter(array('topic_id' => $id));
+            $listTopicTag->setPagesize(PHP_INT_MAX);
+            $arrTag = $listTopicTag->toArray();
+            foreach ($arrTag['list'] as $val){
+                $objTag = new Tag_Object_Tag();
+                $objTag->fetch(array('id' => $val['tag_id']));
+                if($objTag->type == Tag_Type_Tag::CLASSIFY){
+                    $arrClassfiyTag[$val['tag_id']]['name'] = $objTag->name;
+                    $arrClassfiyTag[$val['tag_id']]['num']  = isset($arrClassfiyTag[$val['tag_id']]['num'])?$arrClassfiyTag[$val['tag_id']]['num']+1:1;
+                }elseif($objTag->type == Tag_Type_Tag::NORMAL){
+                    $arrNormal[$val['tag_id']]['name'] = $objTag->name;
+                    $arrNormal[$val['tag_id']]['num']  = isset($arrNormal[$val['tag_id']]['num'])?$arrNormal[$val['tag_id']]['num']+1:1;
+                }                
+            }  
+        }        
+        return array(
+            'classify' => $arrClassfiyTag,
+            'general'  => $arrGeneralTag,
+            'normal'   => $arrNormal,
+        );
+    }
 }

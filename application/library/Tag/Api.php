@@ -62,4 +62,15 @@ class Tag_Api{
         $logicTag = new Tag_Logic_Tag();
         return $logicTag->getTagByName($name);
     }
+    
+    /**
+     * 接口6：Tag_Api::getTagBySight($sightId)
+     * 根据景点ID获取标签信息
+     * @param integer $sightId
+     * @return array
+     */
+    public static function getTagBySight($sightId){
+        $logicTag = new Tag_Logic_Tag();
+        return $logicTag->getTagBySight($sightId);
+    }
 }

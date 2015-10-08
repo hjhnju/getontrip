@@ -23,7 +23,7 @@ class Book_Api{
      * @param array $arrInfo
      * @return boolean
      */
-    public function editBook($sightId,$id,$arrInfo){
+    public static function editBook($sightId,$id,$arrInfo){
         $logicBook = new Book_Logic_Book();
         return $logicBook->editBook($sightId, $id, $arrInfo);
     }
@@ -35,8 +35,19 @@ class Book_Api{
      * @param integer $id,视频ID
      * @return boolean
      */
-    public function delBook($sightId,$id){
+    public static function delBook($sightId,$id){
         $logicBook = new Book_Logic_Book();
         return $logicBook->delBook($sightId, $id);
+    }
+    
+    /**
+     * 接口4：Book_Api::getBookNum($sightId)
+     * 根据景点ID获取数据数量
+     * @param integer $sightId
+     * @return number
+     */
+    public static function getBookNum($sightId){
+        $logicBook = new Book_Logic_Book();
+        return $logicBook->getBookNum($sightId);
     }
 }

@@ -106,18 +106,18 @@
                           </label>
                           <div class="col-lg-10"> 
                               <label class="checkbox-inline"> 
-                                <input type='radio' name="sight_tag"  value="sight">景点 
+                                <input type='radio' name="sight_tag" {%if $sightSelected eq 1%}checked{%/if%} value="sight">景点 
                               </label>
                               <label class="checkbox-inline"> 
-                                <input type='radio' name="sight_tag"  value="tag">通用标签
+                                <input type='radio' name="sight_tag" {%if $sightSelected eq 0%}checked{%/if%} value="tag">通用标签
                               </label>
                           </div>
                           <div class="col-lg-2">
                           </div>
-                          <div class="col-lg-3 sight_tag" data-type="sight"> 
+                          <div class="col-lg-3 sight_tag {%if $sightSelected eq 0%}hide{%/if%}" data-type="sight"> 
                                <input class="form-control" id="sight_name" type="text"  autocomplete="off"  placeholder="输入景点后请在下拉框选择"/>
                           </div>
-                           <div class="col-lg-3 sight_tag"  data-type="sight">
+                           <div class="col-lg-3 sight_tag {%if $sightSelected eq 0%}hide{%/if%}"  data-type="sight">
                            	 <div class="alert alert-info" role="alert" id="sight_alert">
                                   {%foreach $sightList as $key=>$item%}
                                   <span class="badge badge-sm label-danger" role="badge">   {%$item.name%}
@@ -126,11 +126,11 @@
                                    {%/foreach%}  
                              </div> 
                            </div> 
-                           <div class="col-lg-3 sight_tag" data-type="tag"> 
+                           <div class="col-lg-3 sight_tag {%if $sightSelected eq 1%}hide{%/if%}" data-type="tag"> 
                                <input class="form-control" id="sight_name"    type="text"  autocomplete="off"  placeholder="输入通用标签后请在下拉框选择"/>
                           </div>
-                           <div class="col-lg-3 sight_tag"  data-type="tag">
-                             <div class="alert alert-info" role="alert" id="sight_alert">
+                           <div class="col-lg-3 sight_tag {%if $sightSelected eq 1%}hide{%/if%}"  data-type="tag">
+                             <div class="alert alert-info" role="alert" id="tag_alert">
                                   {%foreach $sightList as $key=>$item%}
                                   <span class="badge badge-sm label-danger" role="badge">   {%$item.name%}
                                     <button type="button" class="close" data-id="{%$item.id%}"><span class="fa fa-remove"></span></button>
@@ -152,9 +152,9 @@
                       <div class="form-group" id="div-tag">
                           <label for="tag_name" class="control-label col-lg-2">普通标签：</label>
                           <div class="col-lg-10">  
-                              {%foreach $tagList as $key=>$item%}
+                              {%foreach $tagList as $key=>$item%} 
                               <label class="checkbox-inline"> 
-                                <input type=checkbox name="" data-name="form-tag" id="" value="{%$item.id%}" {%if isset($item.selected)%}checked{%/if%}>{%$item.name%} 
+                                <input type=checkbox name="" data-name="form-tag" id="" value="{%$item.id%}" {%if isset($item.selected)%}checked{%/if%}>{%$item.name%}  
                               </label>
                               {%/foreach%} 
                               <span class="help-inline">
@@ -164,10 +164,10 @@
                       </div> 
                       <div class="form-group" id="addTag" style="display:none">
                           <label for="sight_name" class="control-label col-lg-2">新标签</label>
-                          <div class="col-lg-3"> 
+                          <div class="col-lg-3">  
                               <input class="form-control" id="tag_name"    type="text"  autocomplete="off"  placeholder="输入新标签名称"/>
  
-                               <input class="form-control" id="type_name"   type="hidden"/> 
+                               <input class="form-control" id="type_name"   type="hidden"/>  
                             </div>
                            <div class="col-lg-3"> 
                               <button type="button" class="btn btn-primary" id="addTag-btn">创建</button>

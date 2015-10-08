@@ -93,7 +93,7 @@ class SightModel extends PgBaseModel
                 $_addValues[] = $_value;
             }
         }
-        $logicUser = new User_Logic_Login();
+        $logicUser = new User_Logic_Third();
         $userId = $logicUser->checkLogin();
         if(!empty($userId)){
             $_addFields[] = 'create_user';

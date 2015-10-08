@@ -71,7 +71,7 @@ class Tag_Api{
      */
     public static function getTagBySight($sightId){
         $logicTag = new Tag_Logic_Tag();
-        return $logicTag->getTagBySight($sightId);
+        return $logicTag->getTagIdsBySight($sightId);
     }
     
     /**

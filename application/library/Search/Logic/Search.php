@@ -121,12 +121,15 @@ class Search_Logic_Search{
                 foreach ($arrLabel['list'] as $key => $val){
                     $cityId        = $val['obj_id'];
                     $arrCity       = $logicCity->getCityById($cityId);
+                    $temp['id']    = strval($cityId);
                     $temp['name']  = $arrCity['name'];
                     $temp['image'] = Base_Image::getUrlByName($arrCity['image']);
                     $sight_num     = $this->logicSight->getSightsNum(array(),$val['id']);
                     $topic_num     = $this->logicCity->getTopicNum($val['id']);
                     $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::CITY, $val['id']);
-                    $temp['desc']  = sprintf("收藏数:%d,景点数:%d，话题数:%d",$collect,$sight_num,$topic_num);;
+                    $temp['collect_num']  =  sprintf("%d人收藏",$collect);
+                    $temp['sight_num']    =  sprintf("%d个景点",$sight_num);
+                    $temp['topic_num']    =  sprintf("%d个话题",$topic_num);
                     $arrData[] = $temp;
                 }
             }else{
@@ -134,6 +137,7 @@ class Search_Logic_Search{
                 foreach ($arrLabel['list'] as $key => $val){
                     $sightId       = $val['obj_id'];
                     $arrSight      = $logicSight->getSightById($sightId);
+                    $temp['id']    = strval($sightId);
                     $temp['name']  = $arrSight['name'];
                     $temp['image'] = Base_Image::getUrlByName($arrSight['image']);
                     $strTopicIds   = $this->logicTopic->getTopicIdBySight($val['id']);
@@ -144,12 +148,15 @@ class Search_Logic_Search{
                     }
                     $topic_num     = $this->logicSight->getTopicNum($val['id']);
                     $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $val['id']);
-                    $temp['desc']  = sprintf("收藏数:%d,评论数:%d，话题数:%d",$collect,$count,$topic_num);;
+                    $temp['collect_num']  =  sprintf("%d人收藏",$collect);
+                    $temp['topic_num']    =  sprintf("%d个话题",$topic_num);
+                    $temp['comment_num']  =  sprintf("%d个景点",$count);
                     $arrData[] = $temp;
                 }
             }
         }
-        $arrRet['data'] = $arrData;        
+        $arrRet['data']   = $arrData; 
+        $arrRet['image']  = '/pic/00a9b8112e808d95.jpg';
         return $arrRet;
     }
 }

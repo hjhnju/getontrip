@@ -42,16 +42,10 @@ class ApiController extends Base_Controller_Page {
     /**
      * 接口2：/api/city/list
      * 获取城市列表信息，切换城市时使用
-     * @param char filter,前缀字母
-     * @param integer page,页码
-     * @param integer pageSize,页面大小
      * @return json
      */
     public function listAction(){
-        $filter   = isset($_REQUEST['filter'])?trim($_REQUEST['filter']):'';
-        $page     = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
-        $pageSize = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGE_SIZE;
-        $ret = City_Api::getCityInfo($page, $pageSize,$filter);
+        $ret = City_Api::getCityInfo();
         return $this->ajax($ret);
     }
     

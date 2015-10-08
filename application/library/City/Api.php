@@ -7,15 +7,13 @@
 class City_Api{
     
     /**
-     * 接口1：City_Api::getCityInfo($page, $pageSize)
+     * 接口1：City_Api::getCityInfo()
      * 获取城市信息，供前端使用
-     * @param integer $page
-     * @param integer $pageSize
      * @return array
      */
-    public static function getCityInfo($page, $pageSize,$filter=''){
+    public static function getCityInfo(){
        $logicCity = new City_Logic_City();
-       return $logicCity->getCityInfo($page, $pageSize,$filter);
+       return $logicCity->getCityInfo();
     }
     
     /**

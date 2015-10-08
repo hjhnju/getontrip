@@ -254,4 +254,11 @@ class Book_Logic_Book extends Base_Logic{
         }
         return $ret;
     }
+    
+    public static function getBookNum($sightId){
+        $listSightBook = new Sight_List_Book();
+        $listSightBook->setFilter(array('sight_id' => $sightId));
+        $listSightBook->setPagesize(PHP_INT_MAX);
+        return $listSightBook->countAll();
+    }
 }

@@ -93,7 +93,7 @@ class CityModel{
                 $filterMeta .= 'city_meta.`'.$key."` = ".$val." AND ";
             }
         }
-        $filter = $filterInfo . $filterMeta . " city_meta.`cityid` = 0 AND city_meta.`provinceid` != 0 ";
+        $filter = $filterInfo . $filterMeta . " city_meta.`cityid` = 0 AND city_meta.`provinceid` != 0 and ";
         $filter .= "city_meta.`cityid` = 0 and city_meta.`provinceid` != 0 and city_meta.`name` like '".$str."%'";
         $sql  = 'SELECT * FROM `city` right join `city_meta` ON city.`id` = city_meta.`id` where '.$filter." limit $from,$pageSize";
         try {

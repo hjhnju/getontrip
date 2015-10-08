@@ -269,7 +269,6 @@ class Sight_Logic_Sight extends Base_Logic{
             }           
         }
         $ret = $objSight->save();
-        return $ret;
         if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
             $data = $this->modelSight->query(array('name' => $arrInfo['name']), 1, 1);
             $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);

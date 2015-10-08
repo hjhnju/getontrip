@@ -65,7 +65,8 @@ class City_Logic_City{
     public function getCityInfo(){
         $arrRet        = array();
         $arrRet['hot'] = $this->getHotCity();
-        for($char = 'a'; $char <= 'z'; $char++){
+        $arrLeters     = range('A','Z');
+        foreach($arrLeters as $char){
             $strFilter = "`cityid` = 0 and `provinceid` != 0";
             $listCity = new City_List_Meta();
             $strFilter .=" and `pinyin` like '".strtolower($char)."%'";

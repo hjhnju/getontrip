@@ -40,13 +40,11 @@ class Sight_Logic_Sight extends Base_Logic{
      * @return array
      */
     public function getSightDetail($sightId,$page,$pageSize,$order,$strTags = ''){
-        $arrRet  = array();
-        $strTags = '';
-        if(!empty($sightId)){
-            $arrTags = $this->logicSightTag->getTagsBySight($sightId);
-        }
+        $arrRet      = array();
+        $arrDataTags = array();
+        $arrDataTags = $this->logicSightTag->getTagsBySight($sightId);
         if(empty($strTags)){//默认选中第一个标签来筛选话题
-            $strTags = isset($arrTags[0]['id'])?$arrTags[0]['id']:'';
+            $strTags = isset($arrDataTags[0]['id'])?$arrDataTags[0]['id']:'';
         }
         $redis       = Base_Redis::getInstance();        
         if(self::ORDER_NEW == $order){
@@ -59,7 +57,7 @@ class Sight_Logic_Sight extends Base_Logic{
        //     $arrRet[$key]['tags'] = $logicTag->getTopicTags($val['id']);
        // }      
         return array(
-            'tags'=>$arrTags,
+            'tags'=>$arrDataTags,
             'data'=>$arrRet,           
         );
     }
@@ -131,6 +129,11 @@ class Sight_Logic_Sight extends Base_Logic{
         $listSight->setPage($page);
         $listSight->setPagesize($pageSize);
         $arrRet = $listSight->toArray();
+        foreach ($arrRet['list'] as $key => $val){
+            $arrRet['list'][$key]['tags']      = Tag_Api::getTagBySight($val['id']);
+            $arrRet['list'][$key]['book_num']  = intval(Book_Api::getBookNum($val['id']));
+            $arrRet['list'][$key]['video_num'] = intval(Video_Api::getVideoNum($val['id']));
+        }
         return $arrRet;
     }
     
@@ -263,13 +266,15 @@ class Sight_Logic_Sight extends Base_Logic{
     public function addSight($arrInfo){
         $objSight = new Sight_Object_Sight();
         foreach ($arrInfo as $key => $val){
-            $key = $this->getprop($key);
             if(in_array($key,$this->_fileds)){
+                $key = $this->getprop($key);           
                 $objSight->$key = $val;
-            }
-           
+            }           
         }
         $ret = $objSight->save();
+        /*if(isset($arrInfo['tags'])){
+            
+        }*/
         if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
             $data = $this->modelSight->query(array('name' => $arrInfo['name']), 1, 1);
             $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);

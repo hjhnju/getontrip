@@ -71,6 +71,31 @@ class Tag_Api{
      */
     public static function getTagBySight($sightId){
         $logicTag = new Tag_Logic_Tag();
-        return $logicTag->getTagBySight($sightId);
+        return $logicTag->getTagIdsBySight($sightId);
+    }
+    
+    /**
+     * 接口7：Tag_Api::queryTagPrefix($str, $page, $pageSize, $arrInfo = array())
+     * @param string $str
+     * @param integer $page
+     * @param integer $pageSize
+     * @param array $arrInfo
+     * @return array
+     */
+    public static function queryTagPrefix($str, $page, $pageSize, $arrInfo = array()){
+        $logicTag = new Tag_Logic_Tag();
+        return $logicTag->queryTagPrefix($str, $page, $pageSize, $arrInfo);
+    }
+    
+    /**
+     * 接口8：Tag_Api::getTagInfo($tagId, $sightId)
+     * 获取标签的信息
+     * @param integer $tagId
+     * @param integer $sightId
+     * @return array
+     */
+    public static function getTagInfo($tagId, $sightId){
+        $logicTag = new Tag_Logic_Tag();
+        return $logicTag->getTagInfo($tagId, $sightId);
     }
 }

@@ -78,8 +78,8 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrRet[$key]['collect']   = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $val['id']));
             
             //话题来源
-            $logicSource = new Source_Logic_Source();         
-            $arrRet[$key]['from']      = $logicSource->getSourceName($topicDetail['from']);
+            //$logicSource = new Source_Logic_Source();         
+            //$arrRet[$key]['from']      = $logicSource->getSourceName($topicDetail['from']);
             
             $arrRet[$key]['image']     = Base_Image::getUrlByName($topicDetail['image']);
                                 
@@ -93,8 +93,9 @@ class Topic_Logic_Topic extends Base_Logic{
      * @param integer $size
      * @return array
      */
-    public function getNewTopic($sightId,$period=self::DEFAULT_DAYS,$page,$pageSize,$strTags=''){
-        if(!empty($sightId)){
+    public function getNewTopic($sightId,$period = self::DEFAULT_DAYS, $page, $pageSize, $strTags = ''){
+        $logicTag = new Tag_Logic_Tag;        
+        if($logicTag->getTagType($strTags) != Tag_Type_Tag::GENERAL){
             $arrRet     = $this->model->getNewTopicIds($sightId, $strTags, $page, $pageSize);
         }else{
             $arrRet     = $this->getGeneralTopics($strTags, $page, $pageSize);
@@ -112,8 +113,8 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrRet[$key]['collect'] = strval($logicCollect->getTotalCollectNum(Collect_Keys::TOPIC, $val['id']));
             
             //话题来源
-            $logicSource             = new Source_Logic_Source();
-            $arrRet[$key]['from']    = $logicSource->getSourceName($topicDetail['from']);
+            //$logicSource             = new Source_Logic_Source();
+            //$arrRet[$key]['from']    = $logicSource->getSourceName($topicDetail['from']);
             
             $arrRet[$key]['image']   = Base_Image::getUrlByName($topicDetail['image']);
         }        
@@ -820,7 +821,7 @@ class Topic_Logic_Topic extends Base_Logic{
             $listTopicTage->setPagesize($pageSize);
             $ret = $listTopicTage->toArray();
             foreach ($ret['list'] as $val){
-                $arrRet[] = array('id' => $val['topic_id']);
+                $arrRet[] = array('id' => strval($val['topic_id']));
             }
         }        
         return $arrRet;
@@ -865,5 +866,31 @@ class Topic_Logic_Topic extends Base_Logic{
                 $model->eddSight($sightId, array('hastopic' => 0));
             }
         }
+    }
+    
+    public function getTopicNumByTag($tagId, $sightId){
+        $total  = 0;
+        $objTag = new Tag_Object_Tag();
+        $objTag->fetch(array('id' => $tagId));
+        if($objTag->type == Tag_Type_Tag::CLASSIFY){
+            //分类标签
+            $logicTopic = new Topic_Logic_Topic();
+            $strTopics  = $logicTopic->getTopicIdBySight($sightId);
+            $arrTopics  = explode(",",$strTopics);
+            foreach ($arrTopics as $id){
+                $listTopicTag = new Topic_List_Tag();
+                $listTopicTag->setFilter(array('topic_id' => $id,'tag_id' => $tagId));
+                $listTopicTag->setPagesize(PHP_INT_MAX);
+                $total += $listTopicTag->countAll();
+               
+            }
+        }elseif($objTag->type == Tag_Type_Tag::GENERAL){
+            //通用标签
+             $listTopicTag = new Topic_List_Tag();
+             $listTopicTag->setFilter(array('tag_id' => $tagId));
+             $listTopicTag->setPagesize(PHP_INT_MAX);
+             $total += $listTopicTag->countAll();
+        }
+        return $total;
     }
 }

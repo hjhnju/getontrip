@@ -82,7 +82,7 @@ class Topic_Api{
      * @param array $arrInfo,eg:array('sightId'=>1,'status'=>xxx);
      * @param integer
      */
-    public function getTopicNum($arrInfo){
+    public static function getTopicNum($arrInfo){
         $logic = new Topic_Logic_Topic();
         return $logic->getTopicNum($arrInfo);
     }

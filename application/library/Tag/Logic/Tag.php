@@ -53,8 +53,8 @@ class Tag_Logic_Tag extends Base_Logic{
         $objTag = new Tag_Object_Tag();
         $objTag->fetch(array('id' => $id));
         foreach ($arrInfo as $key => $val){
-            $key = $this->getprop($key);
             if(in_array($key,$this->_fileds)){
+                $key = $this->getprop($key);            
                 $objTag->$key = $val;
             } 
         }
@@ -74,8 +74,8 @@ class Tag_Logic_Tag extends Base_Logic{
     public function saveTag($arrInfo){
         $objTag       = new Tag_Object_Tag();
         foreach ($arrInfo as $key => $val){
-            $key = $this->getprop($key);
             if(in_array($key,$this->_fileds)){
+                $key = $this->getprop($key);
                 $objTag->$key = $val;
             } 
         }
@@ -130,7 +130,7 @@ class Tag_Logic_Tag extends Base_Logic{
      */
     public function getTagById($id){
         $objTag = new Tag_Object_Tag();
-        $objTag->fetch(array('id' => $id));
+        $objTag->fetch(array('id' => $id));        
         return $objTag->toArray();
     }
     
@@ -212,5 +212,67 @@ class Tag_Logic_Tag extends Base_Logic{
             'general'  => $arrGeneralTag,
             'normal'   => $arrNormal,
         );
+    }
+    
+    /**
+     * 根据景点ID获取标签信息
+     * @param integer $sightId
+     * @return array
+     */
+    public function getTagIdsBySight($sightId){
+        $arrTags      = array();
+        //通用标签
+        $listSightTag = new Sight_List_Tag();
+        $listSightTag->setFilter(array('sight_id' => $sightId));
+        $listSightTag->setPagesize(PHP_INT_MAX);
+        $arrSightTag = $listSightTag->toArray();
+        foreach ($arrSightTag['list'] as $val){
+            $arrGeneralTag[] = $val['tag_id'];
+        }
+        //分类标签
+        $logicTopic = new Topic_Logic_Topic();
+        $strTopics  = $logicTopic->getTopicIdBySight($sightId);
+        $arrTopics  = explode(",",$strTopics);
+        foreach ($arrTopics as $id){
+            $listTopicTag = new Topic_List_Tag();
+            $listTopicTag->setFilter(array('topic_id' => $id));
+            $listTopicTag->setPagesize(PHP_INT_MAX);
+            $arrTag = $listTopicTag->toArray();
+            foreach ($arrTag['list'] as $val){
+                $arrTags[] = $val['tag_id'];
+            }
+        }
+        return $arrTags;
+    }
+    
+    public function queryTagPrefix($str, $page, $pageSize, $arrInfo = array()){
+        $listTag = new Tag_List_Tag();
+        if(!empty($str)){
+            $filter = "`name` like '".$str."%'";
+            foreach ($arrInfo as $key => $val){
+                $filter .= 'and `'.$key.'` ='.$val;
+            }
+            $listTag->setFilterString($filter);
+            $listTag->setPage($page);
+            $listTag->setPagesize($pageSize);
+        }
+        return $listTag->toArray();
+    }
+    
+    public function getTagType($tagId){
+        $objTag = new Tag_Object_Tag();
+        $objTag->fetch(array('id' => intval($tagId)));
+        return $objTag->type;
+    }
+    
+    public function getTagInfo($tagId, $sightId){
+        $arrRet = array();
+        $objTag = new Tag_Object_Tag();
+        $objTag->fetch(array('id' => intval($tagId)));
+        $arrRet = $objTag->toArray();
+        
+        $logicTopic = new Topic_Logic_Topic();
+        $arrRet['topic_num'] = $logicTopic->getTopicNumByTag($tagId, $sightId);
+        return $arrRet;
     }
 }

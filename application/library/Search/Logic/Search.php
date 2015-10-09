@@ -131,9 +131,9 @@ class Search_Logic_Search{
                     $temp['name']  = $arrCity['name'];
                     $temp['name']  = str_replace("市", "", $temp['name']);
                     $temp['image'] = isset($arrCity['image'])?Base_Image::getUrlByName($arrCity['image']):'';
-                    $sight_num     = $this->logicSight->getSightsNum(array(),$val['id']);
-                    $topic_num     = $this->logicCity->getTopicNum($val['id']);
-                    $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::CITY, $val['id']);
+                    $sight_num     = $this->logicSight->getSightsNum(array(),$cityId);
+                    $topic_num     = $this->logicCity->getTopicNum($cityId);
+                    $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::CITY, $cityId);
                     $temp['collect_num']  =  sprintf("%d人收藏",$collect);
                     $temp['sight_num']    =  sprintf("%d个景点",$sight_num);
                     $temp['topic_num']    =  sprintf("%d个话题",$topic_num);                   
@@ -148,14 +148,14 @@ class Search_Logic_Search{
                     $temp['type']  =  strval(Search_Type_Label::SIGHT);
                     $temp['name']  = $arrSight['name'];
                     $temp['image'] = isset($arrSight['image'])?Base_Image::getUrlByName($arrSight['image']):'';
-                    $strTopicIds   = $this->logicTopic->getTopicIdBySight($val['id']);
+                    $strTopicIds   = $this->logicTopic->getTopicIdBySight($sightId);
                     $arrTopicIds   = explode(",",$strTopicIds);
                     $count         = 0;
                     foreach ($arrTopicIds as $id){
-                        $count    += $this->logicComment->getTotalCommentNum($val['id']);
+                        $count    += $this->logicComment->getTotalCommentNum($sightId);
                     }
-                    $topic_num     = $this->logicSight->getTopicNum($val['id']);
-                    $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $val['id']);
+                    $topic_num     = $this->logicSight->getTopicNum($sightId);
+                    $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $sightId);
                     $temp['collect_num']  =  sprintf("%d人收藏",$collect);
                     $temp['topic_num']    =  sprintf("%d个话题",$topic_num);
                     $temp['sight_num']    =  sprintf("%d个评论",$count);                    

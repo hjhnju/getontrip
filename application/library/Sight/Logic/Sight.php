@@ -393,7 +393,9 @@ class Sight_Logic_Sight extends Base_Logic{
         if(!empty($cityId)){
             $arrInfo = array_merge($arrInfo,array('city_id' => $cityId));
         }
-        $listSight->setFilter($arrInfo);
+        if(!empty($arrInfo)){
+            $listSight->setFilter($arrInfo);
+        }
         $listSight->setPagesize(PHP_INT_MAX);
         $arrRet    = $listSight->toArray();        
         return $arrRet['total'];

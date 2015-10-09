@@ -28,6 +28,7 @@ class User_List_Third extends Base_List {
      */
     protected $intProps = array(
         'id'          => 1,
+        'user_id'     => 1,
         'auth_type'   => 1,
         'create_time' => 1,
         'update_time' => 1,

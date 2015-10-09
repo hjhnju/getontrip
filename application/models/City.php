@@ -4,16 +4,14 @@
  * @author huwei
  *
  */
-class CityModel{
-    
-    protected $db;
+class CityModel extends BaseModel{
     
     protected $_fields_info = array('id', 'status', 'x', 'y', 'create_time', 'update_time', 'create_user', 'update_user', 'image');
     
     protected $_fields_meta = array('id', 'name', 'pinyin', 'pid', 'provinceid', 'cityid');
     
     public function __construct(){
-        $this->db = Base_Db::getInstance('getontrip');
+        parent::__construct();
     }
     
     /**

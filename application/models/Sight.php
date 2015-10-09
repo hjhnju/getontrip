@@ -1,6 +1,6 @@
 <?php
 
-class SightModel extends PgBaseModel
+class SightModel extends BaseModel
 {
 
     private $table = 'sight';
@@ -20,9 +20,7 @@ class SightModel extends PgBaseModel
     public function getSightById($sightId){
         $sql = "SELECT * FROM sight WHERE id = $sightId";
         try {
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
+            $ret = $this->db->fetchAll($sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return false;
@@ -70,9 +68,7 @@ class SightModel extends PgBaseModel
             $sql = "SELECT * FROM sight WHERE status = $status ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
         }        
         try {
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
+            $ret = $this->db->fetchAll($sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return false;
@@ -114,8 +110,7 @@ class SightModel extends PgBaseModel
         $_addValues = implode("','", $_addValues);
         $_sql = "INSERT INTO sight ($_addFields) VALUES ('$_addValues')";
         try {
-            $sth = $this->db->prepare($_sql);
-            $ret = $sth->execute();
+            $ret = $this->db->query($_sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return false;
@@ -145,8 +140,7 @@ class SightModel extends PgBaseModel
         $time = time();
         $_setData .= "update_time=$time";  
         $_sql = "UPDATE sight SET $_setData $_where"; 
-        $sth = $this->db->prepare($_sql);
-        $ret = $sth->execute();
+        $ret = $this->db->query($_sql);
         return $ret;  
     }
     
@@ -158,8 +152,7 @@ class SightModel extends PgBaseModel
     public function delSight($id){
         $sql = "DELETE FROM sight WHERE id = $id";
         try {
-            $sth = $this->db->prepare($sql);
-            $ret = $sth->execute();
+            $ret = $this->db->query($sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return false;
@@ -178,9 +171,7 @@ class SightModel extends PgBaseModel
             $sql = "SELECT count(*) FROM sight WHERE city_id = $cityId";
         }
         try {
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $ret = $sth->fetchColumn();
+            $ret = $this->db->fetchOne($sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return 0;
@@ -203,9 +194,7 @@ class SightModel extends PgBaseModel
             $sql = "SELECT id, city_id, name, image, describe, earth_distance(ll_to_earth(sight.x, sight.y),ll_to_earth($x,$y)) AS dis FROM sight where name like '%".$query."%'  ORDER BY dis ASC limit $pageSize offset $offset";
         }                
         try {
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
+            $ret = $this->db->fetchAll($sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return false;
@@ -232,9 +221,7 @@ class SightModel extends PgBaseModel
         $where = substr($where, 0,-4);
         $sql = "SELECT * FROM sight $where ORDER BY update_time DESC limit $pageSize offset $offset";
         try {
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
+            $ret = $this->db->fetchAll($sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return false;
@@ -255,9 +242,7 @@ class SightModel extends PgBaseModel
         $where = substr($where, 0,-4);
         $sql = "SELECT count(*) FROM sight $where";
         try {
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $ret = $sth->fetchColumn();
+            $ret = $this->db->fetchOne($sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return 0;

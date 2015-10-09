@@ -1,11 +1,13 @@
 <?php
-class GisModel extends PgBaseModel
+class GisModel
 {
     
     private $table = 'sight';
+    
+    protected $db  = '';
 
     public function __construct(){
-        parent::__construct();
+        $this->db = Base_Pg::getPDOInstance('getontrip');
     }
 
     /**

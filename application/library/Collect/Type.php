@@ -6,7 +6,7 @@
  */
 class Collect_Type extends Base_Type {
     /**
-     * 1 收藏内容
+     * 1 收藏话题
      * @var integer
      */
     const TOPIC = 1;
@@ -20,6 +20,12 @@ class Collect_Type extends Base_Type {
      * @var integer
      */
     const CITY = 3;
+    
+    /**
+     * 4 收藏书籍
+     * @var integer
+     */
+    const BOOK = 4;
    
     /**
      * 状态名
@@ -29,5 +35,6 @@ class Collect_Type extends Base_Type {
         self::TOPIC      => '收藏内容',
         self::SIGHT      => '收藏景点',
         self::CITY       => '收藏主题',
+        self::BOOK       => '收藏书籍',
     );
 }

@@ -881,11 +881,10 @@ class Topic_Logic_Topic extends Base_Logic{
                 $listTopicTag = new Topic_List_Tag();
                 $listTopicTag->setFilter(array('topic_id' => $id,'tag_id' => $tagId));
                 $listTopicTag->setPagesize(PHP_INT_MAX);
-                $total += $listTopicTag->countAll();
-               
+                $total += $listTopicTag->countAll();               
             }
         }elseif($objTag->type == Tag_Type_Tag::GENERAL){
-            //通用标签
+             //通用标签
              $listTopicTag = new Topic_List_Tag();
              $listTopicTag->setFilter(array('tag_id' => $tagId));
              $listTopicTag->setPagesize(PHP_INT_MAX);

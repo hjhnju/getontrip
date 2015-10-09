@@ -65,7 +65,7 @@ class ApiController extends Base_Controller_Page{
         if($userId){
             return $this->ajax($userId);
         }
-        return $this->ajaxError();
+        return $this->ajax();
     }    
     
     /**

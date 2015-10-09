@@ -75,4 +75,14 @@ class Keyword_Api{
         $logic = new Keyword_Logic_Keyword();
         return $logic->changeWeight($id,$to);
     }
+    
+    /**
+     * 接口7：Keyword_Api::getKeywordNum($sighId)
+     * @param integer $sighId
+     * @return number
+     */
+    public static function getKeywordNum($sighId){
+        $logic = new Keyword_Logic_Keyword();
+        return $logic->getKeywordNum($sighId);
+    }
 }

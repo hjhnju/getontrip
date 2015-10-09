@@ -18,17 +18,9 @@ class SightModel extends BaseModel
      * @return array
      */
     public function getSightById($sightId){
-        $sql = "SELECT * FROM sight WHERE id = $sightId";
-        try {
-            $ret = $this->db->fetchAll($sql);
-        } catch (Exception $ex) {
-            Base_Log::error($ex->getMessage());
-            return false;
-        }
-        if(isset($ret[0])){
-            return $ret[0];
-        }
-        return array();
+        $objSight = new Sight_Object_Sight();
+        $objSight->fetch(array('id' => $sightId));
+        return $objSight->toArray();
     }
     
     /**
@@ -43,17 +35,6 @@ class SightModel extends BaseModel
         $listSight->setPagesize($pageSize);
         $arrSight = $listSight->toArray();
         return $arrSight['list'];
-        /*$from = ($page-1)*$pageSize;
-        $sql  = "SELECT `id`,`name`,`image` FROM `sight` WHERE `city_id` = $cityId  ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
-        try {
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
-        } catch (Exception $ex) {
-            Base_Log::error($ex->getMessage());
-            return false;
-        }
-        return $ret;*/
     }
     
     /**
@@ -61,19 +42,14 @@ class SightModel extends BaseModel
      * @return boolean|mixed
      */
     public function getSightList($page,$pageSize,$status = Sight_Type_Status::PUBLISHED){
-        $from = ($page-1)*$pageSize;
-        if ($status == Sight_Type_Status::ALL) {
-            $sql = "SELECT * FROM sight ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
-        }else{
-            $sql = "SELECT * FROM sight WHERE status = $status ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
-        }        
-        try {
-            $ret = $this->db->fetchAll($sql);
-        } catch (Exception $ex) {
-            Base_Log::error($ex->getMessage());
-            return false;
+        $listSight = new Sight_List_Sight();
+        if ($status != Sight_Type_Status::ALL) {
+            $listSight->setFilter(array('status' => $status));
         }
-        return $ret;
+        $listSight->setPage($page);
+        $listSight->setPagesize($pageSize);
+        $arrSight = $listSight->toArray();
+        return $arrSight['list'];
     }
     
     /**
@@ -150,14 +126,9 @@ class SightModel extends BaseModel
      * @return boolean
      */
     public function delSight($id){
-        $sql = "DELETE FROM sight WHERE id = $id";
-        try {
-            $ret = $this->db->query($sql);
-        } catch (Exception $ex) {
-            Base_Log::error($ex->getMessage());
-            return false;
-        }
-        return $ret;
+        $objSight = new Sight_Object_Sight();
+        $objSight->fetch(array('id' => $id));
+        return $objSight->remove();
     }
     
     /**

@@ -61,6 +61,12 @@ class Search_Logic_Search{
                 $arrBook     = $this->logicBook->search($query, $page, $pageSize);
                 $arrVideo    = $this->logicVideo->search($query, $page, $pageSize);
                 $arrKeyword  = $this->logicKeyword->search($query, $page, $pageSize);
+                $arrRet = array(
+                    'topic' => $arrTopic,
+                    'book'  => $arrBook,
+                    'video' => $arrVideo,
+                    'wiki'  => $arrKeyword,
+                );
                 break;
             default :
                 $arrCity     = $this->logicCity->search($query, $page, $pageSize);

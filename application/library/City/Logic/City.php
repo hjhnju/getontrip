@@ -5,6 +5,8 @@ class City_Logic_City{
     
     const DEFAULT_SIZE = 4;
     
+    const DEFAULT_CITY = 2;
+    
     protected $_modeSight;
     
     public function __construct(){
@@ -326,5 +328,32 @@ class City_Logic_City{
             $arrCity[$key]['desc'] = sprintf("景点数:%d，话题数:%d",$sight_num,$topic_num);
         }
         return  $arrCity;
+    }
+    
+    /**
+     * 根据城市名获取城市信息
+     * @param string $strName
+     * @return array
+     */
+    public function getCityFromName($strName){
+        if (preg_match("/^[\x7f-\xff]+$/", $strName)) {
+            $strName   = str_replace("市", "", $strName);
+            $tmpCity   = $this->queryCityPrefix($strName, 1, 1);            
+        }else{
+            $strName   = str_replace("shi", "", strtolower($strName));
+            $listCity  = new City_List_Meta();
+            $filter    = "`pinyin` like '".$strName."%'";
+            $listCity->setFilterString($filter);
+            $tmpCity   = $listCity->toArray();
+            foreach ($tmpCity['list'] as $key => $val){
+                $objCity = new City_Object_City();
+                $objCity->fetch(array('id' => $val['id']));
+                $tmpCity['list'][$key]['image'] = $objCity->image;
+            }
+        }
+        if(!isset($tmpCity['list'][0]['id'])){
+            $tmpCity   = City_Api::queryCityPrefix('北京', 1, 1);
+        }
+        return $tmpCity;
     }
 }

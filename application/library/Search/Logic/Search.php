@@ -158,7 +158,7 @@ class Search_Logic_Search{
                     $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $val['id']);
                     $temp['collect_num']  =  sprintf("%d人收藏",$collect);
                     $temp['topic_num']    =  sprintf("%d个话题",$topic_num);
-                    $temp['comment_num']  =  sprintf("%d个景点",$count);                    
+                    $temp['sight_num']    =  sprintf("%d个评论",$count);                    
                     $arrData[] = $temp;
                 }
             }

@@ -221,7 +221,6 @@ class Tag_Logic_Tag extends Base_Logic{
      */
     public function getTagIdsBySight($sightId){
         $arrTags       = array();
-        $arrGeneralTag = array();
         //通用标签
         $listSightTag = new Sight_List_Tag();
         $listSightTag->setFilter(array('sight_id' => $sightId));
@@ -232,7 +231,7 @@ class Tag_Logic_Tag extends Base_Logic{
                 $arrTags[] = $val['tag_id'];
             }
         }
-        //分类标签
+        //分类或普通标签
         $logicTopic = new Topic_Logic_Topic();
         $strTopics  = $logicTopic->getTopicIdBySight($sightId);
         $arrTopics  = explode(",",$strTopics);

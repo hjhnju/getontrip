@@ -101,4 +101,15 @@ class City_Api{
         $logicCity = new City_Logic_City();
         return $logicCity->queryProvincePrefix($str, $page, $pageSize);
     }
+    
+    /**
+     * 接口9：City_Api::getCityFromName($strName)
+     * 根据城市名（中文或拼音）获取城市信息
+     * @param string $strName
+     * @return array
+     */
+    public static function getCityFromName($strName){
+        $logicCity = new City_Logic_City();
+        return $logicCity->getCityFromName($strName);
+    }
 }

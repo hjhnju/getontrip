@@ -97,7 +97,7 @@ class Collect_Logic_Collect{
             case Collect_Type::SIGHT:
                 $logicSight = new Sight_Logic_Sight();
                 foreach ($arrCollect['list'] as $val){
-                    $temp['id']       = $val['obj_id'];
+                    $temp['id']       = strval($val['obj_id']);
                     $sight            = $logicSight->getSightById($val['obj_id']);
                     $temp['name']     = $sight['name'];
                     $temp['image']    = Base_Image::getUrlByName($sight['image']);
@@ -108,25 +108,48 @@ class Collect_Logic_Collect{
             case Collect_Type::CITY:
                 $logicCity = new City_Logic_City();
                 foreach ($arrCollect['list'] as $val){
-                    $temp['id']      = $val['obj_id'];
-                    $city            = $logicCity->getCityById($val['obj_id']);
-                    $temp['image']   = Base_Image::getUrlByName($city['image']);
-                    $temp['name']    = $city['name'];
-                    $temp['collect'] = strval($this->getTotalCollectNum(Collect_Type::CITY, $val['obj_id']));
+                    $temp['id']       = strval($val['obj_id']);
+                    $city             = $logicCity->getCityById($val['obj_id']);
+                    $temp['image']    = Base_Image::getUrlByName($city['image']);
+                    $temp['name']     = $city['name'];
+                    $temp['topicNum'] = sprintf("共%d个话题",$logicCity->getTopicNum($val['obj_id']));
+                    //$temp['collect'] = strval($this->getTotalCollectNum(Collect_Type::CITY, $val['obj_id']));
                     $arrRet[]        = $temp;
                 }
                 break;
             case Collect_Type::TOPIC:
                 $logicTopic = new Topic_Logic_Topic();
                 foreach ($arrCollect['list'] as $val){
-                    $temp['id']         = $val['obj_id'];
+                    $temp['id']         = strval($val['obj_id']);
                     $topic              = $logicTopic->getTopicById($val['obj_id']);
                     $temp['image']      = Base_Image::getUrlByName($topic['image']);
                     $temp['subtitle']   = trim($topic['subtitle']);
                     $temp['title']      = trim($topic['title']);
                     //话题收藏数
                     $temp['collect']    = strval($this->getTotalCollectNum(Collect_Type::TOPIC, $val['obj_id']));
+                    $temp['type']       = strval(Collect_Type::TOPIC);
                     $arrRet[]           = $temp;
+                }
+                //内容中包含书籍
+                $listCollect = new Collect_List_Collect();
+                $listCollect->setFilter(array(
+                    'type'    => Collect_Type::BOOK,
+                    'user_id' => $this->logicUser->getUserId($device_id),
+                ));
+                $listCollect->setPage($page);
+                $listCollect->setPagesize($pageSize);
+                $arrBook = $listCollect->toArray();
+                $temp    = array();
+                foreach ($arrBook['list'] as $val){
+                    $objBook = new Book_Object_Book();
+                    $objBook->fetch(array('id' => $val['obj_id']));
+                    $temp['id']     = strval($val['obj_id']);
+                    $temp['title']  = $objBook->title;
+                    $temp['author'] = $objBook->author;
+                    $temp['image']  = Base_Image::getUrlByName($objBook->image);
+                    $temp['collect']= strval($this->getTotalCollectNum(Collect_Type::BOOK, $val['obj_id']));
+                    $temp['type']   = strval(Collect_Type::BOOK);
+                    $arrRet[]       = $temp;
                 }
                 break;
             default:

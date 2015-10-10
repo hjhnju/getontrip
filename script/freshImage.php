@@ -51,20 +51,77 @@ function addImage($sightId = ''){
              $res = $oss->writeFileContent($filename, $content);
          }
      }
-    
-     $model = new SightModel();
-     if(!empty($sightId)){
-         $ret[] = $model->getSightById($sightId);
-     }else{
-         $ret = $model->getSightList(1, PHP_INT_MAX);
-     }
-     foreach ($ret as $val){
+     
+     $listBook = new Book_List_Book();
+     $listBook->setPagesize(PHP_INT_MAX);
+     $arrBook = $listBook->toArray();
+     foreach ($arrBook['list'] as $val){
          if(!empty($val['image'])){
              $image = $val['image'];
              $content  = file_get_contents("http://123.57.67.165:8301/Pic/".$image);
              $filename = $image ;
              $res = $oss->writeFileContent($filename, $content);
          }
+     }
+    
+     $listVideo = new Video_List_Video();
+     $listVideo->setPagesize(PHP_INT_MAX);
+     $arrVideo = $listVideo->toArray();
+     foreach ($arrVideo['list'] as $val){
+         if(!empty($val['image'])){
+             $image = $val['image'];
+             $content  = file_get_contents("http://123.57.67.165:8301/Pic/".$image);
+             $filename = $image ;
+             $res = $oss->writeFileContent($filename, $content);
+         }
+     }
+     
+     $listKeyword = new Keyword_List_Keyword();
+     $listKeyword->setPagesize(PHP_INT_MAX);
+     $arrKeyword = $listKeyword->toArray();
+     foreach ($arrKeyword['list'] as $val){
+         if(!empty($val['image'])){
+             $image = $val['image'];
+             $content  = file_get_contents("http://123.57.67.165:8301/Pic/".$image);
+             $filename = $image ;
+             $res = $oss->writeFileContent($filename, $content);
+         }
+     }
+     
+     $listSight = new Sight_List_Sight();
+     $listSight->setPagesize(PHP_INT_MAX);
+     $arrSight = $listSight->toArray();
+     foreach ($arrSight['list'] as $val){
+         if(!empty($val['image'])){
+             $image = $val['image'];
+             $content  = file_get_contents("http://123.57.67.165:8301/Pic/".$image);
+             $filename = $image ;
+             $res = $oss->writeFileContent($filename, $content);
+         }
+     }
+     
+     $listCity = new City_List_City();
+     $listCity->setPagesize(PHP_INT_MAX);
+     $arrCity = $listCity->toArray();
+     foreach ($arrCity['list'] as $val){
+         if(!empty($val['image'])){
+             $image = $val['image'];
+             $content  = file_get_contents("http://123.57.67.165:8301/Pic/".$image);
+             $filename = $image ;
+             $res = $oss->writeFileContent($filename, $content);
+         }
+     }
+     
+     $logic = new Base_Logic();
+     $redis = Base_Redis::getInstance();
+     $arrKeys = $redis->keys("sight_topic_*");
+     foreach ($arrKeys as $key){
+         $redis->delete($key);
+     }
+      
+     $arrKeys = $redis->keys("topic_tag_*");
+     foreach ($arrKeys as $key){
+         $redis->delete($key);
      }
 }
 
@@ -97,13 +154,51 @@ function delImage($sightId = ''){
         }
     }
     
-    $model = new SightModel();
-    if(!empty($sightId)){
-        $ret[] = $model->getSightById($sightId);
-    }else{
-        $ret = $model->getSightList(1, PHP_INT_MAX);
+    $listSight = new Sight_List_Sight();
+    $listSight->setPagesize(PHP_INT_MAX);
+    $arrSight = $listSight->toArray();
+    foreach ($arrSight['list'] as $val){
+        if(!empty($val['image'])){
+            $filename = $val['image'];
+            $res = $oss->remove($filename);  
+        }
     }
-    foreach ($ret as $val){
+    
+    $listCity = new City_List_City();
+    $listCity->setPagesize(PHP_INT_MAX);
+    $arrCity = $listCity->toArray();
+    foreach ($arrCity['list'] as $val){
+        if(!empty($val['image'])){
+            $filename = $val['image'];
+            $res = $oss->remove($filename);
+        }
+    }
+    
+    
+    $listBook = new Book_List_Book();
+    $listBook->setPagesize(PHP_INT_MAX);
+    $arrBook = $listBook->toArray();
+    foreach ($arrBook['list'] as $val){
+        if(!empty($val['image'])){
+            $filename = $val['image'];
+            $res = $oss->remove($filename);  
+        }
+    }
+    
+    $listVideo = new Video_List_Video();
+    $listVideo->setPagesize(PHP_INT_MAX);
+    $arrVideo = $listVideo->toArray();
+    foreach ($arrVideo['list'] as $val){
+        if(!empty($val['image'])){
+            $filename = $val['image'];
+            $res = $oss->remove($filename);  
+        }
+    }
+     
+    $listKeyword = new Keyword_List_Keyword();
+    $listKeyword->setPagesize(PHP_INT_MAX);
+    $arrKeyword = $listKeyword->toArray();
+    foreach ($arrKeyword['list'] as $val){
         if(!empty($val['image'])){
             $filename = $val['image'];
             $res = $oss->remove($filename);  

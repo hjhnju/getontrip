@@ -1,6 +1,6 @@
 <?php
 
-class SightModel extends PgBaseModel
+class SightModel extends BaseModel
 {
 
     private $table = 'sight';
@@ -18,19 +18,9 @@ class SightModel extends PgBaseModel
      * @return array
      */
     public function getSightById($sightId){
-        $sql = "SELECT * FROM sight WHERE id = $sightId";
-        try {
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
-        } catch (Exception $ex) {
-            Base_Log::error($ex->getMessage());
-            return false;
-        }
-        if(isset($ret[0])){
-            return $ret[0];
-        }
-        return array();
+        $objSight = new Sight_Object_Sight();
+        $objSight->fetch(array('id' => $sightId));
+        return $objSight->toArray();
     }
     
     /**
@@ -40,22 +30,12 @@ class SightModel extends PgBaseModel
      */
     public function getSightByCity($page,$pageSize,$cityId){
         $listSight = new Sight_List_Sight();
+        $listSight->setFields(array('name','id','image'));
         $listSight->setFilter(array('city_id' => $cityId));
         $listSight->setPage($page);
         $listSight->setPagesize($pageSize);
         $arrSight = $listSight->toArray();
         return $arrSight['list'];
-        /*$from = ($page-1)*$pageSize;
-        $sql  = "SELECT `id`,`name`,`image` FROM `sight` WHERE `city_id` = $cityId  ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
-        try {
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
-        } catch (Exception $ex) {
-            Base_Log::error($ex->getMessage());
-            return false;
-        }
-        return $ret;*/
     }
     
     /**
@@ -63,21 +43,14 @@ class SightModel extends PgBaseModel
      * @return boolean|mixed
      */
     public function getSightList($page,$pageSize,$status = Sight_Type_Status::PUBLISHED){
-        $from = ($page-1)*$pageSize;
-        if ($status == Sight_Type_Status::ALL) {
-            $sql = "SELECT * FROM sight ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
-        }else{
-            $sql = "SELECT * FROM sight WHERE status = $status ORDER BY update_time DESC LIMIT $pageSize OFFSET $from";
-        }        
-        try {
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
-        } catch (Exception $ex) {
-            Base_Log::error($ex->getMessage());
-            return false;
+        $listSight = new Sight_List_Sight();
+        if ($status != Sight_Type_Status::ALL) {
+            $listSight->setFilter(array('status' => $status));
         }
-        return $ret;
+        $listSight->setPage($page);
+        $listSight->setPagesize($pageSize);
+        $arrSight = $listSight->toArray();
+        return $arrSight['list'];
     }
     
     /**
@@ -114,8 +87,7 @@ class SightModel extends PgBaseModel
         $_addValues = implode("','", $_addValues);
         $_sql = "INSERT INTO sight ($_addFields) VALUES ('$_addValues')";
         try {
-            $sth = $this->db->prepare($_sql);
-            $ret = $sth->execute();
+            $ret = $this->db->query($_sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return false;
@@ -145,8 +117,7 @@ class SightModel extends PgBaseModel
         $time = time();
         $_setData .= "update_time=$time";  
         $_sql = "UPDATE sight SET $_setData $_where"; 
-        $sth = $this->db->prepare($_sql);
-        $ret = $sth->execute();
+        $ret = $this->db->query($_sql);
         return $ret;  
     }
     
@@ -156,15 +127,9 @@ class SightModel extends PgBaseModel
      * @return boolean
      */
     public function delSight($id){
-        $sql = "DELETE FROM sight WHERE id = $id";
-        try {
-            $sth = $this->db->prepare($sql);
-            $ret = $sth->execute();
-        } catch (Exception $ex) {
-            Base_Log::error($ex->getMessage());
-            return false;
-        }
-        return $ret;
+        $objSight = new Sight_Object_Sight();
+        $objSight->fetch(array('id' => $id));
+        return $objSight->remove();
     }
     
     /**
@@ -178,9 +143,7 @@ class SightModel extends PgBaseModel
             $sql = "SELECT count(*) FROM sight WHERE city_id = $cityId";
         }
         try {
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $ret = $sth->fetchColumn();
+            $ret = $this->db->fetchOne($sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return 0;
@@ -203,9 +166,7 @@ class SightModel extends PgBaseModel
             $sql = "SELECT id, city_id, name, image, describe, earth_distance(ll_to_earth(sight.x, sight.y),ll_to_earth($x,$y)) AS dis FROM sight where name like '%".$query."%'  ORDER BY dis ASC limit $pageSize offset $offset";
         }                
         try {
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
+            $ret = $this->db->fetchAll($sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return false;
@@ -232,9 +193,7 @@ class SightModel extends PgBaseModel
         $where = substr($where, 0,-4);
         $sql = "SELECT * FROM sight $where ORDER BY update_time DESC limit $pageSize offset $offset";
         try {
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
+            $ret = $this->db->fetchAll($sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return false;
@@ -255,9 +214,7 @@ class SightModel extends PgBaseModel
         $where = substr($where, 0,-4);
         $sql = "SELECT count(*) FROM sight $where";
         try {
-            $sth = $this->db->prepare($sql);
-            $sth->execute();
-            $ret = $sth->fetchColumn();
+            $ret = $this->db->fetchOne($sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return 0;

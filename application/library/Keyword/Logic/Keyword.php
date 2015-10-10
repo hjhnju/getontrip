@@ -397,4 +397,11 @@ class Keyword_Logic_Keyword extends Base_Logic{
         }
         return $ret1&&$ret2;
     }
+    
+    public function getKeywordNum($sighId){
+        $listKeyword = new Keyword_List_Keyword();
+        $listKeyword->setFilter(array('sight_id' => $sighId));
+        $listKeyword->setPagesize(PHP_INT_MAX);
+        return $listKeyword->getTotal();
+    }
 }

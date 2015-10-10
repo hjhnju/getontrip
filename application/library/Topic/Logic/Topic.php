@@ -135,7 +135,15 @@ class Topic_Logic_Topic extends Base_Logic{
         if(empty($arrRet)){
             return $arrRet;
         }
+        
+        $objSightTopic = new Sight_Object_Topic();
+        $objSightTopic->fetch(array('topic_id' => $topicId));
+        $sightId       = $objSightTopic->sightId;
+        $arrSight      = Sight_Api::getSightById($sightId);
+        
         $logicComment          = new Comment_Logic_Comment();
+        $arrRet['id']          = strval($arrRet['id']);
+        $arrRet['sight_name']  = $arrSight['name'];
         $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
         $arrRet['title']       = trim($arrRet['title']);
         $arrRet['content']     = trim($arrRet['content']);
@@ -500,10 +508,6 @@ class Topic_Logic_Topic extends Base_Logic{
             $objSightTopic->fetch(array('id' => $data['id']));
             $redis->sRemove(Sight_Keys::getSightTopicKey($objSightTopic->sightId),$id);
             $num = $redis->sCard(Sight_Keys::getSightTopicKey($objSightTopic->sightId));
-            if($num == 0){
-                $model = new SightModel();
-                $model->eddSight($objSightTopic->sightId, array('hastopic' => 0));
-            }
             $objSightTopic->remove();
         }
     
@@ -737,9 +741,9 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrTopic  = Base_Search::Search('topic', $query, $page, $pageSize, array('id'));
         foreach ($arrTopic as $key => $val){
             $topic = $this->getTopicById($val['id']);
-            $arrTopic[$key]['title']     = trim($topic['title']);
-            $arrTopic[$key]['subtitle']  = trim($topic['subtitle']);
-            $arrTopic[$key]['image'] = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
+            $arrTopic[$key]['title']     = isset($topic['title'])?trim($topic['title']):'';
+            $arrTopic[$key]['subtitle']  = isset($topic['subtitle'])?trim($topic['subtitle']):'';
+            $arrTopic[$key]['image']     = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
         }
         return $arrTopic;
     }
@@ -835,7 +839,7 @@ class Topic_Logic_Topic extends Base_Logic{
     public function updateTopicRedis($type,$sightId,$topicId){
         //让缓存话题数据失效
         $redis = Base_Redis::getInstance();
-        $model = new SightModel();
+        
         $arrKeys = $redis->keys(Sight_Keys::getIndexTopicKey($sightId, "*"));
         foreach ($arrKeys as $key){
             $redis->delete($key);
@@ -854,18 +858,6 @@ class Topic_Logic_Topic extends Base_Logic{
         }
         
         $redis->delete(Sight_Keys::getSightTopicKey($sightId));
-        
-        if(self::ADD_TOPIC == $type){            
-            $num = $this->getTopicNumBySight($sightId,Topic_Type_Status::PUBLISHED);
-            if ($num == 1) {
-                $model->eddSight($sightId, array('hastopic' => 1));
-            }
-        }else{
-            $num = $this->getTopicNumBySight($sightId,Topic_Type_Status::PUBLISHED);
-            if ($num == 0) {
-                $model->eddSight($sightId, array('hastopic' => 0));
-            }
-        }
     }
     
     public function getTopicNumByTag($tagId, $sightId){
@@ -881,11 +873,10 @@ class Topic_Logic_Topic extends Base_Logic{
                 $listTopicTag = new Topic_List_Tag();
                 $listTopicTag->setFilter(array('topic_id' => $id,'tag_id' => $tagId));
                 $listTopicTag->setPagesize(PHP_INT_MAX);
-                $total += $listTopicTag->countAll();
-               
+                $total += $listTopicTag->countAll();               
             }
         }elseif($objTag->type == Tag_Type_Tag::GENERAL){
-            //通用标签
+             //通用标签
              $listTopicTag = new Topic_List_Tag();
              $listTopicTag->setFilter(array('tag_id' => $tagId));
              $listTopicTag->setPagesize(PHP_INT_MAX);

@@ -1,5 +1,5 @@
 <?php
-class TopicModel{
+class TopicModel extends BaseModel{
     
     const MONTH = 30;
     
@@ -13,10 +13,8 @@ class TopicModel{
     
     const CONTENT_LEN   = 75;
     
-    protected $db;
-    
     public function __construct(){
-        $this->db = Base_Db::getInstance('getontrip');
+        parent::__construct();
     }
     
     /**

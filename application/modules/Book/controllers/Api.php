@@ -37,15 +37,22 @@ class ApiController extends Base_Controller_Api {
      * 接口2:/Api/book/detail
      * 书籍详情接口
      * @param integer book,书籍ID
+     * @param string deviceId，用户的设备ID（因为要统计UV）
      * @return json
      */
     public function detailAction(){
-        $bookId   = isset($_REQUEST['book'])?intval($_REQUEST['book']):'';
-        if(empty($bookId)){
+        $bookId     = isset($_REQUEST['book'])?intval($_REQUEST['book']):'';
+        $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
+        if(empty($bookId)||empty($deviceId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
+        
+        //增加访问统计
+        $logicVisit = new Tongji_Logic_Visit();
+        $logicVisit->addVisit(Tongji_Type_Visit::BOOK, $deviceId, $bookId);
+        
         $logic    = new Book_Logic_Book();
-        $ret      = $logic->getBookById($bookId);
+        $ret      = $logic->getBookById($bookId);  
         $this->ajax($ret);
     }
 }

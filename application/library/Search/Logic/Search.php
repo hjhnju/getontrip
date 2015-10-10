@@ -61,6 +61,12 @@ class Search_Logic_Search{
                 $arrBook     = $this->logicBook->search($query, $page, $pageSize);
                 $arrVideo    = $this->logicVideo->search($query, $page, $pageSize);
                 $arrKeyword  = $this->logicKeyword->search($query, $page, $pageSize);
+                $arrRet = array(
+                    'topic' => $arrTopic,
+                    'book'  => $arrBook,
+                    'video' => $arrVideo,
+                    'wiki'  => $arrKeyword,
+                );
                 break;
             default :
                 $arrCity     = $this->logicCity->search($query, $page, $pageSize);
@@ -89,8 +95,8 @@ class Search_Logic_Search{
      */
     public function label($labelId, $page, $pageSize){
         $arrRet    = array();
-        $arrData   = array();
-        
+        $arrData   = array();        
+        $arrRet['image']     = Base_Image::getUrlByName(Base_Config::getConfig('searchlabel')->image,400,200);
         if($page == 1){
             $listTag = new Tag_List_Tag();
             $listTag->setFilter(array('type' => Tag_Type_Tag::SEARCH));
@@ -107,8 +113,7 @@ class Search_Logic_Search{
             if(empty($labelId)){
                 $labelId     = $arrTemp[0]['id'];
             }
-        }
-        
+        }        
         $listLabel = new Search_List_Label();
         $listLabel->setFilter(array('label_id' => $labelId));
         $listLabel->setPage($page);
@@ -122,14 +127,16 @@ class Search_Logic_Search{
                     $cityId        = $val['obj_id'];
                     $arrCity       = $logicCity->getCityById($cityId);
                     $temp['id']    = strval($cityId);
+                    $temp['type']  =  strval(Search_Type_Label::CITY);
                     $temp['name']  = $arrCity['name'];
-                    $temp['image'] = Base_Image::getUrlByName($arrCity['image']);
-                    $sight_num     = $this->logicSight->getSightsNum(array(),$val['id']);
-                    $topic_num     = $this->logicCity->getTopicNum($val['id']);
-                    $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::CITY, $val['id']);
+                    $temp['name']  = str_replace("市", "", $temp['name']);
+                    $temp['image'] = isset($arrCity['image'])?Base_Image::getUrlByName($arrCity['image']):'';
+                    $sight_num     = $this->logicSight->getSightsNum(array(),$cityId);
+                    $topic_num     = $this->logicCity->getTopicNum($cityId);
+                    $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::CITY, $cityId);
                     $temp['collect_num']  =  sprintf("%d人收藏",$collect);
                     $temp['sight_num']    =  sprintf("%d个景点",$sight_num);
-                    $temp['topic_num']    =  sprintf("%d个话题",$topic_num);
+                    $temp['topic_num']    =  sprintf("%d个话题",$topic_num);                   
                     $arrData[] = $temp;
                 }
             }else{
@@ -138,25 +145,25 @@ class Search_Logic_Search{
                     $sightId       = $val['obj_id'];
                     $arrSight      = $logicSight->getSightById($sightId);
                     $temp['id']    = strval($sightId);
+                    $temp['type']  =  strval(Search_Type_Label::SIGHT);
                     $temp['name']  = $arrSight['name'];
-                    $temp['image'] = Base_Image::getUrlByName($arrSight['image']);
-                    $strTopicIds   = $this->logicTopic->getTopicIdBySight($val['id']);
+                    $temp['image'] = isset($arrSight['image'])?Base_Image::getUrlByName($arrSight['image']):'';
+                    $strTopicIds   = $this->logicTopic->getTopicIdBySight($sightId);
                     $arrTopicIds   = explode(",",$strTopicIds);
                     $count         = 0;
                     foreach ($arrTopicIds as $id){
-                        $count    += $this->logicComment->getTotalCommentNum($val['id']);
+                        $count    += $this->logicComment->getTotalCommentNum($sightId);
                     }
-                    $topic_num     = $this->logicSight->getTopicNum($val['id']);
-                    $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $val['id']);
+                    $topic_num     = $this->logicSight->getTopicNum($sightId);
+                    $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $sightId);
                     $temp['collect_num']  =  sprintf("%d人收藏",$collect);
                     $temp['topic_num']    =  sprintf("%d个话题",$topic_num);
-                    $temp['comment_num']  =  sprintf("%d个景点",$count);
+                    $temp['sight_num']    =  sprintf("%d个评论",$count);                    
                     $arrData[] = $temp;
                 }
             }
         }
-        $arrRet['data']   = $arrData; 
-        $arrRet['image']  = '/pic/00a9b8112e808d95.jpg';
+        $arrRet['content']   = $arrData;         
         return $arrRet;
     }
 }

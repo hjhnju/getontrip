@@ -23,9 +23,8 @@ class ApiController extends Base_Controller_Api {
      */
     public function labelAction() {
         $page       = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
-        $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['page']):self::PAGESIZE;
-        $labelId    = isset($_REQUEST['label'])?intval($_REQUEST['label']):'';
-         
+        $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
+        $labelId    = isset($_REQUEST['label'])?intval($_REQUEST['label']):'';         
         $logic      = new Search_Logic_Search();
         $ret        = $logic->label($labelId, $page, $pageSize);
         $this->ajax($ret);
@@ -43,9 +42,8 @@ class ApiController extends Base_Controller_Api {
     public function indexAction() {
         $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         $page       = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
-        $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['page']):self::PAGESIZE;
-        $query      = isset($_REQUEST['query'])?strval($_REQUEST['query']):'*';
-         
+        $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
+        $query      = isset($_REQUEST['query'])?strval($_REQUEST['query']):'*';         
         $logic      = new Search_Logic_Search();
         $ret        = $logic->search($query, $page, $pageSize, $type);
         $this->ajax($ret);

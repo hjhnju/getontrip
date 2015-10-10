@@ -156,12 +156,24 @@ class Sight_Logic_Sight extends Base_Logic{
         
             $strTopicIds   = $logicTopic->getTopicIdBySight($val['id']);
             $arrTopicIds   = explode(",",$strTopicIds);
+            //评论数
             $count         = 0;
             foreach ($arrTopicIds as $id){
                 $count    += $logicComment->getTotalCommentNum($val['id']);
             }
+            //话题数
             $topic_num     = $this->getTopicNum($val['id']);
-            $arrSight[$key]['desc']  = sprintf("评论数:%d，话题数:%d",$count,$topic_num);
+            
+            //书籍数
+            $book_num      = Book_Api::getBookNum($val['id']);
+            
+            //视频数
+            $video_num     = Video_Api::getVideoNum($val['id']);
+            
+            //景观数
+            $keyword_num   = Keyword_Api::getKeywordNum($val['id']);
+            
+            $arrSight[$key]['desc']  = sprintf("%d个内容，%d个话题",$count,$topic_num);
         }
         return $arrSight;
     }
@@ -272,9 +284,15 @@ class Sight_Logic_Sight extends Base_Logic{
             }           
         }
         $ret = $objSight->save();
-        /*if(isset($arrInfo['tags'])){
-            
-        }*/
+        if(isset($arrInfo['tags'])){
+            $arrTags      = explode(",",$arrInfo['tags']);
+            foreach ($arrTags as $id){
+                $objSightTag = new Sight_Object_Tag();
+                $objSightTag->sightId = $objSight->id;
+                $objSightTag->tagId   = $id;
+                $objSightTag->save();
+            }
+        }
         if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
             $data = $this->modelSight->query(array('name' => $arrInfo['name']), 1, 1);
             $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
@@ -298,8 +316,24 @@ class Sight_Logic_Sight extends Base_Logic{
             $key = $this->getprop($key);
             if(in_array($key,$this->_fileds)){
                 $objSight->$key = $val;
+            }           
+        }
+        if(isset($arrInfo['tags'])){
+            $listSightTag = new Sight_List_Tag();
+            $listSightTag->setFilter(array('sight_id' => $sightId));
+            $listSightTag->setPagesize(PHP_INT_MAX);
+            foreach ($listSightTag['list'] as $val){
+                $objSightTag = new Sight_Object_Tag();
+                $objSightTag->fetch(array('id' => $val['tag_id']));
+                $objSightTag->remove();
             }
-           
+            $arrTags      = explode(",",$arrInfo['tags']);
+            foreach ($arrTags as $id){
+                $objSightTag = new Sight_Object_Tag();
+                $objSightTag->sightId = $objSight->id;
+                $objSightTag->tagId   = $id;
+                $objSightTag->save();
+            }
         }
         $ret = $objSight->save();
         if($ret && isset($_updateData['status']) && ($_updateData['status'] == Sight_Type_Status::PUBLISHED)){
@@ -359,7 +393,9 @@ class Sight_Logic_Sight extends Base_Logic{
         if(!empty($cityId)){
             $arrInfo = array_merge($arrInfo,array('city_id' => $cityId));
         }
-        $listSight->setFilter($arrInfo);
+        if(!empty($arrInfo)){
+            $listSight->setFilter($arrInfo);
+        }
         $listSight->setPagesize(PHP_INT_MAX);
         $arrRet    = $listSight->toArray();        
         return $arrRet['total'];

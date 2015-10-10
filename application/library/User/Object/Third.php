@@ -48,6 +48,7 @@ class User_Object_Third extends Base_Object {
      */
     protected $intProps = array(
         'id'          => 1,
+        'user_id'     => 1,
         'auth_type'   => 1,
         'create_time' => 1,
         'update_time' => 1,
@@ -70,7 +71,7 @@ class User_Object_Third extends Base_Object {
 
     /**
      * 用户ID
-     * @var string
+     * @var integer
      */
     public $userId;
 

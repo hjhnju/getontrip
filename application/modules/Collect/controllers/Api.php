@@ -19,7 +19,7 @@ class ApiController extends Base_Controller_Page {
     /**
      * 接口1：/api/collect/add
      * 添加收藏接口
-     * @param integer type,1：话题;2：景点；3:城市
+     * @param integer type,1：话题;2：景点；3:城市; 4:景点
      * @param string  device，设备ID
      * @param integer objid，收藏对象的ID
      * @return json
@@ -42,7 +42,7 @@ class ApiController extends Base_Controller_Page {
     /**
      * 接口2：/api/collect/del
      * 取消收藏接口
-     * @param integer type,1：话题;2：景点；3:城市
+     * @param integer type,1：话题;2：景点；3:城市,4:景点
      * @param string  device，设备ID
      * @param integer objid，收藏对象的ID
      * @return json

@@ -51,7 +51,7 @@ class ApiController extends Base_Controller_Page {
     
     /**
      * 接口3：/api/city/topic
-     * 获取城市话题,首页中使用
+     * 获取城市话题,定位了城市后刷新话题时使用
      * @param string device，用户的设备ID
      * @param integer page,页码
      * @param integer pageSize,页面大小
@@ -63,6 +63,9 @@ class ApiController extends Base_Controller_Page {
         $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::INDEX_TOPIC_NUM;
         $logicCity = new City_Logic_City();
+        if(empty($city)){
+            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
+        }
         $ret       = $logicCity->getHotTopic($city,$page,$pageSize);
         return $this->ajax($ret);
     }

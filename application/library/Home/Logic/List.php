@@ -112,7 +112,7 @@ class Home_Logic_List{
         foreach ($sight['list'] as $key => $val){
             $arrSight[$key]['id']    = strval($val['id']);
             $arrSight[$key]['name']  = trim($val['name']);
-            $arrSight[$key]['image'] = Base_Image::getUrlByName($val['image']);
+            $arrSight[$key]['image'] = isset($val['image'])?Base_Image::getUrlByName($val['image']):'';
             
             $topic_num     = $this->_logicSight->getTopicNum($val['id']);
             $collect       = $this->_logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $val['id']);
@@ -123,10 +123,16 @@ class Home_Logic_List{
         $cityTopic = new City_Logic_City();
         $arrTopic  = $cityTopic->getHotTopic($cityId);
         
+        //获取城市话题页数
+        $logicCity = new City_Logic_City();
+        $topicNum  = $logicCity->getTopicNum($cityId);
+        $topicNum  = ceil($topicNum/self::PAGE_SIZE);
+        
         $arrRet = array(
             'city'  => $arrCity,
             'sight' => $arrSight,
             'topic' => $arrTopic,
+            'page_num' => strval($topicNum),
         );
         return $arrRet;
     }

@@ -135,7 +135,15 @@ class Topic_Logic_Topic extends Base_Logic{
         if(empty($arrRet)){
             return $arrRet;
         }
+        
+        $objSightTopic = new Sight_Object_Topic();
+        $objSightTopic->fetch(array('topic_id' => $topicId));
+        $sightId       = $objSightTopic->sightId;
+        $arrSight      = Sight_Api::getSightById($sightId);
+        
         $logicComment          = new Comment_Logic_Comment();
+        $arrRet['id']          = strval($arrRet['id']);
+        $arrRet['sight_name']  = $arrSight['name'];
         $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
         $arrRet['title']       = trim($arrRet['title']);
         $arrRet['content']     = trim($arrRet['content']);

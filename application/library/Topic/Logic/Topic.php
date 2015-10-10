@@ -870,7 +870,7 @@ class Topic_Logic_Topic extends Base_Logic{
                 $listTopicTag->setPagesize(PHP_INT_MAX);
                 $total += $listTopicTag->countAll();               
             }
-        }elseif($objTag->type == Tag_Type_Tag::GENERAL){
+        }else{
              //通用标签
              $listTopicTag = new Topic_List_Tag();
              $listTopicTag->setFilter(array('tag_id' => $tagId));

@@ -53,13 +53,13 @@ $(document).ready(function() {
                 var normalTag = e.tagList.normalTag;
 
                 for (var i = 0; i < classifyTag.length; i++) { 
-                    tagStr = tagStr+ '<span class="label label-success">'+classifyTag[i].name+'</span>';
+                    tagStr = tagStr+ '<span class="label label-success">'+classifyTag[i].name+'('+classifyTag[i].topic_num+')</span>';
                 };
                 for (var i = 0; i < generalTag.length; i++) { 
-                    tagStr = tagStr+ '<span class="label label-warning">'+generalTag[i].name+'</span>';
+                    tagStr = tagStr+ '<span class="label label-warning">'+generalTag[i].name+'('+generalTag[i].topic_num+')</span>';
                 };
                 for (var i = 0; i < normalTag.length; i++) { 
-                    tagStr = tagStr+ '<span class="label label-default">'+normalTag[i].name+'</span>';
+                    tagStr = tagStr+ '<span class="label label-default">'+normalTag[i].name+'('+normalTag[i].topic_num+')</span>';
                 }; 
                 return  tagStr;
             }

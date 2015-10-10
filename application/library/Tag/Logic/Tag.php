@@ -220,14 +220,17 @@ class Tag_Logic_Tag extends Base_Logic{
      * @return array
      */
     public function getTagIdsBySight($sightId){
-        $arrTags      = array();
+        $arrTags       = array();
+        $arrGeneralTag = array();
         //通用标签
         $listSightTag = new Sight_List_Tag();
         $listSightTag->setFilter(array('sight_id' => $sightId));
         $listSightTag->setPagesize(PHP_INT_MAX);
         $arrSightTag = $listSightTag->toArray();
         foreach ($arrSightTag['list'] as $val){
-            $arrGeneralTag[] = $val['tag_id'];
+            if(!in_array($val['tag_id'],$arrTags)){
+                $arrTags[] = $val['tag_id'];
+            }
         }
         //分类标签
         $logicTopic = new Topic_Logic_Topic();
@@ -239,7 +242,9 @@ class Tag_Logic_Tag extends Base_Logic{
             $listTopicTag->setPagesize(PHP_INT_MAX);
             $arrTag = $listTopicTag->toArray();
             foreach ($arrTag['list'] as $val){
-                $arrTags[] = $val['tag_id'];
+                if(!in_array($val['tag_id'],$arrTags)){
+                    $arrTags[] = $val['tag_id'];
+                }
             }
         }
         return $arrTags;

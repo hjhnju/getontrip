@@ -859,23 +859,23 @@ class Topic_Logic_Topic extends Base_Logic{
         $total  = 0;
         $objTag = new Tag_Object_Tag();
         $objTag->fetch(array('id' => $tagId));
-        if($objTag->type == Tag_Type_Tag::CLASSIFY){
-            //分类标签
-            $logicTopic = new Topic_Logic_Topic();
-            $strTopics  = $logicTopic->getTopicIdBySight($sightId);
-            $arrTopics  = explode(",",$strTopics);
-            foreach ($arrTopics as $id){
-                $listTopicTag = new Topic_List_Tag();
-                $listTopicTag->setFilter(array('topic_id' => $id,'tag_id' => $tagId));
-                $listTopicTag->setPagesize(PHP_INT_MAX);
-                $total += $listTopicTag->countAll();               
-            }
-        }else{
+        if($objTag->type == Tag_Type_Tag::GENERAL){
              //通用标签
              $listTopicTag = new Topic_List_Tag();
              $listTopicTag->setFilter(array('tag_id' => $tagId));
              $listTopicTag->setPagesize(PHP_INT_MAX);
              $total += $listTopicTag->countAll();
+        }else{
+             //分类标签或普通标签
+             $logicTopic = new Topic_Logic_Topic();
+             $strTopics  = $logicTopic->getTopicIdBySight($sightId);
+             $arrTopics  = explode(",",$strTopics);
+             foreach ($arrTopics as $id){
+                 $listTopicTag = new Topic_List_Tag();
+                 $listTopicTag->setFilter(array('topic_id' => $id,'tag_id' => $tagId));
+                 $listTopicTag->setPagesize(PHP_INT_MAX);
+                 $total += $listTopicTag->countAll();
+             }
         }
         return $total;
     }

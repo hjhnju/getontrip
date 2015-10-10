@@ -28,7 +28,13 @@ class Sight_Logic_Sight extends Base_Logic{
     public function getSightById($sightId){
         $objSight = new Sight_Object_Sight();
         $objSight->fetch(array('id' => $sightId));
-        return $objSight->toArray();
+        $arrSight =  $objSight->toArray();
+        
+        $listSightTag = new Sight_List_Tag();
+        $listSightTag->setFilter(array('sight_id' => $sightId));
+        $arrTags      = $listSightTag->toArray();
+        $arrSight['tags'] = $arrTags['list'];
+        return $arrSight;
     }
     
     /**
@@ -312,6 +318,7 @@ class Sight_Logic_Sight extends Base_Logic{
      */
     public function editSight($sightId,$arrInfo){
         $objSight = new Sight_Object_Sight();
+        $objSight->fetch(array('id' =>$sightId));
         foreach ($arrInfo as $key => $val){
             $key = $this->getprop($key);
             if(in_array($key,$this->_fileds)){

@@ -8,7 +8,7 @@ $(document).ready(function() {
         "processing": true, //载入数据的时候是否显示“载入中”
         "pageLength": 10, //首次加载的数据条数  
         "searching": false, //是否开启本地分页
-        "ordering":false,
+        "ordering": false,
         "ajax": {
             "url": "/admin/Tagapi/list",
             "type": "POST",
@@ -21,23 +21,62 @@ $(document).ready(function() {
             "visible": false,
             "searchable": false
         }],
-        "columns": [{
+        "aoColumns": [
+
+            {
+                "mDataProp": "id"
+            }, {
+                "mDataProp": "name"
+            }, {
+                "mDataProp": "type",
+                "fnCreatedCell": function(nTd, sData, oData, iRow, iCol) {
+                    $(nTd).html(oData.type_name);
+                    $(nTd).addClass('selectTd').attr('id', 'td_' + sData + '_' + oData.type);
+                }
+            } , {
+                "mDataProp": "create_time",
+                "fnCreatedCell": function(nTd, sData, oData, iRow, iCol) {
+                    if (oData.create_time) {
+                        $(nTd).html(moment.unix(oData.create_time).format(FORMATER));
+                    }
+                    return "空";
+                }
+            }, {
+                "mDataProp": "update_time",
+                "fnCreatedCell": function(nTd, sData, oData, iRow, iCol) {
+                    if (oData.update_time) {
+                        $(nTd).html(moment.unix(oData.update_time).format(FORMATER));
+                    }
+                    return "空";
+                }
+            }, {
+                "mDataProp": "update_time",
+                "fnCreatedCell": function(nTd, sData, oData, iRow, iCol) {
+                    $(nTd).html(editBtn);
+                }
+            },
+        ],
+        /*"columns": [{
             "data": "id"
         }, {
             "data": "name"
         }, {
-            "data": "type_name"
-        },{
+            "data": function(e) { 
+                if (e.type) {
+                    return e.type_name+'/'+e.type;
+                }
+            }
+        }, {
             "data": function(e) {
-                if (e.create_time) {  
-                    return  moment.unix(e.create_time).format(FORMATER);
+                if (e.create_time) {
+                    return moment.unix(e.create_time).format(FORMATER);
                 }
                 return "空";
             }
         }, {
             "data": function(e) {
                 if (e.update_time) {
-                    return  moment.unix(e.update_time).format(FORMATER); 
+                    return moment.unix(e.update_time).format(FORMATER);
 
                 }
                 return "空";
@@ -46,7 +85,7 @@ $(document).ready(function() {
             "data": function(e) {
                 return editBtn;
             }
-        }],
+        }],*/
         "initComplete": function(setting, json) {
             //工具提示框
             //$('[data-toggle="tooltip"]').tooltip();
@@ -60,7 +99,7 @@ $(document).ready(function() {
         var aiNew = oTable.fnAddData({
             "id": '',
             "name": '',
-            "type_name": '',
+            "type": '',
             "create_time": '',
             "update_time": '',
             "opt": 'new'
@@ -88,11 +127,11 @@ $(document).ready(function() {
             },
             "success": function(response) {
                 if (response.status == 0) {
-                        toastr.success('删除成功');
-                        oTable.fnDeleteRow(nRow); 
-                 }
+                    toastr.success('删除成功');
+                    oTable.fnDeleteRow(nRow);
+                }
             }
-        }); 
+        });
     });
 
     $('#editable button.cancel').live('click', function(e) {
@@ -125,11 +164,14 @@ $(document).ready(function() {
     function editRow(oTable, nRow) {
         var aData = oTable.fnGetData(nRow);
         var jqTds = $('>td', nRow);
-        jqTds[0].innerHTML = '<input type="text" class="form-control small" value="' + aData["name"] + '">';
-        jqTds[1].innerHTML = '';
-        jqTds[2].innerHTML = '';
-        jqTds[3].innerHTML = aData.opt == "new" ? newBtn : saveBtn;
+        jqTds[0].innerHTML = '';
+        jqTds[1].innerHTML = '<input type="text" class="form-control small" value="' + aData["name"] + '">';
+        jqTds[2].innerHTML = ' <select name="type" class="tag-type">' + '<option value="1">普通标签</option>' + '<option value="2">通用标签</option>' + '<option value="3">分类标签</option>' + '<option value="4">搜索标签</option>' + '</select>';
+        jqTds[3].innerHTML = '';
+        jqTds[4].innerHTML = '';
+        jqTds[5].innerHTML = aData.opt == "new" ? newBtn : saveBtn;
 
+        $('.tag-type').selectpicker();
     }
 
     function saveRow(oTable, nRow) {
@@ -141,16 +183,20 @@ $(document).ready(function() {
 
         $.ajax({
             "url": "/admin/Tagapi/save",
-            "data": data,
+            "data": {
+                'id':data.id?data.id:'',
+                'name':data.name,
+                'type_name':data.type_name
+            },
             "type": "post",
             "error": function(e) {
                 alert("服务器未正常响应，请重试");
             },
             "success": function(response) {
-                if (response.status == 0) { 
+                if (response.status == 0) {
                     toastr.success('保存成功');
                     //刷新当前页
-                    oTable.fnRefresh();  
+                    oTable.fnRefresh();
                 }
             }
         });
@@ -164,14 +210,22 @@ $(document).ready(function() {
           for (var i = 0, iLen = jqTds.length; i < iLen; i++) {
               oTable.fnUpdate(aData[i], nRow, i, false);
           }*/
-        var tds = nRow.childNodes;
+        var tds = nRow.childNodes; 
         $.each(tds, function(i, val) {
             var jqob = $(val);
             //把input变为字符串
-            if (!jqob.has('button').length) {
+            if (!jqob.has('button').length&&!jqob.has('select').length) {
                 var txt = jqob.children("input").val();
                 jqob.html(txt);
                 oTable.api().cell(jqob).data(txt); //修改DataTables对象的数据
+            } else if (jqob.has('select').length > 0) {
+                var val = jqob.children("select").val();
+                var txt = jqob.children("select").find("option:selected").text();
+                jqob.html(txt);
+                
+                oTable.api().row(nRow).data().type=val;
+                oTable.api().row(nRow).data().type_name=txt; 
+                //oTable.api().row(nRow).data(data); //修改DataTables对象的数据 
             } else {
                 //把操作变成编辑按钮
                 oTable.api().cell(jqob).data(newBtn);

@@ -5824,7 +5824,7 @@ Custom tables
     width: 100% !important;
 }
 
-.table .btn {
+.table .btn ,.table span.label{
     margin-top: 0px;
     margin-left: 0px;
     margin-right: 5px;

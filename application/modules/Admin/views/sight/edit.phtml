@@ -91,6 +91,16 @@
                            	<p class="help-block">输入后请在下拉框选择(键盘也可选择)，否则无效</p> 
                            </div>
                       </div>
+                      <div class="form-group ">
+                          <label for="city_name" class="control-label col-lg-2">通用标签：</label>
+                          <div class="col-lg-10">  
+                              {%foreach $generalTag as $key=>$item%}
+                              <label class="checkbox-inline"> 
+                                <input type='checkbox' name="" data-name="form-generaltag" id="" value="{%$item.id%}" {%if isset($item.selected)%}checked{%/if%}>{%$item.name%} 
+                              </label>
+                              {%/foreach%}  
+                           </div> 
+                      </div>
                        <div class="form-group ">
                           <label for="xy" class="control-label col-lg-2">坐标*</label>
                           <div class="col-lg-5">

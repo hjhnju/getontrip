@@ -446,7 +446,7 @@ $(document).ready(function() {
 
                     }
 
-                    //特殊处理标签 
+                    //特殊处理通用标签 
                     tag_id_array = [];
                     if ($('#sight_tag').val() == 'tag') {
                         $('input[data-name="form-generaltag"]:checked').each(function() {

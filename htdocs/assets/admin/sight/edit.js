@@ -163,6 +163,14 @@ $(document).ready(function() {
 
                 //序列化表单  
                 var param = $("#Form").serializeObject();
+
+                //特殊处理通用标签 
+                tag_id_array = [];
+                $('input[data-name="form-generaltag"]:checked').each(function() {
+                    tag_id_array.push(Number($(this).val()));
+                });
+
+                param.tags = tag_id_array; 
                 param.action = action;
                 var url = '';
                 if (!$('#id').val()) {

@@ -63,6 +63,24 @@ $(document).ready(function() {
         }, {
             "data": 'y'
         }, {
+            "data": function(e) {
+                var tagStr='';
+                var classifyTag = e.tagList.classifyTag;
+                var generalTag = e.tagList.generalTag;
+                var normalTag = e.tagList.normalTag;
+
+               /* for (var i = 0; i < classifyTag.length; i++) { 
+                    tagStr = tagStr+ '<span class="label label-success">'+classifyTag[i].name+'</span>';
+                };*/
+                for (var i = 0; i < generalTag.length; i++) { 
+                    tagStr = tagStr+ '<span class="label label-warning">'+generalTag[i].name+'</span>';
+                };
+               /* for (var i = 0; i < normalTag.length; i++) { 
+                    tagStr = tagStr+ '<span class="label label-default">'+normalTag[i].name+'</span>';
+                }; */
+                return  tagStr;
+            }
+        }, {
             "data": function(e){
                 if (e.statusName == '未发布') {
                     return e.statusName + '<button type="button" class="btn btn-primary btn-xs publish" title="发布" data-toggle="tooltip" ><i class="fa fa-check-square-o"></i></button>';

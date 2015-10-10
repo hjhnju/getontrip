@@ -59,7 +59,7 @@ class TagapiController extends Base_Controller_Api{
        if(!empty($type_name)){
            $type      = Tag_Type_Tag::getTypeId($type_name);
            $arrPram   = array_merge($arrPram,array('type' => $type));
-       }
+       } 
        if($id!=""){
            $bRet = Tag_Api::editTag($id,$arrPram);
        }else{ 

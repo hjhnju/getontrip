@@ -47,10 +47,43 @@ class  SightapiController extends Base_Controller_Api{
             }
         } 
 
-         //处理状态值 
-        for($i=0; $i<count($tmpList); $i++) { 
-            $tmpList[$i]["statusName"] = Sight_Type_Status::getTypeName($tmpList[$i]["status"]);  
-         }
+          
+        for($i=0; $i<count($tmpList); $i++) {
+            $sightInfo = $tmpList[$i];
+            $sight_id = intval($sightInfo['id']);
+            
+            //处理状态值 
+            $sightInfo["statusName"] = Sight_Type_Status::getTypeName($sightInfo["status"]);  
+            
+            //处理相关标签
+            $tag_id_array =$sightInfo['tags']; 
+            $sightInfo['tags'] =$tag_id_array;
+            $normalTag = array();
+            $generalTag = array();
+            $classifyTag = array(); 
+            for ($j=0; $j < count($tag_id_array); $j++) { 
+                $tag = Tag_Api::getTagInfo($tag_id_array[$j], $sight_id);
+                switch ($tag['type']) {
+                  case Tag_Type_Tag::NORMAL:
+                    array_push($normalTag,$tag); 
+                    break; 
+                  case Tag_Type_Tag::GENERAL:
+                    array_push($generalTag,$tag); 
+                    break;
+                  case Tag_Type_Tag::CLASSIFY:
+                    array_push($classifyTag,$tag); 
+                    break;
+                } 
+            }
+            $sightInfo['tagList']['normalTag'] = $normalTag; 
+            $sightInfo['tagList']['generalTag'] = $generalTag; 
+            $sightInfo['tagList']['classifyTag'] = $classifyTag; 
+             
+            $tmpList[$i]=$sightInfo;
+        }
+        
+        
+
         $List['list']=$tmpList;
 
         $retList['recordsFiltered'] =$List['total'];
@@ -158,7 +191,7 @@ class  SightapiController extends Base_Controller_Api{
                 $sightInfo['keywordCount']=count($keywordList['list']);
 
                 //相关标签
-                $tag_id_array =array_unique($sightInfo['tags']); 
+                $tag_id_array =$sightInfo['tags']; 
                 $sightInfo['tags'] =$tag_id_array;
                 $normalTag = array();
                 $generalTag = array();

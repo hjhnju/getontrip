@@ -30,6 +30,12 @@ $(document).ready(function() {
             "targets": [],
             "visible": false,
             "searchable": false
+        },{
+            "targets": [4],
+            "width": 130
+        },{
+            "targets": [5,6,7],
+            "width": 90
         }],
         "columns": [{
             "data": "id"
@@ -41,22 +47,25 @@ $(document).ready(function() {
             }
         }, {
             "data": function(e) {
-                if (e.tagList.classifyTag) {
-                    return '<span class="label label-default">Default</span>';
-                }
-                if (e.tagList.generalTag) {
+                var tagStr='';
+                var classifyTag = e.tagList.classifyTag;
+                var generalTag = e.tagList.generalTag;
+                var normalTag = e.tagList.normalTag;
 
-                    return '<span class="label label-primary">primary</span>';
-                }
-                if (e.tagList.normalTag) { 
-                    return '<span class="label label-success">success</span>';
-                } else {
-                    return '--';
-                }
+                for (var i = 0; i < classifyTag.length; i++) { 
+                    tagStr = tagStr+ '<span class="label label-success">'+classifyTag[i].name+'</span>';
+                };
+                for (var i = 0; i < generalTag.length; i++) { 
+                    tagStr = tagStr+ '<span class="label label-warning">'+generalTag[i].name+'</span>';
+                };
+                for (var i = 0; i < normalTag.length; i++) { 
+                    tagStr = tagStr+ '<span class="label label-default">'+normalTag[i].name+'</span>';
+                }; 
+                return  tagStr;
             }
         }, {
             "data": function(e) {
-                return '共' + e.topicCount + '个' + '<a class="btn btn-success btn-xs" title="创建" data-toggle="tooltip" target="_blank" href="/admin/topic/edit?action=add&sight_id=' + e.id + '">创建</a><a class="btn btn-primary btn-xs" title="筛选" data-toggle="tooltip"  target="_blank"  href="/admin/topic/filter?sight_id=' + e.id + '">筛选</a><a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/topic/list?sight_id=' + e.id + '">列表</a>';
+                return '共' + e.topicCount + '个<br/>' + '<a class="btn btn-success btn-xs" title="创建" data-toggle="tooltip" target="_blank" href="/admin/topic/edit?action=add&sight_id=' + e.id + '">创建</a><a class="btn btn-primary btn-xs" title="筛选" data-toggle="tooltip"  target="_blank"  href="/admin/topic/filter?sight_id=' + e.id + '">筛选</a><a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/topic/list?sight_id=' + e.id + '">列表</a>';
             }
         }, {
             "data": function(e) {
@@ -65,17 +74,17 @@ $(document).ready(function() {
 
                     }
                 }
-                return '共' + e.keywordCount + '个' + '<a class="btn btn-success btn-xs" title="创建" data-toggle="tooltip" target="_blank" href="/admin/keyword/edit?action=add&sight_id=' + e.id + '">创建</a><a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/keyword/list?sight_id=' + e.id + '">列表</a>';
+                return '共' + e.keywordCount + '个<br/>' + '<a class="btn btn-success btn-xs" title="创建" data-toggle="tooltip" target="_blank" href="/admin/keyword/edit?action=add&sight_id=' + e.id + '">创建</a><a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/keyword/list?sight_id=' + e.id + '">列表</a>';
 
             }
         }, {
             "data": function(e) {
-                return '共' + e.book_num + '个' + '<a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/book/list?sight_id=' + e.id + '">列表</a>';
+                return '共' + e.book_num + '个<br/>' + '<a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/book/list?sight_id=' + e.id + '">列表</a>';
 
             }
         }, {
             "data": function(e) {
-                return '共' + e.video_num + '个' + '<a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/video/list?sight_id=' + e.id + '">列表</a>';
+                return '共' + e.video_num + '个<br/>' + '<a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/video/list?sight_id=' + e.id + '">列表</a>';
 
             }
         }],

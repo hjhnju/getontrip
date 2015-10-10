@@ -332,7 +332,7 @@ class Sight_Logic_Sight extends Base_Logic{
             $arrSightTag = $listSightTag->toArray();
             foreach ($arrSightTag['list'] as $val){
                 $objSightTag = new Sight_Object_Tag();
-                $objSightTag->fetch(array('id' => $val['tag_id']));
+                $objSightTag->fetch(array('id' => $val['id']));
                 $objSightTag->remove();
             }
             $arrTags      = $arrInfo['tags'];

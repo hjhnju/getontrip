@@ -322,7 +322,8 @@ class Sight_Logic_Sight extends Base_Logic{
             $listSightTag = new Sight_List_Tag();
             $listSightTag->setFilter(array('sight_id' => $sightId));
             $listSightTag->setPagesize(PHP_INT_MAX);
-            foreach ($listSightTag['list'] as $val){
+            $arrSightTag = $listSightTag->toArray();
+            foreach ($arrSightTag['list'] as $val){
                 $objSightTag = new Sight_Object_Tag();
                 $objSightTag->fetch(array('id' => $val['tag_id']));
                 $objSightTag->remove();

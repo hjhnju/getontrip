@@ -93,16 +93,15 @@ class Home_Logic_List{
      * @param string $city
      * @param string $deviceId
      */
-    public function getHomeData($city, $deviceId){
+    public function getHomeData($cityId, $deviceId){
         //城市信息
-        $tmpCity   = City_Api::getCityFromName($city);
-        $cityId    = intval($tmpCity['list'][0]['id']);
+        $tmpCity   = City_Api::getCityById($cityId);
 
         $collected = $this->_logicCollect->checkCollect(Collect_Type::CITY, $deviceId, $cityId);
         $arrCity = array(
-            'id'      => isset($tmpCity['list'][0]['id'])?strval($tmpCity['list'][0]['id']):'',
-            'name'    => isset($tmpCity['list'][0]['name'])?trim($tmpCity['list'][0]['name']):'',
-            'image'   => isset($tmpCity['list'][0]['image'])?Base_Image::getUrlByName($tmpCity['list'][0]['image']):'', 
+            'id'      => isset($tmpCity['id'])?strval($tmpCity['id']):'',
+            'name'    => isset($tmpCity['name'])?trim($tmpCity['name']):'',
+            'image'   => isset($tmpCity['image'])?Base_Image::getUrlByName($tmpCity['image']):'', 
             'collect' => strval($collected),         
         );
         $arrCity['name']  = str_replace("市","",$arrCity['name']);

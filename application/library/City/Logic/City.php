@@ -344,6 +344,7 @@ class City_Logic_City{
             $listCity  = new City_List_Meta();
             $filter    = "`pinyin` like '".$strName."%'";
             $listCity->setFilterString($filter);
+            $listCity->setFields(array('id'));
             $tmpCity   = $listCity->toArray();
             foreach ($tmpCity['list'] as $key => $val){
                 $objCity = new City_Object_City();

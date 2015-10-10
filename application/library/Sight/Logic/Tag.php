@@ -13,7 +13,8 @@ class Sight_Logic_Tag extends Base_Logic{
     public function getTagsBySight($sightId){ 
         $arrRet        = array();
         $arrCommonTag  = array();
-        $arrGeneralTag = array();       
+        $arrGeneralTag = array(); 
+        $arrTopicIds   = array();
         $listSightTag = new Sight_List_Tag();
         $listSightTag->setFilter(array('sight_id' => $sightId));
         $listSightTag->setPagesize(PHP_INT_MAX);
@@ -24,9 +25,10 @@ class Sight_Logic_Tag extends Base_Logic{
             $arrGeneralTag[$key]['type'] = strval(Tag_Type_Tag::GENERAL);
             $arrGeneralTag[$key]['name'] = trim($tag['name']);
         }
-       
         $strTopicIds = $this->_logicTopic->getTopicIdBySight($sightId);
-        $arrTopicIds = explode(",",$strTopicIds);
+        if(!empty($strTopicIds)){
+            $arrTopicIds = explode(",",$strTopicIds);
+        }        
         foreach ($arrTopicIds as $id){
             $arrTags = $this->_logicTag->getTopicTags($id);
             foreach ($arrTags as $val){
@@ -36,13 +38,12 @@ class Sight_Logic_Tag extends Base_Logic{
                     $temp['id']     = strval($tag['id']);
                     $temp['type']   = strval($tag['type']);
                     $temp['name']   = $val;  
-                    if(!in_array($temp,$arrCommonTag)){
+                    if(!in_array($temp,$arrCommonTag) && !empty($temp)){
                         $arrCommonTag[] = $temp;
                     }
-                }                    
+                }                 
             }
         }
-        
         //判断有无视频,书籍,而增加相应标签
         $arrCommonTag[] = array('id' => 'wiki','type' => strval(Tag_Type_Tag::NORMAL), 'name' => '景观');
         

@@ -28,6 +28,6 @@ class ApiController extends Base_Controller_Api {
         }        
         $logic      = new Topic_Logic_Topic();
         $ret        = $logic->getTopicDetail($topicId,$deviceId);
-        $this->ajax($ret);
+        $this->ajaxDecode($ret);
     }  
 }

@@ -131,7 +131,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $objTopic = new Topic_Object_Topic();
         $objTopic->setFileds(array('id','title','content','from','from_detail','image','url'));
         $objTopic->fetch(array('id' => $topicId));
-        $arrRet                = $objTopic->toArray();
+        $arrRet   = $objTopic->toArray();
         if(empty($arrRet)){
             return $arrRet;
         }
@@ -146,12 +146,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrRet['sight_name']  = $arrSight['name'];
         $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
         $arrRet['title']       = trim($arrRet['title']);
-        $arrRet['content']     = trim($arrRet['content']);
-        $listSightTopic = new Sight_List_Topic();
-        $listSightTopic->setPagesize(1);
-        $listSightTopic->setFilter(array('topic_id' => $arrRet['id']));
-        $ret = $listSightTopic->toArray();
-            
+        $arrRet['content']     = trim($arrRet['content']); 
         
         $logicVist          = new Tongji_Logic_Visit();
         $logicVist->addVisit( Tongji_Type_Visit::TOPIC, $device_id, $topicId);

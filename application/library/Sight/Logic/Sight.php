@@ -285,7 +285,7 @@ class Sight_Logic_Sight extends Base_Logic{
         }
         $ret = $objSight->save();
         if(isset($arrInfo['tags'])){
-            $arrTags      = explode(",",$arrInfo['tags']);
+            $arrTags      = $arrInfo['tags'];
             foreach ($arrTags as $id){
                 $objSightTag = new Sight_Object_Tag();
                 $objSightTag->sightId = $objSight->id;
@@ -328,7 +328,7 @@ class Sight_Logic_Sight extends Base_Logic{
                 $objSightTag->fetch(array('id' => $val['tag_id']));
                 $objSightTag->remove();
             }
-            $arrTags      = explode(",",$arrInfo['tags']);
+            $arrTags      = $arrInfo['tags'];
             foreach ($arrTags as $id){
                 $objSightTag = new Sight_Object_Tag();
                 $objSightTag->sightId = $objSight->id;
@@ -337,7 +337,7 @@ class Sight_Logic_Sight extends Base_Logic{
             }
         }
         $ret = $objSight->save();
-        if($ret && isset($_updateData['status']) && ($_updateData['status'] == Sight_Type_Status::PUBLISHED)){
+        if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
             $data = $this->modelSight->query(array('id' => $sightId), 1, 1);
             $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
             $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];

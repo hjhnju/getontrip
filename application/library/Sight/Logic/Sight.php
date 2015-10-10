@@ -285,7 +285,7 @@ class Sight_Logic_Sight extends Base_Logic{
         }
         $ret = $objSight->save();
         if(isset($arrInfo['tags'])){
-            $arrTags      = explode(",",$arrInfo['tags']);
+            $arrTags      = $arrInfo['tags'];
             foreach ($arrTags as $id){
                 $objSightTag = new Sight_Object_Tag();
                 $objSightTag->sightId = $objSight->id;
@@ -328,7 +328,7 @@ class Sight_Logic_Sight extends Base_Logic{
                 $objSightTag->fetch(array('id' => $val['tag_id']));
                 $objSightTag->remove();
             }
-            $arrTags      = explode(",",$arrInfo['tags']);
+            $arrTags      = $arrInfo['tags'];
             foreach ($arrTags as $id){
                 $objSightTag = new Sight_Object_Tag();
                 $objSightTag->sightId = $objSight->id;

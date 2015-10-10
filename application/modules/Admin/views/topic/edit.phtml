@@ -38,10 +38,37 @@
         <div class="modal-dialog  modal-lg">
            <div class="modal-content"> 
              </div>
-          /.modal-content
+         <!--  /.modal-content -->
         </div>
-        /.modal-dialog
+        <!-- /.modal-dialog -->
       </div>
+      <div class="modal fade" id="tagModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+           <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="gridSystemModalLabel">添加新标签</h4>
+              </div>
+              <div class="modal-body"> 
+                <form id="" >
+                   <div class="form-group" id="addTag">
+                        <label for="sight_name" class="control-label">名称:</label>
+                         <input class="form-control" id="tag_name"    type="text"  autocomplete="off"  placeholder="输入新标签名称"/> 
+                        <input class="form-control" id="tag_type"   type="hidden"/>  
+                         
+                    </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="addTag-btn">创建</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+               </div> 
+             </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+
 			<!-- /.modal -->
 			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 			<!-- BEGIN PAGE HEADER-->
@@ -96,7 +123,7 @@
                            <textarea class="form-control" id="desc" name="desc" rows="5">{%if isset($post.desc)%}{%$post.desc%}{%/if%}</textarea><label for="desc" class="error"></label>
                       </div>
                       </div>   
-                      <div class="form-group sight_tag">
+                      <div class="form-group sight_tag" id="div-tag-2">
                           <label for="sight_name" class="control-label col-lg-2" style="padding-top: 0px;">
                              <div class="input-group col-lg-1 pull-right"> 
                                <select name="" id="sight_tag">  
@@ -128,7 +155,10 @@
                               <label class="checkbox-inline"> 
                                 <input type='checkbox' name="tag" data-name="form-generaltag" id="" value="{%$item.id%}" {%if isset($item.selected)%}checked{%/if%}>{%$item.name%} 
                               </label>
-                              {%/foreach%}  
+                              {%/foreach%} 
+                               <span class="help-inline">
+                                  没有想要的标签？<a href="#" class="addTag" data-type="2">创建</a>一个
+                              </span> 
                            </div> 
                      <!--       <div class="col-lg-3 sight_tag {%if $sightSelected eq 1%}hide{%/if%}" data-type="tag"> 
                          <input class="form-control" id="sight_name"    type="text"  autocomplete="off"  placeholder="输入通用标签后请在下拉框选择"/>
@@ -143,9 +173,9 @@
                        </div> 
                      </div>  -->
                       </div>
-                      <div class="form-group" id="div-tag">
-                          <label for="tag_name" class="control-label col-lg-2">分类标签：</label>
-                          <div class="col-lg-10">  
+                      <div class="form-group sight_tag" id="div-tag" >
+                          <label for="tag_name" class="control-label col-lg-2 sight_tag {%if $sightSelected eq 0%}hide{%/if%}" data-type="sight">分类标签：</label>
+                          <div class="col-lg-10 sight_tag {%if $sightSelected eq 0%}hide{%/if%}" data-type="sight">  
                               {%foreach $classifyTag as $key=>$item%}
                               <label class="checkbox-inline"> 
                                 <input type='radio' name="tag" data-name="form-tag" id="" value="{%$item.id%}" {%if isset($item.selected)%}checked{%/if%}>{%$item.name%} 
@@ -153,31 +183,20 @@
                               {%/foreach%}  
                            </div>
                       </div> 
-                      <div class="form-group" id="div-tag">
+                      <div class="form-group" id="div-tag-1">
                           <label for="tag_name" class="control-label col-lg-2">普通标签：</label>
                           <div class="col-lg-10">  
-                              {%foreach $tagList as $key=>$item%} 
+                              {%foreach $normalTag as $key=>$item%} 
                               <label class="checkbox-inline"> 
                                 <input type=checkbox name="" data-name="form-tag" id="" value="{%$item.id%}" {%if isset($item.selected)%}checked{%/if%}>{%$item.name%}  
                               </label>
                               {%/foreach%} 
                               <span class="help-inline">
-                                  没有想要的标签？<a href="#" class="addTag">创建</a>一个
+                                  没有想要的标签？<a href="#" class="addTag" data-type="1">创建</a>一个
                               </span> 
                            </div>
                       </div> 
-                      <div class="form-group" id="addTag" style="display:none">
-                          <label for="sight_name" class="control-label col-lg-2">新标签</label>
-                          <div class="col-lg-3">  
-                              <input class="form-control" id="tag_name"    type="text"  autocomplete="off"  placeholder="输入新标签名称"/>
- 
-                               <input class="form-control" id="type_name"   type="hidden"/>  
-                            </div>
-                           <div class="col-lg-3"> 
-                              <button type="button" class="btn btn-primary" id="addTag-btn">创建</button>
-                              <button type="button" class="btn btn-default" id="hideTag-btn">取消</button>
-                          </div>
-                      </div>
+                      
                       <div class="form-group ">
                        <label for="xy" class="control-label col-lg-2">坐标：</label>
                        <div class="col-lg-5">

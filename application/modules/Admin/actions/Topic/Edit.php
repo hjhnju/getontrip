@@ -11,8 +11,8 @@ class EditAction extends Yaf_Action_Abstract {
         
  
         //获取普通标签
-        $tagList = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::NORMAL));
-        $tagList=$tagList['list'];
+        $normalTag = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::NORMAL));
+        $normalTag=$normalTag['list'];
 
         //获取通用标签
         $generalTag = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::GENERAL));
@@ -114,7 +114,7 @@ class EditAction extends Yaf_Action_Abstract {
         $this->getView()->assign('tag_id_array', $tag_id_array);
         $this->getView()->assign('action', Admin_Type_Action::getTypeName($action));
         $this->getView()->assign('classifyTag',$classifyTag);
-        $this->getView()->assign('tagList', $tagList);
+        $this->getView()->assign('normalTag', $normalTag);
         $this->getView()->assign('generalTag',$generalTag);   
         $this->getView()->assign('sightSelected',$sightSelected);
     }

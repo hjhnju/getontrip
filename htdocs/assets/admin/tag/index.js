@@ -186,7 +186,8 @@ $(document).ready(function() {
             "data": {
                 'id':data.id?data.id:'',
                 'name':data.name,
-                'type_name':data.type_name
+                'type_name':data.type_name,
+                'type':data.type
             },
             "type": "post",
             "error": function(e) {

@@ -27,18 +27,33 @@ $(document).ready(function() {
             }
         },
         "columnDefs": [{
-            "targets": [0, 1],
+            "targets": [],
             "visible": false,
             "searchable": false
         }],
         "columns": [{
             "data": "id"
         }, {
-            "data": 'city_id'
-        }, {
             "data": "name"
         }, {
-            "data": 'city_name'
+            "data": function(e) {
+                return e.city_name + '/' + e.city_id;
+            }
+        }, {
+            "data": function(e) {
+                if (e.tagList.classifyTag) {
+                    return '<span class="label label-default">Default</span>';
+                }
+                if (e.tagList.generalTag) {
+
+                    return '<span class="label label-primary">primary</span>';
+                }
+                if (e.tagList.normalTag) { 
+                    return '<span class="label label-success">success</span>';
+                } else {
+                    return '--';
+                }
+            }
         }, {
             "data": function(e) {
                 return '共' + e.topicCount + '个' + '<a class="btn btn-success btn-xs" title="创建" data-toggle="tooltip" target="_blank" href="/admin/topic/edit?action=add&sight_id=' + e.id + '">创建</a><a class="btn btn-primary btn-xs" title="筛选" data-toggle="tooltip"  target="_blank"  href="/admin/topic/filter?sight_id=' + e.id + '">筛选</a><a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/topic/list?sight_id=' + e.id + '">列表</a>';
@@ -51,6 +66,16 @@ $(document).ready(function() {
                     }
                 }
                 return '共' + e.keywordCount + '个' + '<a class="btn btn-success btn-xs" title="创建" data-toggle="tooltip" target="_blank" href="/admin/keyword/edit?action=add&sight_id=' + e.id + '">创建</a><a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/keyword/list?sight_id=' + e.id + '">列表</a>';
+
+            }
+        }, {
+            "data": function(e) {
+                return '共' + e.book_num + '个' + '<a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/book/list?sight_id=' + e.id + '">列表</a>';
+
+            }
+        }, {
+            "data": function(e) {
+                return '共' + e.video_num + '个' + '<a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/video/list?sight_id=' + e.id + '">列表</a>';
 
             }
         }],
@@ -129,12 +154,12 @@ $(document).ready(function() {
             api.ajax.reload();
         });
 
-         //只看我自己发布的
+        //只看我自己发布的
         $('#form-user_id').click(function(event) {
             api.ajax.reload();
         });
- 
+
     }
-  
+
 
 });

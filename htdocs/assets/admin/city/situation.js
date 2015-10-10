@@ -35,7 +35,7 @@ $(document).ready(function() {
             "data": 'info'
         }, {
             "data": function(e) {
-                return '<button    class="btn btn-warning btn-xs cel-publish" title="关闭" data-toggle="tooltip"><i class="fa fa-remove"></i></button> <a href="/admin/sight?city_id='+e.id+'"  target="_blank" class="btn btn-primary btn-xs" title="景点列表" data-toggle="tooltip"><i class="fa fa-eye"></i></button><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/city/edit?action=edit&id=' + e.id + '" target="_blank"><i class="fa fa-pencil"></i></a></button>';
+                return '<button    class="btn btn-warning btn-xs cel-publish" title="关闭" data-toggle="tooltip"><i class="fa fa-remove"></i></button> <a href="/admin/sight/situation?city_id='+e.id+'"  target="_blank" class="btn btn-success btn-xs" title="景点总览" data-toggle="tooltip"><i class="fa fa-bullhorn"></i></button><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/city/edit?action=edit&id=' + e.id + '" target="_blank"><i class="fa fa-pencil"></i></a></button>';
             }
         }],
         "initComplete": function(setting, json) {

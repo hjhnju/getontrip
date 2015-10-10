@@ -10,13 +10,17 @@ class EditAction extends Yaf_Action_Abstract {
        $action  = isset($_REQUEST['action'])?$_REQUEST['action']:'add'; 
         
  
-        //获取所有标签
+        //获取普通标签
         $tagList = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::NORMAL));
         $tagList=$tagList['list'];
 
         //获取通用标签
         $generalTag = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::GENERAL));
         $generalTag = $generalTag['list']; 
+
+        //获取分类标签
+        $classifyTag = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::CLASSIFY));
+        $classifyTag = $classifyTag['list']; 
         
         
         $sightList=array();
@@ -34,6 +38,7 @@ class EditAction extends Yaf_Action_Abstract {
                $sight=Sight_Api::getSightById($sight_id);
                array_push($sightList,$sight); 
             } 
+            $sightSelected = 1;
 
         }else{
  
@@ -41,7 +46,7 @@ class EditAction extends Yaf_Action_Abstract {
            $postInfo["statusName"] = Topic_Type_Status::getTypeName($postInfo["status"]);  
           
            //处理被选中的标签
-             $tagSelected=$postInfo['tags']; 
+            $tagSelected=$postInfo['tags']; 
             $tag_id_array=array();
             for($i=0; $i<count($tagSelected); $i++) {
             	array_push($tag_id_array, $tagSelected[$i]['tag_id']);
@@ -49,15 +54,27 @@ class EditAction extends Yaf_Action_Abstract {
             for($i=0; $i<count($tagList); $i++) {   
                 if(in_array($tagList[$i]["id"],$tag_id_array)){ 
                     $tagList[$i]["selected"]="selected";
+                }
+                if(in_array($classifyTag[$i]["id"],$tag_id_array)){ 
+                    $classifyTag[$i]["selected"]="selected";
                 }    
+                if(in_array($generalTag[$i]["id"],$tag_id_array)){ 
+                    $generalTag[$i]["selected"]="selected";
+                }  
             }
 
             //处理所选景点
-            $sightSelected=$postInfo['sights'];  
-            for($i=0; $i<count($sightSelected); $i++) {
-                $sight=Sight_Api::getSightById($sightSelected[$i]['sight_id']);
+            $sightSelectedList=$postInfo['sights']; 
+            if (count($sightSelectedList)>0) {
+                $sightSelected = 1;
+            }else{
+                $sightSelected = 0;
+            } 
+            for($i=0; $i<count($sightSelectedList); $i++) {
+                $sight=Sight_Api::getSightById($sightSelectedList[$i]['sight_id']);
                 array_push($sightList,$sight);
             } 
+
             //处理来源名称、类型
             $sourceInfo = Source_Api::getSourceInfo($postInfo['from']);
             $postInfo["fromName"]=$sourceInfo['name'];
@@ -88,12 +105,13 @@ class EditAction extends Yaf_Action_Abstract {
         
         
 
+        $this->getView()->assign('sightList', $sightList);
         $this->getView()->assign('sourceList', $sourceList);
         $this->getView()->assign('tag_id_array', $tag_id_array);
         $this->getView()->assign('action', Admin_Type_Action::getTypeName($action));
+        $this->getView()->assign('classifyTag',$classifyTag);
         $this->getView()->assign('tagList', $tagList);
-        $this->getView()->assign('generalTag',$generalTag);
-        $this->getView()->assign('sightList', $sightList);
-        $this->getView()->assign('generalTag',$generalTag); 
+        $this->getView()->assign('generalTag',$generalTag);   
+        $this->getView()->assign('sightSelected',$sightSelected);
     }
 }

@@ -115,6 +115,46 @@ $(document).ready(function() {
                 $('#from_name').val('');
             });
 
+            //通用标签输入框自动完成
+            $('#tag_name').typeahead({
+                display: 'name',
+                val: 'id',
+                ajax: {
+                    url: '/admin/tagapi/getGeneralTagList',
+                    triggerLength: 1
+                },
+                itemSelected: function(item, val, text) {
+                    $("#tag_name").val('');
+                    //先判断是否已经选择
+                    var valnum = Number(val);
+                    if (!tag_id_array.in_array(valnum)) {
+                        tag_id_array.push(valnum);
+                        //添加到右侧选框中 
+                        $('#tag_alert').append('<span class="badge badge-sm label-danger" role="badge">' + text + '<button type="button" class="close" data-id="' + val + '"><span class="fa fa-remove"></span></button></span>');
+                    }
+                }
+            });
+
+            //通用标签框删除景点
+            $('#tag_alert').delegate('.close', 'click', function(event) {
+                var val = Number($(this).attr('data-id'));
+                sight_id_array.splice($.inArray(val, sight_id_array), 1);
+                $(this).parent().remove();
+            });
+
+            //景点和通用标签切换
+            /*$('input[name="sight_tag"]').click(function(event) {
+                var type = $(this).val();
+                $('.sight_tag .sight_tag').addClass('hide');
+                $('.sight_tag div[data-type="' + type + '"]').removeClass('hide');
+            });*/
+            $('#sight_tag').selectpicker();
+            $('#sight_tag').change(function(event) {
+                var type = $(this).val();
+                $('.sight_tag .sight_tag').addClass('hide');
+                $('.sight_tag div[data-type="' + type + '"]').removeClass('hide');
+            });
+
 
             //标签选择
             $('#tags').multiSelect({
@@ -361,15 +401,15 @@ $(document).ready(function() {
 
             //标题字数统计
             $('#title').limitTextarea({
-                maxNumber: 30,
+                maxNumber: 28,
                 theme: 'tips',
-                infoStr: '推荐30字以内，'
+                infoStr: '推荐28字以内，'
             });
             //副标题字数统计
             $('#subtitle').limitTextarea({
-                maxNumber: 20,
+                maxNumber: 16,
                 theme: 'tips',
-                infoStr: '推荐20字以内，',
+                infoStr: '推荐16字以内，',
                 infoId: 'subtitleinfo'
             });
 
@@ -393,18 +433,31 @@ $(document).ready(function() {
                     //序列化表单  
                     var param = $("#Form").serializeObject();
 
-                    //特殊处理景点和标签 
+                    //特殊处理景点 
                     sight_id_array = [];
-                    $('#sight_alert span button').each(function() {
-                        sight_id_array.push(Number($(this).attr('data-id')));
-                    });
+                    if ($('#sight_tag').val() == 'sight') {
+                        $('#sight_alert span button').each(function() {
+                            sight_id_array.push(Number($(this).attr('data-id')));
+                        });
+                        if (sight_id_array.length == 0) {
+                            toastr.warning('至少选择一个景点吧');
+                            return false;
+                        }
 
-                    if (sight_id_array.length == 0) {
-                        toastr.warning('至少选择一个景点吧');
-                        return false;
                     }
 
+                    //特殊处理标签 
                     tag_id_array = [];
+                    if ($('#sight_tag').val() == 'tag') {
+                        $('input[data-name="form-generaltag"]:checked').each(function() {
+                            tag_id_array.push(Number($(this).val()));
+                        });
+                        if (tag_id_array.length == 0) {
+                            toastr.warning('至少选择一个通用标签吧');
+                            return false;
+                        }
+                    }
+                    //分类和普通标签
                     $('input[data-name="form-tag"]:checked').each(function() {
                         tag_id_array.push(Number($(this).val()));
                     });
@@ -428,6 +481,7 @@ $(document).ready(function() {
                     //解除绑定
                     $(window).unbind('beforeunload');
                     window.onbeforeunload = null;
+ 
                     $.ajax({
                         "url": url,
                         "data": param,
@@ -551,5 +605,5 @@ $(document).ready(function() {
     }
 
     new List().init();
-   
+
 });

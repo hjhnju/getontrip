@@ -137,13 +137,15 @@ class  SightapiController extends Base_Controller_Api{
         if(count($List['list'])>0){
             
             for($i=0;$i<count($List['list']);$i++){  
-                $sightInfo=$List['list'][$i];  
+                $sightInfo=$List['list'][$i]; 
+                $sight_id = intval($sightInfo['id']);
+
                 //所属城市
                 $cityInfo = City_Api::getCityById($sightInfo['city_id']);
                 $sightInfo['city_name'] = $cityInfo['name']; 
 
                 //相关话题个数 
-                $sightInfo['topicCount']=Sight_Api::getTopicNum(intval($sightInfo['id']));
+                $sightInfo['topicCount']=Sight_Api::getTopicNum($sight_id);
 
                 //相关词条
                 $arrayParams=array(
@@ -154,6 +156,31 @@ class  SightapiController extends Base_Controller_Api{
                 $keywordList = Keyword_Api::queryKeywords(1,PHP_INT_MAX,$arrayParams); 
                 $sightInfo['keywordlist']=$keywordList['list'];
                 $sightInfo['keywordCount']=count($keywordList['list']);
+
+                //相关标签
+                $tag_id_array =array_unique($sightInfo['tags']); 
+                $sightInfo['tags'] =$tag_id_array;
+                $normalTag = array();
+                $generalTag = array();
+                $classifyTag = array(); 
+                for ($j=0; $j < count($tag_id_array); $j++) { 
+                    $tag = Tag_Api::getTagInfo($tag_id_array[$j], $sight_id);
+                    switch ($tag['type']) {
+                      case Tag_Type_Tag::NORMAL:
+                        array_push($normalTag,$tag); 
+                        break; 
+                      case Tag_Type_Tag::GENERAL:
+                        array_push($generalTag,$tag); 
+                        break;
+                      case Tag_Type_Tag::CLASSIFY:
+                        array_push($classifyTag,$tag); 
+                        break;
+                    } 
+                } 
+                $sightInfo['tagList']['normalTag'] = $normalTag; 
+                $sightInfo['tagList']['generalTag'] = $generalTag; 
+                $sightInfo['tagList']['classifyTag'] = $classifyTag; 
+                 
                 $List['list'][$i]=$sightInfo;
             }
         }

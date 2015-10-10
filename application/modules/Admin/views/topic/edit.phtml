@@ -91,29 +91,26 @@
                           </div> 
                       </div>
                     <div class="form-group ">
-                      <label for="desc" class="control-label col-lg-2">补充描述</label>
+                      <label for="desc" class="control-label col-lg-2">补充描述:</label>
                       <div class="col-lg-5">
                            <textarea class="form-control" id="desc" name="desc" rows="5">{%if isset($post.desc)%}{%$post.desc%}{%/if%}</textarea><label for="desc" class="error"></label>
                       </div>
                       </div>   
                       <div class="form-group sight_tag">
-                          <label for="sight_name" class="control-label col-lg-2"> 
-                            <!-- <select name="" id="from-type">  
-                                <option value="sight" {%if $post.fromType eq 1%}selected{%/if%}>相关景点</option>  
-                                <option value="tag"  {%if $post.fromType eq 2%}selected{%/if%}>通相关标签</option> 
-                            </select> -->
-                            相关景点或者通用标签
+                          <label for="sight_name" class="control-label col-lg-2" style="padding-top: 0px;">
+                             <div class="input-group col-lg-1 pull-right"> 
+                               <select name="" id="sight_tag">  
+                                  <option value="sight" {%if $sightSelected eq 1%}selected{%/if%}>相关景点:</option>  
+                                  <option value="tag"  {%if $sightSelected eq 0%}selected{%/if%}>相关通用标签:</option> 
+                               </select>
+                             </div>     
+                        <!--     <label class="checkbox-inline"> 
+                            <input type='radio' name="sight_tag" {%if $sightSelected eq 1%}checked{%/if%} value="sight">景点 
                           </label>
-                          <div class="col-lg-10"> 
-                              <label class="checkbox-inline"> 
-                                <input type='radio' name="sight_tag" {%if $sightSelected eq 1%}checked{%/if%} value="sight">景点 
-                              </label>
-                              <label class="checkbox-inline"> 
-                                <input type='radio' name="sight_tag" {%if $sightSelected eq 0%}checked{%/if%} value="tag">通用标签
-                              </label>
-                          </div>
-                          <div class="col-lg-2">
-                          </div>
+                          <label class="checkbox-inline"> 
+                            <input type='radio' name="sight_tag" {%if $sightSelected eq 0%}checked{%/if%} value="tag">通用标签
+                          </label> -->
+                          </label>  
                           <div class="col-lg-3 sight_tag {%if $sightSelected eq 0%}hide{%/if%}" data-type="sight"> 
                                <input class="form-control" id="sight_name" type="text"  autocomplete="off"  placeholder="输入景点后请在下拉框选择"/>
                           </div>
@@ -125,19 +122,26 @@
                                   </span> 
                                    {%/foreach%}  
                              </div> 
+                           </div>
+                           <div class="col-lg-10 sight_tag  {%if $sightSelected eq 1%}hide{%/if%}" data-type="tag">  
+                              {%foreach $generalTag as $key=>$item%}
+                              <label class="checkbox-inline"> 
+                                <input type='checkbox' name="tag" data-name="form-generaltag" id="" value="{%$item.id%}" {%if isset($item.selected)%}checked{%/if%}>{%$item.name%} 
+                              </label>
+                              {%/foreach%}  
                            </div> 
-                           <div class="col-lg-3 sight_tag {%if $sightSelected eq 1%}hide{%/if%}" data-type="tag"> 
-                               <input class="form-control" id="sight_name"    type="text"  autocomplete="off"  placeholder="输入通用标签后请在下拉框选择"/>
-                          </div>
-                           <div class="col-lg-3 sight_tag {%if $sightSelected eq 1%}hide{%/if%}"  data-type="tag">
-                             <div class="alert alert-info" role="alert" id="tag_alert">
-                                  {%foreach $sightList as $key=>$item%}
-                                  <span class="badge badge-sm label-danger" role="badge">   {%$item.name%}
-                                    <button type="button" class="close" data-id="{%$item.id%}"><span class="fa fa-remove"></span></button>
-                                  </span> 
-                                   {%/foreach%}  
-                             </div> 
-                           </div> 
+                     <!--       <div class="col-lg-3 sight_tag {%if $sightSelected eq 1%}hide{%/if%}" data-type="tag"> 
+                         <input class="form-control" id="sight_name"    type="text"  autocomplete="off"  placeholder="输入通用标签后请在下拉框选择"/>
+                                               </div>
+                     <div class="col-lg-3 sight_tag {%if $sightSelected eq 1%}hide{%/if%}"  data-type="tag">
+                       <div class="alert alert-info" role="alert" id="tag_alert">
+                            {%foreach $sightList as $key=>$item%}
+                            <span class="badge badge-sm label-danger" role="badge">   {%$item.name%}
+                              <button type="button" class="close" data-id="{%$item.id%}"><span class="fa fa-remove"></span></button>
+                            </span> 
+                             {%/foreach%}  
+                       </div> 
+                     </div>  -->
                       </div>
                       <div class="form-group" id="div-tag">
                           <label for="tag_name" class="control-label col-lg-2">分类标签：</label>

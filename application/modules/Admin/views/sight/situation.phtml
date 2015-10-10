@@ -37,7 +37,7 @@
                   <div class="col-xs-2 pull-right">   
                       <div class="checkbox"> 
                         <label>
-                           <input type="checkbox" id="form-user_id" value="{%$userid%}" checked="">只看我发布的
+                           <input type="checkbox" id="form-user_id" value="{%$userid%}" >只看我发布的
                           </label>
                        </div> 
                    </div>  
@@ -51,7 +51,7 @@
                     </div> 
                     <div class="col-xs-3 pull-right">   
                         <div class="input-group "> 
-                             <input type="text" class="form-control" placeholder="输入并选择城市"  id="form-city" autocomplete="off">
+                             <input type="text" class="form-control" placeholder="输入并选择城市"  id="form-city" autocomplete="off" value="{%if isset($city)%}{%$city.name%}{%/if%}" data-city_id="{%if isset($city)%}{%$city.id%}{%/if%}">
                              <span class="input-group-btn">
                               <button type="button" class="btn btn-white" id="clear-city"><i class="fa fa-remove"></i></button>
                             </span>
@@ -61,12 +61,14 @@
                <table class="table table-striped table-hover table-bordered dataTable" id="editable">
                      <thead>
                          <tr role="row">  
-                             <th>ID</th>
-                             <th>城市ID</th>
+                            <th>景点ID</th> 
                             <th>名称</th>
-                            <th>所属城市</th>
+                            <th>所属城市/ID</th>
+                            <th>相关标签</th>
                             <th id="topicCount">相关话题</th>
-                            <th id="keywordCount">相关词条</th> 
+                            <th id="keywordCount">相关词条</th>
+                            <th>相关书籍</th>
+                            <th>相关视频</th> 
                           </tr>
                       </thead>
                       <tbody role="alert" aria-live="polite" aria-relevant="all"><tr class="odd">

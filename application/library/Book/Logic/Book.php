@@ -81,7 +81,22 @@ class Book_Logic_Book extends Base_Logic{
                     $arrIds[] = $match[1];
                 }
             }
+        }else{//如果全词找不全，就分词再搜索
+            $arrNames = Base_Util_String::ChineseAnalyzer($name);
+            foreach ($arrNames as $name){
+                $url  = "http://search.jd.com/Search?keyword=".$name."&enc=utf-8&book=y&page=".$page;
+                $html = file_get_html($url);
+                $items  = $html->find('li.item-book div.p-img a');
+                foreach ($items as $item){
+                    $str = $item->getAttribute('href');
+                    preg_match("/\/(\d+).htm/is", $str, $match);
+                    if(isset($match[1])){
+                        $arrIds[] = $match[1];
+                    }
+                }
+            }
         }
+        
         $key        = 0;
         foreach ($arrIds as $val){
             $base = new WareProductDetailSearchListGetRequest();

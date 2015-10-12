@@ -43,10 +43,11 @@ $(document).ready(function() {
             "data": "name"
         }, {
             "data": function(e) {
-                if(e.status == 1){
-                	return '未发布';
-                }
-                return '已发布';
+            	 if (e.status == 1) {
+                     return  '未发布<button type="button" class="btn btn-primary btn-xs publish" title="发布" data-toggle="tooltip" ><i class="fa fa-check-square-o"></i></button>';
+                 } else {
+                     return  '已发布<button type="button" class="btn btn-warning btn-xs cel-publish" title="取消发布" data-toggle="tooltip" ><i class="fa fa-close"></i></button>';
+                 }
             }
         },{
             "data": function(e) {
@@ -160,6 +161,33 @@ $(document).ready(function() {
                 //触发dt的重新加载数据的方法
                 api.ajax.reload();
             }
+        });
+        
+        //发布操作
+        $('#editable button.publish,#editable button.cel-publish').live('click', function(e) {
+            e.preventDefault();
+            var nRow = $(this).parents('tr')[0];
+            var data = oTable.api().row(nRow).data(); 
+            var action;
+            if ($(this).hasClass('publish')) { 
+                if (!data.image) {
+                    toastr.warning('发布之前必须上传背景图片');
+                    return;
+                }
+                action = 'PUBLISHED';
+            } else {
+                action = 'NOTPUBLISHED';
+            }
+            var publish = new Remoter('/admin/sightapi/publish');
+            publish.remote({
+                id: data.id,
+                action: action
+            });
+            publish.on('success', function(data) {
+                //刷新当前页
+                oTable.fnRefresh();
+            });  
+ 
         });
 
         //城市框后的清除按钮，清除所选的景点

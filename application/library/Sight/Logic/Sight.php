@@ -7,6 +7,8 @@ class Sight_Logic_Sight extends Base_Logic{
     
     protected $logicSightTag;
     
+    protected $modelSight;
+    
     const DEFAULT_HOT_PERIOD = 30;
     
     const REDIS_TIMEOUT = 3600;
@@ -18,6 +20,7 @@ class Sight_Logic_Sight extends Base_Logic{
     public function __construct(){
         $this->logicTopic    = new Topic_Logic_Topic();
         $this->logicSightTag = new Sight_Logic_Tag();
+        $this->modelSight    = new SightModel();
     }
     
     /**

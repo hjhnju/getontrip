@@ -92,4 +92,36 @@ class Source_Api{
         return $logicSource->delSource($sourceId);
     }
     
+    /**
+     * 接口9：Source_Api::addType($arrInfo)
+     * 添加一个搜索来源的分组类型
+     * @param array $arrInfo
+     */
+    public static function addType($arrInfo){
+        $logicSource = new Source_Logic_Source();
+        return $logicSource->addType($arrInfo);
+    }
+    
+    /**
+     * 接口10：Source_Api::delType($typeId)
+     * 删除一个搜索来源的分组类型
+     * @param integer $typeId
+     * @return boolean
+     */
+    public static function delType($typeId){
+        $logicSource = new Source_Logic_Source();
+        return $logicSource->delType($typeId);
+    }
+    
+    /**
+     * 接口11: Source_Api::listType($page,$pageSize,$arrInfo = array())
+     * @param integer $page
+     * @param integer $pageSize
+     * @param array $arrInfo
+     * @return array
+     */
+    public static function listType($page,$pageSize,$arrInfo = array()){
+        $logicSource = new Source_Logic_Source();
+        return $logicSource->listType($page, $pageSize, $arrInfo);
+    }    
 }

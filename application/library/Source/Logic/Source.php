@@ -3,8 +3,11 @@ class Source_Logic_Source extends Base_Logic{
     
     protected $_fields ;
     
+    protected $_type_fields;
+    
     public function __construct(){   
-        $this->_fields = array('id','name','url','type','create_time','update_time');  
+        $this->_fields = array('id','name','url','type','create_time','update_time'); 
+        $this->_type_fields = array('id','name','create_time','update_time','creat_user','update_user');
     }
     
     /**
@@ -156,4 +159,29 @@ class Source_Logic_Source extends Base_Logic{
         $obj->fetch(array('id' => $sourceId));
         return $obj->remove();
     }
+    
+    public function addType($arrInfo){
+        $objSourceType = new Source_Object_Type();
+        foreach ($arrInfo as $key => $val){
+            if(in_array($key,$this->_type_fields)){
+                $key  = $this->getprop($key);
+                $objSourceType->$key = $val;
+            }
+        }
+        return $objSourceType->save();
+    }
+    
+    public function delType($typeId){
+        $objSourceType = new Source_Object_Type();
+        $objSourceType->fetch(array('id' => $typeId));
+        return $objSourceType->remove();
+    }
+    
+    public function listType($page,$pageSize,$arrInfo = array()){
+        $listSourceType = new Source_List_Type();
+        $listSourceType->setPage($page);
+        $listSourceType->setPagesize($pageSize);
+        $listSourceType->setFilter($arrInfo);
+        return $listSourceType->toArray();
+    }    
 }

@@ -33,7 +33,7 @@ class CityModel extends BaseModel{
             }
         }
         $filter = $filterInfo . $filterMeta . " city_meta.`cityid` = 0 AND city_meta.`provinceid` != 0";
-        $sql  = 'SELECT * FROM  `city` right join `city_meta` ON city_meta.`id` = city.`id` where '.$filter." limit $from,$pageSize";
+        $sql  = 'SELECT * FROM  `city` right join `city_meta` ON city_meta.`id` = city.`id` where '.$filter." order by city.`status` desc limit $from,$pageSize";
         try {                	
             $data = $this->db->fetchAll($sql);          
         } catch (Exception $ex) {

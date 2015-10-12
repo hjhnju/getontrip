@@ -43,6 +43,13 @@ $(document).ready(function() {
             "data": "name"
         }, {
             "data": function(e) {
+                if(e.status == 1){
+                	return '未发布';
+                }
+                return '已发布';
+            }
+        },{
+            "data": function(e) {
                 return e.city_name + '/' + e.city_id;
             }
         }, {

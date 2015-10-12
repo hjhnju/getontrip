@@ -103,7 +103,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $redis     = Base_Redis::getInstance();
         $wordInfo  = $this->queryById($id);
         $sightId   = $this->getSightId($id);
-        $arrKeys   = $redis->keys(Wiki_Keys::getWikiInfoName($sightId, "*"));
+        $arrKeys   = $redis->keys(Keyword_Keys::getWikiInfoName($sightId, "*"));
         foreach ($arrKeys as $key){
             $data = $redis->hGetAll($key);
             if($data['title'] == $wordInfo['name']){
@@ -112,7 +112,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
                 $redis->delete($key);
             }
         }
-        $arrKeys = $redis->keys(Wiki_Keys::getWikiCatalogName($sightId, $id,"*"));
+        $arrKeys = $redis->keys(Keyword_Keys::getWikiCatalogName($sightId, $id,"*"));
         foreach ($arrKeys as $key){
             $redis->delete($key);
         }

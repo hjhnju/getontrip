@@ -98,4 +98,16 @@ class Tag_Api{
         $logicTag = new Tag_Logic_Tag();
         return $logicTag->getTagInfo($tagId, $sightId);
     }
+    
+    /**
+     * 接口9：Tag_Api::changeOrder($id, $to)
+     * 修改搜索标签的权重
+     * @param integer $id 标签ID
+     * @param integer $to 需要排的位置
+     * @return boolean
+     */
+    public static function changeOrder($id, $to){
+        $logicTag = new Tag_Logic_Tag();
+        return $logicTag->changeOrder($id, $to);
+    }
 }

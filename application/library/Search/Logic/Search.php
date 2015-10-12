@@ -134,9 +134,9 @@ class Search_Logic_Search{
                     $sight_num     = $this->logicSight->getSightsNum(array(),$cityId);
                     $topic_num     = $this->logicCity->getTopicNum($cityId);
                     $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::CITY, $cityId);
-                    $temp['collect_num']  =  sprintf("%d人收藏",$collect);
-                    $temp['sight_num']    =  sprintf("%d个景点",$sight_num);
-                    $temp['topic_num']    =  sprintf("%d个话题",$topic_num);                   
+                    $temp['param1']  =  sprintf("%d个景点",$sight_num);
+                    $temp['param2']  =  sprintf("%d个话题",$topic_num);
+                    $temp['param3']  =  sprintf("%d人收藏",$collect);                                     
                     $arrData[] = $temp;
                 }
             }else{
@@ -156,9 +156,9 @@ class Search_Logic_Search{
                     }
                     $topic_num     = $this->logicSight->getTopicNum($sightId);
                     $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $sightId);
-                    $temp['collect_num']  =  sprintf("%d人收藏",$collect);
-                    $temp['topic_num']    =  sprintf("%d个话题",$topic_num);
-                    $temp['sight_num']    =  sprintf("%d个评论",$count);                    
+                    $temp['param1']  =  sprintf("%d个话题",$topic_num);
+                    $temp['param2']  =  sprintf("%d个评论",$count);
+                    $temp['param3']  =  sprintf("%d人收藏",$collect);                                        
                     $arrData[] = $temp;
                 }
             }

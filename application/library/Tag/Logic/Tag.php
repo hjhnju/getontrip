@@ -4,7 +4,7 @@ class Tag_Logic_Tag extends Base_Logic{
     protected $_fileds;
     
     public function __construct(){
-        $this->_fileds = array('id', 'name', 'create_user', 'update_user', 'create_time', 'update_time', 'type');
+        $this->_fileds = array('id', 'name', 'create_user', 'update_user', 'create_time', 'update_time', 'type','order');
     }
     
     /**
@@ -279,5 +279,39 @@ class Tag_Logic_Tag extends Base_Logic{
             $arrRet['topic_num'] = $logicTopic->getTopicNumByTag($tagId, $sightId);
         }
         return $arrRet;
+    }
+    
+    /**
+     * 修改搜索标签的权重
+     * @param integer $id 标签ID
+     * @param integer $to 需要排的位置
+     * @return boolean
+     */
+    public function changeOrder($id,$to){
+        $objTag = new Tag_Object_Tag();
+        $objTag->fetch(array('id' => $id));
+        $from       = $objTag->order;
+        $objTag->order = $to;
+    
+        $bAsc = ($to > $from)?1:0;
+        $min  = min(array($from,$to));
+        $max  = max(array($from,$to));
+        $listTag = new Tag_List_Tag();
+        $listTag->setPagesize(PHP_INT_MAX);
+        $listTag->setFilter(array('type' => Tag_Type_Tag::SEARCH));
+        $listTag->setOrder('`order` asc');
+        $arrTag = $listTag->toArray();
+        $arrTag = array_slice($arrTag['list'],$min-1+$bAsc,$max-$min);
+        $ret = $objTag->save();
+        foreach ($arrTag as $key => $val){
+            $objTag->fetch(array('id' => $val['id']));
+            if($bAsc){
+                $objTag->order = $min + $key ;
+            }else{
+                $objTag->order = $max - $key;
+            }
+            $objTag->save();
+        }
+        return $ret;
     }
 }

@@ -69,10 +69,11 @@ class Search_Logic_Label extends Base_Logic{
                 }
             }
             if(isset($data['type'])){
-                $List['list'][$index]['type'] = Search_Type_Label::getTypeName($data['type']);
+                $List['list'][$index]['typename'] = Search_Type_Label::getTypeName($data['type']);
             }else{
-                $List['list'][$index]['type'] = '';
+                $List['list'][$index]['typename'] = '';
             }
+            $List['list'][$index]['type'] = $data['type'];
             $List['list'][$index]['obj_num'] = count($arrObjInfo);
             $List['list'][$index]['objs']    = $arrObjInfo; 
         }

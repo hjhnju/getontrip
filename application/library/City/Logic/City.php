@@ -33,12 +33,11 @@ class City_Logic_City{
     
     /**
      * 根据城市ID获取城市信息，包含景点及话题信息，景点按话题热度排序
-     * @param integer $cityId
      * @param integer $page
      * @param integer $pageSize
      * @return array
      */
-    public function getCityDetail($cityId,$deviceId,$page,$pageSize){
+    public function getCityDetail($cityId,$page,$pageSize){
         $arrHot     = array();
         $logicTopic = new Topic_Logic_Topic();
         $redis      = Base_Redis::getInstance();

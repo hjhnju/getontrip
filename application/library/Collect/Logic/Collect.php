@@ -77,7 +77,7 @@ class Collect_Logic_Collect{
     /**
      * 获取收藏信息
      * @param integer $type
-     * @param integer $device_id
+     * @param integer $user_id
      * @param integer $page
      * @param integer $pageSize
      * @return array

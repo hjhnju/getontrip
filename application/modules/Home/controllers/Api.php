@@ -18,16 +18,13 @@ class ApiController extends Base_Controller_Api {
     /**
      * 接口1：/api/home
      * 城市中间页首页接口
-     * @param string deviceId，设备ID
      * @param integer city,城市ID
      * @return json
      */
     public function indexAction() {
-        $city      = isset($_REQUEST['city'])?trim($_REQUEST['city']):self::DEFAULT_CITY;
-        $deviceId  = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
-                      
+        $city      = isset($_REQUEST['city'])?trim($_REQUEST['city']):self::DEFAULT_CITY;                     
         $logic = new Home_Logic_List();
-        $ret = $logic->getHomeData($city,$deviceId);
+        $ret = $logic->getHomeData($city);
         return $this->ajax($ret);
-    }  
+    } 
 }

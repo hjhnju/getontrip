@@ -127,7 +127,7 @@ class Topic_Logic_Topic extends Base_Logic{
      * @param integer $topicId
      * @return Topic_Object_Topic
      */
-    public function getTopicDetail($topicId,$device_id){
+    public function getTopicDetail($topicId){
         $objTopic = new Topic_Object_Topic();
         $objTopic->setFileds(array('id','title','content','from','from_detail','image','url'));
         $objTopic->fetch(array('id' => $topicId));
@@ -149,7 +149,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrRet['content']     = trim($arrRet['content']); 
         
         $logicVist          = new Tongji_Logic_Visit();
-        $logicVist->addVisit( Tongji_Type_Visit::TOPIC, $device_id, $topicId);
+        $logicVist->addVisit( Tongji_Type_Visit::TOPIC, $topicId);
         
         //话题来源
         $logicSource     = new Source_Logic_Source();
@@ -235,15 +235,15 @@ class Topic_Logic_Topic extends Base_Logic{
             return $ret;
         }
         $list   = new Tongji_List_Visit();
-        $list->setFields(array('device_id'));
+        $list->setFields(array('user_id'));
         $filter = "`obj_id` = $topicId and `create_time` >= $from and `type` = ".Tongji_Type_Visit::TOPIC; 
         $list->setPagesize(PHP_INT_MAX);
         $list->setFilterString($filter);
         $arrRet = $list->toArray();
         $arrTotal = array();
         foreach($arrRet['list'] as $val){
-            if(!in_array($val['device_id'],$arrTotal)){
-                $arrTotal[] = $val['device_id'];
+            if(!in_array($val['user_id'],$arrTotal)){
+                $arrTotal[] = $val['user_id'];
             }
         }
         $redis->hSet(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateKey($topicId,$during),count($arrTotal));
@@ -285,7 +285,7 @@ class Topic_Logic_Topic extends Base_Logic{
             return $ret;
         }
         $list   = new Tongji_List_Visit();
-        $list->setFields(array('device_id'));
+        $list->setFields(array('user_id'));
         $list->setFilter(array('obj_id' => $topicId,'type' => Tongji_Type_Visit::TOPIC));
         $list->setPagesize(PHP_INT_MAX);
         $arrRet = $list->toArray();

@@ -30,8 +30,9 @@ class User_Api{
     
     /**
      * 接口3：User_Api::getCurrentUser()
-     * 获取当前登录用户ID
-     * @return number
+     * 获取当前用户ID,用户可能登录了，也可能未登录。第一次则通过
+     * 设备ID创建一个用户
+     * @return number|''
      */
     public static function getCurrentUser(){
         $logicUser = new User_Logic_User();

@@ -18,18 +18,16 @@ class ApiController extends Base_Controller_Api {
      * 查询消息
      * @param integer page，页码
      * @param integer pageSize，页面大小
-     * @param string deviceId,设备ID
      * @return json
      */
     public function listAction() {
-        $deviceId  = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
         $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
         if(empty($deviceId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }                       
         $logic = new Msg_Logic_Msg();
-        $ret = $logic->getList($deviceId, $page, $pageSize);
+        $ret = $logic->getList( $page, $pageSize);
         return $this->ajax($ret);
     }  
     

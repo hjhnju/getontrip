@@ -24,20 +24,18 @@ class ApiController extends Base_Controller_Page{
      * 登录接口
      * @param integer openId
      * @param integer type,第三方登录类型，1:qq,2:weixin,3:weibo
-     * @param string  deviceId，设备ID
      * @return json
      * 设置用户的登录态
      */
     public function loginAction(){
         $openId   = isset($_REQUEST['openId'])?intval($_REQUEST['openId']):'';
         $type     = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
-        $deviceId = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
-        if(empty($openId) || empty($type) || empty($deviceId)){
+        if(empty($openId) || empty($type)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $ret = $this->logicLogin->setLogin($openId,$type,$deviceId);
+        $ret = $this->logicLogin->setLogin($openId,$type);
         if($ret){
-            return $this->ajax();
+            return $this->ajax($ret);
         }
         return $this->ajaxError();
     }
@@ -58,17 +56,15 @@ class ApiController extends Base_Controller_Page{
     /**
      * 接口3：/api/user/getinfo
      * 用户信息获取接口
-     * @param integer userid，用户ID
      * @param integer type,第三方登录类型，1:qq,2:weixin,3:weibo
      * @return json
      */
     public function getinfoAction() {
-        $userId   = isset($_REQUEST['userid'])?trim($_REQUEST['userid']):'';
         $type     = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
-        if(empty($userId)){
+        if(empty($type)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $ret      = $this->logicUser->getUserInfo($userId,$type);
+        $ret      = $this->logicUser->getUserInfo($type);
         $this->ajax($ret);
     }
     
@@ -81,13 +77,12 @@ class ApiController extends Base_Controller_Page{
      * @return json
      */
     public function addinfoAction() {
-        $userId     = isset($_REQUEST['userid'])?trim($_REQUEST['userid']):'';
         $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         $strParam   = isset($_REQUEST['param'])?trim($_REQUEST['param']):'';
-        if(empty($deviceId) || empty($strParam) || empty($type)){
+        if(empty($strParam) || empty($type)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $ret        = $this->logicUser->addUserInfo($userId, $type, $strParam);
+        $ret        = $this->logicUser->addUserInfo($type, $strParam);
         if($ret){
             return $this->ajax();
         }
@@ -97,21 +92,19 @@ class ApiController extends Base_Controller_Page{
     /**
      * 接口5：/api/user/editinfo
      * 用户信息修改接口
-     * @param integer userid
      * @param integer type,第三方登录类型，1:qq,2:weixin,3:weibo
      * @param string  param,eg: param=nick_name:aa,sex:1
      * @param file  file,上传的图像
      * @return json
      */
     public function editinfoAction(){
-        $userId     = isset($_REQUEST['userid'])?trim($_REQUEST['userid']):'';
         $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         $strParam   = isset($_REQUEST['param'])?trim($_REQUEST['param']):'';
         $file       = isset($_FILES['file'])?$_FILES['file']:'';
-        if(empty($deviceId) || empty($type)){
+        if(empty($type)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $ret        = $this->logicUser->editUserInfo($userId, $type, $strParam, $file);
+        $ret        = $this->logicUser->editUserInfo($type, $strParam, $file);
         if($ret){
             return $this->ajax();
         }

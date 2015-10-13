@@ -46,10 +46,10 @@ class User_Logic_User extends Base_Logic{
     
     /**
      * 获取用户信息
-     * @param string $deviceId
      * @return array
      */
-    public function getUserInfo($userId,$type){
+    public function getUserInfo($type){
+        $userId   = User_Api::getCurrentUser();
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId,'type' => $type));
         return $objUser->toArray();
@@ -57,11 +57,11 @@ class User_Logic_User extends Base_Logic{
     
     /**
      * 修改用户信息
-     * @param string $userId
      * @param string $strParam
      * @return boolean
      */
-    public function editUserInfo($userId, $type, $strParam, $file = ''){
+    public function editUserInfo($type, $strParam, $file = ''){
+        $userId   = User_Api::getCurrentUser();
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId,'type' => $type));
         $arrData  = implode(",",$strParam);
@@ -103,7 +103,8 @@ class User_Logic_User extends Base_Logic{
      * @param string $strParam
      * @return boolean
      */
-    public function addUserInfo($userId, $type, $strParam){
+    public function addUserInfo($type, $strParam){
+        $userId   = User_Api::getCurrentUser();
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId,'type' => $type));
         $arrData  = implode(",",$strParam);
@@ -205,6 +206,7 @@ class User_Logic_User extends Base_Logic{
             setcookie(User_Keys::getCurrentUserKey(),$user);
             return $objUser->id;
         }
+        //第一次通过设置ID创建用户ID
         $objUser->deviceId = $deviceId;
         $objUser->type     = User_Type_Login::NOT_IN;
         $objUser->save();

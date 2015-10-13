@@ -23,25 +23,15 @@ class User_Logic_Third {
 
     /**
      * 设置用户的登陆状态
-     * @return boolean
+     * @return integer
      */ 
-    public function setLogin($openId,$type,$deviceId){
-        $objLogin = new User_Object_Third();        
+    public function setLogin($openId,$type){
+        $objLogin = new User_Object_Third(); 
         $objLogin->fetch(array('open_id' => $openId,'auth_type' => $type));
         $arr = $objLogin->toArray();
-        if(empty($arr)){
-            $objUser = new User_Object_User();
-            $objUser->fetch(array('device_id' => $deviceId));
-            if(!empty($objUser->id)){
-                $userId  = $objUser->id;
-                $objUser = new User_Object_User();
-                $objUser->id = $userId;
-            }            
-            $objUser->deviceId = $deviceId;
-            $objUser->type     = $type;
-            $objUser->save();            
+        if(empty($arr)){            
             $objLogin->openId   = $openId;
-            $objLogin->userId   = $objUser->id;
+            $objLogin->userId   = User_Api::getCurrentUser();
             $objLogin->authType = $type;
             $userid             = $objUser->id;
         }else{
@@ -50,7 +40,7 @@ class User_Logic_Third {
         $objLogin->loginTime = time();
         $ret = $objLogin->save();        
         Yaf_Session::getInstance()->set(User_Keys::getLoginUserKey(), $userid);
-        return $ret;           
+        return $userid;           
     }
     
     /**

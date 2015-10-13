@@ -91,9 +91,8 @@ class Msg_Logic_Msg {
      * @param string $uid
      * @param integer $intType
      */
-    public function getList($deviceId,$intPage,$intPageSize,$intType = Msg_Type_Status::ALL){
-        $logicUser = new User_Logic_User();
-        $toId      = $logicUser->getUserId($deviceId);
+    public function getList($intPage,$intPageSize,$intType = Msg_Type_Status::ALL){
+        $toId      = User_Api::getCurrentUser();
         $objsMsg   = new Msg_List_Msg();
         if (Msg_Type_Status::ALL == $intType) {
             $objsMsg->setFilterString("`receiver` = $toId and `status` !=".Msg_Type_Status::DEL);

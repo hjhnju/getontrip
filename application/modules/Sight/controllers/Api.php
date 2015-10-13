@@ -20,7 +20,6 @@ class ApiController extends Base_Controller_Api {
      * @param integer page
      * @param integer pageSize
      * @param string tags:逗号隔开的id串，如："1,2"。
-     * @param string deviceId，用户的设备ID（因为要统计UV）
      * 对于用户点击书籍标签，视频标签，景观标签，分别调用书籍模块，景观模块，视频模块的接口。
      * @return json
      */
@@ -30,14 +29,13 @@ class ApiController extends Base_Controller_Api {
         $sightId    = isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
         $strTags    = isset($_REQUEST['tags'])?trim($_REQUEST['tags']):'';
         $intOrder   = isset($_REQUEST['order'])?intval($_REQUEST['order']):2;
-        $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
-        if((empty($sightId) && empty($strTags))||(empty($deviceId))){
+        if((empty($sightId) && empty($strTags))){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         
         //增加访问统计
         $logicVisit = new Tongji_Logic_Visit();
-        $logicVisit->addVisit(Tongji_Type_Visit::SIGHT, $deviceId, $sightId);
+        $logicVisit->addVisit(Tongji_Type_Visit::SIGHT, $sightId);
         
         $logic      = new Sight_Logic_Sight();
         $ret        = $logic->getSightDetail($sightId,$page,$pageSize,$intOrder,$strTags); 

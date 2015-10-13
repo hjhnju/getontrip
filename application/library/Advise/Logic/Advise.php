@@ -21,13 +21,12 @@ class Advise_Logic_Advise{
     
     /**
      * 查询反馈意见，前端使用
-     * @param integer $deviceId
      * @return array
      */
-    public function listAdvise($deviceId,$page,$pageSize){
+    public function listAdvise($page,$pageSize){
         $arrRet     = array();
         $index      = 0;
-        $userId     = $this->logicUser->getUserId($deviceId); 
+        $userId     = User_Api::getCurrentUser();; 
         $image      = $this->logicUser->getUserAvatar($userId);      
         $listAdvise = new Advise_List_Advise();
         $listAdvise->setFilter(array('userid' => $userId));
@@ -102,8 +101,8 @@ class Advise_Logic_Advise{
      * @param array $arrData
      * @return boolean
      */
-    public function addAdvise($deviceId,$strData){
-        $userId             = $this->logicUser->getUserId($deviceId);
+    public function addAdvise($strData){
+        $userId             = User_Api::getCurrentUser();
         $objAdvise          = new Advise_Object_Advise();
         $objAdvise->userid  = $userId;
         $objAdvise->content = $strData;

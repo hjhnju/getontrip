@@ -59,7 +59,7 @@ class Home_Logic_List{
             //是否收藏过
             $logicCollect = new Collect_Logic_Collect();
             if(!empty($deviceId)){
-                $arr[$index]['collected'] = strval($logicCollect->checkCollect(Collect_Type::SIGHT, $deviceId, $val['id']));
+                $arr[$index]['collected'] = strval($logicCollect->checkCollect(Collect_Type::SIGHT,$val['id']));
             }else{
                 $arr[$index]['collected'] = '';
             }
@@ -91,13 +91,12 @@ class Home_Logic_List{
     /**
      * 城市中间页入口一
      * @param string $city
-     * @param string $deviceId
      */
-    public function getHomeData($cityId, $deviceId){
+    public function getHomeData($cityId){
         //城市信息
         $tmpCity   = City_Api::getCityById($cityId);
-
-        $collected = $this->_logicCollect->checkCollect(Collect_Type::CITY, $deviceId, $cityId);
+        $collected = '';
+        $collected = $this->_logicCollect->checkCollect(Collect_Type::CITY, $cityId);
         $arrCity = array(
             'id'      => isset($tmpCity['id'])?strval($tmpCity['id']):'',
             'name'    => isset($tmpCity['name'])?trim($tmpCity['name']):'',

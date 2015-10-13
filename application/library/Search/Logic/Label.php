@@ -27,8 +27,9 @@ class Search_Logic_Label extends Base_Logic{
             $objSearchLabel->objId   = $objId;
             $objSearchLabel->type    = $type;
             $objSearchLabel->labelId = $labelId;
-            return $objSearchLabel->save();
+            $ret =  $objSearchLabel->save();
         }
+        return $ret;
     }
     
     /**

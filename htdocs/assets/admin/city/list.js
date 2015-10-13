@@ -25,6 +25,9 @@
                 if ($('#form-user_id').attr("checked")) {
                     d.params.create_user = $('#form-user_id').val();
                 }
+                if($("#form-city").attr('data-city_id')){
+                    d.params.id = $("#form-city").attr('data-city_id');
+                }
                 //d.raw = 'raw';
             }
         },

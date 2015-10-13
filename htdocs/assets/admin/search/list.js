@@ -121,10 +121,9 @@ $(document).ready(function() {
             $('#type').val(event.type);
             $('#Form input').removeClass('error');
             $('#Form .error').hide();
-            //打开模态框 
+            //模态框 
             $('#myModal').modal({});
-        });
-
+        }); 
     }
 
     function addObj() {

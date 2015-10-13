@@ -45,18 +45,19 @@ class UploadController extends Base_Controller_Page {
 
         //特殊处理剪贴板的图片 改为$_FILES['file']['type']
         $ext = explode("/",$_FILES['file']['type']);
+        $filename = isset($_REQUEST['filename'])?trim($_REQUEST['filename']):'';
         if (!isset($ext[1])||!in_array($ext[1], array('jpg', 'gif', 'jpeg','png'))) {
              return $this->ajaxError(Base_RetCode::PARAM_ERROR);
         }
-         
-            
         $hash = md5(microtime(true));
         $hash = substr($hash, 8, 16);
-        if(trim($ext[1]) == 'gif'){
-            $filename = $hash . '.gif';
-        }else{
-            $filename = $hash . '.jpg';
-        }        
+        if(empty($filename)){
+            if(trim($ext[1]) == 'gif'){
+                $filename = $hash . '.gif';
+            }else{
+                $filename = $hash . '.jpg';
+            }
+        }              
         
         $oss = Oss_Adapter::getInstance();
         $res = $oss->writeFile($filename, $_FILES['file']['tmp_name']);

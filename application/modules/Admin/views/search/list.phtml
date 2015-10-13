@@ -12,7 +12,7 @@
 						</div>
 						<div class="modal-body"> 
 							 	<div class="form-group ">
-		                          <label for="name" class="control-label col-lg-2">选择城市：</label>
+		                          <label id="name" for="name" class="control-label col-lg-2">选择城市：</label>
 		                          <div class="col-lg-5">
 		                          {%foreach $city as $key => $item%}
 						            <input class="form-control" id="name" name="obj_id"  type="checkbox" required="" value={%$item.id%}>{%$item.name%}<label for="name" class="error"></label>

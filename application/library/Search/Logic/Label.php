@@ -16,17 +16,19 @@ class Search_Logic_Label extends Base_Logic{
     
     /**
      * 为城市或景点添加上搜索标签
-     * @param integer $objId
+     * @param array $arrObjs
      * @param integer $type
      * @param integer $labelId
      * @return boolean
      */
-    public function addLabel($objId, $type, $labelId){
-        $objSearchLabel = new Search_Object_Label();
-        $objSearchLabel->objId   = $objId;
-        $objSearchLabel->type    = $type;
-        $objSearchLabel->labelId = $labelId;
-        return $objSearchLabel->save();
+    public function addLabel($arrObjs, $type, $labelId){
+        foreach ($arrObjs as $objId){
+            $objSearchLabel = new Search_Object_Label();
+            $objSearchLabel->objId   = $objId;
+            $objSearchLabel->type    = $type;
+            $objSearchLabel->labelId = $labelId;
+            return $objSearchLabel->save();
+        }
     }
     
     /**

@@ -2,16 +2,16 @@
 class Search_Api{
     
     /**
-     * 接口1:Search_Api::addLabel($objId, $type, $labelId)
-     * 为城市或景点添加上搜索标签
-     * @param integer $objId
+     * 接口1:Search_Api::addLabel($arrObjs, $type, $labelId)
+     * 为搜索标签关联上景点或城市
+     * @param array $arrObjs
      * @param integer $type
      * @param integer $labelId
      * @return boolean
      */
-    public static function addLabel($objId, $type, $labelId){
+    public static function addLabel($arrObjs, $type, $labelId){
         $logic = new Search_Logic_Label();
-        return $logic->addLabel($objId, $type, $labelId);
+        return $logic->addLabel($arrObjs, $type, $labelId);
     }
     
     /**

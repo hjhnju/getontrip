@@ -95,7 +95,7 @@ class Source_Api{
     
     /**
      * 接口9：Source_Api::addType($arrInfo)
-     * 添加一个搜索来源的分组类型
+     * 添加一个搜索来源的分组类型,$arrInfo参数例子：array('name'=>'aaa','source'=> array(1,2));
      * @param array $arrInfo
      */
     public static function addType($arrInfo){
@@ -105,7 +105,7 @@ class Source_Api{
     
     /**
      * 接口10：Source_Api::delType($typeId)
-     * 删除一个搜索来源的分组类型
+     * 删除一个搜索来源的分组类型,并将来源的group包含这种来源的group设为空
      * @param integer $typeId
      * @return boolean
      */
@@ -115,7 +115,18 @@ class Source_Api{
     }
     
     /**
-     * 接口11: Source_Api::listType($page,$pageSize,$arrInfo = array())
+     * 接口11：Source_Api::editType($typeId, $arrInfo)
+     * 添加一个搜索来源的分组类型,$arrInfo参数例子：array('name'=> 'xxx','source'=> array(1,2));
+     * @param array $arrInfo
+     */
+    public static function editType($typeId, $arrInfo){
+        $logicSource = new Source_Logic_Source();
+        return $logicSource->editType($typeId, $arrInfo);
+    }
+    
+    /**
+     * 接口12: Source_Api::listType($page,$pageSize,$arrInfo = array())
+     * 获取来源类型列表，每个来源类型中包含来源信息
      * @param integer $page
      * @param integer $pageSize
      * @param array $arrInfo

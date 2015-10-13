@@ -176,13 +176,65 @@ class Source_Logic_Source extends Base_Logic{
                 $objSourceType->$key = $val;
             }
         }
-        return $objSourceType->save();
+        $ret = $objSourceType->save();
+        if(isset($arrInfo['source'])){
+            foreach ($arrInfo['source'] as $id){
+                $objSource = new Source_Object_Source();
+                $objSource->fetch(array('id' => $id));
+                $objSource->group = $objSourceType->id;
+                $objSource->save();
+            }
+        }
+        return $ret;
+    }
+    
+    public function editType($typeId, $arrInfo){
+        $objSourceType = new Source_Object_Type();
+        $objSourceType->fetch(array('id' => $typeId));
+        foreach ($arrInfo as $key => $val){
+            if(in_array($key,$this->_type_fields)){
+                $key  = $this->getprop($key);
+                $objSourceType->$key = $val;
+            }
+        }
+        $ret = $objSourceType->save();
+        
+        $listSource = new Source_List_Source();
+        $listSource->setFilter(array('group' => $typeId));
+        $listSource->setPagesize(PHP_INT_MAX);
+        $arrSource  = $listSource->toArray();
+        foreach ($arrSource['list'] as $val){
+            $objSource = new Source_Object_Source();
+            $objSource->fetch(array('id' => $val['id']));
+            $objSource->group = '';
+            $objSource->save();
+        }
+        
+        foreach ($arrInfo['source'] as $id){
+            $objSource = new Source_Object_Source();
+            $objSource->fetch(array('id' => $id));
+            $objSource->group = $objSourceType->id;
+            $objSource->save();
+        }
+        return $ret;
     }
     
     public function delType($typeId){
         $objSourceType = new Source_Object_Type();
         $objSourceType->fetch(array('id' => $typeId));
-        return $objSourceType->remove();
+        $ret =  $objSourceType->remove();
+        
+        $listSource = new Source_List_Source();
+        $listSource->setFilter(array('group' => $typeId));
+        $listSource->setPagesize(PHP_INT_MAX);
+        $arrSource  = $listSource->toArray();
+        foreach($arrSource['list'] as $val){
+            $objSource = new Source_Object_Source();
+            $objSource->fetch(array('id' => $val['id']));
+            $objSource->group = '';
+            $objSource->save();
+        }
+        return $ret;
     }
     
     public function listType($page,$pageSize,$arrInfo = array()){
@@ -190,6 +242,14 @@ class Source_Logic_Source extends Base_Logic{
         $listSourceType->setPage($page);
         $listSourceType->setPagesize($pageSize);
         $listSourceType->setFilter($arrInfo);
-        return $listSourceType->toArray();
+        $arrType  = $listSourceType->toArray();
+        foreach ($arrType['list'] as $key => $val){
+            $listSource = new Source_List_Source();
+            $listSource->setFilter(array('group' => $val['id']));
+            $listSource->setPagesize(PHP_INT_MAX);
+            $arrSource  = $listSource->toArray();
+            $arrType['list'][$key]['sources'] = $arrSource['list'];
+        }
+        return $arrType;
     }    
 }

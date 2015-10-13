@@ -53,23 +53,10 @@ class ApiController extends Base_Controller_Page{
             return $this->ajax();
         }
         return $this->ajaxError();
-    }   
+    }      
     
     /**
-     * 接口3：/api/user/checkLogin
-     * 检查用户是否登录
-     * @return json
-     */
-    public function checkLoginAction(){
-        $userId = $this->logicLogin->checkLogin();
-        if($userId){
-            return $this->ajax($userId);
-        }
-        return $this->ajax();
-    }    
-    
-    /**
-     * 接口4：/api/user/getinfo
+     * 接口3：/api/user/getinfo
      * 用户信息获取接口
      * @param integer userid，用户ID
      * @param integer type,第三方登录类型，1:qq,2:weixin,3:weibo
@@ -86,7 +73,7 @@ class ApiController extends Base_Controller_Page{
     }
     
     /**
-     * 接口5：/api/user/addinfo
+     * 接口4：/api/user/addinfo
      * 用户信息添加接口
      * @param integer userid，用户ID
      * @param integer type,第三方登录类型，1:qq,2:weixin,3:weibo
@@ -108,7 +95,7 @@ class ApiController extends Base_Controller_Page{
     }
     
     /**
-     * 接口6：/api/user/editinfo
+     * 接口5：/api/user/editinfo
      * 用户信息修改接口
      * @param integer userid
      * @param integer type,第三方登录类型，1:qq,2:weixin,3:weibo

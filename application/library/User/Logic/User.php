@@ -187,4 +187,29 @@ class User_Logic_User extends Base_Logic{
         }
         return '';
     }
+    
+    public function getCurrentUser(){
+        $user = isset($_COOKIE[User_Keys::getCurrentUserKey()])?trim($_COOKIE[User_Keys::getCurrentUserKey()]):'';
+        if(!empty($user)){
+            return Base_Util_Secure::decryptForUuap(Base_Util_Secure::PASSWD_KEY, $user);
+        }
+        
+        $objUser  = new User_Object_User();
+        $deviceId = isset($_COOKIE[User_Keys::getDeviceIdKey()])?trim($_COOKIE[User_Keys::getDeviceIdKey()]):'';
+        if(empty($deviceId)){
+            return '';
+        }
+        $objUser->fetch(array('device_id' => $deviceId));
+        if(!empty($objUser->id)){
+            $user  = Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY, $objUser->id);
+            setcookie(User_Keys::getCurrentUserKey(),$user);
+            return $objUser->id;
+        }
+        $objUser->deviceId = $deviceId;
+        $objUser->type     = User_Type_Login::NOT_IN;
+        $objUser->save();
+        $user  = Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY, $objUser->id);
+        setcookie(User_Keys::getCurrentUserKey(),$user);
+        return $objUser->id;
+    }
 }

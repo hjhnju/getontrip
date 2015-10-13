@@ -11,11 +11,12 @@ class Base_Controller_Admin extends Base_Controller_Page {
         parent::init();
 
         //未登录自动跳转
-        $logicUser = new User_Logic_Third();
-        $this->userid = $logicUser->checkLogin();
+        $name           = '';
+        $logicUser      = new User_Logic_Third();
+        $this->userid   = $logicUser->checkLogin();
         if(!empty($this->userid)){
             $logicAdmin = new Admin_Logic_Admin;
-            $name  = $logicAdmin->getUserName($this->userid);
+            $name       = $logicAdmin->getUserName($this->userid);
         }
         
         

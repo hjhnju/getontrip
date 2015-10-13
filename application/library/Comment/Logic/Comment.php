@@ -34,11 +34,10 @@ class Comment_Logic_Comment  extends Base_Logic{
      * @param integer $id
      * @param array $info
      */
-    public function  addComment($objId,$upId,$deviceId,$toUserId,$content,$type){
+    public function  addComment($objId,$upId,$userId,$toUserId,$content,$type){
         $objComment = new Comment_Object_Comment();    
         $logicUser  = new User_Logic_User();
-        $fromUserId = $logicUser->getUserId($deviceId);
-        $objComment->fromUserId = $fromUserId;
+        $objComment->fromUserId = $userId;
         $objComment->upId       = $upId;
         $objComment->toUserId   = $toUserId;
         $objComment->objId      = $objId;
@@ -51,11 +50,11 @@ class Comment_Logic_Comment  extends Base_Logic{
             $logicTopic = new Topic_Logic_Topic();
             $topic      = $logicTopic->getTopicById($objId);
             $arrInfo    = array(
-                'user_id'   => $fromUserId,
+                'user_id'   => $userId,
                 'topicId'   => $topic['id'],
                 'commentId' => $upId,               
             );
-            Msg_Api::sendmsg(Msg_Type_Type::REPLY,$topic['image'],$toUserId,$arrInfo,$fromUserId);
+            Msg_Api::sendmsg(Msg_Type_Type::REPLY,$topic['image'],$toUserId,$arrInfo,$userId);
         }
         
         $redis = Base_Redis::getInstance();

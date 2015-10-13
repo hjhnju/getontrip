@@ -1,15 +1,19 @@
 <?php
 class User_Keys {
 
-    const SESSION_OPENID_KEY   = 'openid';
+    const SESSION_OPENID_KEY      = 'openid';
 
-    const SESSION_AUTHTYPE_KEY = 'authtype';
+    const SESSION_AUTHTYPE_KEY    = 'authtype';
 
-    const SESSION_LOGINUSER_KEY= 'login_user';
-
-    const ACCESS_TOKEN_KEY     = 'user_openid_%s';
+    const SESSION_LOGINUSER_KEY   = 'login_user';
     
-    const OPEN_INFO_KEY        = 'openinfo_%s_%s';
+    const COOKIE_CURRENTUSER_KEY  = 'current_user';
+    
+    const COOKIE_DEVICEID_KEY     = 'device_id';
+
+    const ACCESS_TOKEN_KEY        = 'user_openid_%s';
+    
+    const OPEN_INFO_KEY           = 'openinfo_%s_%s';
    
 
     public static function getOpenidKey(){
@@ -30,5 +34,13 @@ class User_Keys {
 
     public static function getOpenInfoKey($authtype, $openid){
         return sprintf(self::OPEN_INFO_KEY, $authtype, $openid);
+    }
+    
+    public static function getCurrentUserKey(){
+        return self::COOKIE_CURRENTUSER_KEY;
+    }
+    
+    public static function getDeviceIdKey(){
+        return self::COOKIE_DEVICEID_KEY;
     }
 }

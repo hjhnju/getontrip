@@ -14,15 +14,15 @@ class Collect_Logic_Collect{
     /**
      * 添加收藏逻辑层,同时注意更新redis中的统计数据
      * @param integer $type
-     * @param integer $device_id
+     * @param integer $user_id
      * @param integer $obj_id
      * @return boolean 
      */
-    public function addCollect($type, $device_id, $obj_id){
+    public function addCollect($type, $user_id, $obj_id){
         $obj         = new Collect_Object_Collect();
         $obj->type   = $type;
         $obj->objId  = $obj_id;
-        $obj->userId = $this->logicUser->getUserId($device_id);
+        $obj->userId = $user_id;
         $ret         = $obj->save();
         $redis       = Base_Redis::getInstance();
         $redis->hDel(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateKeyName($obj_id,'*'));
@@ -35,14 +35,13 @@ class Collect_Logic_Collect{
     /**
      * 删除收藏逻辑层,同时注意更新redis中的统计数据
      * @param integer $type
-     * @param integer $device_id
+     * @param integer $user_id
      * @param integer $obj_id
      * @return boolean
      */
-    public function delCollect($type, $device_id, $obj_id){
+    public function delCollect($type, $user_id, $obj_id){
         $obj         = new Collect_Object_Collect();
-        $userId      = $this->logicUser->getUserId($device_id);
-        $obj->fetch(array('type' => $type,'obj_id' => $obj_id,'user_id'=> $userId));
+        $obj->fetch(array('type' => $type,'obj_id' => $obj_id,'user_id'=> $user_id));
         $ret         = $obj->remove();
         $redis       = Base_Redis::getInstance();
         $redis->hDel(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateKeyName($obj_id,'*'));
@@ -54,16 +53,19 @@ class Collect_Logic_Collect{
     /**
      * 检测用户是否收藏过
      * @param integer $type
-     * @param integer $device_id
      * @param integer $obj_id
      * @return boolean
      */
-    public function checkCollect($type, $device_id, $obj_id){
+    public function checkCollect($type, $obj_id){
+        $logicLogin  = new User_Logic_Third();
+        $user_id     = $logicLogin->checkLogin();
+        if(empty($user_id)){
+            return false;
+        }
         $obj = new Collect_Object_Collect();
-        $userId = $this->logicUser->getUserId($device_id);
         $obj->fetch(array(
             'type'    => $type,
-            'user_id' => $userId,
+            'user_id' => $user_id,
             'obj_id'  => $obj_id,
         ));
         if(!empty($obj->id)){
@@ -80,12 +82,12 @@ class Collect_Logic_Collect{
      * @param integer $pageSize
      * @return array
      */
-    public function getCollect($type, $device_id, $page, $pageSize){
+    public function getCollect($type, $user_id, $page, $pageSize){
         $arrRet      = array();
         $listCollect = new Collect_List_Collect();
         $listCollect->setFilter(array(
-            'type'   => $type,
-            'user_id' => $this->logicUser->getUserId($device_id),
+            'type'    => $type,
+            'user_id' => $user_id,
         ));
         $listCollect->setPage($page);
         $listCollect->setPagesize($pageSize);
@@ -134,7 +136,7 @@ class Collect_Logic_Collect{
                 $listCollect = new Collect_List_Collect();
                 $listCollect->setFilter(array(
                     'type'    => Collect_Type::BOOK,
-                    'user_id' => $this->logicUser->getUserId($device_id),
+                    'user_id' => $user_id,
                 ));
                 $listCollect->setPage($page);
                 $listCollect->setPagesize($pageSize);

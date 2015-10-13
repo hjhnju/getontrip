@@ -31,32 +31,30 @@ class Base_Controller_Abstract extends Yaf_Controller_Abstract
     public function init(){
 
         $this->webroot = Base_Config::getConfig('web')->root;
-        $this->objUser = new stdClass();
+        $this->objUser = new stdClass();       
         
         $this->baselog();
         //未登录自动跳转
         $logicUser = new User_Logic_Third();
         $this->userid = $logicUser->checkLogin();
-        if(!empty($this->userid)){
-            //为页面统一assign用户信息
-            $logicUser = new User_Logic_User();
-            $this->getView()->assign("username",$logicUser->getUserName($this->userid));
-            $this->getView()->assign("userid",$this->userid);
+        $arrRequest   = explode("/",$_SERVER['REQUEST_URI']);
+        //后台不在这里进行未登录处理,而是在Base_Controller_Admin中处理
+        if(isset($arrRequest[1]) && ($arrRequest[1] == 'admin')){
+            return ;
         }
-      
-        
         if($this->needLogin && empty($this->userid)){
-            //$u        = isset($_REQUEST['HTTP_REFERER']) ? $_REQUEST['HTTP_REFERER'] : null;
-            $u        = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : null;
-            $loginUrl = $this->loginUrl ? $this->loginUrl : Base_Config::getConfig('web')->loginurl;
-            if(!empty($u)){
-                $loginUrl = $loginUrl . '?' . http_build_query(array('u'=>$u));
-            }
-            if($this->isAjax()){
-                return $this->ajaxJump($loginUrl);
-            }else{
-                return $this->redirect($loginUrl);
-            }
+            header("Content-Type: application/json; charset=UTF-8");
+            
+            $arrRtInfo = array();
+            $arrRtInfo['status'] = 2;
+            $arrRtInfo['statusInfo'] = '未登录';
+            $arrRtInfo['data']= array();
+            
+            $output = json_encode($arrRtInfo);
+            $output = str_replace("<","&lt;",$output);
+            $output = str_replace(">","&gt;",$output);
+            echo  $output;
+            die();
         }        
     }
     

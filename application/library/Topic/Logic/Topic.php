@@ -166,8 +166,8 @@ class Topic_Logic_Topic extends Base_Logic{
         
         //话题收藏数
         $logicCollect      = new Collect_Logic_Collect();
-        $arrRet['collect'] = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $arrRet['id']));
-        
+        $arrRet['collect']   = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $arrRet['id']));
+        $arrRet['collected'] = strval($logicCollect->checkCollect(Collect_Type::TOPIC, $arrRet['id']));
         
         //添加redis中话题访问次数统计，直接让其失效，下次从数据库中获取
         $redis = Base_Redis::getInstance();

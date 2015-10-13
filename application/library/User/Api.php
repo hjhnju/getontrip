@@ -27,4 +27,14 @@ class User_Api{
         $logicUser = new User_Logic_User();
         return $logicUser->getUserById($userId);  
     }
+    
+    /**
+     * 接口3：User_Api::getCurrentUser()
+     * 获取当前登录用户ID
+     * @return number
+     */
+    public static function getCurrentUser(){
+        $logicUser = new User_Logic_User();
+        return $logicUser->getCurrentUser();
+    }
 }

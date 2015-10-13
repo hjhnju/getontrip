@@ -245,8 +245,16 @@ class Book_Logic_Book extends Base_Logic{
     
     public function getBookById($bookId){
         $objBook = new Book_Object_Book();
+        $objBook->setFileds(array('id','title','author','press','content_desc','url','image','isbn'));
         $objBook->fetch(array('id' => $bookId));
-        return $objBook->toArray();
+        $arrBook = $objBook->toArray();
+        if(!empty($arrBook)){
+            $arrBook['id']        = strval($arrBook['id']);
+            $arrBook['image']     = Base_Image::getUrlByName($arrBook['image']);
+            $logicCollect         = new Collect_Logic_Collect();
+            $arrBook['collected'] = strval($logicCollect->checkCollect(Collect_Type::BOOK, $bookId));
+        }
+        return $arrBook;
     }
     
     public function search($query, $page, $pageSize){

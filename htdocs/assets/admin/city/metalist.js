@@ -14,8 +14,11 @@
             "url": "/admin/cityapi/list",
             "type": "POST",
             "data": function(d) {
+            	d.params={};
                 //添加额外的参数传给服务器
-                d.pid = $("#form-province").attr('data-pid');
+                if($("#form-province").attr('data-pid')){
+                    d.params.pid = $("#form-province").attr('data-pid');
+                }
             }
         },
         "columnDefs": [{

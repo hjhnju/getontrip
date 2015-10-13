@@ -10,7 +10,10 @@ class ApiController extends Base_Controller_Page {
     
     const INDEX_TOPIC_NUM = 4;
     
-    const DEFAULT_CITY    = '北京';
+    const DEFAULT_CITY_NUM = 2;
+    
+    
+    const DEFAULT_CITY_STR    = '北京';
     
     protected $_logicCity;
     
@@ -18,6 +21,19 @@ class ApiController extends Base_Controller_Page {
         $this->_logicCity = new City_Logic_City();
         $this->setNeedLogin(false);
         parent::init();       
+    }
+    
+    /**
+     * 接口1：/api/city
+     * 城市中间页首页接口
+     * @param integer city,城市ID
+     * @return json
+     */
+    public function indexAction() {
+        $city      = isset($_REQUEST['city'])?trim($_REQUEST['city']):self::DEFAULT_CITY_NUM;
+        $logic = new Home_Logic_List();
+        $ret = $logic->getHomeData($city);
+        return $this->ajax($ret);
     }
     
     /**
@@ -76,7 +92,7 @@ class ApiController extends Base_Controller_Page {
      * @return json
      */
     public function locateAction(){
-        $city   = isset($_REQUEST['city'])?trim($_REQUEST['city']):self::DEFAULT_CITY;
+        $city   = isset($_REQUEST['city'])?trim($_REQUEST['city']):self::DEFAULT_CITY_STR;
         if(empty($city)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }

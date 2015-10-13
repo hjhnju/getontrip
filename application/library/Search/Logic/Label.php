@@ -97,7 +97,8 @@ class Search_Logic_Label extends Base_Logic{
         $arrSearchLabel = $listSearchLabel->toArray();
         foreach ($arrSearchLabel['list'] as $key => $val){
             $arrSearchLabel['list'][$key]         = array_merge($arrSearchLabel['list'][$key],$arrTag);
-            $arrSearchLabel['list'][$key]['type'] = Search_Type_Label::getTypeName($val['type']);
+            $arrSearchLabel['list'][$key]['typename'] = Search_Type_Label::getTypeName($val['type']);
+            $arrSearchLabel['list'][$key]['type']     = $val['type'];
             if(Search_Type_Label::CITY == $val['type']){
                 $city = City_Api::getCityById($val['obj_id']);
                 $arrSearchLabel['list'][$key]['obj'] = $city['name'];

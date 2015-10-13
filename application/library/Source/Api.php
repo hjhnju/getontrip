@@ -6,11 +6,12 @@ class Source_Api{
      * 获取来源列表
      * @param integer $page
      * @param integer $pageSize
+     * @param array $arrInfo
      * @return array
      */
-    public static function listSource($page,$pageSize){
+    public static function listSource($page,$pageSize,$arrInfo = array()){
         $logicSource = new Source_Logic_Source();
-        return $logicSource->listSource($page, $pageSize);
+        return $logicSource->listSource($page, $pageSize, $arrInfo);
     }
     
     /**

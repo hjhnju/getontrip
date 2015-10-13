@@ -6,7 +6,7 @@ class Source_Logic_Source extends Base_Logic{
     protected $_type_fields;
     
     public function __construct(){   
-        $this->_fields = array('id','name','url','type','create_time','update_time'); 
+        $this->_fields = array('id','name','url','type','create_time','update_time','group'); 
         $this->_type_fields = array('id','name','create_time','update_time','creat_user','update_user');
     }
     
@@ -16,8 +16,16 @@ class Source_Logic_Source extends Base_Logic{
      * @param integer $pageSize
      * @return array
      */
-    public function listSource($page,$pageSize){
+    public function listSource($page,$pageSize,$arrInfo = array()){
         $list = new Source_List_Source();
+        foreach ($arrInfo as $key => $val){
+            if(!in_array($key,$this->_fields)){
+                unset($arrInfo[$key]);
+            }
+        }
+        if(!empty($arrInfo)){
+            $list->setFilter($arrInfo);
+        }
         $list->setPage($page);
         $list->setPagesize($pageSize);
         return $list->toArray();

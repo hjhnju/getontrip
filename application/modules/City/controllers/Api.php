@@ -11,8 +11,7 @@ class ApiController extends Base_Controller_Page {
     const INDEX_TOPIC_NUM = 4;
     
     const DEFAULT_CITY_NUM = 2;
-    
-    
+        
     const DEFAULT_CITY_STR    = '北京';
     
     protected $_logicCity;
@@ -25,19 +24,19 @@ class ApiController extends Base_Controller_Page {
     
     /**
      * 接口1：/api/city
-     * 城市中间页首页接口
+     * 城市首页接口
      * @param integer city,城市ID
      * @return json
      */
     public function indexAction() {
-        $city      = isset($_REQUEST['city'])?trim($_REQUEST['city']):self::DEFAULT_CITY_NUM;
+        $city  = isset($_REQUEST['city'])?trim($_REQUEST['city']):self::DEFAULT_CITY_NUM;
         $logic = new Home_Logic_List();
-        $ret = $logic->getHomeData($city);
+        $ret   = $logic->getHomeData($city);
         return $this->ajax($ret);
     }
     
     /**
-     * 接口1：/api/city/detail
+     * 接口2：/api/city/detail
      * 获取城市信息,供城市中间页使用
      * @param integer cityId,城市ID
      * @param integer page,页码
@@ -56,7 +55,7 @@ class ApiController extends Base_Controller_Page {
     }  
     
     /**
-     * 接口2：/api/city/list
+     * 接口3：/api/city/list
      * 获取城市列表信息，切换城市时使用
      * @return json
      */
@@ -66,7 +65,7 @@ class ApiController extends Base_Controller_Page {
     }
     
     /**
-     * 接口3：/api/city/topic
+     * 接口4：/api/city/topic
      * 获取城市话题,定位了城市后刷新话题时使用
      * @param string device，用户的设备ID
      * @param integer city,城市ID
@@ -86,7 +85,7 @@ class ApiController extends Base_Controller_Page {
     }
     
     /**
-     * 接口4：/api/city/locate
+     * 接口5：/api/city/locate
      * 获取城市信息，判断是否开启
      * @param string city，城市名称可以是中文或英文
      * @return json

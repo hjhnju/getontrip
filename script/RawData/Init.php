@@ -17,14 +17,50 @@ if(!in_array(trim($argv[1]),$arrTypes)){
 }
 $type      = isset($argv[1])?trim($argv[1]):'All';
 $sightId   = isset($argv[2])?intval($argv[2]):-1;
-$num       = isset($argv[3])?intval($argv[3]):-1;
+$num       = isset($argv[3])?intval($argv[3]):intval(Base_Config::getConfig('thirddata')->initnum);
 
-$conf    = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
-$url  = $conf['web']['root']."/InitData?type=$type";
-if(!empty($sightId) && ($sightId !== -1)){
-    $url .= "&sightId=$sightId";
+//获取景点ID数组
+if(-1 == $sightId){
+    $logic = new Sight_Logic_Sight();
+    $arr   = $logic->getSightList(1, PHP_INT_MAX, Sight_Type_Status::PUBLISHED);
+    foreach ($arr['list'] as $val){
+        $arrSight[] = $val['id'];
+    }
+}else{
+    $arrSight[] = $sightId;
 }
-if(!empty($num) && ($num !== -1)){
-    $url .= "&num=$num";
+foreach ($arrSight as $id){
+    switch($type){
+        case 'Book':
+            $logicBook = new Book_Logic_Book();
+            $page      = ceil($num/self::PAGE_SIZE);
+            for( $i = 1;$i <= $page; $i++ ){
+                $logicBook->getJdBooks($id, $i,self::PAGE_SIZE);
+            }
+            break;
+        case 'Video':
+            $logicVideo = new Video_Logic_Video();
+            $page = ceil($num/self::PAGE_SIZE);
+            for( $i = 1;$i <= $page; $i++ ){
+                $logicVideo->getAiqiyiSource($id, $i);
+            }
+            break;
+        case 'Wiki':
+            $logicWiki = new Keyword_Logic_Keyword();
+            $logicWiki->getKeywordSource($id,1,$num,Keyword_Type_Status::PUBLISHED);
+            break;
+        case 'All':
+            $logicBook  = new Book_Logic_Book();
+            $logicVideo = new Video_Logic_Video();
+            $logicWiki  = new Keyword_Logic_Keyword();
+            $page       = ceil($num/self::PAGE_SIZE);
+            for( $i = 1; $i <= $page; $i++ ){
+                $logicBook->getJdBooks($id, $i,self::PAGE_SIZE);
+                $logicVideo->getAiqiyiSource($id, $i);
+            }
+            $logicWiki->getKeywordSource($id,1,$num,Keyword_Type_Status::PUBLISHED);
+            break;
+        default:
+            break;
+    }
 }
-$http = Base_Network_Http::instance()->url($url)->exec();

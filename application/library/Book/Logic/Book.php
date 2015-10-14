@@ -162,13 +162,14 @@ class Book_Logic_Book extends Base_Logic{
             $summary   = isset($arrDouban['summary'])?trim($arrDouban['summary']):'';
             $image     = isset($arrDouban['images']['large'])?$arrDouban['images']['large']:'';
             $catalog   = isset($arrDouban['catalog'])?trim($arrDouban['catalog']):'';
-            
+            $pubdate   = isset($arrDouban['pubdate'])?trim($arrDouban['pubdate']):'';
             $temp[$key]['title']      = $arr['wname'];
             
-            $temp[$key]['author']     = isset($detail['author'])?$detail['author']:$author;           
-            $temp[$key]['price_mart'] = isset($arr['marketPrice'])?$arr['marketPrice']:'';            
-            $temp[$key]['price_jd']   = isset($arr['jdPrice'])?$arr['jdPrice']:'';            
-            $temp[$key]['press']      = isset($detail['publishers'])?$detail['publishers']:$press;
+            $temp[$key]['author']       = isset($detail['author'])?$detail['author']:$author;           
+            $temp[$key]['price_mart']   = isset($arr['marketPrice'])?$arr['marketPrice']:'';            
+            $temp[$key]['price_jd']     = isset($arr['jdPrice'])?$arr['jdPrice']:'';            
+            $temp[$key]['press']        = isset($detail['publishers'])?$detail['publishers']:$press;
+            $temp[$key]['publish_time'] = isset($detail['publish_time'])?$detail['publish_time']:$pubdate;
                
             if(empty($image)){
                 $image = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['imagePaths'][0];
@@ -225,10 +226,10 @@ class Book_Logic_Book extends Base_Logic{
             $objBook->pages       = $temp[$key]['pages'];
             $objBook->contentDesc = $temp[$key]['content_desc'];
             $objBook->catalog     = $temp[$key]['catalog'];
+            $objBook->publishTime = $temp[$key]['publish_time'];
             $objBook->save();
             if(empty($id)){
-                $objBook->status  = $temp[$key]['status'];
-                
+                $objBook->status  = $temp[$key]['status'];                
                 $objSightBook     = new Sight_Object_Book();
                 $objSightBook->sightId = $sightId;
                 $objSightBook->bookId  = $objBook->id;
@@ -276,11 +277,30 @@ class Book_Logic_Book extends Base_Logic{
     
     public function getBookById($bookId){
         $objBook = new Book_Object_Book();
-        $objBook->setFileds(array('id','title','author','press','content_desc','url','image','isbn'));
+        $objBook->setFileds(array('id','title','author','press','content_desc','url','image','isbn','publish_time'));
         $objBook->fetch(array('id' => $bookId));
         $arrBook = $objBook->toArray();
+        $strDesc = '';
         if(!empty($arrBook)){
-            $arrBook['id']        = strval($arrBook['id']);
+            $arrBook['id']        = strval($arrBook['id']);            
+            if(!empty($arrBook['author'])){
+                $strDesc .= $arrBook['author'];
+                unset($arrBook['author']);
+            }
+            if(!empty($arrBook['press'])){
+                $strDesc .= "/".$arrBook['press'];
+                unset($arrBook['press']);
+            }
+            if(!empty($arrBook['publish_time'])){
+                $strDesc .= "/".$arrBook['publish_time'];
+                unset($arrBook['publish_time']);
+            }
+            if(!empty($arrBook['isbn'])){
+                $strDesc .= "/ISBN:".$arrBook['isbn'];
+                unset($arrBook['isbn']);
+            }
+            $arrBook['info'] = $strDesc;
+            
             $arrBook['image']     = Base_Image::getUrlByName($arrBook['image']);
             $logicCollect         = new Collect_Logic_Collect();
             $arrBook['collected'] = strval($logicCollect->checkCollect(Collect_Type::BOOK, $bookId));

@@ -20,7 +20,7 @@ class Book_List_Book extends Base_List {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'title', 'author', 'press', 'content_desc', 'catalog', 'url', 'image', 'isbn', 'price_jd', 'price_mart', 'pages', 'status', 'create_time', 'update_time', 'create_user', 'update_user');
+    protected $fields = array('id', 'title', 'author', 'press', 'content_desc', 'catalog', 'url', 'image', 'isbn', 'price_jd', 'price_mart', 'pages', 'status', 'create_time', 'update_time', 'create_user', 'update_user', 'publish_time');
 
     /**
      * 整数类型的字段

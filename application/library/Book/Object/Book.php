@@ -26,7 +26,7 @@ class Book_Object_Book extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'title', 'author', 'press', 'content_desc', 'catalog', 'url', 'image', 'isbn', 'price_jd', 'price_mart', 'pages', 'status', 'create_time', 'update_time', 'create_user', 'update_user');
+    protected $fields = array('id', 'title', 'author', 'press', 'content_desc', 'catalog', 'url', 'image', 'isbn', 'price_jd', 'price_mart', 'pages', 'status', 'create_time', 'update_time', 'create_user', 'update_user', 'publish_time');
 
     /**
      * 字段与属性隐射关系
@@ -50,6 +50,7 @@ class Book_Object_Book extends Base_Object {
         'update_time' => 'updateTime',
         'create_user' => 'createUser',
         'update_user' => 'updateUser',
+        'publish_time'=> 'publishTime',
     );
 
     /**
@@ -131,13 +132,13 @@ class Book_Object_Book extends Base_Object {
     public $isbn;
 
     /**
-     * 创建时间
+     * 京东价格
      * @var integer
      */
     public $priceJd;
 
     /**
-     * 创建时间
+     * 市场价格
      * @var integer
      */
     public $priceMart;
@@ -149,7 +150,7 @@ class Book_Object_Book extends Base_Object {
     public $pages;
 
     /**
-     * 状态
+     * 状态:
      * @var integer
      */
     public $status;
@@ -177,5 +178,11 @@ class Book_Object_Book extends Base_Object {
      * @var integer
      */
     public $updateUser;
+
+    /**
+     * 出版时间
+     * @var string
+     */
+    public $publishTime;
 
 }

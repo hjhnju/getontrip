@@ -159,13 +159,13 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrRet['from']  = trim($objTopic->fromDetail);
         }
         
-        $arrRet['image'] = Base_Image::getUrlByName($arrRet['image']);
+        $arrRet['image']     = isset($arrRet['image'])?Base_Image::getUrlByName($arrRet['image']):'';
         
         //话题访问人数
-        $arrRet['visit']   = strval($this->getTotalTopicVistUv($arrRet['id']));
+        $arrRet['visit']     = strval($this->getTotalTopicVistUv($arrRet['id']));
         
         //话题收藏数
-        $logicCollect      = new Collect_Logic_Collect();
+        $logicCollect        = new Collect_Logic_Collect();
         $arrRet['collect']   = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $arrRet['id']));
         $arrRet['collected'] = strval($logicCollect->checkCollect(Collect_Type::TOPIC, $arrRet['id']));
         

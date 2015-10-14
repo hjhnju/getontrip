@@ -66,20 +66,20 @@ class Base_Image {
         }
         $url     = "/pic/".$name;
         if (!empty($width)) {
-            $url .= "@_".$type.$width."w";            
+            $url .= "@".$type.$width."w";            
         }
         if (!empty($height)) {
             if (!empty($width)) {
                 $url .= "_".$type.$height."h";
             }else{
-                $url .= "@_".$type.$height."h";
+                $url .= "@".$type.$height."h";
             }            
         }
         if (!empty($quality) && ($quality !== 100)) {
             if (!empty($height) || !empty($width)) {
                 $url .= "_".$quality."q";
             }else{
-                $url .= "@_".$quality."q";
+                $url .= "@".$quality."q";
             }
         }        
         return $url;

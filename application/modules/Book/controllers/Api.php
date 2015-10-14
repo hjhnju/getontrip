@@ -14,7 +14,7 @@ class ApiController extends Base_Controller_Api {
     }
     
     /**
-     * 接口1：/Api/book
+     * 接口1：/api/book
      * 书籍列表接口
      * @param integer page
      * @param integer pageSize
@@ -34,7 +34,7 @@ class ApiController extends Base_Controller_Api {
     } 
     
     /**
-     * 接口2:/Api/book/detail
+     * 接口2:/api/book/detail
      * 书籍详情接口
      * @param integer book,书籍ID
      * @param string deviceId，用户的设备ID（因为要统计UV）
@@ -52,6 +52,6 @@ class ApiController extends Base_Controller_Api {
         
         $logic    = new Book_Logic_Book();
         $ret      = $logic->getBookById($bookId);  
-        $this->ajax($ret);
+        $this->ajaxDecode($ret);
     }
 }

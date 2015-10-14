@@ -42,13 +42,13 @@ class Video_Logic_Video extends Base_Logic{
         $arrRet = $list->toArray();
         foreach($arrRet['list'] as $key => $val){
             $arrRet['list'][$key]['id']    = strval($val['id']);
-            $arrRet['list'][$key]['type']  = strval($val['type']);
             $arrRet['list'][$key]['image'] = Base_Image::getUrlByName($val['image']);
             if($val['type'] == Video_Type_Type::ALBUM){
                 $arrRet['list'][$key]['len'] = sprintf("合辑：共%d集",$val['len']);
             }else{
                 $arrRet['list'][$key]['len'] = sprintf("时长：%s",$val['len']);
             }
+            unset($arrRet['list'][$key]['type']);
         }
         return $arrRet['list'];
     }

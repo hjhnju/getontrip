@@ -4,14 +4,14 @@ class Book_Logic_Book extends Base_Logic{
     
     const PAGE_SIZE   = 20;
     
-    const CONTENT_LEN = 40;
+    const CONTENT_LEN = 100;
     
     public function __construct(){
         
     }
     
     /**
-     * 获取书籍信息
+     * 获取书籍信息，后端用
      * @param integer $sightId
      * @param integer $page
      * @param integer $pageSize
@@ -36,6 +36,37 @@ class Book_Logic_Book extends Base_Logic{
         }
         $ret['list']  = $arrRet;
         return $ret;
+    }
+    
+    /**
+     * 获取书籍信息，前端用
+     * @param integer $sightId
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function getBookList($sightId,$page,$pageSize,$arrParam = array()){
+        $listSightBook   = new Sight_List_Book();
+        $objBook         = new Book_Object_Book();
+        $arrRet          = array();
+        $listSightBook->setFilter(array('sight_id' => $sightId));
+        $listSightBook->setPage($page);
+        $listSightBook->setPagesize($pageSize);
+        $ret = $listSightBook->toArray();
+        foreach ($ret['list'] as $val){
+            $arrFilter = array_merge($arrParam,array('id' => $val['book_id']));
+            $objBook->setFileds(array('id','title','image','author','content_desc'));
+            $objBook->fetch($arrFilter);
+            $data = $objBook->toArray();
+            if(!empty($data)){
+                $data['id']           = strval($data['id']);
+                $data['image']        = Base_Image::getUrlByName($data['image']);
+                $data['content_desc'] = trim(Base_Util_String::getSubString($data['content_desc'], self::CONTENT_LEN));
+                $data['url']          = "http://".$_SERVER['HTTP_HOST'].'/api/book/detail?book='.$data['id'];
+                $arrRet[] = $data;
+            }
+        }
+        return $arrRet;
     }
     
     /**

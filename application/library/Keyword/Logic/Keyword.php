@@ -219,7 +219,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
 
     
     /**
-     * 获取景点百科信息，并拼接上百科目录,供线上使用
+     * 获取景点百科信息，并拼接上百科目录,供后端使用
      * @param integer $sightId
      * @param integer $page
      * @param integer $pageSize
@@ -228,7 +228,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
     public function getKeywords($sightId,$page,$pageSize,$arrParma = array()){
         $listKeyword  = new Keyword_List_Keyword();
         $arrFilter = array_merge(array('sight_id' => $sightId),$arrParma);
-        $listKeyword->setFields(array('id','sight_id','name','url','content','image'));
+        $listKeyword->setFields(array('id','name','url','content','image'));
         $listKeyword->setFilter($arrFilter);
         $listKeyword->setPage($page);
         $listKeyword->setPagesize($pageSize);
@@ -243,6 +243,35 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $arrRet['list'][$key]['image']   = Base_Image::getUrlByName($val['image']);
         }
         return $arrRet;
+    }
+    
+    /**
+     * 获取景点百科信息，并拼接上百科目录,供前端使用
+     * @param integer $sightId
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function getKeywordList($sightId,$page,$pageSize,$arrParma = array()){
+        $listKeyword  = new Keyword_List_Keyword();
+        $arrFilter = array_merge(array('sight_id' => $sightId),$arrParma);
+        $listKeyword->setFields(array('id','name','url','content','image'));
+        $listKeyword->setOrder("`weight` asc");
+        $listKeyword->setFilter($arrFilter);
+        $listKeyword->setPage($page);
+        $listKeyword->setPagesize($pageSize);
+        $arrRet = $listKeyword->toArray();
+        foreach ($arrRet['list'] as $key => $val){
+            $arrRet['list'][$key]['id'] = strval($val['id']);
+            $listKeywordCatalog = new Keyword_List_Catalog();
+            $listKeywordCatalog->setFields(array('name','url'));
+            $listKeywordCatalog->setFilter(array('keyword_id' => $val['id']));
+            $listKeywordCatalog->setPagesize(self::WIKI_CATALOG_NUM);
+            $arrCatalog = $listKeywordCatalog->toArray();
+            $arrRet['list'][$key]['catalog'] = $arrCatalog['list'];
+            $arrRet['list'][$key]['image']   = Base_Image::getUrlByName($val['image']);
+        }
+        return $arrRet['list'];
     }
     
     

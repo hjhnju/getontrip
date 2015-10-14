@@ -29,7 +29,7 @@ class ApiController extends Base_Controller_Api {
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $logic      = new Book_Logic_Book();
-        $ret        = $logic->getBooks($sightId,$page,$pageSize,array('status' => Book_Type_Status::PUBLISHED));
+        $ret        = $logic->getBookList($sightId,$page,$pageSize,array('status' => Book_Type_Status::PUBLISHED));
         $this->ajax($ret);
     } 
     

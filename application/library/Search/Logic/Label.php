@@ -22,6 +22,16 @@ class Search_Logic_Label extends Base_Logic{
      * @return boolean
      */
     public function addLabel($arrObjs, $type, $labelId){
+        $listSearchLabel = new Search_List_Label();
+        $listSearchLabel->setFilter(array('label_id' => $labelId));
+        $listSearchLabel->setPagesize(PHP_INT_MAX);
+        $arrSearchLabel  = $listSearchLabel->toArray();
+        foreach ($arrSearchLabel['list'] as $val){
+            $objSearchLabel = new Search_Object_Label();
+            $objSearchLabel->fetch(array('id' => $val['id']));
+            $objSearchLabel->remove();
+        }
+               
         foreach ($arrObjs as $objId){
             $objSearchLabel = new Search_Object_Label();
             $objSearchLabel->objId   = $objId;

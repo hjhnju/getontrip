@@ -91,7 +91,7 @@ class ApiController extends Base_Controller_Page {
      * @return json
      */
     public function locateAction(){
-        $city   = isset($_REQUEST['city'])?trim($_REQUEST['city']):self::DEFAULT_CITY_STR;
+        $city = isset($_REQUEST['city'])?trim($_REQUEST['city']):self::DEFAULT_CITY_STR;
         if(empty($city)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }

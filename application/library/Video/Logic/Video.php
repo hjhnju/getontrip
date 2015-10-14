@@ -8,7 +8,7 @@ class Video_Logic_Video extends Base_Logic{
     }
     
     /**
-     * 获取视频信息,供线上使用     
+     * 获取视频信息,供后端使用     
      * @param integer $sightId，景点ID
      * @param integer $page,页码
      * @param integer $pageSize
@@ -22,6 +22,35 @@ class Video_Logic_Video extends Base_Logic{
        $list->setPage($page);
        $list->setPagesize($pageSize);
        return $list->toArray();
+    }
+    
+    /**
+     * 获取视频信息,供前端使用
+     * @param integer $sightId，景点ID
+     * @param integer $page,页码
+     * @param integer $pageSize
+     * @param array   $arrParam,过滤条件
+     * @return array
+     */
+    public function getVideoList($sightId,$page,$pageSize,$arrParam = array()){
+        $list = new Video_List_Video();
+        $arrFilter = array_merge(array('sight_id' => $sightId),$arrParam);
+        $list->setFields(array('id','title','url','image','len','type'));
+        $list->setFilter($arrFilter);
+        $list->setPage($page);
+        $list->setPagesize($pageSize);
+        $arrRet = $list->toArray();
+        foreach($arrRet['list'] as $key => $val){
+            $arrRet['list'][$key]['id']    = strval($val['id']);
+            $arrRet['list'][$key]['type']  = strval($val['type']);
+            $arrRet['list'][$key]['image'] = Base_Image::getUrlByName($val['image']);
+            if($val['type'] == Video_Type_Type::ALBUM){
+                $arrRet['list'][$key]['len'] = sprintf("合辑：共%d集",$val['len']);
+            }else{
+                $arrRet['list'][$key]['len'] = sprintf("时长：%s",$val['len']);
+            }
+        }
+        return $arrRet['list'];
     }
         
     /**

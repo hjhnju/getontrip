@@ -29,7 +29,7 @@ class ApiController extends Base_Controller_Api {
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $logic      = new Video_Logic_Video();
-        $ret        = $logic->getVideos($sightId,$page,$pageSize);
+        $ret        = $logic->getVideoList($sightId,$page,$pageSize);
         $this->ajax($ret);
     }   
 }

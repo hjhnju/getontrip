@@ -55,7 +55,7 @@ class Search_Api{
      * 接口5:Search_Api::addNewTag($name,$type = '', $arrObjIds = array())
      * 添加搜索标签
      * @param string $name
-     * @param string $type
+     * @param string $type,1:景点搜索标签;2:城市搜索标签
      * @param array $arrObjIds
      * @return boolean
      */

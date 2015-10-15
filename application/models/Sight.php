@@ -24,7 +24,7 @@ class SightModel extends BaseModel
     }
     
     /**
-     * 根据城市ID获取景点
+     * 根据城市ID获取景点列表
      * @param integer $cityId
      * @return boolean|multitype:
      */

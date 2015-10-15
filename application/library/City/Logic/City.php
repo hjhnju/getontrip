@@ -42,9 +42,14 @@ class City_Logic_City{
         $logicTopic = new Topic_Logic_Topic();
         $redis      = Base_Redis::getInstance();
         $ret        = City_Api::getCityById($cityId);
-        $arrSight   = $this->_modeSight->getSightByCity($page, $pageSize, $cityId);
+        $listSight  = new Sight_List_Sight();
+        $listSight->setFilter(array('city_id' => $cityId,'status' => Sight_Type_Status::PUBLISHED));
+        $listSight->setPage($page);
+        $listSight->setPagesize($pageSize);
+        $arrSight     = $listSight->toArray();
+        $arrSight     = $arrSight['list'];
         $logicCollect = new Collect_Logic_Collect();
-        foreach ($arrSight as $key => $val){
+        foreach ($arrSight as $key => $val){            
             $ret    = $redis->sMembers(Sight_Keys::getSightTopicKey($val['id']));
             $hot    = 0;
             foreach ($ret as $topicId){

@@ -26,7 +26,7 @@ class Sight_Api{
     
     /**
      * 接口3：Sight_Api::getSightByCity($cityId,$page,$pageSize)
-     * 根据城市ID获取景点详情
+     * 根据城市ID获取景点列表
      * @param integer $cityId
      * @param integer $page
      * @param integer $pageSize

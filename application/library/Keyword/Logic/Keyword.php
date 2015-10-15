@@ -427,10 +427,26 @@ class Keyword_Logic_Keyword extends Base_Logic{
         return $ret1&&$ret2;
     }
     
-    public function getKeywordNum($sighId){
+    public function getKeywordNum($sighId, $status = Keyword_Type_Status::PUBLISHED){
+        if($status == Keyword_Type_Status::PUBLISHED){
+            $redis = Base_Redis::getInstance();
+            $ret   = $redis->hGet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::LANDSCAPE);
+            if(!empty($ret)){
+                return $ret;
+            }
+        }
         $listKeyword = new Keyword_List_Keyword();
-        $listKeyword->setFilter(array('sight_id' => $sighId));
+        if(!empty($status)){
+            $listKeyword->setFilter(array('sight_id' => $sighId, 'status' => $status));
+        }else{
+            $listKeyword->setFilter(array('sight_id' => $sighId));
+        }
         $listKeyword->setPagesize(PHP_INT_MAX);
-        return $listKeyword->getTotal();
+        $count =  $listKeyword->getTotal();
+        if($status == Keyword_Type_Status::PUBLISHED){
+            $redis = Base_Redis::getInstance();
+            $redis->hSet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::LANDSCAPE, $count);
+        }
+        return $count;
     }
 }

@@ -20,6 +20,7 @@ $sightId   = isset($argv[2])?intval($argv[2]):-1;
 $num       = isset($argv[3])?intval($argv[3]):intval(Base_Config::getConfig('thirddata')->initnum);
 
 $logic     = new Base_Logic();
+$redis     = Base_Redis::getInstance();
 
 //删除视频
 if($type == 'Video' || $type == 'All'){
@@ -107,6 +108,7 @@ if(-1 == $sightId){
 foreach ($arrSight as $id){
     switch($type){
         case 'Book':
+            $redis->hDel(Sight_Keys::getSightTopicKey($id),Sight_Keys::BOOK);
             $logicBook = new Book_Logic_Book();
             $page      = ceil($num/self::PAGE_SIZE);
             for( $i = 1;$i <= $page; $i++ ){
@@ -114,6 +116,7 @@ foreach ($arrSight as $id){
             }
             break;
         case 'Video':
+            $redis->hDel(Sight_Keys::getSightTopicKey($id),Sight_Keys::VIDEO);
             $logicVideo = new Video_Logic_Video();
             $page = ceil($num/self::PAGE_SIZE);
             for( $i = 1;$i <= $page; $i++ ){
@@ -121,10 +124,14 @@ foreach ($arrSight as $id){
             }
             break;
         case 'Wiki':
+            $redis->hDel(Sight_Keys::getSightTopicKey($id),Sight_Keys::LANDSCAPE);
             $logicWiki = new Keyword_Logic_Keyword();
             $logicWiki->getKeywordSource($id,1,$num,Keyword_Type_Status::PUBLISHED);
             break;
         case 'All':
+            $redis->hDel(Sight_Keys::getSightTopicKey($id),Sight_Keys::BOOK);
+            $redis->hDel(Sight_Keys::getSightTopicKey($id),Sight_Keys::VIDEO);
+            $redis->hDel(Sight_Keys::getSightTopicKey($id),Sight_Keys::LANDSCAPE);
             $logicBook  = new Book_Logic_Book();
             $logicVideo = new Video_Logic_Video();
             $logicWiki  = new Keyword_Logic_Keyword();

@@ -44,10 +44,11 @@ class Book_Api{
      * 接口4：Book_Api::getBookNum($sightId)
      * 根据景点ID获取数据数量
      * @param integer $sightId
+     * @param integer $status
      * @return number
      */
-    public static function getBookNum($sightId){
+    public static function getBookNum($sightId, $status = Book_Type_Status::PUBLISHED){
         $logicBook = new Book_Logic_Book();
-        return $logicBook->getBookNum($sightId);
+        return $logicBook->getBookNum($sightId, $status);
     }
 }

@@ -227,6 +227,7 @@ class Sight_Logic_Sight extends Base_Logic{
         }
         //删除redis缓存
         $redis->delete(Sight_Keys::getSightTopicKey($id));
+        $redis->delete(Sight_Keys::getSightTongjiKey($id));
         
         //删除景点书籍关系
         $listSightBook = new Sight_List_Book();
@@ -364,6 +365,13 @@ class Sight_Logic_Sight extends Base_Logic{
      * @return integer
      */
     public function getTopicNum($sightId='',$arrConf = array()){
+        if(array('status' => Topic_Type_Status::PUBLISHED) == $arrConf && (!empty($sightId))){
+            $redis  = Base_Redis::getInstance();
+            $ret    = $redis->hGet(Sight_Keys::getSightTongjiKey($sightId),Sight_Keys::TOPIC);
+            if(!empty($ret)){
+                return $ret;
+            }
+        }
         $count = 0;
         $listSightTopic = new Sight_List_Topic();
         if(!empty($sightId)){
@@ -379,6 +387,10 @@ class Sight_Logic_Sight extends Base_Logic{
             if(isset($objTopic->id)){
                 $count += 1;
             }
+        }
+        if(array('status' => Topic_Type_Status::PUBLISHED) == $arrConf && (!empty($sightId))){
+            $redis  = Base_Redis::getInstance();
+            $redis->hSet(Sight_Keys::getSightTongjiKey($sightId),Sight_Keys::TOPIC,$count);
         }
         return $count;
     }

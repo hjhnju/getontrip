@@ -4,6 +4,8 @@ class User_Keys {
     const SESSION_OPENID_KEY      = 'openid';
 
     const SESSION_AUTHTYPE_KEY    = 'authtype';
+    
+    const SESSION_LOGINADMIN_KEY  = 'login_admin';
 
     const SESSION_LOGINUSER_KEY   = 'login_user';
     
@@ -26,6 +28,10 @@ class User_Keys {
 
     public static function getLoginUserKey(){
     	return self::SESSION_LOGINUSER_KEY;
+    }
+    
+    public static function getLoginAdminKey(){
+        return self::SESSION_LOGINADMIN_KEY;
     }
 
     public static function getAccessTokenKey($openid){

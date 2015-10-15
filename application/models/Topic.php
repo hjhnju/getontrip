@@ -5,7 +5,7 @@ class TopicModel extends BaseModel{
     
     const WEEK  = 7;
     
-    const CACHE_PAGES = 10;
+    const CACHE_PAGES = 3;
     
     const INDEX_PAGE_SIZE = 2;
     
@@ -25,59 +25,19 @@ class TopicModel extends BaseModel{
      * @return array
      */
     public function getHotTopicIds($sightId,$strTags,$page,$pageSize,$during){
-        $redis = Base_Redis::getInstance();
-        $ret   =  '';
-        if(empty($strTags) && ($page <= self::CACHE_PAGES)){
-            switch ($during){
-                case self::MONTH:
-                    if($pageSize == self::INDEX_PAGE_SIZE){
-                        $ret = $redis->get(Sight_Keys::getIndexTopicKey($sightId, $page));
-                    }else{
-                        $ret = $redis->get(Sight_Keys::getHotTopicKey($sightId, $page));
-                    }                    
-                    break;
-                case self::WEEK:
-                    $ret = $redis->get(Find_Keys::getFindKey($page));
-                    break;
-                default :
-                    break;
-            }
-        }
-        if(!empty($ret)){
-           return json_decode($ret,true); 
-        }
-                
-        $from = ($page-1)*$pageSize;
-        if(empty($strTags)){
-            if($during == self::MONTH){
-                $sql = "SELECT a.id FROM `topic`  a, `sight_topic` b WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.sight_id = $sightId ORDER BY a.hot2 desc, a.update_time desc limit $from,$pageSize";
-            }elseif($during == self::WEEK){
-                $sql = "SELECT `id` FROM `topic`  WHERE  `status` = ".Topic_Type_Status::PUBLISHED." ORDER BY `hot1` desc,`update_time` desc limit $from,$pageSize";
-            }
-        }else{
-            if($during == self::MONTH){
-                $sql = "SELECT a.id FROM `topic`  a,`topic_tag`  b,`sight_topic` c WHERE a.status = ".Topic_Type_Status::PUBLISHED." a.id=b.topic_id and b.topic_id=c.topic_id AND c.sight_id = $sightId AND b.tag_id in(".$strTags.") ORDER by a.hot2 desc, a.update_time desc limit $from,$pageSize";
-            }elseif($during == self::WEEK){
-                $sql = "SELECT a.id FROM `topic`  a,`topic_tag`  b WHERE a.status = ".Topic_Type_Status::PUBLISHED." a.id=b.topic_id AND b.tag_id in(".$strTags.") ORDER by a.hot1 desc, a.update_time desc limit $from,$pageSize";
-            }
-        }       
+        $redis = Base_Redis::getInstance();               
+        $from = ($page-1)*$pageSize;        
+        if($during == self::MONTH){
+            $sql = "SELECT a.id FROM `topic`  a,`topic_tag`  b,`sight_topic` c WHERE a.status = ".Topic_Type_Status::PUBLISHED." and a.id=b.topic_id and b.topic_id=c.topic_id AND c.sight_id = $sightId AND b.tag_id in(".$strTags.") ORDER by a.hot2 desc, a.update_time desc limit $from,$pageSize";
+        }elseif($during == self::WEEK){
+            $sql = "SELECT a.id FROM `topic`  a,`topic_tag`  b WHERE a.status = ".Topic_Type_Status::PUBLISHED." and a.id=b.topic_id AND b.tag_id in(".$strTags.") ORDER by a.hot1 desc, a.update_time desc limit $from,$pageSize";
+        }                   
         try {                 	
             $data = $this->db->fetchAll($sql);          
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());          
             return array();
-        }
-        if(empty($strTags) &&($page <= self::CACHE_PAGES)){
-            if($during == self::MONTH){
-                if($pageSize == self::INDEX_PAGE_SIZE){
-                    $redis->setex(Sight_Keys::getIndexTopicKey($sightId,$page),self::REDIS_TIMEOUT,json_encode($data));
-                }else{
-                    $redis->setex(Sight_Keys::getHotTopicKey($sightId,$page),self::REDIS_TIMEOUT,json_encode($data));
-                }       
-            }else{
-                $redis->setex(Find_Keys::getFindKey($page),self::REDIS_TIMEOUT,json_encode($data));
-            }
-        }
+        }        
         return $data;
     }
     
@@ -90,13 +50,13 @@ class TopicModel extends BaseModel{
      */
     public function getNewTopicIds($sightId,$strTags,$page,$pageSize){
         $redis = Base_Redis::getInstance();
-        $ret   =  '';
-        if(($page <= self::CACHE_PAGES) && empty($strTags)){
-            $ret = $redis->get(Sight_Keys::getNewTopicKey($sightId, $page));
-        }
-        if(!empty($ret)){
-            return array_slice(json_decode($ret,true),0,$pageSize);
-        }
+        //$ret   =  '';
+        //if(($page <= self::CACHE_PAGES) && empty($strTags)){
+        //    $ret = $redis->get(Sight_Keys::getNewTopicKey($sightId, $page));
+        //}
+        //if(!empty($ret)){
+        //    return array_slice(json_decode($ret,true),0,$pageSize);
+        //}
         $from = ($page-1)*$pageSize;
         if(empty($strTags)){
             $sql = "SELECT a.id FROM `topic` a, `sight_topic` b   WHERE  a.id = b.topic_id and b.sight_id = $sightId and a.status = ".Topic_Type_Status::PUBLISHED." ORDER BY a.update_time desc limit $from,$pageSize";
@@ -109,9 +69,9 @@ class TopicModel extends BaseModel{
             Base_Log::error($ex->getMessage());
             return array();
         }
-        if(($page <= self::CACHE_PAGES) && empty($strTags)){
-            $redis->setex(Sight_Keys::getNewTopicKey($sightId,$page),self::REDIS_TIMEOUT,json_encode($data));
-        }
+        //if(($page <= self::CACHE_PAGES) && empty($strTags)){
+        //    $redis->setex(Sight_Keys::getNewTopicKey($sightId,$page),self::REDIS_TIMEOUT,json_encode($data));
+        //}
         return $data;
     }
     
@@ -153,6 +113,7 @@ class TopicModel extends BaseModel{
     public function getTopicDetail($topicId,$page){
         if ( $page > self::CACHE_PAGES ){
             $objTopic = new Topic_Object_Topic();
+            $objTopic->setFileds(array('id','title','subtitle','image'));
             $objTopic->fetch(array('id' => $topicId));
             $arrData  = $objTopic->toArray();
             return $arrData;
@@ -161,10 +122,9 @@ class TopicModel extends BaseModel{
         $ret   = $redis->get(Topic_Keys::getTopicContentKey($topicId));
         if(empty($ret)){
            $objTopic = new Topic_Object_Topic();
+           $objTopic->setFileds(array('id','title','subtitle','image'));
            $objTopic->fetch(array('id' => $topicId));           
            $arrData  = $objTopic->toArray();
-           $arrData['desc'] = Base_Util_String::getSubString($arrData['content'],self::CONTENT_LEN);
-           unset($arrData['content']);
            $redis->setex(Topic_Keys::getTopicContentKey($topicId),self::REDIS_TIMEOUT,json_encode($arrData)); 
            return $arrData;
         }

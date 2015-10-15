@@ -329,10 +329,33 @@ class Book_Logic_Book extends Base_Logic{
         return $ret;
     }
     
-    public static function getBookNum($sightId){
+    public static function getBookNum($sightId, $status = Book_Type_Status::PUBLISHED){
+        if($status == Book_Type_Status::PUBLISHED){
+            $redis = Base_Redis::getInstance();
+            $ret   = $redis->hGet(Sight_Keys::getSightTongjiKey($sightId),Sight_Keys::BOOK);
+            if(!empty($ret)){
+                return $ret;
+            }
+        }
         $listSightBook = new Sight_List_Book();
         $listSightBook->setFilter(array('sight_id' => $sightId));
         $listSightBook->setPagesize(PHP_INT_MAX);
-        return $listSightBook->countAll();
+        if(empty($status)){
+            return $listSightBook->countAll();
+        }
+        $count = 0;
+        $arrSightBook  = $listSightBook->toArray();
+        foreach ($arrSightBook['list'] as $val){
+            $objBook = new Book_Object_Book();
+            $objBook->fetch(array('id' => $val['book_id']));
+            if($objBook->status == $status){
+                $count += 1;
+            }
+        }
+        if($status == Book_Type_Status::PUBLISHED){
+            $redis = Base_Redis::getInstance();
+            $redis->hSet(Sight_Keys::getSightTongjiKey($sightId),Sight_Keys::BOOK,$count);
+        }
+        return $count;
     }
 }

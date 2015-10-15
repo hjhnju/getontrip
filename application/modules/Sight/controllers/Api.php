@@ -41,23 +41,4 @@ class ApiController extends Base_Controller_Api {
         $ret        = $logic->getSightDetail($sightId,$page,$pageSize,$intOrder,$strTags); 
         $this->ajax($ret);
     }
-    
-    /**
-     * 接口2：获取景点列表 /api/sight/list
-     * @param integer $page
-     * @param integer $pageSize
-     * @param integer $cityId
-     * @return array
-     */
-    public function listAction() {
-        $page     = isset($_REQUEST['page'])?$_REQUEST['page']:1;
-        $pageSize = isset($_REQUEST['pageSize'])?$_REQUEST['pageSize']:self::PAGESIZE;
-        $cityId   = isset($_REQUEST['cityId'])?$_REQUEST['cityId']:'';
-        if(!empty($cityId)){
-            $ret  =  Sight_Api::getSightByCity($cityId,$page,$pageSize);
-        }else{           
-            $ret  =  Sight_Api::getSightList($page, $pageSize, Sight_Type_Status::PUBLISHED);
-        }   
-        $this->ajax($ret['list']);
-    }
 }

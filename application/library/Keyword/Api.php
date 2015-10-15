@@ -79,10 +79,11 @@ class Keyword_Api{
     /**
      * 接口7：Keyword_Api::getKeywordNum($sighId)
      * @param integer $sighId
+     * @param integer $status
      * @return number
      */
-    public static function getKeywordNum($sighId){
+    public static function getKeywordNum($sighId, $status = Keyword_Type_Status::PUBLISHED){
         $logic = new Keyword_Logic_Keyword();
-        return $logic->getKeywordNum($sighId);
+        return $logic->getKeywordNum($sighId, $status);
     }
 }

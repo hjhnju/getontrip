@@ -143,10 +143,26 @@ class Video_Logic_Video extends Base_Logic{
         return $arrVideo;
     }
     
-    public function getVideoNum($sighId){
+    public function getVideoNum($sighId, $status = Video_Type_Status::PUBLISHED){
+        if($status == Video_Type_Status::PUBLISHED){
+            $redis = Base_Redis::getInstance();
+            $ret   = $redis->hGet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::VIDEO);
+            if(!empty($ret)){
+                return $ret;
+            }
+        }
         $listVideo = new Video_List_Video();
-        $listVideo->setFilter(array('sight_id' => $sighId));
+        if(!empty($status)){
+            $listVideo->setFilter(array('sight_id' => $sighId, 'status' => $status));
+        }else{
+            $listVideo->setFilter(array('sight_id' => $sighId));
+        }
         $listVideo->setPagesize(PHP_INT_MAX);
-        return $listVideo->countAll();
+        $count = $listVideo->countAll();
+        if($status == Video_Type_Status::PUBLISHED){
+            $redis = Base_Redis::getInstance();
+            $redis->hSet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::VIDEO,$count);
+        }
+        return $count;
     }
 }

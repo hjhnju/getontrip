@@ -60,16 +60,16 @@ class Topic_Logic_Topic extends Base_Logic{
      * @return array
      */
     public function getHotTopic($sightId,$period=self::DEFAULT_DAYS,$page=1,$pageSize=self::DEFAULT_SIZE,$strTags=''){
-        if(!empty($sightId)){
+        $logicTag = new Tag_Logic_Tag;
+        if($logicTag->getTagType($strTags) != Tag_Type_Tag::GENERAL){
             $arrRet     = $this->model->getHotTopicIds($sightId,$strTags,$page,$pageSize,$period);
         }else{
             $arrRet     = $this->getGeneralTopics($strTags, $page, $pageSize);
-        }       
+        }   
         foreach($arrRet as $key => $val){
             $topicDetail = $this->model->getTopicDetail($val['id'],$page);          
             $arrRet[$key]['title']     = trim($topicDetail['title']);
             $arrRet[$key]['subtitle']  = trim($topicDetail['subtitle']);
-            //$arrRet[$key]['desc']      = trim($topicDetail['desc']);
             //话题访问人数            
             $arrRet[$key]['visit']     = strval($this->getTotalTopicVistUv($val['id']));
             
@@ -104,7 +104,6 @@ class Topic_Logic_Topic extends Base_Logic{
             $topicDetail               = $this->model->getTopicDetail($val['id'],$page);
             $arrRet[$key]['title']     = trim($topicDetail['title']);
             $arrRet[$key]['subtitle']  = trim($topicDetail['subtitle']);
-            //$arrRet[$key]['desc']      = trim($topicDetail['desc']);
 
             //话题收藏数
             $logicCollect      = new Collect_Logic_Collect();        
@@ -853,6 +852,7 @@ class Topic_Logic_Topic extends Base_Logic{
         }
         
         $redis->delete(Sight_Keys::getSightTopicKey($sightId));
+        $redis->hDel(Sight_Keys::getSightTongjiKey($sightId), Sight_Keys::TOPIC);
     }
     
     public function getTopicNumByTag($tagId, $sightId){

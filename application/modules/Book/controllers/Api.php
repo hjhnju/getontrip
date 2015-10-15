@@ -37,7 +37,6 @@ class ApiController extends Base_Controller_Api {
      * 接口2:/api/book/detail
      * 书籍详情接口
      * @param integer book,书籍ID
-     * @param string deviceId，用户的设备ID（因为要统计UV）
      * @return json
      */
     public function detailAction(){

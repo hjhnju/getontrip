@@ -51,8 +51,9 @@ class City_Logic_City{
                 $hot += $logicTopic->getTopicHotDegree($topicId, self::HOTPERIOD);
             }
             $arrHot[] = $hot;     
-            $arrSight[$key]['image']  = Base_Image::getUrlByName($val['image']);
-            $arrSight[$key]['topics'] = sprintf("共%s个话题",count($redis->sMembers(Sight_Keys::getSightTopicKey($val['id']))));
+            $arrSight[$key]['id']        = strval($val['id']);
+            $arrSight[$key]['image']     = Base_Image::getUrlByName($val['image']);
+            $arrSight[$key]['topics']    = sprintf("共%s个话题",count($redis->sMembers(Sight_Keys::getSightTopicKey($val['id']))));
             $arrSight[$key]['collected'] = strval($logicCollect->checkCollect(Collect_Type::SIGHT, $val['id']));
         }
         array_multisort($arrHot, SORT_DESC , $arrSight);
@@ -284,17 +285,17 @@ class City_Logic_City{
             $topicDetail = $this->_modelTopic->getTopicDetail($val['id'],$page);
             $arrRet[$key]['title']     = trim($topicDetail['title']);
             $arrRet[$key]['subtitle']  = trim($topicDetail['subtitle']);
-            $arrRet[$key]['desc']      = trim($topicDetail['desc']);
+            //$arrRet[$key]['desc']      = trim($topicDetail['desc']);
             //话题访问人数
             $arrRet[$key]['visit']     = strval($logicTopic->getTotalTopicVistUv($val['id']));
     
             //话题收藏数
-            $logicCollect            = new Collect_Logic_Collect();
-            $arrRet[$key]['collect'] = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $val['id']));
+            //$logicCollect            = new Collect_Logic_Collect();
+            //$arrRet[$key]['collect'] = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $val['id']));
     
             //话题来源
-            $logicSource = new Source_Logic_Source();
-            $arrRet[$key]['from']    = $logicSource->getSourceName($topicDetail['from']);
+            //$logicSource = new Source_Logic_Source();
+            //$arrRet[$key]['from']    = $logicSource->getSourceName($topicDetail['from']);
     
             $arrRet[$key]['image']  = Base_Image::getUrlByName($topicDetail['image']);
             

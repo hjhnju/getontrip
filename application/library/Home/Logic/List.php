@@ -108,13 +108,23 @@ class Home_Logic_List{
         $arrSight = array();
         $sight    = Sight_Api::getSightByCity($cityId, 1, PHP_INT_MAX);
         foreach ($sight['list'] as $key => $val){
-            $arrSight[$key]['id']    = strval($val['id']);
-            $arrSight[$key]['name']  = trim($val['name']);
-            $arrSight[$key]['image'] = isset($val['image'])?Base_Image::getUrlByName($val['image']):'';
+            $temp = array();
+            if($val['status'] == Sight_Type_Status::NOTPUBLISHED){
+               continue;
+            }            
+            $temp['id']    = strval($val['id']);
+            $temp['name']  = trim($val['name']);
+            $temp['image'] = isset($val['image'])?Base_Image::getUrlByName($val['image']):'';
             
-            $topic_num     = $this->_logicSight->getTopicNum($val['id']);
+            $book_num      = Book_Api::getBookNum($val['id']);
+            $video_num     = Video_Api::getVideoNum($val['id']);
+            $wiki_num      = Keyword_Api::getKeywordNum($val['id']);           
+            $topic_num     = $this->_logicSight->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
+            $cotent_num    = $book_num + $video_num + $wiki_num + $topic_num;
             $collect       = $this->_logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $val['id']);
-            $arrSight[$key]['desc']  = sprintf("%d个内容|%d人收藏",$topic_num,$collect);
+            $temp['desc']  = sprintf("%d个内容|%d人收藏",$cotent_num,$collect);
+            
+            $arrSight[] = $temp;
         }
         
         //话题信息

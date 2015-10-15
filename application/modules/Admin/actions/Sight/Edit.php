@@ -21,13 +21,14 @@ class EditAction extends Yaf_Action_Abstract {
         $generalTag = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::GENERAL));
         $generalTag = $generalTag['list'];   
 
-        $postid = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+        $postid   = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+        $postInfo = array();
         if($postid==''){
             $this->getView()->assign('post', '');
+        }else{
+            $postInfo  = Sight_Api::getSightById($postid); 
         }
-        $postInfo  = Sight_Api::getSightById($postid); 
-        if($postInfo){ 
-           $postInfo=(array)$postInfo;
+        if(!empty($postInfo)){ 
            //获取城市名称
            $cityInfo=City_Api::getCityById($postInfo["city_id"]);
            $postInfo["city_name"]=$cityInfo["name"];
@@ -55,6 +56,5 @@ class EditAction extends Yaf_Action_Abstract {
 
 
         $this->getView()->assign('generalTag',$generalTag);
-         
     }
 }

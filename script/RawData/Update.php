@@ -6,6 +6,7 @@
  * 如果条数为空或-1,则取该景点下的所有数据
  */
 require_once("../env.inc.php");
+const PAGE_SIZE = 20;
 $arrTypes = array("Book","Video","Wiki","All");
 if(count($argv) < 2){
     print "参数错误!Usage:Run.php 类型 景点ID 条数\r\n";
@@ -110,15 +111,15 @@ foreach ($arrSight as $id){
         case 'Book':
             $redis->hDel(Sight_Keys::getSightTopicKey($id),Sight_Keys::BOOK);
             $logicBook = new Book_Logic_Book();
-            $page      = ceil($num/self::PAGE_SIZE);
+            $page      = ceil($num/PAGE_SIZE);
             for( $i = 1;$i <= $page; $i++ ){
-                $logicBook->getJdBooks($id, $i,self::PAGE_SIZE);
+                $logicBook->getJdBooks($id, $i,PAGE_SIZE);
             }
             break;
         case 'Video':
             $redis->hDel(Sight_Keys::getSightTopicKey($id),Sight_Keys::VIDEO);
             $logicVideo = new Video_Logic_Video();
-            $page = ceil($num/self::PAGE_SIZE);
+            $page = ceil($num/PAGE_SIZE);
             for( $i = 1;$i <= $page; $i++ ){
                 $logicVideo->getAiqiyiSource($id, $i);
             }
@@ -135,9 +136,9 @@ foreach ($arrSight as $id){
             $logicBook  = new Book_Logic_Book();
             $logicVideo = new Video_Logic_Video();
             $logicWiki  = new Keyword_Logic_Keyword();
-            $page       = ceil($num/self::PAGE_SIZE);
+            $page       = ceil($num/PAGE_SIZE);
             for( $i = 1; $i <= $page; $i++ ){
-                $logicBook->getJdBooks($id, $i,self::PAGE_SIZE);
+                $logicBook->getJdBooks($id, $i,PAGE_SIZE);
                 $logicVideo->getAiqiyiSource($id, $i);
             }
             $logicWiki->getKeywordSource($id,1,$num,Keyword_Type_Status::PUBLISHED);

@@ -51,9 +51,9 @@ class EditAction extends Yaf_Action_Abstract {
             for($i=0; $i<count($tagSelected); $i++) {
             	array_push($tag_id_array, $tagSelected[$i]['tag_id']);
             }
-            for($i=0; $i<count($tagList); $i++) {   
-                if(in_array($tagList[$i]["id"],$tag_id_array)){ 
-                    $tagList[$i]["selected"]="selected";
+            for($i=0; $i<count($normalTag); $i++) {   
+                if(in_array($normalTag[$i]["id"],$tag_id_array)){ 
+                    $$normalTag[$i]["selected"]="selected";
                 }
             }
             for($i=0; $i<count($classifyTag); $i++) {  

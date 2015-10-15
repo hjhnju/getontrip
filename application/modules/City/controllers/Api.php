@@ -36,14 +36,14 @@ class ApiController extends Base_Controller_Page {
     }
     
     /**
-     * 接口2：/api/city/detail
-     * 获取城市信息,供城市中间页使用
+     * 接口2：/api/city/sight
+     * 获取城市景点信息,供城市中间页使用
      * @param integer cityId,城市ID
      * @param integer page,页码
      * @param integer pageSize,页面大小
      * @return json
      */
-    public function detailAction(){
+    public function sightAction(){
         $cityId   = isset($_REQUEST['cityId'])?intval($_REQUEST['cityId']):'';
         $page     = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGE_SIZE;
@@ -86,7 +86,7 @@ class ApiController extends Base_Controller_Page {
     
     /**
      * 接口5：/api/city/locate
-     * 获取城市信息，判断是否开启
+     * 获取城市定位信息，判断是否开启，如果名称没错并已开启则返回城市ID，否则返回''
      * @param string city，城市名称可以是中文或英文
      * @return json
      */

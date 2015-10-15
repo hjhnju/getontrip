@@ -154,7 +154,7 @@ class Base_Util_String {
 	    if($asc >= -18710 and $asc <= -18527) return "E";
 	    if($asc >= -18526 and $asc <= -18240) return "F";
 	    if($asc >= -18239 and $asc <= -17923) return "G";
-	    if($asc >= -17922 and $asc <= -17418) return "I";
+	    if($asc >= -17922 and $asc <= -17418) return "H";
 	    if($asc >= -17417 and $asc <= -16475) return "J";
 	    if($asc >= -16474 and $asc <= -16213) return "K";
 	    if($asc >= -16212 and $asc <= -15641) return "L";

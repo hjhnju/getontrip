@@ -61,25 +61,34 @@ class City_Logic_City{
     }
     
     /**
-     * 获取城市信息
+     * 获取城市信息，供前端使用
      * @return array
      */
     public function getCityInfo(){
         $arrRet        = array();
         $arrRet['hot'] = $this->getHotCity();
         $arrLeters     = range('A','Z');
+        $objCity       = new City_Object_City();
         foreach($arrLeters as $char){
             $strFilter = "`cityid` = 0 and `provinceid` != 0";
             $listCity = new City_List_Meta();
             $strFilter .=" and `pinyin` like '".strtolower($char)."%'";
             $listCity->setFilterString($strFilter);
-            $listCity->setFields(array('name','pinyin'));
+            $listCity->setFields(array('id','name','pinyin'));
             $listCity->setPageSize(PHP_INT_MAX);
             $arrCity = $listCity->toArray();
+            $tempCity = array();
             foreach ($arrCity['list'] as $key => $val){
-                $arrCity['list'][$key]['pinYinHead'] = strtolower(Base_Util_String::pinyin_first($val['name']));
+                $objCity->fetch(array('id' => $val['id']));
+                if($objCity->status == City_Type_Status::PUBLISHED){
+                    $val['id']         = strval($val['id']);
+                    $val['pinYinHead'] = strtolower(Base_Util_String::pinyin_first($val['name']));
+                    $tempCity[] = $val;
+                }
             }
-            $arrRet[$char] = $arrCity['list'];
+            if(!empty($tempCity)){
+                $arrRet[$char] = $tempCity;
+            }
         }       
         return $arrRet;
     }
@@ -247,13 +256,13 @@ class City_Logic_City{
      */
     public function getHotCity(){
         $arrHotCity = array(
-            array('id' =>2,   'name'=>'北京','pinyin' => 'beijing', 'pinYinHead' => 'bj'),
-            array('id' =>41,  'name'=>'上海','pinyin' => 'shanghai', 'pinYinHead' => 'sh'),
-            array('id' =>2185,'name'=>'广州','pinyin' => 'guangzhou', 'pinYinHead' => 'gz'),
-            array('id' =>2211,'name'=>'深圳','pinyin' => 'shenzhen', 'pinYinHead' => 'sz'),
-            array('id' =>925, 'name'=>'南京','pinyin' => 'nanjing', 'pinYinHead' => 'nj'),
-            array('id' =>1058,'name'=>'杭州','pinyin' => 'hangzhou', 'pinYinHead' => 'hz'),
-            array('id' =>972, 'name'=>'苏州','pinyin' => 'suzhou', 'pinYinHead' => 'sz'),
+            array('id' =>'2',   'name'=>'北京','pinyin' => 'beijing', 'pinYinHead' => 'bj'),
+            array('id' =>'41',  'name'=>'上海','pinyin' => 'shanghai', 'pinYinHead' => 'sh'),
+            array('id' =>'2185','name'=>'广州','pinyin' => 'guangzhou', 'pinYinHead' => 'gz'),
+            array('id' =>'2211','name'=>'深圳','pinyin' => 'shenzhen', 'pinYinHead' => 'sz'),
+            array('id' =>'925', 'name'=>'南京','pinyin' => 'nanjing', 'pinYinHead' => 'nj'),
+            array('id' =>'1058','name'=>'杭州','pinyin' => 'hangzhou', 'pinYinHead' => 'hz'),
+            array('id' =>'972', 'name'=>'苏州','pinyin' => 'suzhou', 'pinYinHead' => 'sz'),
         );
         return $arrHotCity;
     }
@@ -336,6 +345,7 @@ class City_Logic_City{
      * @return array
      */
     public function getCityFromName($strName){
+        $arrRet = array('id' => '','name' => '');
         if (preg_match("/^[\x7f-\xff]+$/", $strName)) {
             $strName   = str_replace("市", "", $strName);
             $tmpCity   = $this->queryCityPrefix($strName, 1, 1);            
@@ -344,17 +354,19 @@ class City_Logic_City{
             $listCity  = new City_List_Meta();
             $filter    = "`pinyin` like '".$strName."%'";
             $listCity->setFilterString($filter);
-            $listCity->setFields(array('id'));
+            $listCity->setFields(array('id','name'));
             $tmpCity   = $listCity->toArray();
-            foreach ($tmpCity['list'] as $key => $val){
-                $objCity = new City_Object_City();
-                $objCity->fetch(array('id' => $val['id']));
-                $tmpCity['list'][$key]['image'] = $objCity->image;
-            }
         }
-        if(!isset($tmpCity['list'][0]['id'])){
-            $tmpCity   = City_Api::queryCityPrefix('北京', 1, 1);
+        foreach ($tmpCity['list'] as $key => $val){
+            $objCity = new City_Object_City();
+            $objCity->fetch(array('id' => $val['id'],'status' => City_Type_Status::PUBLISHED));
+            $id      = strval($objCity->id);
+            if(!empty($id)){
+                $arrRet['id']   = $id;
+                $arrRet['name'] = str_replace("市","",$val['name']);
+                return $arrRet;
+            }            
         }
-        return $tmpCity;
+        return $arrRet;
     }
 }

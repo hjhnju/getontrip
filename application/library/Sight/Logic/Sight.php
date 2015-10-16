@@ -160,7 +160,7 @@ class Sight_Logic_Sight extends Base_Logic{
         $arrSight     = Base_Search::Search('sight', $query, $page, $pageSize, array('id'));
         foreach ($arrSight as $key => $val){
             $sight = $this->getSightById($val['id']);
-            $arrSight[$key]['name']  = trim($sight['name']);
+            $arrSight[$key]['name']  = empty($val['name'])?trim($sight['name']):$val['name'];
             $arrSight[$key]['image'] = isset($sight['image'])?Base_Image::getUrlByName($sight['image']):'';
         
             $strTopicIds   = $logicTopic->getTopicIdBySight($val['id']);

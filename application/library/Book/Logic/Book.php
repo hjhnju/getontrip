@@ -300,10 +300,11 @@ class Book_Logic_Book extends Base_Logic{
                 unset($arrBook['isbn']);
             }
             $arrBook['info'] = $strDesc;
-            
-            $arrBook['image']     = Base_Image::getUrlByName($arrBook['image']);
-            $logicCollect         = new Collect_Logic_Collect();
-            $arrBook['collected'] = strval($logicCollect->checkCollect(Collect_Type::BOOK, $bookId));
+            $arrBook['content_desc'] = strip_tags($arrBook['content_desc']);
+            $arrBook['content_desc'] = str_replace("&nbsp;", " ", $arrBook['content_desc']);
+            $arrBook['image']        = Base_Image::getUrlByName($arrBook['image']);
+            $logicCollect            = new Collect_Logic_Collect();
+            $arrBook['collected']    = strval($logicCollect->checkCollect(Collect_Type::BOOK, $bookId));
         }
         return $arrBook;
     }
@@ -312,7 +313,7 @@ class Book_Logic_Book extends Base_Logic{
         $arrBook  = Base_Search::Search('book', $query, $page, $pageSize, array('id'));
         foreach ($arrBook as $key => $val){
             $book = $this->getBookById($val['id']);
-            $arrBook[$key]['name']  = trim($book['title']);
+            $arrBook[$key]['title'] = empty($val['title'])?trim($book['title']):$val['title'];
             $arrBook[$key]['desc']  = trim($book['content_desc']);
             $arrBook[$key]['image'] = isset($book['image'])?Base_Image::getUrlByName($book['image']):''; 
         }

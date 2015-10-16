@@ -43,6 +43,7 @@ class City_Logic_City{
         $redis      = Base_Redis::getInstance();
         $ret        = City_Api::getCityById($cityId);
         $listSight  = new Sight_List_Sight();
+        $listSight->setFields(array('id','name','image'));
         $listSight->setFilter(array('city_id' => $cityId,'status' => Sight_Type_Status::PUBLISHED));
         $listSight->setPage($page);
         $listSight->setPagesize($pageSize);
@@ -334,7 +335,7 @@ class City_Logic_City{
         $arrCity  = Base_Search::Search('city', $query, $page, $pageSize, array('id'));
         foreach ($arrCity as $key => $val){
             $city = $this->getCityById($val['id']);
-            $arrCity[$key]['name']  = trim($city['name']);
+            $arrCity[$key]['name']  = empty($val['name'])?trim($city['name']):$val['name'];
             $arrCity[$key]['image'] = isset($city['image'])?Base_Image::getUrlByName($city['image']):'';
             
             $sight_num     = $logicSight->getSightsNum(array(),$val['id']);

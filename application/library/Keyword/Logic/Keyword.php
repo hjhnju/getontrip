@@ -210,7 +210,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $arrKeyword  = Base_Search::Search('wiki', $query, $page, $pageSize, array('id'));
         foreach ($arrKeyword as $key => $val){
             $keyword = $this->getKeywordByInfo($val['id']);
-            $arrKeyword[$key]['name']  = trim($keyword['name']);
+            $arrKeyword[$key]['name']  = empty($val['name'])?trim($keyword['name']):$val['name'];
             $arrKeyword[$key]['desc']  = trim($keyword['content']);
             $arrKeyword[$key]['image'] = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
         }

@@ -46,7 +46,7 @@ class ApiController extends Base_Controller_Api {
         $query      = isset($_REQUEST['query'])?strval($_REQUEST['query']):'*';         
         $logic      = new Search_Logic_Search();
         $ret        = $logic->search($query, $page, $pageSize, $type);
-        $this->ajax($ret);
+        $this->ajaxDecode($ret);
     }
     
 }

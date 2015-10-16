@@ -6,6 +6,8 @@ class Base_Search {
     
     const PAGE_SIZE = 8;
     
+    const HIGHT_LIGHT  = true;
+    
     //所有检索字段
     protected static $arrPrams = array(
         'name',
@@ -44,7 +46,8 @@ class Base_Search {
             return $arrRet;
         }
         foreach (self::$arrPrams as $val){
-            $query .= $val.":*".$word."* or ";
+            //$query .= $val.":*".$word."* or ";
+            $query .= $val.":".$word." or ";
         }
         $query = substr($query,0,-3);
         $query = urlencode($query);
@@ -62,8 +65,28 @@ class Base_Search {
         $param  = urlencode($param);
         $from   = ($page-1)*$pageSize;
         $url    = Base_Config::getConfig('solr')->url.'/solr/'.$type.'/select?q='.$query.'&wt=json&fl='.$param."&start=".$from."&rows=".$pageSize;
-        $ret    = file_get_contents($url);
+        if(self::HIGHT_LIGHT){
+            if($type == 'book' || $type == 'video' || $type == 'topic'){
+                $url   .= '&hl=true&hl.fl=title&hl.simple.pre='.urlencode('<b>').'&hl.simple.post='.urlencode('</b>')."&hl.requireFieldMatch=true";
+            }else{
+                $url   .= '&hl=true&hl.fl=name&hl.simple.pre='.urlencode('<b>').'&hl.simple.post='.urlencode('</b>')."&hl.requireFieldMatch=true";
+            }  
+        }        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        $ret = curl_exec($ch);
+        curl_close($ch);
+        
         $arrRet = json_decode($ret,true);
+        foreach ($arrRet['response']['docs'] as $key => $val){
+            if($type == 'book'|| $type == 'video' || $type == 'topic'){
+                $arrRet['response']['docs'][$key]['title'] = isset($arrRet['highlighting'][$val['id']]['title'][0])?$arrRet['highlighting'][$val['id']]['title'][0]:'';                
+            }else{
+                $arrRet['response']['docs'][$key]['name']  = isset($arrRet['highlighting'][$val['id']]['name'][0])?$arrRet['highlighting'][$val['id']]['name'][0]:'';
+            }          
+        }
         return $arrRet['response']['docs'];
     }
 }

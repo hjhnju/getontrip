@@ -137,7 +137,7 @@ class Video_Logic_Video extends Base_Logic{
         $arrVideo  = Base_Search::Search('video', $query, $page, $pageSize, array('id'));
         foreach ($arrVideo as $key => $val){
             $video = $this->getVideoByInfo($val['id']);
-            $arrVideo[$key]['name']  = trim($video['title']);
+            $arrVideo[$key]['title'] = empty($val['title'])?trim($video['title']):$val['title'];
             $arrVideo[$key]['image'] = isset($video['image'])?Base_Image::getUrlByName($video['image']):'';
         }
         return $arrVideo;

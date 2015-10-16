@@ -735,7 +735,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrTopic  = Base_Search::Search('topic', $query, $page, $pageSize, array('id'));
         foreach ($arrTopic as $key => $val){
             $topic = $this->getTopicById($val['id']);
-            $arrTopic[$key]['title']     = isset($topic['title'])?trim($topic['title']):'';
+            $arrTopic[$key]['title']     = empty($val['title'])?($topic['title']):$val['title'];
             $arrTopic[$key]['subtitle']  = isset($topic['subtitle'])?trim($topic['subtitle']):'';
             $arrTopic[$key]['image']     = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
         }

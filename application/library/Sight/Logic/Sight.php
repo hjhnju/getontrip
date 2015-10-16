@@ -55,16 +55,28 @@ class Sight_Logic_Sight extends Base_Logic{
         if(empty($strTags)){//默认选中第一个标签来筛选话题
             $strTags = isset($arrDataTags[0]['id'])?$arrDataTags[0]['id']:'';
         }
-        $redis       = Base_Redis::getInstance();        
-        if(self::ORDER_NEW == $order){
-             $arrRet =  $this->logicTopic->getNewTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);                                          
+        
+        if($strTags == Tag_Type_Tag::STR_LANDSCAPE){
+            $logic      = new Keyword_Logic_Keyword();
+            $arrRet     = $logic->getKeywordList($sightId,$page,$pageSize);
+        }elseif($strTags == Tag_Type_Tag::STR_BOOK){
+            $logic      = new Book_Logic_Book();
+            $arrRet     = $logic->getBookList($sightId,$page,$pageSize,array('status' => Book_Type_Status::PUBLISHED));
+        }elseif($strTags == Tag_Type_Tag::STR_VIDEO){
+            $logic      = new Video_Logic_Video();
+            $arrRet     = $logic->getVideoList($sightId,$page,$pageSize);
         }else{
-             $arrRet =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);                     
+            $redis       = Base_Redis::getInstance();
+            if(self::ORDER_NEW == $order){
+                $arrRet =  $this->logicTopic->getNewTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
+            }else{
+                $arrRet =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
+            }
+            //$logicTag = new Tag_Logic_Tag();
+            // foreach ($arrRet as $key => $val){
+            //     $arrRet[$key]['tags'] = $logicTag->getTopicTags($val['id']);
+            // }
         }
-        //$logicTag = new Tag_Logic_Tag();
-       // foreach ($arrRet as $key => $val){            
-       //     $arrRet[$key]['tags'] = $logicTag->getTopicTags($val['id']);
-       // }      
         return array(
             'tags'=>$arrDataTags,
             'data'=>$arrRet,           
@@ -374,6 +386,7 @@ class Sight_Logic_Sight extends Base_Logic{
         }
         $count = 0;
         $listSightTopic = new Sight_List_Topic();
+        $objTopic = new Topic_Object_Topic();
         if(!empty($sightId)){
             $listSightTopic->setFilter(array('sight_id' => $sightId));
         }
@@ -381,7 +394,6 @@ class Sight_Logic_Sight extends Base_Logic{
         $listSightTopic->setPagesize(PHP_INT_MAX);
         $arr = $listSightTopic->toArray();
         foreach ($arr['list'] as $topicId){
-            $objTopic = new Topic_Object_Topic();
             $arrFilter = array_merge(array('id' => $topicId['topic_id']),$arrConf);
             $objTopic->fetch($arrFilter);
             if(isset($objTopic->id)){

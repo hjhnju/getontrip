@@ -145,7 +145,7 @@ class Search_Logic_Search{
                     $sightId       = $val['obj_id'];
                     $arrSight      = $logicSight->getSightById($sightId);
                     $temp['id']    = strval($sightId);
-                    $temp['type']  =  strval(Search_Type_Label::SIGHT);
+                    $temp['type']  = strval(Search_Type_Label::SIGHT);
                     $temp['name']  = $arrSight['name'];
                     $temp['image'] = isset($arrSight['image'])?Base_Image::getUrlByName($arrSight['image']):'';
                     $strTopicIds   = $this->logicTopic->getTopicIdBySight($sightId);
@@ -154,7 +154,7 @@ class Search_Logic_Search{
                     foreach ($arrTopicIds as $id){
                         $count    += $this->logicComment->getTotalCommentNum($sightId);
                     }
-                    $topic_num     = $this->logicSight->getTopicNum($sightId);
+                    $topic_num     = $this->logicSight->getTopicNum($sightId,array('status' => Topic_Type_Status::PUBLISHED));
                     $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $sightId);
                     $temp['param1']  =  sprintf("%d个话题",$topic_num);
                     $temp['param2']  =  sprintf("%d个评论",$count);

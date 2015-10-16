@@ -45,15 +45,15 @@ class Sight_Logic_Tag extends Base_Logic{
             }
         }
         //判断有无视频,书籍,而增加相应标签
-        $arrCommonTag[] = array('id' => 'wiki','type' => strval(Tag_Type_Tag::NORMAL), 'name' => '景观');
+        $arrCommonTag[] = array('id' => strval(Tag_Type_Tag::STR_LANDSCAPE),'type' => strval(Tag_Type_Tag::LANDSCAPE), 'name' => '景观');
         
         $book  = Book_Api::getJdBooks($sightId, 1, 1);
         $video = Video_Api::getVideos($sightId, 1, 1);
         if(!empty($book['list'])){
-            $arrCommonTag[] = array('id' => 'book','type' => strval(Tag_Type_Tag::NORMAL), 'name' => '书籍');
+            $arrCommonTag[] = array('id' => strval(Tag_Type_Tag::STR_BOOK),'type' => strval(Tag_Type_Tag::BOOK), 'name' => '书籍');
         }
         if(!empty($video['list'])){
-            $arrCommonTag[] = array('id' => 'video','type' => strval(Tag_Type_Tag::NORMAL), 'name' => '视频');
+            $arrCommonTag[] = array('id' => strval(Tag_Type_Tag::STR_VIDEO),'type' => strval(Tag_Type_Tag::VIDEO), 'name' => '视频');
         }        
         return array_merge($arrCommonTag,$arrGeneralTag);
     }

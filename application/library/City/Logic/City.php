@@ -40,6 +40,7 @@ class City_Logic_City{
     public function getCityDetail($cityId,$page,$pageSize){
         $arrHot     = array();
         $logicTopic = new Topic_Logic_Topic();
+        $logicSight    = new Sight_Logic_Sight();
         $redis      = Base_Redis::getInstance();
         $ret        = City_Api::getCityById($cityId);
         $listSight  = new Sight_List_Sight();
@@ -57,9 +58,10 @@ class City_Logic_City{
                 $hot += $logicTopic->getTopicHotDegree($topicId, self::HOTPERIOD);
             }
             $arrHot[] = $hot;     
+            $topic_num     = $logicSight->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
             $arrSight[$key]['id']        = strval($val['id']);
             $arrSight[$key]['image']     = Base_Image::getUrlByName($val['image']);
-            $arrSight[$key]['topics']    = sprintf("共%s个话题",count($redis->sMembers(Sight_Keys::getSightTopicKey($val['id']))));
+            $arrSight[$key]['topics']    = sprintf("共%s个话题",$topic_num);
             $arrSight[$key]['collected'] = strval($logicCollect->checkCollect(Collect_Type::SIGHT, $val['id']));
         }
         array_multisort($arrHot, SORT_DESC , $arrSight);

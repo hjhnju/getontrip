@@ -22,7 +22,7 @@ class Search_Api{
      * @return boolean
      */
     public static function delLabel($labelId, $objId){
-        $logic = new Search_Logic_Label();
+        $logic = new Search_Logic_Label();    
         return $logic->delLabel($labelId, $objId);
     }
     

@@ -74,7 +74,7 @@ class ApiController extends Base_Controller_Page {
      * @return json
      */
     public function topicAction(){
-        $city      = isset($_REQUEST['city'])?trim($_REQUEST['city']):self::DEFAULT_CITY;
+        $city      = isset($_REQUEST['city'])?trim($_REQUEST['city']):self::DEFAULT_CITY_NUM;
         $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::INDEX_TOPIC_NUM;
         if(empty($city)){

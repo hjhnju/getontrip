@@ -85,6 +85,7 @@ $(document).ready(function() {
                     event.preventDefault();
                     //打开模态框
                     $('#source')[0].reset(); 
+                    $('#source-id').val();
                     $('#myModal').modal();
 
                 }); 
@@ -172,7 +173,7 @@ $(document).ready(function() {
 
         /*
               过滤事件
-             */
+         */
         var filter = function() {
             //输入内容点击回车查询
             $("#form-title").keydown(function(event) {

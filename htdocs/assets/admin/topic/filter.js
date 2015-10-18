@@ -10,6 +10,9 @@ $(document).ready(function() {
     var tag_idArray = [];
     var keywordStr = '';
     var keyword_idArray = [];
+    var  site_array={};
+    var site_array_weixin=[];
+    var site_array_site=[];
 
     bindEvents();
     setQuery();
@@ -80,8 +83,8 @@ $(document).ready(function() {
             setQuery();
         });
 
-        //标签选择
-        /*    $('#tags').multiSelect({
+        //来源选择
+  /*      $('#tags').multiSelect({
                 selectableHeader: '<span class="label label-primary">标签库</span>',
                 selectionHeader: '<span class="label label-success">已选标签</span>',
                 itemSelected: function(item, val, text) {
@@ -93,7 +96,7 @@ $(document).ready(function() {
                     });
                     setQuery();
                 }
-            });*/
+        });*/
 
         //选择标签
         $('input[data-name="form-tag"]').change(function(event) {
@@ -120,15 +123,15 @@ $(document).ready(function() {
 
         //选择不同的搜索来源
         $('#Form').delegate('input[data-name="form-from"]', 'click touchend', function(event) {
-            $('input[data-name="form-from"]').attr('checked', false);
-            $(this).attr('checked', 'ture');
+            /*$('input[data-name="form-from"]').attr('checked', false);
+            $(this).attr('checked', 'ture');*/
             if ($(this).val() == "weixin") {
                 $("#Form").attr('action', sogou);
-                $('#weixin-from-input').show();
+                //$('#weixin-from-input').show();
                 $('#from_name').parent().parent().parent().hide();
             } else {
                 $("#Form").attr('action', baidu);
-                $('#weixin-from-input').hide();
+                //$('#weixin-from-input').hide();
                 $('#from_name').val($(this).attr('data-from_name'));
                 $('#from_name').attr('data-url',$('input[data-name="form-from"]:checked').val());
                 $('#from_name').attr('data-id',$('input[data-name="form-from"]:checked').attr('data-id'));
@@ -138,10 +141,25 @@ $(document).ready(function() {
             setQuery();
         });
 
+        //选择不同的搜索来源 (分组)
+        $('#Form').delegate('input[data-name="form-from"]', 'click touchend', function(event) {
+             
+            var url= $(this).val(); 
+            var type= $(this).attr('data-type');  
+            setSite(url,type);
+        });
+
 
         //搜索事件
         $('#search-btn').click(function(event) { 
-            $("#Form").submit();
+            //$("#Form").submit();
+            var query = setQuery();
+            for (var i = 0; i < site_array_weixin.length; i++) { 
+                window.open(sogou+'?type=2&query='+query,"_blank");
+            };
+            for (var i = 0; i < site_array_site.length; i++) {
+                window.open(baidu+'?tn=baidu&wd=site:'+site_array_site[i]+' '+query+ '-(日游)',"_blank");
+            };
         });
 
         //微信公众号自动完成 
@@ -264,7 +282,7 @@ $(document).ready(function() {
                 return false;
             }
             var from = "";
-            if ($('input[data-name="form-from"]:checked').val() == "weixin") {
+           /* if ($('input[data-name="form-from"]:checked').val() == "weixin") {
                 from = $('#weixin-from').attr('data-id');
                 if (!from) {
                     toastr.warning('请填写微信公众号！');
@@ -272,7 +290,19 @@ $(document).ready(function() {
                 }
             } else {
                 from = $('#from_name').attr('data-id');
+            }*/
+            fromDomain=getFromDomain(url);
+            if (fromDomain=='mp.weixin.qq.com') {
+                from = $('#weixin-from').attr('data-id');
+                if (!from) {
+                    toastr.warning('请填写微信公众号！'); 
+                    return false;
+                } 
+            }else{
+                from = $('#from-div input[value="'+fromDomain+'"]').attr('data-id');
             }
+ 
+
             //组装话题参数
             var params = {
                     //from_url: $('input[data-name="form-from"]:checked').val(),
@@ -281,8 +311,9 @@ $(document).ready(function() {
                     tags: tag_idArray,
                     url: url,
                     status: 1 //未发布的状态
-                }
-                //按钮disabled
+            }
+ 
+            //按钮disabled
             $(this).attr('disabled', 'disabled');
             $(this).html('<i class="fa fa-spinner fa-pulse"></i>保存中，请稍后');
             $.ajax({
@@ -327,14 +358,56 @@ $(document).ready(function() {
             $('#Type').attr('name', "tn");
             $('#Type').val('baidu');
             $('#query').attr('name', 'wd');
-            $('#from_name').attr('data-url')?site='site:'+$('#from_name').attr('data-url')+' ':'';
-            $('#query').val(site  + query + '-(日游)');
+            //$('#from_name').attr('data-url')?site='site:'+$('#from_name').attr('data-url')+' ':'';
+            $('#query').val(query+ '-(日游)');
 
-            if ($('#query').val().getBytes() > 76) {
+            /*if ($('#query').val().getBytes() > 76) {
                 alert('请控制关键词在38个汉字以内(一个汉字相当于两个字母或数字)');
-            }
+            }*/
         }
+        return query;
     }
 
+    function setSite (url,type) {
+        switch(type){
+            case '1':
+              site_array_weixin.push(url);
+              break; 
+            case '2':
+              site_array_site.push(url);
+              break;
+        }
+        
+    }
 
+    /********************************************************************  
+      **  
+      **比较通用的正则表达式，捕获url各个部分。  
+      **注意各部分基本上都包含了相应的符号，例如端口号如果捕获成功，那就是':80'  
+      **函数返回一个正则表达式捕获数组。  
+      **注意，现在获得的是一个数组，所以需要通过arr[i]的方式引用。  
+      **正则表达式所有的匹配说明::  
+      **$0  
+      **整个url本身。如果$0==null，那就是我的正则有意外，未捕获的可能。  
+      **有一种未捕获的情况已经被发现，那就是域名后面没有以'/'结尾，如：'http://localhost'  
+      **但是经过我的测试，IE和firefox会自动把域名后面加上'/'的。  
+      **$1-$4  协议，域名，端口号，还有最重要的路径path！  
+      **$5-$7  文件名，锚点(#top)，query参数(?id=55)  
+      **  
+     *********************************************************************/ 
+    function getFromDomain (url) {
+        //如果加上/g参数，那么只返回$0匹配。也就是说arr.length = 0   
+         var re = /(\w+):\/\/([^\:|\/]+)(\:\d*)?(.*\/)([^#|\?|\n]+)?(#.*)?(\?.*)?/i;   
+         //re.exec(url);   
+         var arr = url.match(re);  
+         var domain=arr[2]; 
+         if(domain=='mp.weixin.qq.com'){
+            return domain;
+         }
+         var strarr=domain.split('.');
+         return strarr[strarr.length-2]+'.'+strarr[strarr.length-1]; 
+    }
+    
+ 
+    
 });

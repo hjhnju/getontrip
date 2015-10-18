@@ -55,9 +55,9 @@
 					</li>
 				</ul>
 			</div> 
-       <div class=" form">
-            <form class="cmxform form-horizontal tasi-form" id="Form"  action="http://www.baidu.com/s"  target="_blank">
-              <input name='tn' type='hidden' value='baidu' id="Type"/>
+       <div class=" form" style="position: relative;">
+            <form class="cmxform form-horizontal tasi-form" id="Form"  action="http://www.baidu.com/s"  target="_blank" >
+              <input name='tn' type='hidden' value='baidu' id="Type"/> 
                <div class="form-group ">
                     <label for="sight_name" class="control-label col-lg-2">所属景点*</label>
                     <div class="col-lg-3"> 
@@ -70,85 +70,126 @@
                       </div>
                     </div> 
                </div> 
-               <div class="form-group ">
-                  <label for="form-from-re" class="control-label col-lg-2">常用搜索源*</label>
-                   <div class="col-lg-10" id="div-from"> 
-                       <label class="radio-inline">
-                        <input type="radio" name="" data-name="form-from" id="" value="weixin" data-id="" data-type="1">微信公众号
-                      </label>  
-                     {%foreach $sourceList as $key=>$item%} 
+              <!--  <div class="form-group ">
+                 <label for="form-from-re" class="control-label col-lg-2">常用搜索源*</label>
+                  <div class="col-lg-10" id="div-from"> 
                       <label class="radio-inline">
-                        <input type="radio" name="" data-name="form-from" id="" value="{%$item.url%}" data-id="{%$item.id%}" data-type="{%$item.type%}" data-from_name="{%$item.name%}"{%if $key eq 0%}checked{%/if%}>{%$item.name%}
-                      </label>
+                       <input type="radio" name="" data-name="form-from" id="" value="weixin" data-id="" data-type="1">微信公众号
+                     </label>  
+                     {%foreach $hotSourceList as $key=>$item%} 
+                     <label class="radio-inline">
+                       <input type="radio" name="" data-name="form-from" id="" value="{%$item.url%}" data-id="{%$item.id%}" data-type="{%$item.type%}" data-from_name="{%$item.name%}"{%if $key eq 0%}checked{%/if%}>{%$item.name%}
+                     </label>
+                     {%/foreach%} 
+                   </div>
+              </div> -->
+              <!--   <div class="form-group ">
+                <label for="form-from" class="control-label col-lg-2">指定搜索源*</label>
+                 <div class="col-lg-3">
+                  <div class="input-group">
+                    <input class="form-control" id="from_name" type="text"  autocomplete="off"  placeholder="输入后请在下拉框选择" value="{%$sourceList[0].name%}" data-id="{%$sourceList[0].id%}" data-url="{%$sourceList[0].url%}"/>
+                    <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" id="clear-from"><i class="fa fa-remove"></i></button>
+                    </span> 
+                  </div>
+                 </div>
+                  <span class="help-inline">
+                        没有想要的来源？<a href="#" class="openSource" data-type="2">创建</a>一个
+                  </span>  
+                </div> 
+              -->
+               <div class="form-group " id="from-div">
+                    <label for="tags" class="control-label col-lg-2">选择搜索源</label>
+                    <div class="col-lg-5">
+                      <div class="alert alert-info" style="margin-bottom: 2px;padding: 2px 12px;">
+                          <span class="badge badge-sm label-danger">微信：</span>  
+                          <label class="radio-inline">
+                             <input type="checkbox" name="" data-name="form-from" id="" value="weixin" data-id="" data-type="1">微信公众号
+                          </label> 
+                      </div>
+                      {%foreach $sourceList as $key=>$item%} 
+                      {%if empty($item.sources) eq 0%}
+                        <div class="alert alert-info" style="margin-bottom: 2px;padding: 2px 12px;">
+                          <span class="badge badge-sm label-danger">{%$item.name%}：</span> 
+                          {%foreach $item.sources as $sourceskey=>$sourcesitem%} 
+                          <label class="radio-inline">
+                            <input type="checkbox" name="" data-name="form-from" id="" value="{%$sourcesitem.url%}" data-id="{%$sourcesitem.id%}" data-type="{%$sourcesitem.type%}" data-from_name="{%$sourcesitem.name%}">{%$sourcesitem.name%}
+                          </label>
+                          {%/foreach%}
+                        </div>
+                      {%/if%}  
                       {%/foreach%} 
                     </div>
-               </div>
-                <div class="form-group ">
-                  <label for="form-from" class="control-label col-lg-2">指定搜索源*</label>
-                   <div class="col-lg-3">
-                    <div class="input-group">
-                      <input class="form-control" id="from_name" type="text"  autocomplete="off"  placeholder="输入后请在下拉框选择" value="{%$sourceList[0].name%}" data-id="{%$sourceList[0].id%}" data-url="{%$sourceList[0].url%}"/>
-                      <span class="input-group-btn">
-                      <button class="btn btn-default" type="button" id="clear-from"><i class="fa fa-remove"></i></button>
-                      </span> 
-                    </div>
-                   </div>
-                    <span class="help-inline">
-                          没有想要的来源？<a href="#" class="openSource" data-type="2">创建</a>一个
-                    </span>  
-               </div>
+                </div>
                <div class="form-group ">
-                          <label for="tags" class="control-label col-lg-2">关键词选择(标签)</label>
-                          <div class="col-lg-5">  
-                               {%foreach $tagList as $key=>$item%} 
-                                <label class="checkbox-inline">
-                                  <input type="checkbox" id="" data-name="form-tag" value="{%$item.id%}" data-text="{%$item.name%}"/>{%$item.name%}
-                                </label>
-                               {%/foreach%}  
-                           </div> 
-                  </div>
-                  <div class="form-group" id="form-group-keywords" style="display:none;">
+                      <label for="tags" class="control-label col-lg-2">分类标签</label>
+                      <div class="col-lg-5">  
+                           {%foreach $classifyTag as $key=>$item%} 
+                            <label class="checkbox-inline">
+                              <input type="checkbox" id="" data-name="form-tag" value="{%$item.id%}" data-text="{%$item.name%}"/>{%$item.name%}
+                            </label>
+                           {%/foreach%}  
+                       </div> 
+                </div>
+                <div class="form-group ">
+                      <label for="tags" class="control-label col-lg-2">通用/普通标签</label>
+                      <div class="col-lg-5">  
+                           {%foreach $generalTag as $key=>$item%} 
+                            <label class="checkbox-inline">
+                              <input type="checkbox" id="" data-name="form-tag" value="{%$item.id%}" data-text="{%$item.name%}"/>{%$item.name%}
+                            </label>
+                           {%/foreach%}  
+                           {%foreach $normalTag as $key=>$item%} 
+                            <label class="checkbox-inline">
+                              <input type="checkbox" id="" data-name="form-tag" value="{%$item.id%}" data-text="{%$item.name%}"/>{%$item.name%}
+                            </label>
+                           {%/foreach%} 
+                       </div> 
+                </div>
+                <div class="form-group" id="form-group-keywords" style="display:none;">
                         <label for="keywords" class="control-label col-lg-2">关键词选择(百科词条)</label>
                           <div class="col-lg-5" id="keywords"> 
                                 
                            </div>  
-                  </div>
-                  <div class="form-group ">
+                </div>
+                <div class="form-group ">
                      <label for="form-engine" class="control-label col-lg-2">搜索关键词</label> 
                         <div class="col-lg-5"> 
                             <div class="input-group">  
                              <input class="form-control" id="query" name="wd" type="text"  autocomplete="off"/> 
                              <span class="input-group-btn">
-                              <button class="btn btn-success" type="submit" id="search-btn" data-toggle="tooltip" title="搜索"><i class="fa fa-search"></i>点我搜索</button>
+                              <button class="btn btn-success" type="button" id="search-btn" data-toggle="tooltip" title="搜索"><i class="fa fa-search"></i>点我搜索</button>
                             </span>
                             </div>
                         </div> 
-                  </div>
-                  <hr/> 
-                   <div class="form-group ">
-                        <label for="url" class="control-label col-lg-2">原文链接*</label>
-                        <div class="col-lg-5">  
+                </div>  
+                <div class=" " style="position: absolute;right: 0px;top: 10px;height: 100%;border-left: 1px solid #888;float: right;width: 41%;">
+                   <div class="form-group col-lg-12" >
+                        <label for="url" class="control-label col-lg-3">原文链接*</label>
+                        <div class="col-lg-9">  
                              <input class="form-control" id="url" type="text" name="" autocomplete="off"  placeholder=""/> 
                         </div>  
-                  </div>
-                  <div class="form-group" id="weixin-from-input" style="display:none;">
-                        <label for="weixin-from" class="control-label col-lg-2">微信公众号名称*</label>
-                        <div class="col-lg-3"> 
-                        <input class="form-control" id="weixin-from_id" name="" type="hidden"/> 
-                            <input class="form-control" id="weixin-from" type="text" name="" autocomplete="off"  placeholder="输入后请在下拉框选择"/> 
-                        </div>
-                        <div class="col-lg-3">
-                          <p class="help-block">
-                             没有想要的公众号？<a href="#" class="openSource" data-type="1">创建</a>一个
-                          </p>
-                        </div>
-                  </div>
-                  <div class="form-group "> 
-                      <div class="col-lg-offset-2 col-lg-10">
-                        <button class="btn btn-danger" type="button" id="addTopic-btn"> 添加并创建话题</button>
-                        <a class="hidden" href="" id="openWin" target="_blank"></a>
-                      </div>  
-                  </div>
+                    </div>
+                    <div class="form-group col-lg-12" id="weixin-from-input" style="  ">
+                            <label for="weixin-from" class="control-label col-lg-3">微信公众号名称</label>
+                            <div class="col-lg-9"> 
+                            <input class="form-control" id="weixin-from_id" name="" type="hidden"/> 
+                                <input class="form-control" id="weixin-from" type="text" name="" autocomplete="off"  placeholder="输入后请在下拉框选择"/> 
+                            </div>
+                            <div class="col-lg-9">
+                              <p class="help-block">
+                                 没有想要的公众号？<a href="#" class="openSource" data-type="1">创建</a>一个
+                              </p>
+                            </div>
+                      </div>
+                      <div class="form-group col-lg-12"  > 
+                          <div class="col-lg-offset-3 col-lg-9">
+                            <button class="btn btn-danger" type="button" id="addTopic-btn"> 添加并创建话题</button>
+                            <a class="hidden" href="" id="openWin" target="_blank"></a>
+                          </div>  
+                      </div>
+                </div>
+               
              </form>
        </div>
 			<!-- END content STATS -->

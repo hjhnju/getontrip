@@ -26,7 +26,7 @@ class Tag_Object_Tag extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'create_user', 'update_user', 'create_time', 'update_time', 'type', 'order');
+    protected $fields = array('id', 'name', 'create_user', 'update_user', 'create_time', 'update_time', 'type', 'weight');
 
     /**
      * 字段与属性隐射关系
@@ -40,7 +40,7 @@ class Tag_Object_Tag extends Base_Object {
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
         'type'        => 'type',
-        'order'       => 'order',
+        'weight'       => 'weight',
     );
 
     /**
@@ -54,7 +54,7 @@ class Tag_Object_Tag extends Base_Object {
         'create_time' => 1,
         'update_time' => 1,
         'type'        => 1,
-        'order'       => 1,
+        'weight'       => 1,
     );
 
     /**
@@ -111,6 +111,6 @@ class Tag_Object_Tag extends Base_Object {
      * 顺序 1最上面
      * @var integer
      */
-    public $order;
+    public $weight;
 
 }

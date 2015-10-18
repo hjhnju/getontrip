@@ -25,18 +25,36 @@ class SearchapiController extends Base_Controller_Api{
             $list = Search_Api::listLabel(1, PHP_INT_MAX);
             $labelId = isset($list['list'][0]['id'])?$list['list'][0]['id']:'';
         }
-        if(!empty($labelId)){
-            $List     = Search_Api::getLabel($labelId, $page, $pageSize);
+        if(!empty($labelId)){ 
+            $List     = Search_Api::getLabel($labelId, $page, $pageSize);  
         }else{
             $List['total'] = 0;
             $List['list']  = array();
-        }
-        
-
+        } 
         $retList['recordsFiltered'] =$List['total'];
         $retList['recordsTotal'] = $List['total']; 
         $retList['data'] = $List['list'];        
-		$this->ajax($retList);
+        return   $this->ajax($retList);
+         
+    }
+
+    /**
+     * list
+     *  
+     */    
+    public function labellistAction(){  
+        //第一条数据的起始位置，比如0代表第一条数据
+        //
+        $start    = isset($_REQUEST['start'])?$_REQUEST['start']:0; 
+        $pageSize = isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX; 
+        $page     = ($start/$pageSize)+1;
+
+        $List = Search_Api::listLabel(1, PHP_INT_MAX);
+         
+        $retList['recordsFiltered'] =$List['total'];
+        $retList['recordsTotal'] = $List['total']; 
+        $retList['data'] = $List['list'];        
+        return $this->ajax($retList);
          
     }
     
@@ -57,8 +75,21 @@ class SearchapiController extends Base_Controller_Api{
      * 添加搜索标签关系
      */
     public function addLabelAction(){
-        $type   = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
-        $objId  = isset($_REQUEST['obj_id'])?intval($_REQUEST['obj_id']):'';
+        $type   = isset($_REQUEST['type'])?intval($_REQUEST['type']):Search_Type_Label::SIGHT;
+        $sight_id  = isset($_REQUEST['sight_id'])?$_REQUEST['sight_id']:array();
+        $city_id  = isset($_REQUEST['city_id'])?$_REQUEST['city_id']:array();
+        
+        switch ($type) {
+            case Search_Type_Label::SIGHT:
+                $objId=$sight_id;
+                break;
+             case Search_Type_Label::CITY:
+                $objId=$city_id;
+                break;
+            default:
+                $objId=$sight_id;
+                break;
+        }
         $id     = isset($_REQUEST['id'])?intval($_REQUEST['id']):'';
         Base_Log::notice("test".json_encode($_REQUEST));
         if(!empty($id) && !empty($objId) && !empty($type)){
@@ -94,6 +125,44 @@ class SearchapiController extends Base_Controller_Api{
         }
         $ret = Search_Api::addNewTag($name,$type , $arrObjIds);
         $this->ajax($ret);
+    }
+
+    /**
+     * 获取标签关联的对象
+     * @return [type] [description]
+     */
+    public function listLabelAction()
+    { 
+        $start    = isset($_REQUEST['start'])?$_REQUEST['start']:0; 
+        $pageSize = isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX; 
+        $page     = ($start/$pageSize)+1;
+        $labelId  = isset($_REQUEST['id'])?$_REQUEST['id']:'';
+        
+        $List = Search_Api::listLabel($page, $pageSize, array('id' =>$labelId));
+        
+
+        $retList['recordsFiltered'] =$List['total'];
+        $retList['recordsTotal'] = $List['total']; 
+        $retList['data'] = $List['list'];        
+                $this->ajax($retList);
+
+    }
+
+
+    
+    /**
+     * 修改搜索标签的
+     * @return [type] [description]
+    */
+    public function changeWeightAction(){
+       $id = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0; 
+       $to = isset($_REQUEST['to'])? intval($_REQUEST['to']) : 0;
+        
+       $dbRet = Tag_Api::changeOrder($id, $to);
+       if ($dbRet) {
+            return $this->ajax();
+        }
+        return $this->ajaxError();
     }
      
 }

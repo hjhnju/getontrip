@@ -9,7 +9,7 @@ $(document).ready(function() {
     var tag_id_array = [];
     var status = 1;
 
-    var List = function() {
+    var Edit = function() {
         /**
          * 绑定事件
          *  
@@ -36,7 +36,7 @@ $(document).ready(function() {
                         //['font', ['strikethrough']],
                         //['fontsize', ['fontsize']],
                         //['color', ['color']],
-                        //['para', ['ul', 'ol', 'paragraph']],
+                        ['para', ['ul', 'ol', 'paragraph']],
                         //['table', ['table']],
                         //['height', ['height']],
                         ['style', ['bold', 'clear']],
@@ -580,6 +580,6 @@ $(document).ready(function() {
         }
     }
 
-    new List().init();
+    new Edit().init();
 
 });

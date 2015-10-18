@@ -22,5 +22,6 @@ class ListAction extends Yaf_Action_Abstract {
             $arrRet[$key]['name'] = $val['name'];
         }
         $this->getView()->assign('sight',$arrRet);
+        $this->getView()->assign('formFilename','searchlabel_image.jpg'); 
     }
 }

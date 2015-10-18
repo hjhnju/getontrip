@@ -31,10 +31,16 @@ $(document).ready(function() {
             "visible": false,
             "searchable": false
         },{
-            "targets": [4],
+            "targets": [0],
+            "width": 30
+        },{
+            "targets": [1,2,3],
+            "width": 60
+        } ,{
+            "targets": [5],
             "width": 130
         },{
-            "targets": [5,6,7],
+            "targets": [6,7],
             "width": 90
         }],
         "columns": [{

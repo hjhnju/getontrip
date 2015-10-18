@@ -18,8 +18,16 @@ class Tag_Logic_Tag extends Base_Logic{
         $listTag = new Tag_List_Tag();
         $listTag->setPage($page);
         $listTag->setPagesize($pageSize);
+        
+         
+ 
         if(!empty($arrParam)){
             $listTag->setFilter($arrParam);
+            if (isset($arrParam['type'])&&$arrParam['type']==Tag_Type_Tag::SEARCH) {
+                $listTag->setOrder('weight asc');
+            }else{
+                $listTag->setOrder('id desc');
+            }
         }
         return $listTag->toArray();
     }
@@ -290,8 +298,8 @@ class Tag_Logic_Tag extends Base_Logic{
     public function changeOrder($id,$to){
         $objTag = new Tag_Object_Tag();
         $objTag->fetch(array('id' => $id));
-        $from       = $objTag->order;
-        $objTag->order = $to;
+        $from       = $objTag->weight;
+        $objTag->weight = $to;
     
         $bAsc = ($to > $from)?1:0;
         $min  = min(array($from,$to));
@@ -299,16 +307,16 @@ class Tag_Logic_Tag extends Base_Logic{
         $listTag = new Tag_List_Tag();
         $listTag->setPagesize(PHP_INT_MAX);
         $listTag->setFilter(array('type' => Tag_Type_Tag::SEARCH));
-        $listTag->setOrder('`order` asc');
+        $listTag->setOrder('`weight` asc');
         $arrTag = $listTag->toArray();
         $arrTag = array_slice($arrTag['list'],$min-1+$bAsc,$max-$min);
         $ret = $objTag->save();
         foreach ($arrTag as $key => $val){
             $objTag->fetch(array('id' => $val['id']));
             if($bAsc){
-                $objTag->order = $min + $key ;
+                $objTag->weight = $min + $key ;
             }else{
-                $objTag->order = $max - $key;
+                $objTag->weight = $max - $key;
             }
             $objTag->save();
         }

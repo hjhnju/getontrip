@@ -33,7 +33,16 @@
                   <div class="form-group source-url">
                     <label for="source-url" class="control-label">网址url(不要http 例如：zhihu.com)</label>
                     <input type="text" class="form-control" id="source-url">
-                  </div> 
+                  </div>
+                  <div class="form-group source-group">
+                    <label for="source-group" class="control-label">分组</label> 
+                    <select name="" id="source-group"> 
+                          <option value="0">不分组</option>  
+                          {%foreach $groupList as $key => $item%}
+                            <option value="{%$item.id%}">{%$item.name%}</option> 
+                          {%/foreach%} 
+                    </select>
+                  </div>  
                 </form> 
               </div>
               <div class="modal-footer">
@@ -66,13 +75,28 @@
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN content STATS --> 
 		    <div class="adv-table editable-table ">
-		    	<div class="clearfix">
+		    	     <div class="clearfix">
                   <div class="btn-group">
                       <button id="editable-new" class="btn  btn-success openSource">
-                          添加 <i class="fa fa-plus"></i>
-                      </button>
+                          添加来源 <i class="fa fa-plus"></i>
+                      </button> 
+                  </div>
+                   <div class="btn-group"> 
+                      <a href="/admin/source/typelist" id="editable-new-type" class="btn  btn-success addSourcetype">
+                         来源分组列表 <i class="fa fa-list"></i>
+                      </a>
                   </div> 
                 </div>
+             <!--    <div class="col-lg-10"> 
+                 <div class="alert alert-info" role="alert" id="type_sortable">
+                     {%foreach $typeList as $key=>$item%}
+                     <span class="badge badge-sm label-danger" role="badge" data-id="{%$item.id%}"> 
+                       <span  class="click" >{%$item.name%}({%count($item.sources)%})</span>
+                       <button type="button" class="close" data-id="{%$item.id%}"><span class="fa fa-remove"></span></button>
+                     </span> 
+                      {%/foreach%}  
+                </div>
+             </div> -->
 
                 <div class="col-xs-2 pull-right">   
                       <div class="checkbox"> 
@@ -80,18 +104,22 @@
                            <input type="checkbox" id="form-user_id" value="{%$userid%}" checked="">只看我发布的
                           </label>
                      </div> 
-                </div> 
+                </div>   
                 <div class="col-xs-2 pull-right">   
                     <div class="input-group ">
                       <select name="" id="form-type"> 
-                        <option value="">全部类型</option> 
-                           <option value="1">微信公众号</option>  
-                           <option value="2">其他</option>
+                        <option value="">全部类型</option>
+                        <option value="1">微信公众号</option>
+                        <option value="2">网站</option>
+                        <option value="3">期刊杂志</option>  
+                          <!--  {%foreach $typeArray as $key => $item%}
+                           <option value="{%$item.id%}">{%$item.name%}</option> 
+                             {%/foreach%}  -->
                       </select>
                    </div>
                 </div>  
                 <div class="col-xs-3  pull-right"> 
-                            <input type="text" class="form-control" id="form-title" placeholder="输入标题点回车"> 
+                    <input type="text" class="form-control" id="form-title" placeholder="输入标题点回车"> 
                 </div>
                <table class="table table-striped table-hover table-bordered dataTable DTTT_selectable" id="editable">
                      <thead>
@@ -99,7 +127,8 @@
                          	<th>ID</th>
     			                <th>名称</th>
     			                <th>url</th>
-                          <th>type</th>
+                          <th>所属类型</th>
+                          <th>所属分组</th>
     			                <th>创建时间</th>
     			                <th>更新时间</th>
     			                <th>操作</th>  

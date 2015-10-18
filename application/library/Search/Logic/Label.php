@@ -101,8 +101,8 @@ class Search_Logic_Label extends Base_Logic{
      */
     public function getLabel($labelId, $page, $pageSize){
         $objTag = new Tag_Object_Tag();
-        $objTag->fetch(array('id' => $labelId));
-        $arrTag = $objTag->toArray();
+        $objTag->fetch(array('id' => $labelId));  
+        $arrTag = $objTag->toArray(); 
         $listSearchLabel  = new Search_List_Label();
         $listSearchLabel->setFilter(array('label_id' => $labelId));
         $listSearchLabel->setPage($page);

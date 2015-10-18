@@ -4489,7 +4489,13 @@ tr.odd.gradeX td.sorting_1, tr.even.gradeX td.sorting_1, table.display tr.even.g
     margin-bottom: 2px;
     border-bottom   : none !important;
 }
-
+.ui-sortable > li.label-danger{
+    background-color: #f3565d;
+    padding: 5px 5px 5px 5px !important ;
+}
+.ui-sortable > li.label-danger:hover{
+    cursor: pointer;
+}
 .ui-sortable li.list-primary {
     border-left: 3px solid #41CAC0;
 }

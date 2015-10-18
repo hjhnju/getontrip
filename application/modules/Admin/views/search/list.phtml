@@ -2,45 +2,49 @@
 {%block name='content'%} 
     <div class="page-content-wrapper">
         <div class="page-content">
-           			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-				<div class="modal-dialog  modal-lg">
-					<div class="modal-content">
-					  <form class="cmxform form-horizontal tasi-form" id="Form" method="post" action="" novalidate="novalidate" >
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-							<h4 class="modal-title">为标签关联城市或景点</h4>
-						</div>
-						<div class="modal-body"> 
-							 	<div class="form-group ">
-		                          <label id="name" for="name" class="control-label col-lg-2">选择城市：</label>
-		                          <div class="col-lg-5">
-		                          {%foreach $city as $key => $item%}
-						            <input class="form-control" id="name" name="obj_id"  type="checkbox" required="" value={%$item.id%}>{%$item.name%}<label for="name" class="error"></label>
-						          {%/foreach%} 		                              
-		                          </div>
-		                      </div> 	
-		                      
-		                      <div class="form-group ">
-		                          <label for="name" class="control-label col-lg-2">选择景点:</label>
-		                          <div class="col-lg-5">
-		                          {%foreach $sight as $key => $item%}
-						            <input class="form-control" id="name" name="obj_id"  type="checkbox" required="" value={%$item.id%}>{%$item.name%}<label for="name" class="error"></label>
-						          {%/foreach%} 		                              
-		                          </div>
-		                      </div>					 
-						</div>
-					
-						<div class="modal-footer">
-							<button class="btn blue" type="submit" id="" data-status="1">保存</button>
-							 <button type="button" class="btn default" data-dismiss="modal">关闭</button>
-						</div>
-						 <input type="hidden" name="status" id="status" value=""/>
-						</form> 
-					</div>
-					<!-- /.modal-content -->
-				</div>
-				<!-- /.modal-dialog -->
-			</div>
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                      <div class="modal-dialog  modal-lg">
+                          <div class="modal-content">
+                            <form class="cmxform form-horizontal tasi-form" id="Form" method="post" action="" novalidate="novalidate" >
+                              <div class="modal-header">
+                                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                  <h4 class="modal-title">为标签关联城市或景点</h4>
+                              </div>
+                              <div class="modal-body"> 
+                                    <div class="form-group " id="add-city">
+                                        <label  for="obj_id" class="control-label col-lg-2">选择城市：</label>
+                                        <div class="col-lg-10">
+                                        {%foreach $city as $key => $item%}
+                                          <input class="form-control"   name="city_id"  type="checkbox" required="" value={%$item.id%}>{%$item.name%}<label for="obj_id" class="error"></label>
+                                        {%/foreach%}                                       
+                                        </div>
+                                    </div>     
+                                    
+                                    <div class="form-group " id="add-sight">
+                                        <label for="obj_id" class="control-label col-lg-2">选择景点:</label>
+                                        <div class="col-lg-10">
+                                        {%foreach $sight as $key => $item%}
+                                          <input class="form-control" name="sight_id"  type="checkbox" required="" value={%$item.id%}>{%$item.name%}<label for="obj_id" class="error"></label>
+                                        {%/foreach%}                                       
+                                        </div>
+                                    </div>                     
+                              </div>
+                          
+                              <div class="modal-footer">
+                                  <button class="btn blue" type="submit" id=""  >保存</button>
+                                   <button type="button" class="btn default" data-dismiss="modal">关闭</button>
+                              </div>
+                               <input type="hidden" name="id" id="id" value=""/>
+                               <input type="hidden" name="type" id="type" value=""/>
+                               
+                              </form> 
+                          </div>
+                          <!-- /.modal-content -->
+                      </div>
+                      <!-- /.modal-dialog -->
+            </div> 
+            {%include file='utils/uploadpic.phtml'%}
+
             <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
             <!-- BEGIN PAGE HEADER-->
             <h3 class="page-title">
@@ -66,18 +70,24 @@
                       <a  class="btn  btn-primary" href="/admin/search/edit" id="xxx">
                           添加搜索标签 <i class="fa fa-plus"></i>
                       </a>
-                    </div>  
+                    </div> 
+                    <div class="btn-group">
+                      <button  class="btn  btn-success" href="" id="add-image">
+                          设置搜索推荐顶部图片 <i class="fa fa-image"></i>
+                      </button>
+                    </div>    
                 </div>  
                 <br>
-               <div class="col-lg-3">
-                           	 <div class="alert alert-info" role="alert" id="sight_alert">
-                                  {%foreach $sightList as $key=>$item%}
-                                  <span class="badge badge-sm label-danger" role="badge">                                    
-                                    <span  class="click" data-id="{%$item.id%}" id="search-id">{%$item.name%}({%$item.obj_num%})</span>
-                                    <button type="button" class="close" data-id="{%$item.id%}"><span class="fa fa-remove"></span></button>
-                                  </span> 
-                                   {%/foreach%}  
-                             </div>
+               <div class="col-lg-10">
+                    拖动可排序
+                    <ul class="alert alert-info" role="alert" id="label_sortable">
+                        {%foreach $sightList as $key=>$item%}
+                        <li class="badge badge-sm label-danger" role="badge" data-id="{%$item.id%}"> 
+                          <span  class="click" >{%$item.name%}({%$item.obj_num%})</span>
+                          <button type="button" class="close" data-id="{%$item.id%}"><span class="fa fa-remove"></span></button>
+                        </li> 
+                         {%/foreach%}  
+                   </ul>
                </div>  
                 
                <table class="table table-striped table-hover table-bordered dataTable" id="editable">
@@ -87,7 +97,7 @@
                             <th>标签名</th>
                             <th>类型</th>
                             <th>对象ID</th>
-                            <th>对象名</th>
+                            <th>对象名</th> 
                             <th>创建时间</th>
                             <th>更新时间</th> 
                             <th>操作</th>  

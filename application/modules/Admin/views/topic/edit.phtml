@@ -323,9 +323,9 @@
                             {%/if%}
                                {%if isset($post.id)%}
                                  <a class="btn btn-default"  href="/admin/topic/list">返回列表</a> 
-                                 <button type="button" class="btn btn-default" id="copy-button" data-clipboard-text="{%$webroot%}/topic/detail/preview?id={%$post.id%}" title="复制我去预览"  data-toggle="tooltip">复制链接</button>
+                                 <button type="button" class="btn btn-default" id="copy-button" data-clipboard-text="{%$webroot%}/topic/detail?id={%$post.id%}" title="复制我去预览"  data-toggle="tooltip">复制链接</button>
                                  <span class="help-inline">
-                                    <a href="#" class="">查看预览方法</a>
+                                   <!--  <a href="#" class="">查看预览方法</a> -->
                                  </span> 
                                 {%else%}
                                 <button class="btn btn-default"  name="reset"  type="reset">重置</button> 

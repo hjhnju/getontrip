@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
     var List = function() {
         var FORMATER = 'YYYY-MM-DD HH:mm:ss';
         var newBtn = '<button type="button" class="btn btn-success btn-xs save"  title="保存" data-toggle="tooltip"><i class="fa fa-save"></i></button>' + '<button type="button" class="btn btn-danger btn-xs cancel"  title="取消" data-toggle="tooltip" data-mode="new"><i class="fa fa-remove"></i></button>';
@@ -17,7 +18,7 @@ $(document).ready(function() {
                 "searching": false, //是否开启本地分页
                 "ordering": false,
                 "ajax": {
-                    "url": "/admin/sourceapi/list",
+                    "url": "/admin/sourceapi/typelist",
                     "type": "POST",
                     "data": function(d) {
                         //添加额外的参数传给服务器
@@ -42,12 +43,6 @@ $(document).ready(function() {
                     "data": "id"
                 }, {
                     "data": "name"
-                }, {
-                    "data": "url"
-                }, {
-                    "data": "typename"
-                }, {
-                    "data": "groupname"
                 }, {
                     "data": function(e) {
                         if (e.create_time) {
@@ -76,7 +71,6 @@ $(document).ready(function() {
             api = oTable.api();
         }
 
-
         /**
          * 绑定事件
          *  
@@ -86,51 +80,26 @@ $(document).ready(function() {
                 //状态下拉列表 
                 $('#form-type').selectpicker();
 
-
-                //分组下拉列表 
-                $('#source-group').selectpicker();
-
-                //点击打开来源创建模态框
+                //点击打开分组创建模态框
                 $('.openSource').click(function(event) {
                     event.preventDefault();
                     //打开模态框
-                    $('#source')[0].reset();
-                    $('#source input[name="type"][value="2"]').click();
+                    $('#source')[0].reset(); 
                     $('#myModal').modal();
 
-                });
-
-                $('#source input[name="type"]').click(function(event) {
-                    if ($(this).val() == 1) {
-                        //微信公众号
-                        $('#source label[for="source-name"]').text('公众号名称:');
-                        $('#source .source-url').hide();
-                        $('#source-url').val('mp.weixin.qq.com');
-                    } else if ($(this).val() == 2) {
-                        $('#source label[for="source-name"]').text('来源名称:');
-                        $('#source .source-url').show();
-                        $('#source-url').val('');
-                    } else if ($(this).val() == 3) {
-                        $('#source label[for="source-name"]').text('来源名称:');
-                        $('#source .source-url').hide();
-                        $('#source-url').val('');
-                    }
-                });
+                }); 
 
                 //点击创建话题来源
                 $('#addSource-btn').click(function(event) {
-                    var url = '/admin/Sourceapi/add';
+                    var url = '/admin/Sourceapi/addGroup';
                     var params = {
-                        name: $('#source-name').val(),
-                        url: $('#source-url').val(),
-                        type: $('#source input[name="type"]:checked').val(),
-                        group:$('#source-group').val()
+                        name: $('#source-name').val() 
                     }
                     if ($('#source-id').val()) {
                         params.id = $('#source-id').val();
-                        url = '/admin/Sourceapi/edit';
+                        url = '/admin/Sourceapi/editGroup';
                     }
-                    bindEvents.saveSource(url, params);
+                    bindEvents.saveType(url, params);
                 });
 
                 //编辑
@@ -138,11 +107,8 @@ $(document).ready(function() {
                     e.preventDefault();
                     var nRow = $(this).parents('tr')[0];
                     var data = oTable.api().row(nRow).data();
-                    $('#source input[name="type"][value="' + data.type + '"]').attr('checked', 'ture');
-                    $('#source input[name="type"][value="' + data.type + '"]').click();
                     $('#source-id').val(data.id);
-                    $('#source-name').val(data.name);
-                    $('#source-url').val(data.url);
+                    $('#source-name').val(data.name); 
                     //打开模态框
                     $('#myModal').modal();
                 });
@@ -150,13 +116,13 @@ $(document).ready(function() {
                 //删除
                 $('#editable button.delete').live('click', function(e) {
                     e.preventDefault();
-                    if (confirm("确定删除 ?") == false) {
+                    if (confirm("删除后不可恢复，确定删除 ?") == false) {
                         return;
                     }
                     var nRow = $(this).parents('tr')[0];
                     var data = oTable.api().row(nRow).data();
                     $.ajax({
-                        "url": "/admin/Sourceapi/del",
+                        "url": "/admin/Sourceapi/delGroup",
                         "data": data,
                         "type": "post",
                         "error": function(e) {
@@ -178,15 +144,11 @@ $(document).ready(function() {
              * @param  {[type]} url [description]
              * @return {[type]}     [description]
              */
-            saveSource: function(url, data) {
+            saveType: function(url, data) {
                 if (!data.name) {
                     toastr.warning('名称不能为空');
                     return false;
-                }
-                if (data.type == '2' && !data.url) {
-                    toastr.warning('url不能为空');
-                    return false;
-                }
+                } 
                 $.ajax({
                     "url": url,
                     "data": data,
@@ -210,7 +172,7 @@ $(document).ready(function() {
 
         /*
               过滤事件
-         */
+             */
         var filter = function() {
             //输入内容点击回车查询
             $("#form-title").keydown(function(event) {
@@ -228,7 +190,6 @@ $(document).ready(function() {
             });
         }
 
-
         return {
             init: function() {
                 initTable()
@@ -238,8 +199,5 @@ $(document).ready(function() {
         }
     }
 
-    new List().init();
-
-
-
+   new List().init();
 });

@@ -120,7 +120,23 @@ class Source_Logic_Source extends Base_Logic{
         }        
         $list->setPage($page);
         $list->setPagesize($pageSize);
-        return $list->toArray();
+        
+        //2015-10-18 范莹莹  增加
+        $retList  = $list->toArray();
+        $templist = $retList['list'];
+        for($i=0; $i<count($templist); $i++){ 
+            //类型名称
+            $templist[$i]['typename'] =Source_Type_Type::getTypeName($templist[$i]['type']); 
+            //分组名称
+            $objGroup = new Source_Object_Type();
+            $objGroup->fetch(array('id' => $templist[$i]['group']));
+            $templist[$i]['groupname']  = $objGroup->name?$objGroup->name:'暂无分组';
+        }
+        $retList['list'] = $templist;
+        //2015-10-18 范莹莹  增加
+         
+    
+        return $retList;
     }
     
     /**
@@ -198,7 +214,7 @@ class Source_Logic_Source extends Base_Logic{
             }
         }
         $ret = $objSourceType->save();
-        
+        return $ret;//下面的代码用处是？分组修改是不是只修改名称？fyy 10-18
         $listSource = new Source_List_Source();
         $listSource->setFilter(array('group' => $typeId));
         $listSource->setPagesize(PHP_INT_MAX);

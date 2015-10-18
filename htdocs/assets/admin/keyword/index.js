@@ -74,7 +74,7 @@ $(document).ready(function() {
         }*/, {
             'data': function(e) {
                 if (e.weight) {
-                    return e.weight + '  <button class="btn btn-primary  btn-xs weight" title="修改权重" data-toggle="tooltip"><i class="fa fa-reorder"></i></button>'
+                    return e.weight + '  <button class="btn btn-primary  btn-xs weight" title="修改排序" data-toggle="tooltip"><i class="fa fa-reorder"></i></button>'
                 }
             }
         }, {

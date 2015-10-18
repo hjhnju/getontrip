@@ -1,0 +1,53 @@
+<div class="modal fade" id="uploadpicModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-lg">
+    <div class="modal-content">
+      <form class="cmxform form-horizontal tasi-form" id="Form" method="post" action="" novalidate="novalidate" >
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">上传图片</h4>
+      </div>
+      <div class="modal-body"> 
+        <form class="cmxform form-horizontal tasi-form" id="Form" method="post" action="" novalidate="novalidate" >
+          <input type="hidden" name="filename" id="form-filename" value="{%if isset($post.formFilename)%}$formFilename{%/if%}"/>
+           <div class="form-group"> 
+                <label for="" class="control-label col-lg-2">图片</label>
+                <div class="col-md-9">
+                    <div class="fileupload fileupload-new" data-provides="fileupload">
+                        <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
+                            <img src="{%$feroot%}s/global/img/no_image.png" alt="">
+                        </div>
+                        <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"> 
+                        </div>
+                        <div id="imageView" class="imageView thumbnail {%if isset($formFilename)%}imagedis{%/if%}" style="max-width: 200px; max-height: 150px; line-height: 20px;"> 
+                          {%if empty($formFilename) eq 0%}  
+                           <img src="{%$webroot%}/pic/{%$formFilename%}@f190w_f80h" alt=""> 
+                          {%/if%}
+                        </div> 
+                          <!-- <button id="crop-img" class="btn btn-primary fileupload-crop{%if empty($post.image)==1%} hidden{%/if%}" type="button" data-corpUrl="sight"><i class="fa fa-cut"></i>裁剪</button>
+                          <input type="hidden" id="jcrop-ratio" data-width="414" data-height="166"/> -->
+                        <div>
+                         <span class="btn btn-white btn-file">
+                         <span class="fileupload-new"><i class="fa fa-paper-clip"></i> 选择文件</span>
+                         <span class="fileupload-exists"><i class="fa fa-undo"></i> 换一张</span>
+                         <input type="file" class="default" name="file" id="imageBtn" />
+                         <input type="hidden" name="image" id="image" value="{%if isset($formFilename)%}{%$formFilename%}{%/if%}" />
+                         </span>
+                          <a href="#" class="btn btn-danger fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash"></i> 移除</a>
+                          <button id="upload-img" class="btn btn-success fileupload-exists" data-dismiss="fileupload"><i class="fa fa-cloud-upload"></i> 上传</button>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer"> 
+        <button type="button" class="btn default" data-dismiss="modal">关闭</button>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+
+ <link href="{%$feroot%}s/global/plugins/bootstrap-fileupload/bootstrap-fileupload.css" rel="stylesheet" type="text/css"/> 
+ <script src="{%$feroot%}s/global/plugins/bootstrap-fileupload/bootstrap-fileupload.js" type="text/javascript"></script> 
+<script src="{%$feroot%}s/global/plugins/ajaxfileupload.js" type="text/javascript"></script> 

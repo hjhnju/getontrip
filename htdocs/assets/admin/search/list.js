@@ -106,7 +106,7 @@ $(document).ready(function() {
                     });
                 }); 
 
-                //点击打开添加词条模态框
+                //点击打开添加对象模态框
                 $("#editable button.addObj").live('click', function(event) {
                     var nRow = $(this).parents('tr')[0];
                     var data = oTable.api().row(nRow).data();
@@ -266,7 +266,7 @@ $(document).ready(function() {
                             obj_id: "required"
                         },
                         messages: {
-                            name: "对象不能为空！"
+                            obj_id: "对象不能为空！"
                         }
                     });
                 }

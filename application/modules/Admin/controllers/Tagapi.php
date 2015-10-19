@@ -91,5 +91,21 @@ class TagapiController extends Base_Controller_Api{
 
         return $this->ajax($List["list"]);  
     }
+
+       /**
+     * 根据景点获取通用标签信息list  
+     * @return [type] [description]
+    */
+    public function getTagBySightAction(){ 
+        $sightId=$_REQUEST['sightId'];  
+        $tagArray = Tag_Api::getTagBySight($sightId);
+        $allList=Tag_Api::getTagList(1, PHP_INT_MAX,array('type'=>Tag_Type_Tag::GENERAL));
+        foreach ($allList['list'] as $key => $val){
+          if (in_array($allList['list'][$key]['id'], $tagArray)) {
+            $allList['list'][$key]['selected']=1;
+          } 
+        }
+        return $this->ajax($allList['list']);    
+    }
     
 }

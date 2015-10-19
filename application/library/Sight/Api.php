@@ -160,7 +160,7 @@ class Sight_Api{
      * 景点发布与取消发布接口
      * @param integer $sightId
      * @param boolean,$bDoPublish:true发布，false取消发布
-     * @return integer:更新影响的行数，返回非零值正确
+     * @return boolean
      */
     public static function publishSight($sightId,$bDoPublish){
         $logicSight = new Sight_Logic_Sight();

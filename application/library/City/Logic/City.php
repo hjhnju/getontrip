@@ -338,6 +338,7 @@ class City_Logic_City{
         foreach ($arrCity as $key => $val){
             $city = $this->getCityById($val['id']);
             $arrCity[$key]['name']  = empty($val['name'])?trim($city['name']):$val['name'];
+            $arrCity[$key]['name']  = str_replace("市","",$arrCity[$key]['name']);
             $arrCity[$key]['image'] = isset($city['image'])?Base_Image::getUrlByName($city['image']):'';
             
             $sight_num     = $logicSight->getSightsNum(array(),$val['id']);

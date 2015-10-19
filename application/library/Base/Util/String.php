@@ -84,6 +84,7 @@ class Base_Util_String {
 	 */
 	public static function getSubString($str,$length){
 	    $str = trim(strip_tags($str));
+	    $str = str_replace('&nbsp;','',$str);
 	    if(mb_strlen($str) > $length){
 	        return mb_substr($str,0,$length,'utf-8')."..";
 	    }

@@ -5,6 +5,30 @@ class Sight_Logic_Tag extends Base_Logic{
     
     protected $_logicTag;
     
+    /**
+     * 5 景观标签
+     * @var integer
+     */
+    const LANDSCAPE = 5;
+    
+    /**
+     * 6 视频标签
+     * @var integer
+     */
+    const VIDEO    = 6;
+    
+    /**
+     * 7 书籍标签
+     * @var integer
+     */
+    const BOOK    = 7;
+    
+    const STR_LANDSCAPE = 'landscape';
+    
+    const STR_VIDEO = 'video';
+    
+    const STR_BOOK = 'book';
+    
     public function __construct(){
         $this->_logicTopic = new Topic_Logic_Topic();
         $this->_logicTag   = new Tag_Logic_Tag();
@@ -45,15 +69,15 @@ class Sight_Logic_Tag extends Base_Logic{
             }
         }
         //判断有无视频,书籍,而增加相应标签
-        $arrCommonTag[] = array('id' => strval(Tag_Type_Tag::STR_LANDSCAPE),'type' => strval(Tag_Type_Tag::LANDSCAPE), 'name' => '景观');
+        $arrCommonTag[] = array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '景观');
         
         $book  = Book_Api::getJdBooks($sightId, 1, 1);
         $video = Video_Api::getVideos($sightId, 1, 1);
         if(!empty($book['list'])){
-            $arrCommonTag[] = array('id' => strval(Tag_Type_Tag::STR_BOOK),'type' => strval(Tag_Type_Tag::BOOK), 'name' => '书籍');
+            $arrCommonTag[] = array('id' => strval(self::STR_BOOK),'type' => strval(self::BOOK), 'name' => '书籍');
         }
         if(!empty($video['list'])){
-            $arrCommonTag[] = array('id' => strval(Tag_Type_Tag::STR_VIDEO),'type' => strval(Tag_Type_Tag::VIDEO), 'name' => '视频');
+            $arrCommonTag[] = array('id' => strval(self::STR_VIDEO),'type' => strval(self::VIDEO), 'name' => '视频');
         }        
         return array_merge($arrCommonTag,$arrGeneralTag);
     }

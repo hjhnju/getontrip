@@ -17,6 +17,12 @@ class Sight_Logic_Sight extends Base_Logic{
     
     const ORDER_NEW = 2;
     
+    const STR_LANDSCAPE = 'landscape';
+    
+    const STR_VIDEO = 'video';
+    
+    const STR_BOOK = 'book';
+    
     public function __construct(){
         $this->logicTopic    = new Topic_Logic_Topic();
         $this->logicSightTag = new Sight_Logic_Tag();
@@ -56,13 +62,13 @@ class Sight_Logic_Sight extends Base_Logic{
             $strTags = isset($arrDataTags[0]['id'])?$arrDataTags[0]['id']:'';
         }
         
-        if($strTags == Tag_Type_Tag::STR_LANDSCAPE){
+        if($strTags == self::STR_LANDSCAPE){
             $logic      = new Keyword_Logic_Keyword();
             $arrRet     = $logic->getKeywordList($sightId,$page,$pageSize);
-        }elseif($strTags == Tag_Type_Tag::STR_BOOK){
+        }elseif($strTags == self::STR_BOOK){
             $logic      = new Book_Logic_Book();
             $arrRet     = $logic->getBookList($sightId,$page,$pageSize,array('status' => Book_Type_Status::PUBLISHED));
-        }elseif($strTags == Tag_Type_Tag::STR_VIDEO){
+        }elseif($strTags == self::STR_VIDEO){
             $logic      = new Video_Logic_Video();
             $arrRet     = $logic->getVideoList($sightId,$page,$pageSize);
         }else{

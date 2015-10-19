@@ -212,6 +212,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $keyword = $this->getKeywordByInfo($val['id']);
             $arrKeyword[$key]['name']  = empty($val['name'])?trim($keyword['name']):$val['name'];
             $arrKeyword[$key]['desc']  = trim($keyword['content']);
+            $arrKeyword[$key]['url']   = trim($keyword['url']);
             $arrKeyword[$key]['image'] = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
         }
         return $arrKeyword;

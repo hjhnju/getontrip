@@ -106,6 +106,9 @@ $(document).ready(function() {
                 });
             },
             init_source: function() {
+                //分组下拉列表 
+                $('#source-group').selectpicker();
+
                 //话题来源自动完成 
                 $('#weixin-from,#from_name').typeahead({
                     display: 'name',
@@ -169,7 +172,8 @@ $(document).ready(function() {
                         "data": {
                             name: $('#source-name').val(),
                             url: $('#source-url').val(),
-                            type: $('#source-type').val()
+                            type: $('#source-type').val(),
+                            group:$('#source-group').val()
                         },
                         "async": false,
                         "error": function(e) {

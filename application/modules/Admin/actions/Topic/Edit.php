@@ -21,6 +21,10 @@ class EditAction extends Yaf_Action_Abstract {
         //获取分类标签
         $classifyTag = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::CLASSIFY));
         $classifyTag = $classifyTag['list']; 
+
+        //来源分组
+        $groupList = Source_Api::listType(1,PHP_INT_MAX,array());
+        $this->getView()->assign('groupList', $groupList['list']);
         
         
         $sightList=array();

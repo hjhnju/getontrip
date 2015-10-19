@@ -191,7 +191,7 @@ $(document).ready(function() {
             editRow: function(oTable, nRow) {
                 var aData = oTable.fnGetData(nRow);
                 var jqTds = $('>td', nRow);
-                $select=$($('#tag-type')[0].outerHTML); 
+                $select=$($('#tag-type').html()); 
                 $select.attr('data-typeid',aData["type"]); 
 
                 jqTds[0].innerHTML = aData["id"];

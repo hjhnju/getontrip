@@ -88,7 +88,7 @@ $(document).ready(function() {
 
 
                 //分组下拉列表 
-                $('#source-group').selectpicker();
+                //$('#source-group').selectpicker();
 
                 //点击打开来源创建模态框
                 $('.openSource').click(function(event) {
@@ -96,7 +96,14 @@ $(document).ready(function() {
                     //打开模态框
                     $('#source')[0].reset();
                     $('#source input[name="type"][value="2"]').click();
+                    $('#source-group').val('0'); 
+                    //$('#source-group').selectpicker(); 
+                    //$('#source-group').selectpicker('val', '0');
+                    $('#source-group').val('0'); 
+                    $('#source-group').selectpicker('render');
                     $('#myModal').modal();
+                    
+
 
                 });
 
@@ -124,7 +131,7 @@ $(document).ready(function() {
                         name: $('#source-name').val(),
                         url: $('#source-url').val(),
                         type: $('#source input[name="type"]:checked').val(),
-                        group:$('#source-group').val()
+                        group: $('#source-group').val()
                     }
                     if ($('#source-id').val()) {
                         params.id = $('#source-id').val();
@@ -143,6 +150,12 @@ $(document).ready(function() {
                     $('#source-id').val(data.id);
                     $('#source-name').val(data.name);
                     $('#source-url').val(data.url);
+
+                  /*  $('#source-group').selectpicker(); 
+                    $('#source-group').val(data.group);*/
+                    //$('#source-group').selectpicker('val', data.group);
+                    $('#source-group').val(data.group);
+                    $('#source-group').selectpicker('render');
                     //打开模态框
                     $('#myModal').modal();
                 });

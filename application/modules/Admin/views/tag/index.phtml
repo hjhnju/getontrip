@@ -81,11 +81,14 @@
 	</div>
 
 <!-- 类型select -->
-<select name="" id="tag-type" class="tag-type hide">  
- {%foreach $typeArray as $key=>$item%} 
-      <option value="{%$key%}">{%$item%}</option> 
- {%/foreach%}  
-</select>
+<div id="tag-type"  class="hide">
+	<select name="" class="tag-type">  
+	 {%foreach $typeArray as $key=>$item%} 
+	      <option value="{%$key%}">{%$item%}</option> 
+	 {%/foreach%}  
+	</select>
+</div>
+
 <!-- 类型select -->
 
 {%/block%} 

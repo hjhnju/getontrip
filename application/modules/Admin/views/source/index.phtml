@@ -37,11 +37,11 @@
                   <div class="form-group source-group">
                     <label for="source-group" class="control-label">分组</label> 
                     <select name="" id="source-group"> 
-                          <option value="0">不分组</option>  
-                          {%foreach $groupList as $key => $item%}
-                            <option value="{%$item.id%}">{%$item.name%}</option> 
-                          {%/foreach%} 
-                    </select>
+                        <option value="0">不分组</option>  
+                        {%foreach $groupList as $key => $item%}
+                          <option value="{%$item.id%}">{%$item.name%}</option> 
+                        {%/foreach%} 
+                   </select>  
                   </div>  
                 </form> 
               </div>
@@ -69,7 +69,7 @@
 					</li>
 					<li>
 						<a href="#">话题来源管理</a>
-					</li>
+					</li> 
 				</ul>
 			</div>
 			<!-- END PAGE HEADER-->
@@ -87,6 +87,7 @@
                       </a>
                   </div> 
                 </div>
+
              <!--    <div class="col-lg-10"> 
                  <div class="alert alert-info" role="alert" id="type_sortable">
                      {%foreach $typeList as $key=>$item%}

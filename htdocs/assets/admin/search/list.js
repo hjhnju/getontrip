@@ -91,7 +91,10 @@ $(document).ready(function() {
                 $('#form-status,#form-type').selectpicker();
 
                 //删除标签
-                $('#sight_alert').delegate('.close', 'click', function(event) {
+                $('#label_sortable').delegate('.close', 'click', function(event) {
+                    if (confirm("确定删除么？删除后不可恢复！") == false) {
+                        return false;
+                    }
                     var id = $(this).attr('data-id');
                     var publish = new Remoter('/admin/searchapi/delTag');
                     publish.remote({
@@ -101,14 +104,7 @@ $(document).ready(function() {
                         //刷新当前页
                         oTable.fnRefresh();
                     });
-                });
-
-                //选择标签
-                $('#sight_alert').delegate('.click', 'click', function(event) {
-                    var id = $(this).attr('data-id');
-                    $("#search-id").val(id);
-                    api.ajax.reload();
-                });
+                }); 
 
                 //点击打开添加词条模态框
                 $("#editable button.addObj").live('click', function(event) {
@@ -180,6 +176,9 @@ $(document).ready(function() {
 
                 //删除标签关联的对象
                 $('#editable').delegate('button.delLabel', 'click', function(event) {
+                    if (confirm("确定删除么？删除后不可恢复！") == false) {
+                        return false;
+                    }
                     var nRow = $(this).parents('tr')[0];
                     var data = oTable.api().row(nRow).data();
                     var del = new Remoter('/admin/searchapi/delLabel');
@@ -206,7 +205,8 @@ $(document).ready(function() {
                         }
                         changeWeight($(li.item).attr('data-id'), newNum);
                     }
-                }); 
+                });
+
                 function changeWeight(id, to) {
                     $.ajax({
                         "url": "/admin/searchapi/changeWeight",
@@ -219,8 +219,7 @@ $(document).ready(function() {
                             alert("服务器未正常响应，请重试");
                         },
                         "success": function(response) {
-                            //关闭模态框
-                            $('#labelModal').modal('hide');
+                            toastr.success('排序成功');
                         }
                     });
                 }
@@ -282,6 +281,13 @@ $(document).ready(function() {
                 //触发dt的重新加载数据的方法
                 api.ajax.reload();
             });
+
+            //选择标签
+                $('#label_sortable').delegate('.click', 'click', function(event) {
+                    var id = $(this).attr('data-id');
+                    $("#search-id").val(id);
+                    api.ajax.reload();
+                });
         }
 
 

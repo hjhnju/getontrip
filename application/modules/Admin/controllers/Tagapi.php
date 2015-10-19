@@ -20,8 +20,8 @@ class TagapiController extends Base_Controller_Api{
         $pageSize=isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX; 
         $page=($start/$pageSize)+1;
          
-       
-        $List=Tag_Api::getTagList($page, $pageSize);
+        $arrParam = isset($_REQUEST['params'])?$_REQUEST['params']:array();
+        $List=Tag_Api::getTagList($page, $pageSize,$arrParam);
         
         foreach ($List['list'] as $key => $val){
             $List['list'][$key]['type_name'] = Tag_Type_Tag::getTypeName($val['type']);

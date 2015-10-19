@@ -371,6 +371,27 @@ class Sight_Logic_Sight extends Base_Logic{
         return $ret;
     }
     
+    
+    public function publishSight($sightId,$bDoPublish){
+        $objSight = new Sight_Object_Sight();
+        $objSight->fetch(array('id' =>$sightId));
+        if($bDoPublish){
+            $objSight->status = Sight_Type_Status::PUBLISHED;
+        }else{
+            $objSight->status = Sight_Type_Status::NOTPUBLISHED;
+        }
+        $ret = $objSight->save();
+        if($ret && $bDoPublish){
+            $data = $this->modelSight->query(array('id' => $sightId), 1, 1);
+            $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
+            $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
+            $http = Base_Network_Http::instance()->url($url);
+            $http->timeout(1);
+            $http->exec();
+        }
+        return $ret;
+    }
+    
     /**
      * 获取景点的话题数
      * @param integer $sightId

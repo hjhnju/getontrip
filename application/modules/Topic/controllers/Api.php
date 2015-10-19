@@ -26,6 +26,11 @@ class ApiController extends Base_Controller_Api {
         }        
         $logic      = new Topic_Logic_Topic();
         $ret        = $logic->getTopicDetail($topicId);
+        $content    = $ret['content'];
+        if($content != ""){
+            $spider  = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
+            $ret['content'] = $spider->getContentToDis();
+        }   
         $this->ajaxDecode($ret);
     }  
 }

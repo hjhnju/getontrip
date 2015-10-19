@@ -4,7 +4,7 @@ class Tag_Logic_Tag extends Base_Logic{
     protected $_fileds;
     
     public function __construct(){
-        $this->_fileds = array('id', 'name', 'create_user', 'update_user', 'create_time', 'update_time', 'type','order');
+        $this->_fileds = array('id', 'name', 'create_user', 'update_user', 'create_time', 'update_time', 'type','weight');
     }
     
     /**
@@ -18,9 +18,6 @@ class Tag_Logic_Tag extends Base_Logic{
         $listTag = new Tag_List_Tag();
         $listTag->setPage($page);
         $listTag->setPagesize($pageSize);
-        
-         
- 
         if(!empty($arrParam)){
             $listTag->setFilter($arrParam);
             if (isset($arrParam['type'])&&$arrParam['type']==Tag_Type_Tag::SEARCH) {

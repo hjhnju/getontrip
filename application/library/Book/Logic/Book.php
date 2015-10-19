@@ -302,7 +302,7 @@ class Book_Logic_Book extends Base_Logic{
             $arrBook['info'] = $strDesc;
             $arrBook['content_desc'] = strip_tags($arrBook['content_desc']);
             $arrBook['content_desc'] = str_replace("&nbsp;", " ", $arrBook['content_desc']);
-            $arrBook['image']        = Base_Image::getUrlByName($arrBook['image']);
+            $arrBook['image']        = isset($arrBook['image'])?Base_Image::getUrlByName($arrBook['image']):'';
             $logicCollect            = new Collect_Logic_Collect();
             $arrBook['collected']    = strval($logicCollect->checkCollect(Collect_Type::BOOK, $bookId));
         }
@@ -315,7 +315,7 @@ class Book_Logic_Book extends Base_Logic{
             $book = $this->getBookById($val['id']);
             $arrBook[$key]['title'] = empty($val['title'])?trim($book['title']):$val['title'];
             $arrBook[$key]['desc']  = trim($book['content_desc']);
-            $arrBook[$key]['image'] = isset($book['image'])?Base_Image::getUrlByName($book['image']):''; 
+            $arrBook[$key]['image'] = $book['image'];
         }
         return $arrBook;
     }

@@ -322,4 +322,15 @@ class Tag_Logic_Tag extends Base_Logic{
         }
         return $ret;
     }
+    
+    /**
+     * 获取当前搜索标签条数
+     * @return integer
+     */
+    public function getSearchTagNum(){
+        $listTag = new Tag_List_Tag();
+        $listTag->setFilter(array('type'=>Tag_Type_Tag::SEARCH));
+        $ret = $listTag->toArray();
+        return $ret['total'];
+    }
 }

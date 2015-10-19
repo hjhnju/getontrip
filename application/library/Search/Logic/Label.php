@@ -134,6 +134,9 @@ class Search_Logic_Label extends Base_Logic{
         $objTag = new Tag_Object_Tag();
         $objTag->name = $name;
         $objTag->type = Tag_Type_Tag::SEARCH;
+        $logicTag     = new Tag_Logic_Tag();
+        $num = $logicTag->getSearchTagNum();
+        $objTag->weight = $num + 1;
         $ret = $objTag->save();
         if(!empty($arrObjIds)){
             foreach ($arrObjIds as $val){

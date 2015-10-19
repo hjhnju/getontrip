@@ -43,11 +43,11 @@ class TagapiController extends Base_Controller_Api{
        $arrPram = array();
        $id      = isset($_REQUEST['id'])?$_REQUEST['id']:'';
        $name    = isset($_REQUEST['name'])?$_REQUEST['name']:''; 
-       $type    = isset($_REQUEST['type'])?trim($_REQUEST['type']):'';
+       $type    = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
        if(!empty($name)){
            $arrPram = array('name' => $name);
        }
-       if(!empty($name)){
+       if(!empty($type)){
            $arrPram   = array_merge($arrPram,array('type' => $type));
        }
        /*$type_name     = isset($_REQUEST['type_name'])?trim($_REQUEST['type_name']):'';

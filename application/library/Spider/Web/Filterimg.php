@@ -156,7 +156,7 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
             
           } 
         $content = $this->objDom->__toString();
-        return $this->replaceBrs($content);
+        return $content;
     }
 
     

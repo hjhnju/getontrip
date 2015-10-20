@@ -18,8 +18,22 @@ class Spider_Web_Dili360bbs extends Spider_Web_Base{
         $element  = $this->objDom->find('div[class="t_fsz"]',0);
         $obj      = new Base_Extract($this->url,$element->innertext);
         $content  = $obj->preProcess();
-        $content  = preg_replace( '/<p.*?<\/p>/', '', $content );
-        $content  = preg_replace( '/<br.*?>/', '<br>', $content );
+        $content = preg_replace( '/<p.*?>/is', '<p>', $content );
+        $content = preg_replace( '/<b\s.*?>/is', '<b>', $content );
+        $content = preg_replace( '/<br.*?>/is', '<p>', $content );
+         
+        //去掉所有标签两旁的空白
+        $arr = array();
+        preg_match_all('/(　)*(\xc2\xa0)*\s*(&nbsp;)*<(.*?)>(　)*(\xc2\xa0)*\s*(&nbsp;)*/i', $content, $arr);
+        foreach ($arr[0] as $i => $val){
+            $val     = str_replace("/", "\/", $val);
+            $content = preg_replace("/".$val."/", "<".$arr[4][$i].">", $content, 1);
+        }
+         
+        $content = preg_replace( '/(<p>){2,}/i', '<p>', $content );
+        $content = preg_replace( '/(<\/p>){2,}/i', '</p>', $content );
+        $content = preg_replace( '/(<p><\/p>){2,}/i', '<p></p>', $content );
+        
         
         $num      = preg_match_all('/img.*?file=\"(.*?)\".*?>/si',$content,$match);
         for($i=0;$i<$num;$i++){

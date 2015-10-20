@@ -6,7 +6,7 @@ class Base_Search {
     
     const PAGE_SIZE = 8;
     
-    const HIGHT_LIGHT  = true;
+    const HIGHT_LIGHT  = false;
     
     //所有检索字段
     protected static $arrPrams = array(
@@ -56,6 +56,7 @@ class Base_Search {
             'id',
             'name',
             'title',
+            'content',
         );
         if(empty($arrNeedKey)){
             $param = implode(",",self::$arrPrams);
@@ -65,13 +66,18 @@ class Base_Search {
         $param  = urlencode($param);
         $from   = ($page-1)*$pageSize;
         $url    = Base_Config::getConfig('solr')->url.'/solr/'.$type.'/select?q='.$query.'&wt=json&fl='.$param."&start=".$from."&rows=".$pageSize;
-        if(self::HIGHT_LIGHT){
-            if($type == 'book' || $type == 'video' || $type == 'topic'){
-                $url   .= '&hl=true&hl.fl=title&hl.simple.pre='.urlencode('<b>').'&hl.simple.post='.urlencode('</b>')."&hl.requireFieldMatch=true";
-            }else{
-                $url   .= '&hl=true&hl.fl=name&hl.simple.pre='.urlencode('<b>').'&hl.simple.post='.urlencode('</b>')."&hl.requireFieldMatch=true";
-            }  
+        if($type == 'book' || $type == 'video'){
+            $url   .= '&hl=true&hl.fl=title';
+        }elseif($type == 'topic'){
+            $url   .= '&hl=true&hl.fl=title'.urlencode(',')."content";
+        }else{
+            $url   .= '&hl=true&hl.fl=name';
         }        
+        if(self::HIGHT_LIGHT){
+            $url .='&hl.simple.pre='.urlencode('<b>').'&hl.simple.post='.urlencode('</b>');
+        }else{
+            $url .='&hl.simple.pre='.urlencode('').'&hl.simple.post='.urlencode('');
+        }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -81,8 +87,11 @@ class Base_Search {
         
         $arrRet = json_decode($ret,true);
         foreach ($arrRet['response']['docs'] as $key => $val){
-            if($type == 'book'|| $type == 'video' || $type == 'topic'){
+            if($type == 'book'|| $type == 'video'){
                 $arrRet['response']['docs'][$key]['title'] = isset($arrRet['highlighting'][$val['id']]['title'][0])?$arrRet['highlighting'][$val['id']]['title'][0]:'';                
+            }elseif($type == 'topic'){
+                $arrRet['response']['docs'][$key]['title']     = isset($arrRet['highlighting'][$val['id']]['title'][0])?$arrRet['highlighting'][$val['id']]['title'][0]:'';
+                $arrRet['response']['docs'][$key]['subtitle']  = isset($arrRet['highlighting'][$val['id']]['content'][0])?$arrRet['highlighting'][$val['id']]['content'][0]:'';
             }else{
                 $arrRet['response']['docs'][$key]['name']  = isset($arrRet['highlighting'][$val['id']]['name'][0])?$arrRet['highlighting'][$val['id']]['name'][0]:'';
             }          

@@ -16,7 +16,7 @@ class Spider_Web_Auto extends Spider_Web_Base{
      * @see Spider_Base::getBody()
      */
     public function getBody(){     
-        $obj        = new Base_Extract($this->url);
+        $obj        = new Base_Extract($this->url,$this->objDom);
         $text       = $obj->getPlainText();
         return $text;     
     }

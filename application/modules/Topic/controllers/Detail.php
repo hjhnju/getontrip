@@ -35,12 +35,11 @@ class DetailController extends Base_Controller_Page {
              $postInfo["img_hash"] = $imgParams['img_hash'];
              $postInfo["img_type"] = $imgParams['img_type'];
            }
-
+           
            //处理正文图片
-           $content = $postInfo['content'];  
-           if($content != ""){
-              $spider = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
-              $postInfo['content'] = $spider->getContentToDis(); 
+           if($postInfo['content'] != ""){
+               $spider  = Spider_Factory::getInstance("Filterimg",$postInfo['content'],Spider_Type_Source::STRING);
+               $ret['content'] = $spider->getContentToDis();
            }
 
            $this->getView()->assign('post', $postInfo); 

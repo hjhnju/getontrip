@@ -127,7 +127,7 @@ class Base_Extract {
 		
 		// 5. HTML TAGs
 		/*$pattern = '/<[^(img|p|br)].*?>/s';*/
-		$pattern = '/<(?!img|p|\/p|br|\/br|b|\/b|hr).*?>/is';
+		$pattern = '/<(?!img|p|\/p|br|b|\/b|hr|div|\/div).*?>/is';
 		$replacement = '';
 		$content = preg_replace( $pattern, $replacement, $content );
 		
@@ -265,11 +265,30 @@ class Base_Extract {
 	 * @param string $content
 	 * @return string
 	 */
-	public function dataClean($content,$bSourceOther=true,$imageName='src'){
+	public function dataClean($content,$bSourceOther=true,$imageName='src'){	    
+	    if(strstr($content,"<br>") && !strstr($content,"<p>")){
+	        $content = '<p>'.$content.'</p>';
+	    }
+	    
 	    $content = preg_replace( '/<p.*?>/is', '<p>', $content );
 	    $content = preg_replace( '/<b\s.*?>/is', '<b>', $content );
-	    $content = preg_replace( '/<br.*?>/is', '<br>', $content );
+	    $content = preg_replace( '/<br.*?>/is', '</p><p>', $content );
 	    
+	    $content = preg_replace( '/<div.*?>/is', '<p>', $content );
+	    $content = preg_replace( '/<\/div>/is', '</p>', $content );
+	    
+	    //去掉所有标签两旁的空白
+	    $arr = array();
+        preg_match_all('/(　)*(\xc2\xa0)*\s*(&nbsp;)*<(.*?)>(　)*(\xc2\xa0)*\s*(&nbsp;)*/i', $content, $arr);
+        foreach ($arr[0] as $i => $val){
+            $val     = str_replace("/", "\/", $val);
+            $content = preg_replace("/".$val."/", "<".$arr[4][$i].">", $content, 1);
+        }
+	    
+	    $content = preg_replace( '/(<p>){2,}/i', '<p>', $content );
+	    $content = preg_replace( '/(<\/p>){2,}/i', '</p>', $content );
+	    $content = preg_replace( '/(<p><\/p>){2,}/i', '<p></p>', $content );	 
+        
 	    $num = preg_match_all('/img.*?'.$imageName.'=\"(.*?)\".*?>/si',$content,$match);
 	    for($i=0;$i<$num;$i++){
 	        if(!$bSourceOther || $this->isFullPath($match[1][$i])){
@@ -284,6 +303,35 @@ class Base_Extract {
 	            }
 	        }
 	    }	    
+	    return $content;
+	}
+	
+	/**
+	 * 如果话题内容要更新，在这里写规则
+	 * @param string $content
+	 */
+	public function dataUpdate($content){
+	    if(strstr($content,"<br>") && !strstr($content,"<p>")){
+	        $content = '<p>'.$content.'</p>';
+	    }
+	    //去掉br标签	    
+	    $content = preg_replace( '/<br.*?>/is', '</p><p>', $content );
+	    
+	    //div标签转成p标签
+	    $content = preg_replace( '/<div.*?>/is', '<p>', $content );
+	    $content = preg_replace( '/<\/div>/is', '</p>', $content );
+	    
+	    //去掉所有标签两旁的空白
+	    $arr = array();
+        preg_match_all('/(　)*(\xc2\xa0)*\s*(&nbsp;)*<(.*?)>(　)*(\xc2\xa0)*\s*(&nbsp;)*/i', $content, $arr);
+        foreach ($arr[0] as $i => $val){
+            $val     = str_replace("/", "\/", $val);
+            $content = preg_replace("/".$val."/", "<".$arr[4][$i].">", $content, 1);
+        }
+	    
+	    $content = preg_replace( '/(<p>){2,}/i', '<p>', $content );
+	    $content = preg_replace( '/(<\/p>){2,}/i', '</p>', $content );
+	    $content = preg_replace( '/(<p><\/p>){2,}/i', '<p></p>', $content );	    
 	    return $content;
 	}
 }

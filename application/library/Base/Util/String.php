@@ -194,12 +194,13 @@ class Base_Util_String {
 	}
 	
 	/**
-	 * 检查字符串中是否有英文标点
+	 * 检查字符串中有哪些英文标点
 	 * @param string $str
-	 * @return boolean 
+	 * @return array 
 	 */
-	public static function symbol_change($str){
-        $sbc = array( //半角
+	public static function englishSymbol($str){
+	    $arrRet = array();
+        $sbc    = array( //半角
             '-', ' ', ':',
             '.', ',', '/', '%', ' #',
             '!', '@', '&', '(', ')',
@@ -211,9 +212,36 @@ class Base_Util_String {
        $arr  = str_split($str);
        foreach ($arr as $val){
            if(in_array($val,$sbc)){
-               return true;
+               if(!in_array($val,$arrRet)){
+                   $arrRet[] = $val;
+               }
            }
        }     
-       return false;
+       return $arrRet;
+	}
+	
+	/**
+	 * 检查字符串中是否有英文标点
+	 * @param string $str
+	 * @return boolean
+	 */
+	public static function checkEnglishSymbol($str){
+	    $arrRet = array();
+	    $sbc    = array( //半角
+	        '-', ' ', ':',
+	        '.', ',', '/', '%', ' #',
+	        '!', '@', '&', '(', ')',
+	        '<', '>', '"', '\'','?',
+	        '[', ']', '{', '}', '\\',
+	        '|', '+', '=', '_', '^',
+	        '￥','~', '`'
+	    );
+	    $arr  = str_split($str);
+	    foreach ($arr as $val){
+	        if(in_array($val,$sbc)){
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 }

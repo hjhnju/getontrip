@@ -51,8 +51,13 @@ class User_Logic_User extends Base_Logic{
     public function getUserInfo($type){
         $userId   = User_Api::getCurrentUser();
         $objUser  = new User_Object_User();
+        $objUser->setFileds(array('nick_name','image','sex'));
         $objUser->fetch(array('id' => $userId,'type' => $type));
-        return $objUser->toArray();
+        $arrRet   =  $objUser->toArray();
+        if(!empty($arrRet['image'])){
+            $arrRet['image'] = Base_Image::getUrlByName($arrRet['image']);
+        }
+        return $arrRet;
     }
     
     /**

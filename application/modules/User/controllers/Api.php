@@ -22,13 +22,13 @@ class ApiController extends Base_Controller_Page{
     /**
      * 接口1：/api/user/login
      * 登录接口
-     * @param integer openId
+     * @param string openId
      * @param integer type,第三方登录类型，1:qq,2:weixin,3:weibo
      * @return json
      * 设置用户的登录态
      */
     public function loginAction(){
-        $openId   = isset($_REQUEST['openId'])?intval($_REQUEST['openId']):'';
+        $openId   = isset($_REQUEST['openId'])?trim($_REQUEST['openId']):'';
         $type     = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         if(empty($openId) || empty($type)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));

@@ -3,6 +3,8 @@ class Video_Logic_Video extends Base_Logic{
     
     const PAGE_SIZE = 20;
     
+    protected $fields = array('sight_id', 'title', 'url', 'image', 'from', 'len', 'type', 'status', 'create_time', 'update_time', 'create_user', 'update_user');
+    
     public function __construct(){
         
     }
@@ -166,5 +168,32 @@ class Video_Logic_Video extends Base_Logic{
             $redis->hSet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::VIDEO,$count);
         }
         return $count;
+    }
+    
+    /**
+     * 修改视频信息
+     * @param integer $id
+     * @param array $arrParam
+     */
+    public function editVideo($id, $arrParam){
+        $objVideo = new Video_Object_Video();
+        $objVideo->fetch(array('id' => $id));
+        foreach ($arrParam as $key => $val){
+            if(in_array($key,$this->fields)){
+                $key = $this->getprop($key);
+                $objVideo->$key = $val;
+            }
+        }
+        return $objVideo->save();
+    }
+    
+    /**
+     * 删除视频
+     * @param integer $id
+     */
+    public function delVideo($id){
+        $objVideo = new Video_Object_Video();
+        $objVideo->fetch(array('id' => $id));
+        return $objVideo->remove();
     }
 }

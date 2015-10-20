@@ -16,28 +16,26 @@ class Book_Api{
     }
     
     /**
-     * 接口2：Book_Api::editBook($sightId,$id,$arrInfo)
+     * 接口2：Book_Api::editBook($id,$arrInfo)
      * 修改书籍数据
-     * @param integer $sightId,景点ID
      * @param integer $id,书籍ID
      * @param array $arrInfo
      * @return boolean
      */
-    public static function editBook($sightId,$id,$arrInfo){
+    public static function editBook($id,$arrInfo){
         $logicBook = new Book_Logic_Book();
-        return $logicBook->editBook($sightId, $id, $arrInfo);
+        return $logicBook->editBook($id, $arrInfo);
     }
     
     /**
-     * 接口3:Book_Api::delBook($sightId,$id)
+     * 接口3:Book_Api::delBook($id)
      * 删除书籍数据
-     * @param integer $sightId,景点ID
-     * @param integer $id,视频ID
+     * @param integer $id,书籍ID
      * @return boolean
      */
-    public static function delBook($sightId,$id){
+    public static function delBook($id){
         $logicBook = new Book_Logic_Book();
-        return $logicBook->delBook($sightId, $id);
+        return $logicBook->delBook($id);
     }
     
     /**

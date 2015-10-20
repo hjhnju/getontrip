@@ -6,6 +6,8 @@ class Book_Logic_Book extends Base_Logic{
     
     const CONTENT_LEN = 100;
     
+    protected $fields = array('title', 'author', 'press', 'content_desc', 'catalog', 'url', 'image', 'isbn', 'price_jd', 'price_mart', 'pages', 'status', 'create_time', 'update_time', 'create_user', 'update_user', 'publish_time');
+    
     public function __construct(){
         
     }
@@ -242,37 +244,35 @@ class Book_Logic_Book extends Base_Logic{
 
     /**
      * 修改书籍数据
-     * @param integer $sightId,景点ID
      * @param integer $id,书籍ID
      * @param array $arrInfo
      * @return boolean
      */
-    public function editBook($sightId,$id,$arrInfo){
-        $redis   = Base_Redis::getInstance();
-        $ret     = false;
-        $arr     = $redis->hGetAll(Book_Keys::getBookInfoName($sightId, $id));
-        $arrKeys  = array_keys($arr);
+    public function editBook($id,$arrInfo){
+        $objBook = new Book_Object_Book();
+        $objBook->fetch(array('id' => $id));
         foreach ($arrInfo as $key => $val){
-            if(in_array($key,$arrKeys)){
-                $arr[$key] = $val;
+            if(in_array($key,$this->fields)){
+                $key = $this->getprop($key);
+                $objBook->$key = $val;
             }
         }
-        $ret = $redis->hMset(Book_Keys::getBookInfoName($sightId, $id),$arr);
-        return $ret;
+        return $objBook->save();
     }
     
     /**
      * 删除书籍数据
-     * @param integer $sightId,景点ID
      * @param integer $id,书籍ID
      * @return boolean
      */
-    public function delBook($sightId,$id){
-        $redis        = Base_Redis::getInstance();
-        $picName      = $redis->hget(Book_Keys::getBookInfoName($sightId, $id),'image');
-        $id           = $redis->hget(Book_Keys::getBookInfoName($sightId, $id),'isbn');
-        $ret      = $redis->delete(Book_Keys::getBookInfoName($sightId, $id));
-        return $ret;
+    public function delBook($id){
+       $objBook = new Book_Object_Book();
+       $objBook->fetch(array('id' => $id));
+       $image   = $objBook->image;
+       if(!empty($image)){
+           $this->delPic($image);
+       }
+       $objBook->remove();
     }
     
     public function getBookById($bookId){

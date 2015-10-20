@@ -26,4 +26,25 @@ class Video_Api{
         $logicVideo = new Video_Logic_Video();
         return $logicVideo->getVideoNum($sighId, $status);
     }
+    
+    /**
+     * 接口3:Video_Api::editVideo($id, $arrParam)
+     * 修改视频信息
+     * @param integer $id
+     * @param array $arrParam
+     */
+    public static function editVideo($id, $arrParam){
+        $logicVideo = new Video_Logic_Video();
+        return $logicVideo->editVideo($id, $arrParam);
+    }
+    
+    /**
+     * 接口4:Video_Api::delVideo($id)
+     * 删除视频
+     * @param integer $id
+     */
+    public static function delVideo($id){
+        $logicVideo = new Video_Logic_Video();
+        return $logicVideo->delVideo($id);
+    }
 }

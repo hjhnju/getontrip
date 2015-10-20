@@ -67,20 +67,22 @@ $(document).ready(function() {
                 }, {
                     "data": function(e) {
                         var tagStr = '';
+                        var normalTagStr = '';
                         var classifyTag = e.tagList.classifyTag;
                         var generalTag = e.tagList.generalTag;
                         var normalTag = e.tagList.normalTag;
 
                         for (var i = 0; i < classifyTag.length; i++) {
-                            tagStr = tagStr + '<span class="label label-success">' + classifyTag[i].name + '(' + classifyTag[i].topic_num + ')</span>';
+                            tagStr = tagStr + '<span class="label label-success" style="display: inline-block;">' + classifyTag[i].name + '(' + classifyTag[i].topic_num + ')</span>';
                         };
                         for (var i = 0; i < generalTag.length; i++) {
-                            tagStr = tagStr + '<span class="label label-warning">' + generalTag[i].name + '(' + generalTag[i].topic_num + ')</span>';
+                            tagStr = tagStr + '<span class="label label-warning" style="display: inline-block;">' + generalTag[i].name + '(' + generalTag[i].topic_num + ')</span>';
                         };
                         for (var i = 0; i < normalTag.length; i++) {
-                            tagStr = tagStr + '<span class="label label-default">' + normalTag[i].name + '(' + normalTag[i].topic_num + ')</span>';
+                            normalTagStr = normalTagStr + '<span class="label label-default" style="display: inline-block;">' + normalTag[i].name + '(' + normalTag[i].topic_num + ')</span>';
                         };
-                        return tagStr + '<button class="btn btn-warning btn-xs add-generalTag" title="添加通用标签" data-toggle="tooltip"><i class="fa fa-plus"></i></button>';
+                        normalTagStr=normalTagStr ? '<div style="margin: 5px 0px;max-width: 320px;" class="normalTagDiv_' + e.id + ' hide">' + normalTagStr + '</div><button class="btn btn-default btn-xs trigger-normalTag show" title="" data-toggle="tooltip">显示普通标签</button>' : normalTagStr;
+                        return '<div style="margin: 5px 0px;max-width: 320px;">'+tagStr + '<button class="btn btn-warning btn-xs add-generalTag" title="添加通用标签" data-toggle="tooltip"><i class="fa fa-plus"></i></button></div>' + normalTagStr;
                     }
                 }, {
                     "data": function(e) {
@@ -166,7 +168,7 @@ $(document).ready(function() {
                     var list = new Remoter('/admin/tagapi/getTagBySight');
                     $('#sight-id').val(data.id);
                     $('#sight-status').val(data.status);
-                     
+
                     list.remote({
                         sightId: data.id
                     });
@@ -204,6 +206,19 @@ $(document).ready(function() {
                      });*/
 
                 });
+
+                //点击显示或者隐藏
+                $('#editable button.trigger-normalTag').live('click', function(e) {
+                    var nRow = $(this).parents('tr')[0];
+                    var data = oTable.api().row(nRow).data();
+                    if ($('.normalTagDiv_' + data.id).hasClass('hide')) {
+                        $('.normalTagDiv_' + data.id).removeClass('hide');
+                        $(this).html('隐藏普通标签');
+                    } else {
+                        $('.normalTagDiv_' + data.id).addClass('hide');
+                        $(this).html('显示普通标签');
+                    }
+                });
             },
             addGeneralTag: function() {
                 $.validator.setDefaults({
@@ -212,10 +227,10 @@ $(document).ready(function() {
                         var param = $("#generalTagModal #Form").serializeObject();
                         for (var i = 0; i < param.tags.length; i++) {
                             if (!$.isArray(param.tags)) {
-                                param.tags=[(parseInt(param.tags))];
+                                param.tags = [(parseInt(param.tags))];
                                 break;
                             };
-                            param.tags[i]=parseInt(param.tags[i]);
+                            param.tags[i] = parseInt(param.tags[i]);
                         };
                         $.ajax({
                             "url": "/admin/sightapi/save",

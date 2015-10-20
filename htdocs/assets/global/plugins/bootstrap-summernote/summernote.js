@@ -5235,11 +5235,12 @@
             var pattern6 = /div/gi;//div替换为p
             var pattern7 = /font/gi;//font替换为span
             var pattern8 = /<\/?span(.*?)>/gi;//去掉span
+            var pattern9 = /<p(.*?)>/gi;//去掉p所有的属性
             /*var htmlstr  = html;
             html.replace(pattern, '')
             return htmlstr;*/
             //return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern2, '').replace(pattern3, '').replace(pattern4, '').replace(pattern6,'p');
-            return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern6, 'p').replace(pattern7, 'span').replace(pattern8,'');
+            return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern6, 'p').replace(pattern7, 'span').replace(pattern8,'').replace(pattern9,'<p>');
            
         }
 
@@ -6550,9 +6551,10 @@
 
                 var dropdown = [
                     '<div class="note-align btn-group">',
-                    leftButton + centerButton + rightButton + justifyButton,
+                    leftButton + centerButton + rightButton ,
+                    //justifyButton,
                     '</div><div class="note-list btn-group">',
-                    indentButton + outdentButton,
+                    //indentButton + outdentButton,
                     '</div>'
                 ];
 

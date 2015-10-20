@@ -25,6 +25,7 @@ $(document).ready(function() {
             lang: "zh-CN",
             height: 300,
             toolbar: [
+                ['para', ['paragraph']],
                 ['style', ['bold', 'clear']],
                 ['insert', ['hr', 'link', 'picture']],
                 ['view', ['codeview']]

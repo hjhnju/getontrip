@@ -43,14 +43,16 @@ class VideoapiController extends Base_Controller_Api{
     }
 
      /**
-     * 编辑保存词条
+     * 编辑保存视频
      */
     function saveAction(){
         $id =isset($_REQUEST['id'])?$_REQUEST['id']:'';
         if($id==''){
             return $this->ajaxError();
         }
-        $dbRet=Keyword_Api::editKeyword($id,$_REQUEST);
+        $_REQUEST['status'] = $this->getStatusByActionStr(isset($_REQUEST['action'])?$_REQUEST['action']:'');
+       
+        $dbRet=Video_Api::editVideo($id, $_REQUEST);
         if ($dbRet) {
             return $this->ajax();
         }
@@ -73,5 +75,26 @@ class VideoapiController extends Base_Controller_Api{
     }
   
 
-   
+   /**
+     * 获取保存的状态
+     * @param  [type] $action [description]
+     * @return [type]         [description]
+     */
+    public function getStatusByActionStr($action){
+        switch ($action) {
+         case 'NOTPUBLISHED':
+           $status = Video_Type_Status::NOTPUBLISHED;
+           break;
+         case 'PUBLISHED':
+           $status = Video_Type_Status::PUBLISHED;
+           break;
+        case 'BLACKLIST':
+           $status = Video_Type_Status::BLACKLIST;
+           break;
+         default:
+           $status = Video_Type_Status::NOTPUBLISHED;
+           break;
+       } 
+       return   $status;
+    }
 }

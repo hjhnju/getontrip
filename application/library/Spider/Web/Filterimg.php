@@ -114,6 +114,10 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
         $this->uploadImgs($refer); 
         $this->replaceImg();
         $content=$this->objDom->outertext;
+        $obj   = new Base_Extract('',$content);
+        $data  = $obj->preProcess();
+        $content   = $obj->dataUpdate($data);
+        ob_clean(); 
         //$content=$this->dataClean($content,false); 
         return $content;
     }

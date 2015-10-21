@@ -18,10 +18,10 @@ class Book_Type_Status extends Base_Type {
     const PUBLISHED    = 2;    
     
     /**
-     * 3 删除
+     * 3 黑名单
      * @var integer
      */
-    const DEL          = 3;
+    const BLACKLIST    = 3;
     
     /**
      * 状态名
@@ -30,6 +30,6 @@ class Book_Type_Status extends Base_Type {
     public static $names = array(
         self::NOTPUBLISHED     => '未发布',
         self::PUBLISHED        => '已发布',
-        self::DEL              => '删除',
+        self::BLACKLIST        => '黑名单',
     );
 }

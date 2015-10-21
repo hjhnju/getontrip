@@ -300,8 +300,8 @@ class Book_Logic_Book extends Base_Logic{
                 unset($arrBook['isbn']);
             }
             $arrBook['info'] = $strDesc;
-            $arrBook['content_desc'] = strip_tags($arrBook['content_desc']);
-            $arrBook['content_desc'] = str_replace("&nbsp;", " ", $arrBook['content_desc']);
+            //$arrBook['content_desc'] = strip_tags($arrBook['content_desc']);
+            //$arrBook['content_desc'] = str_replace("&nbsp;", " ", $arrBook['content_desc']);
             $arrBook['image']        = isset($arrBook['image'])?Base_Image::getUrlByName($arrBook['image']):'';
             $logicCollect            = new Collect_Logic_Collect();
             $arrBook['collected']    = strval($logicCollect->checkCollect(Collect_Type::BOOK, $bookId));

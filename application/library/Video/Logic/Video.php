@@ -142,7 +142,7 @@ class Video_Logic_Video extends Base_Logic{
             $arrVideo[$key]['title'] = empty($val['title'])?trim($video['title']):$val['title'];
             $arrVideo[$key]['image'] = isset($video['image'])?Base_Image::getUrlByName($video['image']):'';
             $arrVideo[$key]['url']   = isset($video['url'])?trim($video['url']):'';
-            $arrVideo[$key]['from']  = '爱奇艺';
+            $arrVideo[$key]['from']  = isset($video['from'])?trim($video['from']):'';
         }
         return $arrVideo;
     }
@@ -194,6 +194,9 @@ class Video_Logic_Video extends Base_Logic{
     public function delVideo($id){
         $objVideo = new Video_Object_Video();
         $objVideo->fetch(array('id' => $id));
+        if(!empty($objVideo->image)){
+            $this->delPic($objVideo->image);
+        }
         return $objVideo->remove();
     }
 }

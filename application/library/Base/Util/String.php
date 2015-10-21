@@ -227,7 +227,7 @@ class Base_Util_String {
 	 */
 	public static function checkEnglishSymbol($str){
 	    $arrRet = array();
-	    $sbc    = array( //半角
+	    $sbc    = array( //英文标点
 	        '-', ' ', ':',
 	        '.', ',', '/', '%', ' #',
 	        '!', '@', '&', '(', ')',

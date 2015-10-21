@@ -36,7 +36,7 @@ $(document).ready(function() {
                         //['font', ['strikethrough']],
                         //['fontsize', ['fontsize']],
                         //['color', ['color']],
-                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['para', ['paragraph']],
                         //['table', ['table']],
                         //['height', ['height']],
                         ['style', ['bold', 'clear']],

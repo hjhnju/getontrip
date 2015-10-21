@@ -34,7 +34,9 @@ class DetailController extends Base_Controller_Page {
              $imgParams = Base_Image::getImgParams($postInfo["image"]);
              $postInfo["img_hash"] = $imgParams['img_hash'];
              $postInfo["img_type"] = $imgParams['img_type'];
-           }
+           }/*else{
+              $postInfo["image"] = $web->stroot . '/v1/' . $web->version . '/asset/common/img/imgloading.gif'; 
+           }*/
            
            //处理正文图片
            if($postInfo['content'] != ""){

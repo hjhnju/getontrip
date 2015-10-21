@@ -82,7 +82,7 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
         $imgNameArray=$this->imgNameArray; 
         $imgDomArray = $this->imgDomArray;
         for($i=0;$i<count($imgNameArray);$i++){   
-              $imgDomArray[$i] ->setAttribute('data-image',$imgNameArray[$i]);
+              //$imgDomArray[$i] ->setAttribute('data-image',$imgNameArray[$i]);
               $imgDomArray[$i]->src = Base_Image::getUrlByName($imgNameArray[$i]);
         }   
     } 

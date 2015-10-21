@@ -6,6 +6,8 @@
 
 class User_RetCode extends Base_RetCode{
     
+    const NOT_LOGIN        = 2 ;   //未登录
+    
     const LOGIN_FAIL       = 1025; //登录失败
     
     const SIGN_OUT_FIAL    = 1026; //登出失败    
@@ -15,7 +17,8 @@ class User_RetCode extends Base_RetCode{
      */
     protected static $_arrErrMap = array(     
         self::LOGIN_FAIL          => '登录失败',
-        self::SIGN_OUT_FIAL       => '登出失败',       
+        self::SIGN_OUT_FIAL       => '登出失败', 
+        self::NOT_LOGIN           => '未登录',      
     );
 
 }

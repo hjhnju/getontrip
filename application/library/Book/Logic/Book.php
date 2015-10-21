@@ -254,6 +254,9 @@ class Book_Logic_Book extends Base_Logic{
         foreach ($arrInfo as $key => $val){
             if(in_array($key,$this->fields)){
                 $key = $this->getprop($key);
+                if(($key == 'image') && !empty($objBook->image)){
+                    $this->delPic($objBook->image);
+                }
                 $objBook->$key = $val;
             }
         }
@@ -314,8 +317,9 @@ class Book_Logic_Book extends Base_Logic{
         foreach ($arrBook as $key => $val){
             $book = $this->getBookById($val['id']);
             $arrBook[$key]['title'] = empty($val['title'])?trim($book['title']):$val['title'];
-            $arrBook[$key]['desc']  = trim($book['content_desc']);
+            $arrBook[$key]['desc']  = empty($val['content_desc'])?trim($book['content_desc']):$val['content_desc'];
             $arrBook[$key]['image'] = $book['image'];
+            unset($arrBook[$key]['content_desc']);
         }
         return $arrBook;
     }

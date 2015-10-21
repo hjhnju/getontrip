@@ -57,6 +57,7 @@ class Base_Search {
             'name',
             'title',
             'content',
+            'content_desc',
         );
         if(empty($arrNeedKey)){
             $param = implode(",",self::$arrPrams);
@@ -70,6 +71,8 @@ class Base_Search {
             $url   .= '&hl=true&hl.fl=title';
         }elseif($type == 'topic'){
             $url   .= '&hl=true&hl.fl=title'.urlencode(',')."content";
+        }elseif($type == 'book'){
+            $url   .= '&hl=true&hl.fl=title'.urlencode(',')."content_desc";
         }else{
             $url   .= '&hl=true&hl.fl=name';
         }        
@@ -87,7 +90,10 @@ class Base_Search {
         
         $arrRet = json_decode($ret,true);
         foreach ($arrRet['response']['docs'] as $key => $val){
-            if($type == 'book'|| $type == 'video'){
+            if($type == 'book'){
+                $arrRet['response']['docs'][$key]['title'] = isset($arrRet['highlighting'][$val['id']]['title'][0])?$arrRet['highlighting'][$val['id']]['title'][0]:''; 
+                $arrRet['response']['docs'][$key]['content_desc']  = isset($arrRet['highlighting'][$val['id']]['content_desc'][0])?$arrRet['highlighting'][$val['id']]['content_desc'][0]:'';
+            }elseif($type == 'video'){
                 $arrRet['response']['docs'][$key]['title'] = isset($arrRet['highlighting'][$val['id']]['title'][0])?$arrRet['highlighting'][$val['id']]['title'][0]:'';                
             }elseif($type == 'topic'){
                 $arrRet['response']['docs'][$key]['title']     = isset($arrRet['highlighting'][$val['id']]['title'][0])?$arrRet['highlighting'][$val['id']]['title'][0]:'';

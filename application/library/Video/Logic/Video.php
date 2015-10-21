@@ -181,6 +181,9 @@ class Video_Logic_Video extends Base_Logic{
         foreach ($arrParam as $key => $val){
             if(in_array($key,$this->fields)){
                 $key = $this->getprop($key);
+                if(($key == 'image') && !empty($objVideo->image)){
+                    $this->delPic($objVideo->image);
+                }
                 $objVideo->$key = $val;
             }
         }

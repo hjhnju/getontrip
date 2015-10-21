@@ -54,6 +54,10 @@ class ApiController extends Base_Controller_Page{
      * @return json
      */
     public function getinfoAction() {
+        $logic = new User_Logic_Third();
+        if(!$logic->checkLogin()){
+            return $this->ajaxError(User_RetCode::NOT_LOGIN,User_RetCode::getMsg(User_RetCode::NOT_LOGIN));
+        }
         $type     = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         if(empty($type)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
@@ -71,6 +75,10 @@ class ApiController extends Base_Controller_Page{
      * @return json
      */
     public function addinfoAction() {
+        $logic = new User_Logic_Third();
+        if(!$logic->checkLogin()){
+            return $this->ajaxError(User_RetCode::NOT_LOGIN,User_RetCode::getMsg(User_RetCode::NOT_LOGIN));
+        }
         $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         $strParam   = isset($_REQUEST['param'])?trim($_REQUEST['param']):'';
         if(empty($strParam) || empty($type)){
@@ -89,6 +97,10 @@ class ApiController extends Base_Controller_Page{
      * @return json
      */
     public function editinfoAction(){
+        $logic = new User_Logic_Third();
+        if(!$logic->checkLogin()){
+            return $this->ajaxError(User_RetCode::NOT_LOGIN,User_RetCode::getMsg(User_RetCode::NOT_LOGIN));
+        }
         $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         $strParam   = isset($_REQUEST['param'])?trim($_REQUEST['param']):'';
         $file       = isset($_FILES['file'])?$_FILES['file']:'';

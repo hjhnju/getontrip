@@ -27,56 +27,51 @@ class  TopicapiController extends Base_Controller_Api{
         
         
         $List = Topic_Api::search($arrParam,$page,$pageSize);
-
+        $sightArray=array();
+        
         //处理状态值 
         $tmpList = $List['list'];
         for($i=0; $i<count($tmpList); $i++) { 
-            $tmpList[$i]["statusName"] = Topic_Type_Status::getTypeName($tmpList[$i]["status"]);  
-         }
-        //处理景点名称
-        $sightArray=array(); 
-        for($i=0; $i<count($tmpList); $i++){
-          $sightlist = $tmpList[$i]['sights']; 
-          for($j=0; $j<count($sightlist); $j++){ 
-             $item = $sightlist[$j];
-             $sight_id = $item['sight_id']; 
-              if (!array_key_exists($sight_id,$sightArray)) {  
+            $tmpList[$i]["statusName"] = Topic_Type_Status::getTypeName($tmpList[$i]["status"]);
+            $topic = Topic_Api::getTopicById($tmpList[$i]['id']);
+            $tmpList[$i]["symbols"]    = Base_Util_String::checkEnglishSymbol($topic['content']);
+            
+            //处理景点名称
+            $sightlist = $tmpList[$i]['sights'];
+            for($j=0; $j<count($sightlist); $j++){
+                $item = $sightlist[$j];
+                $sight_id = $item['sight_id'];
+                if (!array_key_exists($sight_id,$sightArray)) {
                     //根据ID查找景点名称
                     $sightInfo =(array) Sight_Api::getSightById($sight_id);
                      
-                    $item['sight_name'] = isset($sightInfo['name'])?$sightInfo['name']:''; 
+                    $item['sight_name'] = isset($sightInfo['name'])?$sightInfo['name']:'';
                     //添加到数组
-                    $sightArray[$sight_id]=isset($sightInfo['name'])?$sightInfo['name']:'';  
-              }
-              else{ 
-                   $item['sight_name']  = $sightArray[$sight_id];
-              }
-              $sightlist[$j] = $item;
-          } 
-           $tmpList[$i]['sights'] = $sightlist; 
-        } 
-
-        //处理来源名称
-       // $fromArray=array(); 
-        for($i=0; $i<count($tmpList); $i++) {
-            if(empty($tmpList[$i]["from_detail"])) {  
-               $fromInfo = Source_Api::getSourceInfo($tmpList[$i]["from"]);
-               $tmpList[$i]["fromName"] = isset($fromInfo['name'])?$fromInfo['name']:''; 
-            }else{ 
-               $tmpList[$i]["fromName"] =$tmpList[$i]["from_detail"];
-            } 
-        }
-
-        //处理图片名称 分割为 img_hash 和 img_type
-        for($i=0; $i<count($tmpList); $i++) {
-           if(!empty($tmpList[$i]["image"])){
-              $img=Base_Image::getImgParams($tmpList[$i]["image"]);
-              $tmpList[$i]["img_hash"] = $img['img_hash'];
-              $tmpList[$i]["img_type"] = $img['img_type'];
-           } 
-        }
-
-          
+                    $sightArray[$sight_id]=isset($sightInfo['name'])?$sightInfo['name']:'';
+                }
+                else{
+                    $item['sight_name']  = $sightArray[$sight_id];
+                }
+                $sightlist[$j] = $item;
+            }
+            $tmpList[$i]['sights'] = $sightlist;
+            
+            //处理来源名称
+            if(empty($tmpList[$i]["from_detail"])) {
+                $fromInfo = Source_Api::getSourceInfo($tmpList[$i]["from"]);
+                $tmpList[$i]["fromName"] = isset($fromInfo['name'])?$fromInfo['name']:'';
+            }else{
+                $tmpList[$i]["fromName"] =$tmpList[$i]["from_detail"];
+            }
+            
+            //处理图片名称 分割为 img_hash 和 img_type
+            if(!empty($tmpList[$i]["image"])){
+                $img=Base_Image::getImgParams($tmpList[$i]["image"]);
+                $tmpList[$i]["img_hash"] = $img['img_hash'];
+                $tmpList[$i]["img_type"] = $img['img_type'];
+            }
+         }
+       
         $List['list']=$tmpList;
         
         $retList['recordsFiltered'] =$List['total'];

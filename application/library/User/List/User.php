@@ -20,7 +20,7 @@ class User_List_User extends Base_List {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'device_id', 'nick_name', 'city_id', 'image', 'sex', 'accept_pic', 'accept_msg', 'create_time', 'update_time', 'type');
+    protected $fields = array('id', 'device_id', 'type', 'nick_name', 'city', 'image', 'sex', 'accept_pic', 'accept_msg', 'create_time', 'update_time');
 
     /**
      * 整数类型的字段
@@ -28,13 +28,12 @@ class User_List_User extends Base_List {
      */
     protected $intProps = array(
         'id'          => 1,
-        'city_id'     => 1,
+        'type'        => 1,
         'sex'         => 1,
         'accept_pic'  => 1,
         'accept_msg'  => 1,
         'create_time' => 1,
         'update_time' => 1,
-        'type'        => 1,
     );
 
     /**

@@ -63,6 +63,7 @@ class User_Logic_User extends Base_Logic{
             'nick_name' => $arrRet['nick_name'],
             'image'     => $arrRet['image'],
             'sex'       => strval($arrRet['sex']),
+            'city'      => strval($arrRet['city']),
         );
     }
     
@@ -83,7 +84,7 @@ class User_Logic_User extends Base_Logic{
                 $objUser->$key = $arrTemp[1];
             }            
         }
-        if(!empty($file)){
+        if(!empty($file)){            
             $ext = explode("/",$file['type']);
             if (!isset($ext[1])||!in_array($ext[1], array('jpg', 'gif', 'jpeg','png'))) {
                  return false;
@@ -100,6 +101,9 @@ class User_Logic_User extends Base_Logic{
             $oss = Oss_Adapter::getInstance();
             $res = $oss->writeFile($filename, $file['tmp_name']);
             if($res){
+                if(!empty($objUser->image)){
+                    $this->delPic($objUser->image);
+                }
                 $objUser->image = $filename;
             }else{
                 return false;

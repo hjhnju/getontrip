@@ -26,7 +26,7 @@ class User_Object_User extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'device_id', 'nick_name', 'city_id', 'image', 'sex', 'accept_pic', 'accept_msg', 'create_time', 'update_time', 'type');
+    protected $fields = array('id', 'device_id', 'type', 'nick_name', 'city', 'image', 'sex', 'accept_pic', 'accept_msg', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -35,15 +35,15 @@ class User_Object_User extends Base_Object {
     public $properties = array(
         'id'          => 'id',
         'device_id'   => 'deviceId',
+        'type'        => 'type',
         'nick_name'   => 'nickName',
-        'city_id'     => 'cityId',
+        'city'        => 'city',
         'image'       => 'image',
         'sex'         => 'sex',
         'accept_pic'  => 'acceptPic',
         'accept_msg'  => 'acceptMsg',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
-        'type'        => 'type',
     );
 
     /**
@@ -52,13 +52,12 @@ class User_Object_User extends Base_Object {
      */
     protected $intProps = array(
         'id'          => 1,
-        'city_id'     => 1,
+        'type'        => 1,
         'sex'         => 1,
         'accept_pic'  => 1,
         'accept_msg'  => 1,
         'create_time' => 1,
         'update_time' => 1,
-        'type'        => 1,
     );
 
     /**
@@ -82,16 +81,22 @@ class User_Object_User extends Base_Object {
     public $deviceId;
 
     /**
+     * 第三方登录类型
+     * @var integer
+     */
+    public $type;
+
+    /**
      * 用户昵称
      * @var string
      */
     public $nickName;
 
     /**
-     * 城市ID
-     * @var integer
+     * 城市
+     * @var string
      */
-    public $cityId;
+    public $city;
 
     /**
      * 用户图像
@@ -100,19 +105,19 @@ class User_Object_User extends Base_Object {
     public $image;
 
     /**
-     * 性别，1:男性,2:女性,0:表示用户还没设置，不确定
+     * 性别，0男性,1:女性,2表示还不确定
      * @var integer
      */
     public $sex;
 
     /**
-     * 是否有图模式
+     * 是否图模式
      * @var integer
      */
     public $acceptPic;
 
     /**
-     * 是否接收消息
+     * 是否接口消息
      * @var integer
      */
     public $acceptMsg;
@@ -128,11 +133,5 @@ class User_Object_User extends Base_Object {
      * @var integer
      */
     public $updateTime;
-
-    /**
-     * 第三方登录类型
-     * @var integer
-     */
-    public $type;
 
 }

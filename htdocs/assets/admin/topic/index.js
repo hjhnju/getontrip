@@ -86,6 +86,13 @@ $(document).ready(function() {
             "data": function(e) {
                 return e.collect + '/' + e.comment;
             }
+        },{
+            "data": function(e) {
+                if (e.symbols) {
+                    return '有';
+                }
+                return "无";
+            }
         }, {
             "data": function(e) {
                 if (e.statusName == '未发布') {

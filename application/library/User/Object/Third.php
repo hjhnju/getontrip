@@ -1,6 +1,6 @@
 <?php
 /**
- * 登录信息表
+ * 第三方登录信息表
  * @author huwei
  */
 class User_Object_Third extends Base_Object {

@@ -1,6 +1,6 @@
 <?php
 /**
- * 登录信息表 列表类
+ * 第三方登录信息表 列表类
  * @author huwei
  */
 class User_List_Third extends Base_List {

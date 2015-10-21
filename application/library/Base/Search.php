@@ -67,7 +67,7 @@ class Base_Search {
         $param  = urlencode($param);
         $from   = ($page-1)*$pageSize;
         $url    = Base_Config::getConfig('solr')->url.'/solr/'.$type.'/select?q='.$query.'&wt=json&fl='.$param."&start=".$from."&rows=".$pageSize;
-        if($type == 'book' || $type == 'video'){
+        if($type == 'video'){
             $url   .= '&hl=true&hl.fl=title';
         }elseif($type == 'topic'){
             $url   .= '&hl=true&hl.fl=title'.urlencode(',')."content";

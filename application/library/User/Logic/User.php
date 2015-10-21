@@ -51,13 +51,19 @@ class User_Logic_User extends Base_Logic{
     public function getUserInfo($type){
         $userId   = User_Api::getCurrentUser();
         $objUser  = new User_Object_User();
-        $objUser->setFileds(array('nick_name','image','sex'));
-        $objUser->fetch(array('id' => $userId,'type' => $type));
+        $objUser->fetch(array('id' => $userId));
         $arrRet   =  $objUser->toArray();
+        if(empty($arrRet['nick_name']) && empty($arrRet['image'])){
+            return array();
+        }
         if(!empty($arrRet['image'])){
             $arrRet['image'] = Base_Image::getUrlByName($arrRet['image']);
         }
-        return $arrRet;
+        return array(
+            'nick_name' => $arrRet['nick_name'],
+            'image'     => $arrRet['image'],
+            'sex'       => strval($arrRet['sex']),
+        );
     }
     
     /**
@@ -69,9 +75,9 @@ class User_Logic_User extends Base_Logic{
         $userId   = User_Api::getCurrentUser();
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId,'type' => $type));
-        $arrData  = implode(",",$strParam);
+        $arrData  = explode(",",$strParam);
         foreach ($arrData as $val){
-            $arrTemp = implode(":", $val);
+            $arrTemp = explode(":", $val);
             if(isset($arrTemp[0]) && isset($arrTemp[1])){
                 $key           = $this->getprop($arrTemp[0]);                
                 $objUser->$key = $arrTemp[1];
@@ -112,9 +118,9 @@ class User_Logic_User extends Base_Logic{
         $userId   = User_Api::getCurrentUser();
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId,'type' => $type));
-        $arrData  = implode(",",$strParam);
+        $arrData  = explode(",",$strParam);
         foreach ($arrData as $val){
-            $arrTemp = implode(":", $val);
+            $arrTemp = explode(":", $val);
             if(isset($arrTemp[0]) && isset($arrTemp[1])){
                 $key           = $this->getprop($arrTemp[0]);
                 if($key == 'image'){
@@ -194,12 +200,14 @@ class User_Logic_User extends Base_Logic{
         return '';
     }
     
-    public function getCurrentUser(){
+    public function getCurrentUser($type = ''){
         $user = isset($_COOKIE[User_Keys::getCurrentUserKey()])?trim($_COOKIE[User_Keys::getCurrentUserKey()]):'';
         if(!empty($user)){
-            return Base_Util_Secure::decryptForUuap(Base_Util_Secure::PASSWD_KEY, $user);
+            $ret = Base_Util_Secure::decryptForUuap(Base_Util_Secure::PASSWD_KEY, $user);
+            if($ret){
+                return $ret;
+            }
         }
-        
         $objUser  = new User_Object_User();
         $deviceId = isset($_COOKIE[User_Keys::getDeviceIdKey()])?trim($_COOKIE[User_Keys::getDeviceIdKey()]):'';
         if(empty($deviceId)){
@@ -208,15 +216,19 @@ class User_Logic_User extends Base_Logic{
         $objUser->fetch(array('device_id' => $deviceId));
         if(!empty($objUser->id)){
             $user  = Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY, $objUser->id);
-            setcookie(User_Keys::getCurrentUserKey(),$user);
+            setcookie(User_Keys::getCurrentUserKey(),urlencode($user));
             return $objUser->id;
         }
         //第一次通过设置ID创建用户ID
         $objUser->deviceId = $deviceId;
-        $objUser->type     = User_Type_Login::NOT_IN;
+        if(empty($type)){
+            $objUser->type     = User_Type_Login::NOT_IN;
+        }else{
+            $objUser->type     = $type;
+        }
         $objUser->save();
         $user  = Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY, $objUser->id);
-        setcookie(User_Keys::getCurrentUserKey(),$user);
+        setcookie(User_Keys::getCurrentUserKey(),urlencode($user));
         return $objUser->id;
     }
 }

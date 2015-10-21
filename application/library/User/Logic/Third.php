@@ -30,17 +30,17 @@ class User_Logic_Third {
         $objLogin->fetch(array('open_id' => $openId,'auth_type' => $type));
         $arr = $objLogin->toArray();
         if(empty($arr)){            
-            $objLogin->openId   = $openId;
-            $objLogin->userId   = User_Api::getCurrentUser();
-            $objLogin->authType = $type;
-            $userid             = $objUser->id;
+            $objLogin->openId    = $openId;
+            $objLogin->userId    = User_Api::getCurrentUser($type);
+            $objLogin->authType  = $type;
+            $objLogin->loginTime = time();
+            $ret = $objLogin->save();
+            $userid              = $objLogin->userId;
         }else{
             $userid = $arr['user_id']; 
         }
-        $objLogin->loginTime = time();
-        $ret = $objLogin->save();        
         Yaf_Session::getInstance()->set(User_Keys::getLoginUserKey(), $userid);
-        return $userid;           
+        return strval($userid);           
     }
     
     /**

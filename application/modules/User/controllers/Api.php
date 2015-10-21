@@ -34,10 +34,7 @@ class ApiController extends Base_Controller_Page{
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $ret = $this->logicLogin->setLogin($openId,$type);
-        if($ret){
-            return $this->ajax($ret);
-        }
-        return $this->ajaxError();
+        return $this->ajax(strval($ret));
     }
 
     /**
@@ -47,10 +44,7 @@ class ApiController extends Base_Controller_Page{
      */
     public function signOutAction(){
         $ret = $this->logicLogin->signOut();
-        if($ret){
-            return $this->ajax();
-        }
-        return $this->ajaxError();
+        return $this->ajax(strval($ret));
     }      
     
     /**
@@ -73,7 +67,7 @@ class ApiController extends Base_Controller_Page{
      * 用户信息添加接口
      * @param integer userid，用户ID
      * @param integer type,第三方登录类型，1:qq,2:weixin,3:weibo
-     * @param string  param,eg: param=nick_name:aa,type:jpg,image:bb,sex:1
+     * @param string  param,eg: param="nick_name:aa,image:bb,sex:1"
      * @return json
      */
     public function addinfoAction() {
@@ -83,10 +77,7 @@ class ApiController extends Base_Controller_Page{
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $ret        = $this->logicUser->addUserInfo($type, $strParam);
-        if($ret){
-            return $this->ajax();
-        }
-        return $this->ajaxError();
+        return $this->ajax(strval($ret));
     }
     
     /**
@@ -105,9 +96,6 @@ class ApiController extends Base_Controller_Page{
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $ret        = $this->logicUser->editUserInfo($type, $strParam, $file);
-        if($ret){
-            return $this->ajax();
-        }
-        return $this->ajaxError();
+        return $this->ajax(strval($ret));
     }
 }

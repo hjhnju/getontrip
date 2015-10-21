@@ -34,8 +34,8 @@ class User_Api{
      * 设备ID创建一个用户
      * @return number|''
      */
-    public static function getCurrentUser(){
+    public static function getCurrentUser($type = ''){
         $logicUser = new User_Logic_User();
-        return $logicUser->getCurrentUser();
+        return $logicUser->getCurrentUser($type);
     }
 }

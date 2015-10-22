@@ -204,7 +204,7 @@ class User_Logic_User extends Base_Logic{
         return '';
     }
     
-    public function getCurrentUser($type = ''){
+    public function getCurrentUser(){
         $logic = new User_Logic_Third();
         return $logic->checkLogin();
     }

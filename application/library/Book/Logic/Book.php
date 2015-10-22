@@ -165,7 +165,7 @@ class Book_Logic_Book extends Base_Logic{
             $image     = isset($arrDouban['images']['large'])?$arrDouban['images']['large']:'';
             $catalog   = isset($arrDouban['catalog'])?trim($arrDouban['catalog']):'';
             $pubdate   = isset($arrDouban['pubdate'])?trim($arrDouban['pubdate']):'';
-            $temp[$key]['title']      = $arr['wname'];
+            $temp[$key]['title']        = $arr['wname'];
             
             $temp[$key]['author']       = isset($detail['author'])?$detail['author']:$author;           
             $temp[$key]['price_mart']   = isset($arr['marketPrice'])?$arr['marketPrice']:'';            
@@ -180,7 +180,7 @@ class Book_Logic_Book extends Base_Logic{
             
             $temp[$key]['image']  = $this->uploadPic($image);
             
-            $temp[$key]['status'] = Book_Type_Status::PUBLISHED;
+            $temp[$key]['status'] = Book_Type_Status::NOTPUBLISHED;
             
             $temp[$key]['pages']  = isset($detail['pages'])?$detail['pages']:'';
             

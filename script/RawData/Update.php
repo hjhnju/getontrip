@@ -23,24 +23,6 @@ $num       = isset($argv[3])?intval($argv[3]):intval(Base_Config::getConfig('thi
 $logic     = new Base_Logic();
 $redis     = Base_Redis::getInstance();
 
-//删除视频
-if($type == 'Video' || $type == 'All'){
-     $listVideo = new Video_List_Video();
-     $listVideo->setPagesize(PHP_INT_MAX);
-     if($sightId != -1){
-         $listVideo->setFilter(array('sight_id' => $sightId));
-     }
-     $arrVideo = $listVideo->toArray();
-     foreach ($arrVideo['list'] as $val){
-         if(!empty($val['image'])){
-             $ret = $logic->delPic($val['image']);
-         }
-         $objVideo = new Video_Object_Video();
-         $objVideo->fetch(array('id' => $val['id']));
-         $objVideo->remove();
-     }
-}
-
 //删除百科
 if($type == 'Wiki' || $type == 'All'){
      $listkeyword = new Keyword_List_Keyword();
@@ -67,31 +49,6 @@ if($type == 'Wiki' || $type == 'All'){
              $objKeywordCatalog = new Keyword_Object_Catalog();
              $objKeywordCatalog->fetch(array('id' => $data['id']));
              $objKeywordCatalog->remove();
-         }
-     }
-}
-
-//删除书籍
-if($type == 'Book' || $type == 'All'){
-     $listBook = new Book_List_Book();
-     $listBook->setPagesize(PHP_INT_MAX);
-     $arrBook = $listBook->toArray();
-     foreach ($arrBook['list'] as $val){
-         if(!empty($val['image'])){
-             $ret = $logic->delPic($val['image']);
-         }
-         $objBook = new Book_Object_Book();
-         $objBook->fetch(array('id' => $val['id']));
-         $objBook->remove();
-        
-         $listSightBook = new Sight_List_Book();
-         $listSightBook->setFilter(array('book_id' => $val['id']));
-         $listSightBook->setPagesize(PHP_INT_MAX);
-         $arrSightBook  = $listSightBook->toArray();
-         foreach ($arrSightBook['list'] as $data){
-             $objSightBook = new Sight_Object_Book();
-             $objSightBook->fetch(array('id' => $data['id']));
-             $objSightBook->remove();
          }
      }
 }

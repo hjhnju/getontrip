@@ -83,7 +83,7 @@ class Video_Logic_Video extends Base_Logic{
             $info['url']       = trim($ret->getAttribute("href"));        
             $ret               = $e->find('a.figure img',0);
             $info['image']     = $this->uploadPic($ret->getAttribute("src"),$url);
-            $info['status']    = Video_Type_Status::PUBLISHED;
+            $info['status']    = Video_Type_Status::NOTPUBLISHED;
             $info['from']      = '爱奇艺';
             $info['create_time'] = time();          
             
@@ -111,18 +111,22 @@ class Video_Logic_Video extends Base_Logic{
                 $info['len'] = strval($intLen);
             }
             
-            $objVideo          = new Video_Object_Video();
-            $objVideo->sightId = $sightId;
-            $objVideo->title   = $info['title'];
-            $objVideo->from    = $info['from'];
-            $objVideo->url     = $info['url'];
-            $objVideo->image   = $info['image'];
-            $objVideo->type    = $info['type'];
-            $objVideo->status  = $info['status'];
-            $objVideo->len     = $info['len'];
-            $objVideo->save();
-            
-            $info['id']      = $objVideo->id;
+            $guid = md5($info['title'].$info['url'].$sightId);
+            $id   = $this->getVideoByGuid($guid);            
+            if(empty($id)){
+                $objVideo          = new Video_Object_Video();
+                $objVideo->sightId = $sightId;
+                $objVideo->title   = $info['title'];
+                $objVideo->from    = $info['from'];
+                $objVideo->url     = $info['url'];
+                $objVideo->image   = $info['image'];
+                $objVideo->type    = $info['type'];
+                $objVideo->status  = $info['status'];
+                $objVideo->len     = $info['len'];
+                $objVideo->save();
+            }else{
+                $this->delPic($info['image']);
+            }
             $arrData[]       = $info;
         }
         $html->clear();
@@ -201,5 +205,19 @@ class Video_Logic_Video extends Base_Logic{
             $this->delPic($objVideo->image);
         }
         return $objVideo->remove();
+    }
+    
+    /**
+     * 根据GUID获取视频ID
+     * @param string $strGuid
+     * @return number|''
+     */
+    public static function getVideoByGuid($strGuid){
+        $objVideo = new Video_Object_Video();
+        $objVideo->fetch(array('guid' => $strGuid));
+        if($objVideo->id){
+            return $objVideo->id;
+        }
+        return '';
     }
 }

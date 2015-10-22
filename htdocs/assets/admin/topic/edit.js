@@ -22,7 +22,7 @@ $(document).ready(function() {
                 this.init_tag();
                 this.init_status();
                 this.init_image();
-                this.init_summernote();
+                this.init_map();
                 this.init_others();
             },
             init_summernote: function() {

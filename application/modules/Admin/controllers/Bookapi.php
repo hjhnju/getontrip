@@ -49,14 +49,18 @@ class BookapiController extends Base_Controller_Api{
     }
 
      /**
-     * 编辑保存词条
+     * 编辑保存书籍
      */
     function saveAction(){
         $id =isset($_REQUEST['id'])?$_REQUEST['id']:'';
+        $sightId =isset($_REQUEST['sightId'])?$_REQUEST['sightId']:'';
+        
         if($id==''){
             return $this->ajaxError();
         }
-        $dbRet=Keyword_Api::editKeyword($id,$_REQUEST);
+        $_REQUEST['status'] = $this->getStatusByActionStr(isset($_REQUEST['action'])?$_REQUEST['action']:'');
+       
+        $dbRet=Book_Api::editBook($id,$_REQUEST);
         if ($dbRet) {
             return $this->ajax();
         }
@@ -78,6 +82,27 @@ class BookapiController extends Base_Controller_Api{
         return $this->ajaxError();
     }
   
-
+    /**
+     * 获取保存的状态
+     * @param  [type] $action [description]
+     * @return [type]         [description]
+     */
+    public function getStatusByActionStr($action){
+        switch ($action) {
+         case 'NOTPUBLISHED':
+           $status = Book_Type_Status::NOTPUBLISHED;
+           break;
+         case 'PUBLISHED':
+           $status = Book_Type_Status::PUBLISHED;
+           break;
+        case 'BLACKLIST':
+           $status = Book_Type_Status::BLACKLIST;
+           break;
+         default:
+           $status = Book_Type_Status::NOTPUBLISHED;
+           break;
+       } 
+       return   $status;
+    }
    
 }

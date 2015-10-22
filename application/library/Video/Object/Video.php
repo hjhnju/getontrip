@@ -26,7 +26,7 @@ class Video_Object_Video extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'sight_id', 'title', 'url', 'image', 'from', 'len', 'type', 'status', 'create_time', 'update_time', 'create_user', 'update_user');
+    protected $fields = array('id', 'sight_id', 'title', 'url', 'image', 'from', 'len', 'type', 'status', 'create_time', 'update_time', 'create_user', 'update_user', 'guid');
 
     /**
      * 字段与属性隐射关系
@@ -46,6 +46,7 @@ class Video_Object_Video extends Base_Object {
         'update_time' => 'updateTime',
         'create_user' => 'createUser',
         'update_user' => 'updateUser',
+        'guid'        => 'guid',
     );
 
     /**
@@ -148,5 +149,11 @@ class Video_Object_Video extends Base_Object {
      * @var integer
      */
     public $updateUser;
+
+    /**
+     * 视频唯一标识码
+     * @var string
+     */
+    public $guid;
 
 }

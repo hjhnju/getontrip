@@ -7,7 +7,7 @@ class Tongji_Logic_Visit{
     public function addVisit($type,$objId){
         $objVisit           = new Tongji_Object_Visit();
         $objVisit->type     = $type;
-        $objVisit->userId   = User_Api::getCurrentUser();
+        $objVisit->user     = session_id();
         $objVisit->objId    = $objId;
         return $objVisit->save();
     }    

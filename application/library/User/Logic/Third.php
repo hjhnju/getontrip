@@ -31,13 +31,15 @@ class User_Logic_Third {
         $arr = $objLogin->toArray();
         if(empty($arr)){            
             $objLogin->openId    = $openId;
-            $objLogin->userId    = User_Api::getCurrentUser($type);
+            $objLogin->userId    = User_Api::createUser();
             $objLogin->authType  = $type;
             $objLogin->loginTime = time();
             $ret = $objLogin->save();
             $userid              = $objLogin->userId;
         }else{
             $userid = $arr['user_id']; 
+            //$user   = Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY, $userid);
+            //setcookie(User_Keys::getCurrentUserKey(),urlencode($user));
         }
         Yaf_Session::getInstance()->set(User_Keys::getLoginUserKey(), $userid);
         return strval($userid);           
@@ -54,6 +56,8 @@ class User_Logic_Third {
         //三方登录session删除
         Yaf_Session::getInstance()->del(User_Keys::getAuthTypeKey());
         Yaf_Session::getInstance()->del(User_Keys::getOpenidKey());
+        
+        setcookie(User_Keys::getCurrentUserKey(),'');
         //$obj = new User_Object_Record();  应该要做条记录
         return $ret;
     }

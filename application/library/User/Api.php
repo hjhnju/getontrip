@@ -30,12 +30,21 @@ class User_Api{
     
     /**
      * 接口3：User_Api::getCurrentUser()
-     * 获取当前用户ID,用户可能登录了，也可能未登录。第一次则通过
-     * 设备ID创建一个用户
+     * 获取当前用户ID,
      * @return number|''
      */
     public static function getCurrentUser($type = ''){
         $logicUser = new User_Logic_User();
         return $logicUser->getCurrentUser($type);
+    }
+    
+    /**
+     * 接口4:User_Api::createUser()
+     * 创建一个用户
+     * @return number,用户ID
+     */
+    public static function createUser(){
+        $logicUser = new User_Logic_User();
+        return $logicUser->createUser();
     }
 }

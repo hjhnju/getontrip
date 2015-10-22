@@ -48,8 +48,7 @@ class User_Logic_User extends Base_Logic{
      * 获取用户信息
      * @return array
      */
-    public function getUserInfo($type){
-        $userId   = User_Api::getCurrentUser();
+    public function getUserInfo($userId, $type){
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId));
         $arrRet   =  $objUser->toArray();
@@ -60,10 +59,10 @@ class User_Logic_User extends Base_Logic{
             $arrRet['image'] = Base_Image::getUrlByName($arrRet['image']);
         }
         return array(
-            'nick_name' => $arrRet['nick_name'],
-            'image'     => $arrRet['image'],
-            'sex'       => strval($arrRet['sex']),
-            'city'      => strval($arrRet['city']),
+            'nick_name' => isset($arrRet['nick_name'])?trim($arrRet['nick_name']):'',
+            'image'     => isset($arrRet['image'])?trim($arrRet['image']):'',
+            'sex'       => isset($arrRet['sex'])?trim(strval($arrRet['sex'])):'',
+            'city'      => isset($arrRet['city'])?trim(strval($arrRet['city'])):'',
         );
     }
     
@@ -72,8 +71,7 @@ class User_Logic_User extends Base_Logic{
      * @param string $strParam
      * @return boolean
      */
-    public function editUserInfo($type, $strParam, $file = ''){
-        $userId   = User_Api::getCurrentUser();
+    public function editUserInfo($userId, $type, $strParam, $file = ''){
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId,'type' => $type));
         $arrData  = explode(",",$strParam);
@@ -113,15 +111,17 @@ class User_Logic_User extends Base_Logic{
     }
     
     /**
-     * 添加用户信息
+     * 添加用户信息,如果用户已经存在,则失败
      * @param string $userId
      * @param string $strParam
      * @return boolean
      */
-    public function addUserInfo($type, $strParam){
-        $userId   = User_Api::getCurrentUser();
+    public function addUserInfo($userId, $type, $strParam){
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId,'type' => $type));
+        if(!empty($objUser->nickName) || !empty($objUser->image)){
+            return false;
+        }
         $arrData  = explode(",",$strParam);
         foreach ($arrData as $val){
             $arrTemp = explode(":", $val);
@@ -194,7 +194,7 @@ class User_Logic_User extends Base_Logic{
     public function uploadUserAvatar($data,$type){
         $hash = md5(microtime(true));
         $hash = substr($hash, 8, 16);
-        $filename = $hash .'.'.$type;
+        $filename = $hash .'.'.$type;   
         
         $oss = Oss_Adapter::getInstance();
         $res = $oss->writeFile($filename, $data);
@@ -205,33 +205,15 @@ class User_Logic_User extends Base_Logic{
     }
     
     public function getCurrentUser($type = ''){
-        $user = isset($_COOKIE[User_Keys::getCurrentUserKey()])?trim($_COOKIE[User_Keys::getCurrentUserKey()]):'';
-        if(!empty($user)){
-            $ret = Base_Util_Secure::decryptForUuap(Base_Util_Secure::PASSWD_KEY, $user);
-            if($ret){
-                return $ret;
-            }
-        }
-        $objUser  = new User_Object_User();
-        $deviceId = isset($_COOKIE[User_Keys::getDeviceIdKey()])?trim($_COOKIE[User_Keys::getDeviceIdKey()]):'';
-        if(empty($deviceId)){
-            return '';
-        }
-        $objUser->fetch(array('device_id' => $deviceId));
-        if(!empty($objUser->id)){
-            $user  = Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY, $objUser->id);
-            setcookie(User_Keys::getCurrentUserKey(),urlencode($user));
-            return $objUser->id;
-        }
-        //第一次通过设置ID创建用户ID
-        $objUser->deviceId = $deviceId;
-        if(empty($type)){
-            $objUser->type     = User_Type_Login::NOT_IN;
-        }else{
-            $objUser->type     = $type;
-        }
-        $objUser->save();
-        $user  = Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY, $objUser->id);
+        $logic = new User_Logic_Third();
+        return $logic->checkLogin();
+    }
+    
+    public function createUser(){
+        $objUser = new User_Object_User();
+        $objUser->deviceId = isset($_COOKIE[User_Keys::getDeviceIdKey()])?trim($_COOKIE[User_Keys::getDeviceIdKey()]):'';
+        $objUser->save();        
+        $user   = Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY, $objUser->id);
         setcookie(User_Keys::getCurrentUserKey(),urlencode($user));
         return $objUser->id;
     }

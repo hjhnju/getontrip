@@ -26,7 +26,7 @@ class Tongji_Object_Visit extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'user_id', 'type', 'obj_id', 'create_time', 'update_time');
+    protected $fields = array('id', 'user', 'type', 'obj_id', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -34,7 +34,7 @@ class Tongji_Object_Visit extends Base_Object {
      */
     public $properties = array(
         'id'          => 'id',
-        'user_id'     => 'userId',
+        'user'        => 'user',
         'type'        => 'type',
         'obj_id'      => 'objId',
         'create_time' => 'createTime',
@@ -47,7 +47,6 @@ class Tongji_Object_Visit extends Base_Object {
      */
     protected $intProps = array(
         'id'          => 1,
-        'user_id'     => 1,
         'type'        => 1,
         'obj_id'      => 1,
         'create_time' => 1,
@@ -69,10 +68,10 @@ class Tongji_Object_Visit extends Base_Object {
     public $id;
 
     /**
-     * 用户ID
-     * @var integer
+     * 用户session_id
+     * @var string
      */
-    public $userId;
+    public $user;
 
     /**
      * 访问类型类型，1:话题详情

@@ -54,15 +54,15 @@ class ApiController extends Base_Controller_Page{
      * @return json
      */
     public function getinfoAction() {
-        $logic = new User_Logic_Third();
-        if(!$logic->checkLogin()){
+        $userId   = User_Api::getCurrentUser();
+        if(empty($userId)){
             return $this->ajaxError(User_RetCode::NOT_LOGIN,User_RetCode::getMsg(User_RetCode::NOT_LOGIN));
         }
         $type     = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         if(empty($type)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $ret      = $this->logicUser->getUserInfo($type);
+        $ret      = $this->logicUser->getUserInfo($userId, $type);
         $this->ajax($ret);
     }
     
@@ -75,8 +75,8 @@ class ApiController extends Base_Controller_Page{
      * @return json
      */
     public function addinfoAction() {
-        $logic = new User_Logic_Third();
-        if(!$logic->checkLogin()){
+        $userId     = User_Api::getCurrentUser();
+        if(empty($userId)){
             return $this->ajaxError(User_RetCode::NOT_LOGIN,User_RetCode::getMsg(User_RetCode::NOT_LOGIN));
         }
         $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
@@ -84,7 +84,7 @@ class ApiController extends Base_Controller_Page{
         if(empty($strParam) || empty($type)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $ret        = $this->logicUser->addUserInfo($type, $strParam);
+        $ret        = $this->logicUser->addUserInfo($userId, $type, $strParam);
         return $this->ajax(strval($ret));
     }
     
@@ -97,8 +97,8 @@ class ApiController extends Base_Controller_Page{
      * @return json
      */
     public function editinfoAction(){
-        $logic = new User_Logic_Third();
-        if(!$logic->checkLogin()){
+        $userId     = User_Api::getCurrentUser();
+        if(empty($userId)){
             return $this->ajaxError(User_RetCode::NOT_LOGIN,User_RetCode::getMsg(User_RetCode::NOT_LOGIN));
         }
         $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
@@ -107,7 +107,7 @@ class ApiController extends Base_Controller_Page{
         if(empty($type)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $ret        = $this->logicUser->editUserInfo($type, $strParam, $file);
+        $ret        = $this->logicUser->editUserInfo($userId, $type, $strParam, $file);
         return $this->ajax(strval($ret));
     }
 }

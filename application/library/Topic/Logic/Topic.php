@@ -234,7 +234,7 @@ class Topic_Logic_Topic extends Base_Logic{
             return $ret;
         }
         $list   = new Tongji_List_Visit();
-        $list->setFields(array('user_id'));
+        $list->setFields(array('user'));
         $filter = "`obj_id` = $topicId and `create_time` >= $from and `type` = ".Tongji_Type_Visit::TOPIC; 
         $list->setPagesize(PHP_INT_MAX);
         $list->setFilterString($filter);
@@ -284,7 +284,7 @@ class Topic_Logic_Topic extends Base_Logic{
             return $ret;
         }
         $list   = new Tongji_List_Visit();
-        $list->setFields(array('user_id'));
+        $list->setFields(array('user'));
         $list->setFilter(array('obj_id' => $topicId,'type' => Tongji_Type_Visit::TOPIC));
         $list->setPagesize(PHP_INT_MAX);
         $arrRet = $list->toArray();

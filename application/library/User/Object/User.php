@@ -14,7 +14,7 @@ class User_Object_User extends Base_Object {
      * 主键
      * @var string
      */
-    protected $prikey = 'type';
+    protected $prikey = 'id';
 
     /**
      * 类名
@@ -26,7 +26,7 @@ class User_Object_User extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'device_id', 'type', 'nick_name', 'city', 'image', 'sex', 'accept_pic', 'accept_msg', 'create_time', 'update_time');
+    protected $fields = array('id', 'device_id', 'nick_name', 'city', 'image', 'sex', 'accept_pic', 'accept_msg', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -35,7 +35,6 @@ class User_Object_User extends Base_Object {
     public $properties = array(
         'id'          => 'id',
         'device_id'   => 'deviceId',
-        'type'        => 'type',
         'nick_name'   => 'nickName',
         'city'        => 'city',
         'image'       => 'image',
@@ -52,7 +51,6 @@ class User_Object_User extends Base_Object {
      */
     protected $intProps = array(
         'id'          => 1,
-        'type'        => 1,
         'sex'         => 1,
         'accept_pic'  => 1,
         'accept_msg'  => 1,
@@ -79,12 +77,6 @@ class User_Object_User extends Base_Object {
      * @var string
      */
     public $deviceId;
-
-    /**
-     * 第三方登录类型
-     * @var integer
-     */
-    public $type;
 
     /**
      * 用户昵称

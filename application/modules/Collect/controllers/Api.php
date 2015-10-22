@@ -31,10 +31,7 @@ class ApiController extends Base_Controller_Api {
                 Collect_RetCode::getMsg(Collect_RetCode::PARAM_ERROR));
         }
         $ret = $this->logic->addCollect($type, $this->userid, $obj_id);
-        if($ret){
-           return $this->ajax(); 
-        }
-        return $this->ajaxError();
+        return $this->ajax(strval($ret));
     } 
     
     /**
@@ -52,10 +49,7 @@ class ApiController extends Base_Controller_Api {
                 Collect_RetCode::getMsg(Collect_RetCode::PARAM_ERROR));
         }
         $ret = $this->logic->delCollect($type, $this->userid, $obj_id);
-        if($ret){
-            return $this->ajax();
-        }
-        return $this->ajaxError();
+        return $this->ajax(strval($ret));
     }
 
     /**

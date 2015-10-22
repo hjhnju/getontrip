@@ -51,14 +51,9 @@ class User_Logic_Third {
      */
     public function signOut(){
         //正常登录session删除
-        $ret = Yaf_Session::getInstance()->del(User_Keys::getLoginUserKey());
-        
-        //三方登录session删除
-        Yaf_Session::getInstance()->del(User_Keys::getAuthTypeKey());
-        Yaf_Session::getInstance()->del(User_Keys::getOpenidKey());
-        
-        setcookie(User_Keys::getCurrentUserKey(),'');
-        //$obj = new User_Object_Record();  应该要做条记录
-        return $ret;
+        if(false == Yaf_Session::getInstance()->del(User_Keys::getLoginUserKey())){
+            return false;
+        }
+        return true;
     }
 }

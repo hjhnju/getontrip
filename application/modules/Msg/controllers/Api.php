@@ -44,6 +44,6 @@ class ApiController extends Base_Controller_Api {
         }
         $logic = new Msg_Logic_Msg();
         $ret = $logic->setRead($mid);
-        return $this->ajax($ret);
+        return $this->ajax(strval($ret));
     }
 }

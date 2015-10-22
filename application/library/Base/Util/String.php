@@ -199,7 +199,8 @@ class Base_Util_String {
 	 * @return array 
 	 */
 	public static function englishSymbol($str){
-	    $arrRet = array();
+	    $arrRet  = array();
+	    $arrTemp = array();
         $sbc    = array( //半角
             '-', ' ', ':',
             '.', ',', '/', '%', ' #',
@@ -209,13 +210,26 @@ class Base_Util_String {
             '|', '+', '=', '_', '^',
             '￥','~', '`'
        );
+       preg_match_all('/<.*?>/i', $str, $arr);
+       $arr[0] = array_unique($arr[0]);
+       foreach ($arr[0] as $i => $val){
+           $str     = str_replace($val, "", $str);
+       }
        $arr  = str_split($str);
        foreach ($arr as $val){
            if(in_array($val,$sbc)){
-               if(!in_array($val,$arrRet)){
-                   $arrRet[] = $val;
+               if(!isset($arrTemp[$val])){
+                   $arrTemp[$val]  = 1;
+               }else{
+                   $arrTemp[$val] += 1;
                }
            }
+       }
+       foreach ($arrTemp as $key => $val){
+           $arrRet[] = array(
+               'name' => $key,
+               'num'  => $val,
+           ); 
        }     
        return $arrRet;
 	}
@@ -236,6 +250,11 @@ class Base_Util_String {
 	        '|', '+', '=', '_', '^',
 	        '￥','~', '`'
 	    );
+	    preg_match_all('/<.*?>/i', $str, $arr);
+	    $arr[0] = array_unique($arr[0]);
+	    foreach ($arr[0] as $i => $val){
+	        $str     = str_replace($val, "", $str);
+	    }
 	    $arr  = str_split($str);
 	    foreach ($arr as $val){
 	        if(in_array($val,$sbc)){

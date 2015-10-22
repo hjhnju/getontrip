@@ -11,7 +11,7 @@ class ApiController extends Base_Controller_Api {
     protected $logicUser;
     
     public function init() {
-        $this->setNeedLogin(true);
+        $this->setNeedLogin(false);
         parent::init();        
     }
     
@@ -31,12 +31,16 @@ class ApiController extends Base_Controller_Api {
         $toUserId   = isset($_REQUEST['toUserId'])?intval($_REQUEST['toUserId']):'';
         $content    = isset($_REQUEST['content'])?trim($_REQUEST['content']):'';    
         $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):Comment_Type_Type::TOPIC;           
-        if(empty($topicId) ||  empty($toUserId) ||empty($content)){
+        if(empty($topicId) || empty($content)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $logic      = new Comment_Logic_Comment();
-        $ret        = $logic->addComment($topicId,$upId,$this->userid,$toUserId,$content,$type);
-        $this->ajax($ret);
+        $userId     = User_Api::getCurrentUser();
+        if(empty($userId)){
+            return $this->ajaxError(Comment_RetCode::USER_NOT_INT,User_RetCode::getMsg(Comment_RetCode::USER_NOT_INT));
+        }
+        $ret        = $logic->addComment($topicId,$upId,$userId,$toUserId,$content,$type);
+        $this->ajax(strval($ret));
     }   
 
     /**

@@ -123,6 +123,7 @@ class Video_Logic_Video extends Base_Logic{
                 $objVideo->type    = $info['type'];
                 $objVideo->status  = $info['status'];
                 $objVideo->len     = $info['len'];
+                $objVideo->guid    = $guid;
                 $objVideo->save();
             }else{
                 $this->delPic($info['image']);

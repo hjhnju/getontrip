@@ -51,7 +51,7 @@ class Video_Api{
     /**
      * 接口5:Video_Api::addVideo($arrParam)
      * 添加视频
-     * @param array $arrParam
+     * @param array $arrParam,array('title'=>'xxx','sight_id'=>1,...)
      */
     public static function addVideo($arrParam){
         $logicVideo = new Video_Logic_Video();

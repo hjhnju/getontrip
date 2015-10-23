@@ -270,13 +270,23 @@ class Book_Logic_Book extends Base_Logic{
      */
     public function addBook($arrInfo){
         $objBook = new Book_Object_Book();
+        $sightId = '';
+        if(isset($arrInfo['sight_id'])){
+            $sightId = $arrInfo['sight_id'];
+            unset($arrInfo['sight_id']);
+        }
         foreach ($arrInfo as $key => $val){
             if(in_array($key,$this->fields)){
                 $key = $this->getprop($key);
                 $objBook->$key = $val;
             }
         }
-        return $objBook->save();
+        $ret1 =  $objBook->save();
+        $objSightBook = new Sight_Object_Book();
+        $objSightBook->sightId = $sightId;
+        $objSightBook->bookId  = $objBook->id;
+        $ret2 = $objSightBook->save();
+        return $ret1&&$ret2;
     }
     
     /**

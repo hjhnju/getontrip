@@ -54,7 +54,7 @@ class Book_Api{
     /**
      * 接口5：Book_Api::addBook($arrInfo)
      * 添加书籍接口
-     * @param array $arrInfo
+     * @param array $arrInfo,array('title'=>'','sight_id'=>1,...)
      * @return boolean
      */
     public static function addBook($arrInfo){
@@ -64,6 +64,7 @@ class Book_Api{
     
     /**
      * 接口6：Book_Api::getBookSourceFromIsbn($strIsbn, $type)
+     * 根据skuid或isbn从京东或豆瓣抓取书籍数据
      * @param string $strIsbn
      * @param integer $type, 1:京东，2:豆瓣
      * @return array

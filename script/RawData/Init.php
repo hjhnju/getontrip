@@ -6,7 +6,7 @@
  * 如果条数为空或-1,则取该景点下的所有数据
  */
 require_once("../env.inc.php");
-const PAGE_SIZE = 20;
+define("PAGE_SIZE",20);
 $arrTypes = array("Book","Video","Wiki","All");
 if(count($argv) < 2){
     print "参数错误!Usage:Run.php 类型 景点ID 条数\r\n";

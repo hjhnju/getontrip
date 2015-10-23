@@ -55,7 +55,7 @@ class ApiController extends Base_Controller_Api {
     public function listAction() {
         $topicId    = isset($_REQUEST['topicId'])?intval($_REQUEST['topicId']):'';
         $page       = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
-        $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):PHP_INT_MAX;
+        $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
         $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):Comment_Type_Type::TOPIC;
         if(empty($topicId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));

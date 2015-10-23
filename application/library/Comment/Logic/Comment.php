@@ -95,7 +95,7 @@ class Comment_Logic_Comment  extends Base_Logic{
         $listComment->setFields(array('id','from_user_id','to_user_id','content','create_time'));
         $listComment->setPage($page);
         $listComment->setPagesize($pageSize);
-        $listComment->setOrder("create_time asc");
+        $listComment->setOrder("create_time desc");
         $ret = $listComment->toArray();
         foreach ($ret['list'] as $key => $val){
             $ret['list'][$key]['id']          = strval($val['id']);

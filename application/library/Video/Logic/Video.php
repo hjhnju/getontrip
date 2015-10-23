@@ -126,7 +126,7 @@ class Video_Logic_Video extends Base_Logic{
                 $objVideo->guid    = $guid;
                 $objVideo->save();
             }else{
-                $this->delPic($info['image']);
+                //$this->delPic($info['image']);
             }
             $arrData[]       = $info;
         }

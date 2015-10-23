@@ -125,8 +125,8 @@ class Video_Logic_Video extends Base_Logic{
                 $objVideo->len     = $info['len'];
                 $objVideo->guid    = $guid;
                 $objVideo->save();
-            }else{
-                //$this->delPic($info['image']);
+            }else{//删除上传了的图片，其它字段不改变
+                $this->delPic($info['image']);
             }
             $arrData[]       = $info;
         }

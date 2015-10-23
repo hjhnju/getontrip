@@ -211,26 +211,25 @@ class Book_Logic_Book extends Base_Logic{
             $objBook = new Book_Object_Book();
             $id      = $this->getBookIdByISBN($temp[$key]['isbn']);
             if(!empty($id)){
-                $objBook->fetch(array('id' => $id));
-                //如果要更换图片,得先删除原有图片
-                if(isset($temp[$key]['image'])){
-                    $this->delPic($objBook->image);
+                //仅仅删除上传的图片，其它字段以原来为准，不改变
+                if(!empty($temp[$key]['image'])){
+                    $this->delPic($temp[$key]['image']);
                 }
-            }
-            $objBook->title       = $temp[$key]['title'];
-            $objBook->author      = $temp[$key]['author'];
-            $objBook->priceJd     = $temp[$key]['price_jd'];
-            $objBook->priceMart   = $temp[$key]['price_mart'];
-            $objBook->press       = $temp[$key]['press'];
-            $objBook->isbn        = $temp[$key]['isbn'];
-            $objBook->url         = $temp[$key]['url'];
-            $objBook->image       = $temp[$key]['image'];
-            $objBook->pages       = $temp[$key]['pages'];
-            $objBook->contentDesc = $temp[$key]['content_desc'];
-            $objBook->catalog     = $temp[$key]['catalog'];
-            $objBook->publishTime = $temp[$key]['publish_time'];
-            $objBook->save();
-            if(empty($id)){
+            }else{
+                $objBook->title       = $temp[$key]['title'];
+                $objBook->author      = $temp[$key]['author'];
+                $objBook->priceJd     = $temp[$key]['price_jd'];
+                $objBook->priceMart   = $temp[$key]['price_mart'];
+                $objBook->press       = $temp[$key]['press'];
+                $objBook->isbn        = $temp[$key]['isbn'];
+                $objBook->url         = $temp[$key]['url'];
+                $objBook->image       = $temp[$key]['image'];
+                $objBook->pages       = $temp[$key]['pages'];
+                $objBook->contentDesc = $temp[$key]['content_desc'];
+                $objBook->catalog     = $temp[$key]['catalog'];
+                $objBook->publishTime = $temp[$key]['publish_time'];
+                $objBook->save();               
+                
                 $objBook->status  = $temp[$key]['status'];                
                 $objSightBook     = new Sight_Object_Book();
                 $objSightBook->sightId = $sightId;

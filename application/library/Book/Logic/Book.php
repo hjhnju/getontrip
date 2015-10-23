@@ -264,6 +264,22 @@ class Book_Logic_Book extends Base_Logic{
     }
     
     /**
+     * 添加书籍
+     * @param array $arrInfo
+     * @return boolean
+     */
+    public function addBook($arrInfo){
+        $objBook = new Book_Object_Book();
+        foreach ($arrInfo as $key => $val){
+            if(in_array($key,$this->fields)){
+                $key = $this->getprop($key);
+                $objBook->$key = $val;
+            }
+        }
+        return $objBook->save();
+    }
+    
+    /**
      * 删除书籍数据
      * @param integer $id,书籍ID
      * @return boolean
@@ -362,5 +378,118 @@ class Book_Logic_Book extends Base_Logic{
             $redis->hSet(Sight_Keys::getSightTongjiKey($sightId),Sight_Keys::BOOK,$count);
         }
         return $count;
+    }
+    
+    /**
+     * @param string $strIsbn
+     * @param integer $type
+     * @return array
+     */
+    public  function getBookSourceFromIsbn($strSkuId, $type){
+        $temp      = array();
+        if( $type == Book_Type_Source::JD){
+            Base_JosSdk::register();     
+            $conf      = new Yaf_Config_INI(CONF_PATH. "/Key.ini");            
+            $appKey    = $conf['jd']['appKey'];
+            $appSecret = $conf['jd']['appSecret'];
+            
+            $c = new JosClient();
+            $c->appkey = $appKey;
+            $c->secretKey = $appSecret;
+             
+            $base = new WareProductDetailSearchListGetRequest();
+            $base->setSkuId($strSkuId);
+            $base->setIsLoadWareScore("false");
+            $base->setClient("m");
+            $ret = $c->execute($base);
+            $temparr = json_decode($ret->resp,true);
+             
+            $arr   = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['productInfo'];
+            $temp['title']        = $arr['wname'];
+            $temp['price_mart']   = isset($arr['marketPrice'])?$arr['marketPrice']:'';
+            $temp['price_jd']     = isset($arr['jdPrice'])?$arr['jdPrice']:'';
+            $temp['url']          = "http://item.jd.com/".$strSkuId.".html";
+            
+            $detailRequest = new WareBasebookGetRequest();
+            $detailRequest->setSkuId($strSkuId);
+            $detail = $c->execute($detailRequest);
+            $ret = $detail->resp;
+            $arrBook = json_decode($ret,true);
+            $detail =  $arrBook['jingdong_ware_basebook_get_responce']['BookEntity'][0]['book_info'];
+            $temp['isbn']         = isset($detail['isbn'])?$detail['isbn']:'';
+            
+            //从豆瓣网获取图片及摘要,目录
+            $conf      = new Yaf_Config_Ini(CONF_PATH. "/Key.ini");
+            $doubanKey = $conf['douban']['appKey'];
+            
+            $ret       = file_get_contents('https://api.douban.com/v2/book/isbn/'.$temp['isbn']."?apikey=".$doubanKey);
+            $arrDouban = json_decode($ret,true);
+            $author    = isset($arrDouban['author'][0])?trim($arrDouban['author'][0]):'';
+            $press     = isset($arrDouban['publisher'])?trim($arrDouban['publisher']):'';
+            $summary   = isset($arrDouban['summary'])?trim($arrDouban['summary']):'';
+            $image     = isset($arrDouban['images']['large'])?$arrDouban['images']['large']:'';
+            $catalog   = isset($arrDouban['catalog'])?trim($arrDouban['catalog']):'';
+            $pubdate   = isset($arrDouban['pubdate'])?trim($arrDouban['pubdate']):'';
+            $temp['author']       = isset($detail['author'])?$detail['author']:$author;
+            $temp['price_mart']   = isset($arr['marketPrice'])?$arr['marketPrice']:'';
+            $temp['price_jd']     = isset($arr['jdPrice'])?$arr['jdPrice']:'';
+            $temp['press']        = isset($detail['publishers'])?$detail['publishers']:$press;
+            $temp['publish_time'] = isset($detail['publish_time'])?$detail['publish_time']:$pubdate;
+            
+            $temp['press']        = isset($detail['publishers'])?$detail['publishers']:$press;
+            $temp['publish_time'] = isset($detail['publish_time'])?$detail['publish_time']:$pubdate;
+             
+            if(empty($image)){
+                $image = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['imagePaths'][0];
+                $image = $image['bigpath'];
+            }
+            
+            $temp['image']  = $this->uploadPic($image);
+            
+            $temp['status'] = Book_Type_Status::NOTPUBLISHED;
+            
+            $temp['pages']  = isset($detail['pages'])?$detail['pages']:'';
+                        
+            $obj = new WareBookbigfieldGetRequest();
+            $obj->setSkuId($strSkuId);
+            $detail = $c->execute($obj);
+            $ret = $detail->resp;
+            $arr = json_decode($ret,true);
+            $info =  isset($arr["jingdong_ware_bookbigfield_get_responce"]["BookBigFieldEntity"][0]["book_big_field_info"])?$arr["jingdong_ware_bookbigfield_get_responce"]["BookBigFieldEntity"][0]["book_big_field_info"]:'';
+            $temp['content_desc'] = isset($info["content_desc"])?trim($info["content_desc"]):'';
+            $temp['catalog']      = isset($info['catalogue'])?trim($info['catalogue']):'';
+            
+            if(empty($temp['content_desc'])){
+                $temp['content_desc'] = $summary;
+            }
+            
+            if(empty($temp['catalog'])){
+                $temp['catalog']      = $catalog;
+            }
+            $temp['status'] = Book_Type_Status::NOTPUBLISHED;
+            
+        }else{
+            //从豆瓣网获取图片及摘要,目录
+            $conf      = new Yaf_Config_Ini(CONF_PATH. "/Key.ini");
+            $doubanKey = $conf['douban']['appKey'];
+            
+            $ret       = file_get_contents('https://api.douban.com/v2/book/isbn/'.$strSkuId."?apikey=".$doubanKey);
+            $arrDouban = json_decode($ret,true);
+            $temp['title']        = isset($arrDouban['title'])?trim($arrDouban['title']):'';
+            $temp['author']       = isset($arrDouban['author'][0])?trim($arrDouban['author'][0]):'';
+            $temp['publish_time'] = isset($arrDouban['pubdate'])?trim($arrDouban['pubdate']):'';
+            $temp['catalog']      = isset($arrDouban['catalog'])?trim($arrDouban['catalog']):'';
+            $temp['pages']        = isset($arrDouban['pages'])?trim($arrDouban['pages']):'';
+            $temp['url']          = isset($arrDouban['url'])?trim($arrDouban['url']):'';
+            $temp['content_desc'] = isset($arrDouban['summary'])?trim($arrDouban['summary']):'';
+            $temp['price_mart']   = isset($arrDouban['price'])?trim($arrDouban['price']):'';
+            $temp['press']        = isset($arrDouban['publisher'])?trim($arrDouban['publisher']):'';
+            $temp['isbn']         = isset($arrDouban['isbn13'])?trim($arrDouban['isbn13']):'';
+            $image                = isset($arrDouban['images']['large'])?$arrDouban['images']['large']:'';
+            $temp['image']        = $this->uploadPic($image);
+            $temp['status']       = Book_Type_Status::NOTPUBLISHED;
+            return $image;
+        }
+        return $temp;
     }
 }

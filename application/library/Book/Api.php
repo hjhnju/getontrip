@@ -49,4 +49,27 @@ class Book_Api{
         $logicBook = new Book_Logic_Book();
         return $logicBook->getBookNum($sightId, $status);
     }
+    
+
+    /**
+     * 接口5：Book_Api::addBook($arrInfo)
+     * 添加书籍接口
+     * @param array $arrInfo
+     * @return boolean
+     */
+    public static function addBook($arrInfo){
+        $logicBook = new Book_Logic_Book();
+        return $logicBook->addBook($arrInfo);
+    }
+    
+    /**
+     * 接口6：Book_Api::getBookSourceFromIsbn($strIsbn, $type)
+     * @param string $strIsbn
+     * @param integer $type, 1:京东，2:豆瓣
+     * @return array
+     */
+    public static function getBookSourceFromIsbn($strIsbn, $type){
+        $logicBook = new Book_Logic_Book();
+        return $logicBook->getBookSourceFromIsbn($strIsbn, $type);
+    }
 }

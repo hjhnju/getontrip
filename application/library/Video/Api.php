@@ -47,4 +47,14 @@ class Video_Api{
         $logicVideo = new Video_Logic_Video();
         return $logicVideo->delVideo($id);
     }
+    
+    /**
+     * 接口5:Video_Api::addVideo($arrParam)
+     * 添加视频
+     * @param array $arrParam
+     */
+    public static function addVideo($arrParam){
+        $logicVideo = new Video_Logic_Video();
+        return $logicVideo->addVideo($arrParam);
+    }
 }

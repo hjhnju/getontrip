@@ -195,6 +195,21 @@ class Video_Logic_Video extends Base_Logic{
     }
     
     /**
+     * 添加视频
+     * @param array $arrParam
+     */
+    public function addVideo($arrParam){
+        $objVideo = new Video_Object_Video();
+        foreach ($arrParam as $key => $val){
+            if(in_array($key,$this->fields)){
+                $key = $this->getprop($key);
+                $objVideo->$key = $val;
+            }
+        }
+        return $objVideo->save();
+    }
+    
+    /**
      * 删除视频
      * @param integer $id
      */

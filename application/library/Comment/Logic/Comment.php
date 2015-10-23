@@ -98,8 +98,9 @@ class Comment_Logic_Comment  extends Base_Logic{
         $listComment->setOrder("create_time asc");
         $ret = $listComment->toArray();
         foreach ($ret['list'] as $key => $val){
+            $ret['list'][$key]['id']          = strval($val['id']);
             $ret['list'][$key]['from_name']   = $logicUser->getUserName($val['from_user_id']);
-            $ret['list'][$key]['to_name']     = $logicUser->getUserName($val['to_user_id']);
+            $ret['list'][$key]['to_name']     = empty($val['to_user_id'])?'':$logicUser->getUserName($val['to_user_id']);
             $ret['list'][$key]['avatar']      = $logicUser->getUserAvatar($val['from_user_id']);
             $ret['list'][$key]['create_time'] = Base_Util_String::getTimeAgoString($val['create_time']);
             unset($ret['list'][$key]['from_user_id']);
@@ -111,6 +112,7 @@ class Comment_Logic_Comment  extends Base_Logic{
             $listSubComment->setOrder("create_time asc");
             $arrSubComment = $listSubComment->toArray();
             foreach ($arrSubComment['list'] as $index => $data){
+                $arrSubComment['list'][$index]['id']        = strval($data['id']);
                 $arrSubComment['list'][$index]['from_name'] = $logicUser->getUserName($data['from_user_id']);
                 $arrSubComment['list'][$index]['to_name']   = $logicUser->getUserName($data['to_user_id']);
                 unset($arrSubComment['list'][$index]['from_user_id']);

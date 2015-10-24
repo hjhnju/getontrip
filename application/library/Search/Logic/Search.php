@@ -62,10 +62,11 @@ class Search_Logic_Search{
                 $arrVideo    = $this->logicVideo->search($query, $page, $pageSize);
                 $arrKeyword  = $this->logicKeyword->search($query, $page, $pageSize);
                 $arrRet = array(
-                    'topic' => $arrTopic,
-                    'book'  => $arrBook,
-                    'video' => $arrVideo,
-                    'wiki'  => $arrKeyword,
+                    'topic'     => $arrTopic['data'],
+                    'book'      => $arrBook['data'],
+                    'video'     => $arrVideo['data'],
+                    'wiki'      => $arrKeyword['data'],
+                    'num'       => strval($arrKeyword['num'] + $arrVideo['num'] + $arrTopic['num'] + $arrBook['num']),
                 );
                 break;
             default :
@@ -76,13 +77,16 @@ class Search_Logic_Search{
                 $arrVideo    = $this->logicVideo->search($query, $page, $pageSize);
                 $arrKeyword  = $this->logicKeyword->search($query, $page, $pageSize);
                 $arrRet = array(
-                    'city'    => $arrCity,
-                    'sight'   => $arrSight,
+                    'city'        => $arrCity['data'],
+                    'city_num'    => $arrCity['num'],
+                    'sight'       => $arrSight['data'],
+                    'sight_num'   => $arrSight['num'],
                     'content' => array(
-                        'topic' => $arrTopic,
-                        'book'  => $arrBook,
-                        'video' => $arrVideo,
-                        'wiki'  => $arrKeyword,
+                        'topic'     => $arrTopic['data'],
+                        'book'      => $arrBook['data'],
+                        'video'     => $arrVideo['data'],
+                        'wiki'      => $arrKeyword['data'],
+                        'num'       => strval($arrKeyword['num'] + $arrVideo['num'] + $arrTopic['num'] + $arrBook['num']),
                     ),
                 );
                 break;

@@ -62,8 +62,9 @@ class Book_Logic_Book extends Base_Logic{
             $data = $objBook->toArray();
             if(!empty($data)){
                 $data['id']           = strval($data['id']);
+                $data['title']        = Base_Util_String::getHtmlEntity($data['title']);
                 $data['image']        = Base_Image::getUrlByName($data['image']);
-                $data['content_desc'] = trim(Base_Util_String::getSubString($data['content_desc'], self::CONTENT_LEN));
+                $data['content_desc'] = Base_Util_String::getSubString($data['content_desc'], self::CONTENT_LEN);
                 $data['url']          = "http://".$_SERVER['HTTP_HOST'].'/api/book/detail?book='.$data['id'];
                 $arrRet[] = $data;
             }
@@ -171,8 +172,8 @@ class Book_Logic_Book extends Base_Logic{
             $temp[$key]['price_mart']   = isset($arr['marketPrice'])?$arr['marketPrice']:'';            
             $temp[$key]['price_jd']     = isset($arr['jdPrice'])?$arr['jdPrice']:'';            
             $temp[$key]['press']        = isset($detail['publishers'])?$detail['publishers']:$press;
-            $temp[$key]['publish_time'] = isset($detail['publish_time'])?$detail['publish_time']:$pubdate;
-               
+            $temp[$key]['publish_time'] = isset($detail['publish_time'])?$detail['publish_time']:$pubdate;            
+            
             if(empty($image)){
                 $image = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['imagePaths'][0];
                 $image = $image['bigpath'];
@@ -191,16 +192,12 @@ class Book_Logic_Book extends Base_Logic{
             $ret = $detail->resp;
             $arr = json_decode($ret,true);
             $info =  isset($arr["jingdong_ware_bookbigfield_get_responce"]["BookBigFieldEntity"][0]["book_big_field_info"])?$arr["jingdong_ware_bookbigfield_get_responce"]["BookBigFieldEntity"][0]["book_big_field_info"]:'';
-            $temp[$key]['content_desc'] = isset($info["content_desc"])?trim($info["content_desc"]):''; 
-            $temp[$key]['catalog']      = isset($info['catalogue'])?trim($info['catalogue']):'';
             
-            if(empty($temp[$key]['content_desc'])){
-                $temp[$key]['content_desc'] = $summary;
-            }
+            $temp[$key]['content_desc'] = empty($summary)?$info["content_desc"]:$summary;
+            $temp[$key]['catalog']      = empty($catalog)?$info['catalogue']:$catalog;         
             
-            if(empty($temp[$key]['catalog'])){
-                $temp[$key]['catalog']      = $catalog;
-            }
+            $temp[$key]['content_desc'] = Base_Util_String::delStartEmpty($temp[$key]['content_desc']);
+            $temp[$key]['catalog']      = Base_Util_String::delStartEmpty($temp[$key]['catalog']);
             
             //摘要为空时,不取此条数据
             if(empty($temp[$key]['content_desc'])){
@@ -339,14 +336,17 @@ class Book_Logic_Book extends Base_Logic{
     
     public function search($query, $page, $pageSize){
         $arrBook  = Base_Search::Search('book', $query, $page, $pageSize, array('id'));
+        $num      = $arrBook['num'];
+        $arrBook  = $arrBook['data'];
         foreach ($arrBook as $key => $val){
             $book = $this->getBookById($val['id']);
             $arrBook[$key]['title'] = empty($val['title'])?trim($book['title']):$val['title'];
             $arrBook[$key]['desc']  = empty($val['content_desc'])?trim($book['content_desc']):$val['content_desc'];
+            $arrBook[$key]['desc']  = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($arrBook[$key]['desc']));
             $arrBook[$key]['image'] = $book['image'];
             unset($arrBook[$key]['content_desc']);
         }
-        return $arrBook;
+        return array('data' => $arrBook, 'num' => $num);
     }
     
     public function getBookIdByISBN($strIsbn){

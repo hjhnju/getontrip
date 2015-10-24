@@ -110,4 +110,29 @@ class Tag_Api{
         $logicTag = new Tag_Logic_Tag();
         return $logicTag->changeOrder($id, $to);
     }
+    
+    /**
+     * 接口10:Tag_Api::getTagRelation($topTagId, $page, $pageSize)
+     * 通过一级分类标签ID查询二级分类标签
+     * @param integer $topTagId
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public static function getTagRelation($topTagId, $page, $pageSize){
+        $logicTagRelation = new Tag_Logic_Relation();
+        return $logicTagRelation->getTagRelation($topTagId, $page, $pageSize);
+    }
+    
+    /**
+     * 接口11:Tag_Api::editTagRelation($topTagId, $arrTagIds)
+     * 修改一级二级分类标签的从属关系
+     * @param integer $topTagId
+     * @param integer $arrTagIds
+     * @return boolean
+     */
+    public static function editTagRelation($topTagId, $arrTagIds){
+        $logicTagRelation = new Tag_Logic_Relation();
+        return $logicTagRelation->editTagRelation($topTagId, $arrTagIds);
+    }
 }

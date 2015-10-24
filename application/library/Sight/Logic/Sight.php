@@ -78,10 +78,10 @@ class Sight_Logic_Sight extends Base_Logic{
             }else{
                 $arrRet =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
             }
-            //$logicTag = new Tag_Logic_Tag();
-            // foreach ($arrRet as $key => $val){
-            //     $arrRet[$key]['tags'] = $logicTag->getTopicTags($val['id']);
-            // }
+            $logicTag = new Tag_Logic_Tag();
+            foreach ($arrRet as $key => $val){
+                 $arrRet[$key]['tags'] = $logicTag->getTopicTags($val['id']);
+            }
         }
         return array(
             'tags'=>$arrDataTags,
@@ -176,6 +176,8 @@ class Sight_Logic_Sight extends Base_Logic{
         $logicComment = new Comment_Logic_Comment();
         $logicTopic   = new Topic_Logic_Topic();  
         $arrSight     = Base_Search::Search('sight', $query, $page, $pageSize, array('id'));
+        $num          = $arrSight['num'];
+        $arrSight     = $arrSight['data'];
         foreach ($arrSight as $key => $val){
             $sight = $this->getSightById($val['id']);
             $arrSight[$key]['name']  = empty($val['name'])?trim($sight['name']):$val['name'];
@@ -202,7 +204,7 @@ class Sight_Logic_Sight extends Base_Logic{
             
             $arrSight[$key]['desc']  = sprintf("%d个内容，%d个话题",$count,$topic_num);
         }
-        return $arrSight;
+        return array('data' => $arrSight, 'num' => $num);
     }
     
     public function querySightByPrefix($query,$page,$pageSize){

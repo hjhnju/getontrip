@@ -98,4 +98,14 @@ class ApiController extends Base_Controller_Page {
         $ret  = $this->_logicCity->getCityFromName($city);
         return $this->ajax($ret);
     }
+    
+    /**
+     * 接口6：/api/city/province
+     * 获取省份下面的城市信息
+     * @return json
+     */
+    public function provinceAction(){
+        $ret = $this->_logicCity->provice();
+        return $this->ajax($ret);
+    }
 }

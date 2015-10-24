@@ -162,11 +162,13 @@ class Tag_Logic_Tag extends Base_Logic{
             $listTopicTag->setPagesize(PHP_INT_MAX);
             $ret = $listTopicTag->toArray();
             foreach ($ret['list'] as $val){
-                $redis->sAdd(Topic_Keys::getTopicTagKey($topicId),$val['tag_id']);
                 $objTag = new Tag_Object_Tag();
-                $objTag->fetch(array('id' => $val['tag_id']));
-                $arrTags[] = $objTag->name;
-                $ret = $redis->hSet(Tag_Keys::getTagInfoKey($val['tag_id']),'name',$objTag->name);
+                $objTag->fetch(array('id' => $val['tag_id'], 'type' => Tag_Type_Tag::CLASSIFY));
+                if(!empty($objTag->id)){
+                    $redis->sAdd(Topic_Keys::getTopicTagKey($topicId),$val['tag_id']);
+                    $arrTags[] = $objTag->name;
+                    $ret       = $redis->hSet(Tag_Keys::getTagInfoKey($val['tag_id']),'name',$objTag->name);
+                }                
             }
         }
         return $arrTags;
@@ -329,5 +331,5 @@ class Tag_Logic_Tag extends Base_Logic{
         $listTag->setFilter(array('type'=>Tag_Type_Tag::SEARCH));
         $ret = $listTag->toArray();
         return $ret['total'];
-    }
+    }   
 }

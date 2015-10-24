@@ -91,8 +91,7 @@ class Msg_Logic_Msg {
      * @param string $uid
      * @param integer $intType
      */
-    public function getList($intPage,$intPageSize,$intType = Msg_Type_Status::ALL){
-        $toId      = User_Api::getCurrentUser();
+    public function getList($toId, $intPage,$intPageSize,$intType = Msg_Type_Status::ALL){
         $objsMsg   = new Msg_List_Msg();
         if (Msg_Type_Status::ALL == $intType) {
             $objsMsg->setFilterString("`receiver` = $toId and `status` !=".Msg_Type_Status::DEL);
@@ -106,9 +105,14 @@ class Msg_Logic_Msg {
         foreach ($arrObjs['list'] as $key => $val){
             if(!empty($val['attach'])){
                 $arrObjs['list'][$key]['attach'] = json_decode($val['attach'],true);
+                foreach ($arrObjs['list'][$key]['attach'] as $index => $data){
+                    $arrObjs['list'][$key]['attach'][$index] = strval($data);
+                }
             }else{
                 $arrObjs['list'][$key]['attach'] = '';
             }           
+            $arrObjs['list'][$key]['mid']   = strval($val['mid']);
+            $arrObjs['list'][$key]['type']   = strval($val['type']);
             $arrObjs['list'][$key]['image'] = Base_Image::getUrlByName($val['image']);
             $arrObjs['list'][$key]['create_time'] = Base_Util_String::getTimeAgoString($val['create_time']);
             if($val['type'] == Msg_Type_Type::REPLY){
@@ -225,7 +229,7 @@ class Msg_Logic_Msg {
                 $logicUser    = new User_Logic_User();
                 $userName     = $logicUser->getUserName($arrParam['user_id']);
                 $strContent   = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$userName);
-                unset($arrParam['user_id']);
+                //unset($arrParam['user_id']);
                 $objMsg->attach    = json_encode($arrParam);
                 $objMsg->title     = '';
             }

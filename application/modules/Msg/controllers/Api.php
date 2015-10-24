@@ -22,12 +22,10 @@ class ApiController extends Base_Controller_Api {
      */
     public function listAction() {
         $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
-        $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
-        if(empty($deviceId)){
-            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
-        }                       
-        $logic = new Msg_Logic_Msg();
-        $ret = $logic->getList( $page, $pageSize);
+        $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;                      
+        $logic     = new Msg_Logic_Msg();
+        $this->userid = 1153;
+        $ret       = $logic->getList($this->userid,$page, $pageSize);
         return $this->ajax($ret);
     }  
     
@@ -38,12 +36,12 @@ class ApiController extends Base_Controller_Api {
      * @return json
      */
     public function readAction() {
-        $mid  = isset($_REQUEST['mid'])?trim($_REQUEST['mid']):'';
+        $mid   = isset($_REQUEST['mid'])?trim($_REQUEST['mid']):'';
         if(empty($mid)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $logic = new Msg_Logic_Msg();
-        $ret = $logic->setRead($mid);
+        $ret   = $logic->setRead($mid);
         return $this->ajax(strval($ret));
     }
 }

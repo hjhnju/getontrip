@@ -208,14 +208,17 @@ class Keyword_Logic_Keyword extends Base_Logic{
     
     public function search($query, $page, $pageSize){
         $arrKeyword  = Base_Search::Search('wiki', $query, $page, $pageSize, array('id'));
+        $num         = $arrKeyword['num'];
+        $arrKeyword  = $arrKeyword['data'];
         foreach ($arrKeyword as $key => $val){
             $keyword = $this->getKeywordByInfo($val['id']);
             $arrKeyword[$key]['name']  = empty($val['name'])?trim($keyword['name']):$val['name'];
             $arrKeyword[$key]['desc']  = trim($keyword['content']);
+            $arrKeyword[$key]['desc']  = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($arrKeyword[$key]['desc']));
             $arrKeyword[$key]['url']   = trim($keyword['url']);
             $arrKeyword[$key]['image'] = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
         }
-        return $arrKeyword;
+        return array('data' => $arrKeyword,'num' => $num);
     }
 
     
@@ -263,12 +266,18 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $listKeyword->setPagesize($pageSize);
         $arrRet = $listKeyword->toArray();
         foreach ($arrRet['list'] as $key => $val){
-            $arrRet['list'][$key]['id'] = strval($val['id']);
+            $arrRet['list'][$key]['id']      = strval($val['id']);
+            $arrRet['list'][$key]['content'] = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['content']));
             $listKeywordCatalog = new Keyword_List_Catalog();
             $listKeywordCatalog->setFields(array('name','url'));
             $listKeywordCatalog->setFilter(array('keyword_id' => $val['id']));
             $listKeywordCatalog->setPagesize(self::WIKI_CATALOG_NUM);
             $arrCatalog = $listKeywordCatalog->toArray();
+            $arrLen     = array();
+            foreach ($arrCatalog['list'] as $data){
+                $arrLen[] = strlen($data['name']);
+            }
+            array_multisort($arrLen, SORT_DESC , $arrCatalog['list']);
             $arrRet['list'][$key]['catalog'] = $arrCatalog['list'];
             $arrRet['list'][$key]['image']   = Base_Image::getUrlByName($val['image']);
         }
@@ -359,7 +368,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
                 }
             }
             $arrTemp['title']       = $sight['name'];
-            $arrTemp['content']     = Base_Util_String::trimall($content);
+            $arrTemp['content']     = Base_Util_String::getHtmlEntity(Base_Util_String::trimall($content));
             $arrTemp['image']       = $hash;
             $arrTemp['url']         = $wikiUrl;
             $arrTemp['status']      = Keyword_Type_Status::PUBLISHED;

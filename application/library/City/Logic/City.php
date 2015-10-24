@@ -335,6 +335,8 @@ class City_Logic_City{
     public function search($query, $page, $pageSize){
         $logicSight = new Sight_Logic_Sight();
         $arrCity  = Base_Search::Search('city', $query, $page, $pageSize, array('id'));
+        $num      = $arrCity['num'];
+        $arrCity  = $arrCity['data'];
         foreach ($arrCity as $key => $val){
             $city = $this->getCityById($val['id']);
             $arrCity[$key]['name']  = empty($val['name'])?trim($city['name']):$val['name'];
@@ -345,7 +347,7 @@ class City_Logic_City{
             $topic_num     = $this->getTopicNum($val['id']);
             $arrCity[$key]['desc'] = sprintf("%d个景点，%d个话题",$sight_num,$topic_num);
         }
-        return  $arrCity;
+        return  array('data' => $arrCity,'num' => $num);
     }
     
     /**
@@ -377,5 +379,23 @@ class City_Logic_City{
             }            
         }
         return $arrRet;
+    }
+    
+    public function provice(){
+        $listProvince = new City_List_Meta();
+        $listProvince->setFilter(array('provinceid' => 0));
+        $listProvince->setFields(array('id','name'));
+        $listProvince->setPagesize(PHP_INT_MAX);
+        $arrRet   =  $listProvince->toArray();
+        foreach ($arrRet['list'] as $key => $val){
+            $listCity = new City_List_Meta();
+            $listCity->setFilter(array('provinceid' => $val['id'],'cityid' => 0));
+            $listCity->setFields(array('name'));
+            $listCity->setPagesize(PHP_INT_MAX);
+            $arrCity = $listCity->toArray();
+            $arrRet['list'][$key]['city'] = $arrCity['list'];
+            unset($arrRet['list'][$key]['id']);
+        }
+        return $arrRet['list'];
     }
 }

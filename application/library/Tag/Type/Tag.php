@@ -17,7 +17,7 @@ class Tag_Type_Tag extends Base_Type {
     const GENERAL = 2;
     
     /**
-     * 3 分类标签
+     * 3 二级分类标签
      * @var integer
      */
     const CLASSIFY = 3;
@@ -29,13 +29,20 @@ class Tag_Type_Tag extends Base_Type {
     const SEARCH = 4;
     
     /**
+     * 5 一级分类标签
+     * @var integer
+     */
+    const TOP_CLASS = 5;
+    
+    /**
      * 状态名
      * @var array
      */
     public static $names = array(
         self::NORMAL      => '普通标签',
         self::GENERAL     => '通用标签',
-        self::CLASSIFY    => '分类标签',
+        self::CLASSIFY    => '二级分类标签',
         self::SEARCH      => '搜索标签',
+        self::TOP_CLASS   => '一级分类标签',
     );
 }

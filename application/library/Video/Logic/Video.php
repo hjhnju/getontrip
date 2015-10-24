@@ -44,6 +44,7 @@ class Video_Logic_Video extends Base_Logic{
         $arrRet = $list->toArray();
         foreach($arrRet['list'] as $key => $val){
             $arrRet['list'][$key]['id']    = strval($val['id']);
+            $arrRet['list'][$key]['title'] = Base_Util_String::getHtmlEntity($val['title']);
             $arrRet['list'][$key]['image'] = Base_Image::getUrlByName($val['image']);
             if($val['type'] == Video_Type_Type::ALBUM){
                 $arrRet['list'][$key]['len'] = sprintf("合辑：共%d集",$val['len']);
@@ -116,7 +117,7 @@ class Video_Logic_Video extends Base_Logic{
             if(empty($id)){
                 $objVideo          = new Video_Object_Video();
                 $objVideo->sightId = $sightId;
-                $objVideo->title   = $info['title'];
+                $objVideo->title   = Base_Util_String::getHtmlEntity($info['title']);
                 $objVideo->from    = $info['from'];
                 $objVideo->url     = $info['url'];
                 $objVideo->image   = $info['image'];
@@ -142,6 +143,8 @@ class Video_Logic_Video extends Base_Logic{
     
     public function search($query, $page, $pageSize){
         $arrVideo  = Base_Search::Search('video', $query, $page, $pageSize, array('id'));
+        $num       = $arrVideo['num'];
+        $arrVideo  = $arrVideo['data'];
         foreach ($arrVideo as $key => $val){
             $video = $this->getVideoByInfo($val['id']);            
             $arrVideo[$key]['title'] = empty($val['title'])?trim($video['title']):$val['title'];
@@ -149,7 +152,7 @@ class Video_Logic_Video extends Base_Logic{
             $arrVideo[$key]['url']   = isset($video['url'])?trim($video['url']):'';
             $arrVideo[$key]['from']  = isset($video['from'])?trim($video['from']):'';
         }
-        return $arrVideo;
+        return array('data' => $arrVideo, 'num' => $num);
     }
     
     public function getVideoNum($sighId, $status = Video_Type_Status::PUBLISHED){

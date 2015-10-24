@@ -270,6 +270,9 @@ class Base_Extract {
 	        $content = '<p>'.$content.'</p>';
 	    }
 	    
+	    //去除开头空格
+	    $content = ltrim($content,'\t\&nbsp; 　\r');
+	    
 	    $content = preg_replace( '/<p.*?>/is', '<p>', $content );
 	    $content = preg_replace( '/<b\s.*?>/is', '<b>', $content );
 	    $content = preg_replace( '/<br.*?>/is', '</p><p>', $content );
@@ -314,6 +317,8 @@ class Base_Extract {
 	    if(strstr($content,"<br>") && !strstr($content,"<p>")){
 	        $content = '<p>'.$content.'</p>';
 	    }
+	    //去除开头空格
+	    $content = ltrim($content,'\t\&nbsp; 　\r');
 	    //去掉br标签	    
 	    $content = preg_replace( '/<br.*?>/is', '</p><p>', $content );
 	    

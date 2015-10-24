@@ -83,11 +83,24 @@ class Base_Util_String {
 	 * @return string
 	 */
 	public static function getSubString($str,$length){
-	    $str = trim(strip_tags($str));
-	    $str = str_replace('&nbsp;','',$str);
+	    $str = self::delStartEmpty($str);
+	    $str = mb_ereg_replace('(\s|　|&nbsp;|\xc2\xa0)*', '', $str);
+	    $str = Base_Util_String::getHtmlEntity($str);
 	    if(mb_strlen($str) > $length){
 	        return mb_substr($str,0,$length,'utf-8')."..";
 	    }
+	    return $str;
+	}
+	
+	/**
+	 * 去掉字符串开头空格
+	 * @param string $str
+	 * @return string
+	 */
+	public static function delStartEmpty($str){
+	    $str = strip_tags($str);
+	    $str = mb_ereg_replace('^(\s|　|&nbsp;|\xc2\xa0)*', '', $str);
+	    $str = Base_Util_String::getHtmlEntity($str);
 	    return $str;
 	}
 	
@@ -97,9 +110,7 @@ class Base_Util_String {
 	 * @return string
 	 */
 	public static function trimall($str){
-	    $pattern = '/\s/';
-	    $replacement = "";
-	    return preg_replace( $pattern, $replacement, $str );
+	    return mb_ereg_replace('(\s|　|&nbsp;|\xc2\xa0)*', '', $str);
 	}
 	
 	/**
@@ -262,5 +273,17 @@ class Base_Util_String {
 	        }
 	    }
 	    return false;
+	}
+	
+	public static function getHtmlEntity($str){
+	    preg_match_all('/.*?(&.*?;).*?/i', $str, $arr);
+	    if(!isset($arr[1])){
+	        return $str;
+	    }
+	    foreach ($arr[1] as $val){
+	        $entity = mb_convert_encoding($val, "UTF-8", "HTML-ENTITIES");
+	        $str = str_replace($val, $entity, $str);
+	    }
+	    return $str;
 	}
 }

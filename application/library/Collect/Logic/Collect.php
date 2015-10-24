@@ -101,8 +101,11 @@ class Collect_Logic_Collect{
                 foreach ($arrCollect['list'] as $val){
                     $temp['id']       = strval($val['obj_id']);
                     $sight            = $logicSight->getSightById($val['obj_id']);
-                    $temp['name']     = $sight['name'];
-                    $temp['image']    = Base_Image::getUrlByName($sight['image']);
+                    if(empty($sight['name'])){
+                        continue;
+                    }
+                    $temp['name']     = isset($sight['name'])?$sight['name']:'';
+                    $temp['image']    = isset($sight['image'])?Base_Image::getUrlByName($sight['image']):'';
                     $temp['topicNum'] = sprintf("共%d个话题",$logicSight->getTopicNum($val['obj_id']));
                     $arrRet[]         = $temp;
                 }
@@ -119,11 +122,24 @@ class Collect_Logic_Collect{
                     $arrRet[]        = $temp;
                 }
                 break;
-            case Collect_Type::TOPIC:
-                $logicTopic = new Topic_Logic_Topic();
+            case Collect_Type::COTENT:
+                //内容中包含书籍
+                $listCollect = new Collect_List_Collect();
+                $logicTopic  = new Topic_Logic_Topic();
+                $listCollect->setFilter(array(
+                    'type'    => Collect_Type::TOPIC,
+                    'user_id' => $user_id,
+                ));
+                $listCollect->setPage($page);
+                $listCollect->setPagesize($pageSize);
+                $arrCollect = $listCollect->toArray();
+                $temp    = array();
                 foreach ($arrCollect['list'] as $val){
                     $temp['id']         = strval($val['obj_id']);
                     $topic              = $logicTopic->getTopicById($val['obj_id']);
+                    if(empty($topic['title'])){
+                        continue;
+                    }
                     $temp['image']      = Base_Image::getUrlByName($topic['image']);
                     $temp['subtitle']   = trim($topic['subtitle']);
                     $temp['title']      = trim($topic['title']);

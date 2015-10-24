@@ -23,10 +23,9 @@ class Advise_Logic_Advise{
      * 查询反馈意见，前端使用
      * @return array
      */
-    public function listAdvise($page,$pageSize){
+    public function listAdvise($userId, $page, $pageSize){
         $arrRet     = array();
         $index      = 0;
-        $userId     = User_Api::getCurrentUser();; 
         $image      = $this->logicUser->getUserAvatar($userId);      
         $listAdvise = new Advise_List_Advise();
         $listAdvise->setFilter(array('userid' => $userId));
@@ -34,8 +33,8 @@ class Advise_Logic_Advise{
         $listAdvise->setPagesize($pageSize);
         $ret =  $listAdvise->toArray();
         foreach ($ret['list'] as $val){
-            $temp['id']          = $val['id'];
-            $temp['type']        = Advise_Type_Type::ADVISE;
+            $temp['id']          = strval($val['id']);
+            $temp['type']        = strval(Advise_Type_Type::ADVISE);
             $temp['image']       = $image;
             $temp['content']     = $val['content'];
             $temp['create_time'] = date('Y-m-d H:i',$val['create_time']);           
@@ -101,8 +100,7 @@ class Advise_Logic_Advise{
      * @param array $arrData
      * @return boolean
      */
-    public function addAdvise($strData){
-        $userId             = User_Api::getCurrentUser();
+    public function addAdvise($userId, $strData){
         $objAdvise          = new Advise_Object_Advise();
         $objAdvise->userid  = $userId;
         $objAdvise->content = $strData;
@@ -137,7 +135,8 @@ class Advise_Logic_Advise{
         }
         if(isset($this->_feedmsg[$index])){
             $temp['id']          = '';
-            $temp['type']        = Advise_Type_Type::ANSWER;
+            $temp['image']       = "";
+            $temp['type']        = strval(Advise_Type_Type::ANSWER);
             $temp['content']     = $this->_feedmsg[$index];
             $temp['create_time'] = '';
             $arrRet[] = $temp;

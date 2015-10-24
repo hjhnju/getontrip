@@ -46,8 +46,7 @@ class Base_Search {
             return $arrRet;
         }
         foreach (self::$arrPrams as $val){
-            //$query .= $val.":*".$word."* or ";
-            $query .= $val.":".$word." or ";
+            $query .= $val.":\"".$word."\" or ";
         }
         $query = substr($query,0,-3);
         $query = urlencode($query);
@@ -102,6 +101,6 @@ class Base_Search {
                 $arrRet['response']['docs'][$key]['name']  = isset($arrRet['highlighting'][$val['id']]['name'][0])?$arrRet['highlighting'][$val['id']]['name'][0]:'';
             }          
         }
-        return $arrRet['response']['docs'];
+        return array('num' => strval($arrRet['response']['numFound']),'data' => $arrRet['response']['docs']);
     }
 }

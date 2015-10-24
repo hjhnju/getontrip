@@ -9,7 +9,7 @@ class ApiController extends Base_Controller_Api {
     const PAGESIZE = 6;
     
     public function init() {
-        $this->setNeedLogin(false);
+        $this->setNeedLogin(true);
         parent::init();        
     }
     
@@ -25,7 +25,7 @@ class ApiController extends Base_Controller_Api {
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $logic     = new Advise_Logic_Advise();
-        $ret       = $logic->addAdvise($strAdvise);
+        $ret       = $logic->addAdvise($this->userid,$strAdvise);
         $this->ajax($ret);
     }
     
@@ -38,7 +38,7 @@ class ApiController extends Base_Controller_Api {
         $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
         $logic     = new Advise_Logic_Advise();
-        $ret       = $logic->listAdvise($page,$pageSize);
+        $ret       = $logic->listAdvise($this->userid,$page,$pageSize);
         $this->ajax($ret);
     }
     

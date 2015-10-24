@@ -33,7 +33,7 @@ class Tag_List_Tag extends Base_List {
         'create_time' => 1,
         'update_time' => 1,
         'type'        => 1,
-        'weight'       => 1,
+        'weight'      => 1,
     );
 
     /**

@@ -40,7 +40,7 @@ class Tag_Object_Tag extends Base_Object {
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
         'type'        => 'type',
-        'weight'       => 'weight',
+        'weight'      => 'weight',
     );
 
     /**
@@ -54,7 +54,7 @@ class Tag_Object_Tag extends Base_Object {
         'create_time' => 1,
         'update_time' => 1,
         'type'        => 1,
-        'weight'       => 1,
+        'weight'      => 1,
     );
 
     /**

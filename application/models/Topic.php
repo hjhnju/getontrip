@@ -130,4 +130,26 @@ class TopicModel extends BaseModel{
         }
         return json_decode($ret,true);
     }
+    
+    /**
+     * 根据景点ID及标签ID获取话题数
+     * @param integer $tagId
+     * @param integer $sightId
+     * @return number
+     */
+    public function getTopicNumByTag($tagId, $sightId){        
+        $total  = 0;
+        $objTag = new Tag_Object_Tag();
+        $objTag->fetch(array('id' => $tagId));
+        if($objTag->type == Tag_Type_Tag::GENERAL){
+            //通用标签
+            $sql   = "select count(distinct(b.topic_id)) from  `topic_tag` b, `topic` c where  b.tag_id = $tagId and  b.topic_id = c.id and c.status = ".Topic_Type_Status::PUBLISHED;
+            $total = $this->db->fetchOne($sql);
+        }else{
+            //分类标签或普通标签
+            $sql   = "select count(distinct(a.topic_id)) from `sight_topic` a, `topic_tag` b, `topic` c where a.sight_id = $sightId and b.tag_id = $tagId and a.topic_id = b.topic_id and a.topic_id = c.id and c.status = ".Topic_Type_Status::PUBLISHED;
+            $total = $this->db->fetchOne($sql);
+        }
+        return $total;
+    }
 }

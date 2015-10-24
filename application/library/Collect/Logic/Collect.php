@@ -56,9 +56,8 @@ class Collect_Logic_Collect{
      * @param integer $obj_id
      * @return boolean
      */
-    public function checkCollect($type, $obj_id){
-        $logicLogin  = new User_Logic_Third();
-        $user_id     = $logicLogin->checkLogin();
+    public function checkCollect($type, $obj_id){        
+        $user_id     = User_Api::getCurrentUser();
         if(empty($user_id)){
             return false;
         }

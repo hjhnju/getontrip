@@ -96,9 +96,10 @@ class Sight_Logic_Tag extends Base_Logic{
                 }                 
             }
         }
+        //var_dump($arrLessTopicTag);die;
         if(count($arrLessTopicTag) >= $limit_num){
             $logic  = new Tag_Logic_Relation();
-            $arrCommonTag = array_merge($arrCommonTag,$logic->groupByTop($arrTags));
+            $arrCommonTag = array_merge($arrCommonTag,$logic->groupByTop($arrLessTopicTag));
         }
         
         //判断有无视频,书籍,而增加相应标签      

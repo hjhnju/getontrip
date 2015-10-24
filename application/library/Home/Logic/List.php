@@ -95,13 +95,12 @@ class Home_Logic_List{
     public function getHomeData($cityId){
         //城市信息
         $tmpCity   = City_Api::getCityById($cityId);
-        $collected = '';
         $collected = $this->_logicCollect->checkCollect(Collect_Type::CITY, $cityId);
         $arrCity = array(
-            'id'      => isset($tmpCity['id'])?strval($tmpCity['id']):'',
-            'name'    => isset($tmpCity['name'])?trim($tmpCity['name']):'',
-            'image'   => isset($tmpCity['image'])?Base_Image::getUrlByName($tmpCity['image']):'', 
-            'collect' => strval($collected),         
+            'id'        => isset($tmpCity['id'])?strval($tmpCity['id']):'',
+            'name'      => isset($tmpCity['name'])?trim($tmpCity['name']):'',
+            'image'     => isset($tmpCity['image'])?Base_Image::getUrlByName($tmpCity['image']):'', 
+            'collected' => strval($collected),         
         );
         $arrCity['name']  = str_replace("市","",$arrCity['name']);
         //景点信息

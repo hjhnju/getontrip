@@ -103,7 +103,7 @@ class Sight_Logic_Tag extends Base_Logic{
                                 $arrCommonTag[] = $temp;
                             }                            
                         }else{
-                            $arrLessTopicTag[]  = $temp;
+                            $arrLessTopicTag[]  = $temp['id'];
                         } 
                     }
                 }                 

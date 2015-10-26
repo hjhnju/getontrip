@@ -48,6 +48,19 @@ class Sight_Logic_Tag extends Base_Logic{
         $arrCommonTag    = array();
         $arrLessTopicTag = array(); 
         $arrTopicIds     = array();
+        $redis           = Base_Redis::getInstance();
+        $arrRet    = $redis->zRange(Sight_Keys::getSightShowTagIds($sightId),0,-1);
+        if(!empty($arrRet)){
+            foreach ($arrRet as $val){
+                $temp = explode(",",$val);
+                $arrData['id']   = $temp[0];
+                $arrData['type'] = $temp[1];
+                $arrData['name'] = $temp[2];
+                $arrCommonTag[]  = $arrData;
+            }
+            return $arrCommonTag;
+        }
+        
         $limit_num       = Base_Config::getConfig('showtag')->topicnum;
         $listSightTag = new Sight_List_Tag();
         $listSightTag->setFilter(array('sight_id' => $sightId));
@@ -96,7 +109,6 @@ class Sight_Logic_Tag extends Base_Logic{
                 }                 
             }
         }
-        //var_dump($arrLessTopicTag);die;
         if(count($arrLessTopicTag) >= $limit_num){
             $logic  = new Tag_Logic_Relation();
             $arrCommonTag = array_merge($arrCommonTag,$logic->groupByTop($arrLessTopicTag));
@@ -115,6 +127,10 @@ class Sight_Logic_Tag extends Base_Logic{
         if(!empty($video)){
             $arrCommonTag[] = array('id' => strval(self::STR_VIDEO),'type' => strval(self::VIDEO), 'name' => '视频');
         }        
+        foreach ($arrCommonTag as $index => $tag){
+            $data = $tag['id'].",".$tag['type'].",".$tag['name'];
+            $redis->zAdd(Sight_Keys::getSightShowTagIds($sightId),$index,$data);  
+        }
         return $arrCommonTag;
     }
 }

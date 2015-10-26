@@ -110,4 +110,13 @@ class ApiController extends Base_Controller_Page{
         $ret        = $this->logicUser->editUserInfo($userId, $type, $strParam, $file);
         return $this->ajax(strval($ret));
     }
+    
+    /**
+     * 接口6：/api/user/checkLogin
+     * 检查用户是否登录
+     */
+    public function checkLoginAction(){
+        $ret = User_Api::getCurrentUser();
+        return $this->ajax(strval($ret));
+    }
 }

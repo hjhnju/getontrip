@@ -14,7 +14,10 @@ class Sight_Keys {
     const REDIS_SIGHT_INDEX_KEY    = 'sight_index_%s_%s';
     
     //景点的统计信息KEY，包括：话题数、书籍数、视频数、景观数
-    const REDIS_SIGHT_TONGJI_KEY   = 'sight_tongji_%s';   
+    const REDIS_SIGHT_TONGJI_KEY   = 'sight_tongji_%s'; 
+    
+    //景点的显示标签的KEY
+    const REDIS_SIGHT_SHOW_TAG_KEY = 'sight_tag_%s';
 
     const BOOK      = 'book';
     
@@ -42,5 +45,9 @@ class Sight_Keys {
     
     public static function getSightTongjiKey($sightId){
         return sprintf(self::REDIS_SIGHT_TONGJI_KEY,$sightId);
+    }
+    
+    public static function getSightShowTagIds($sightId){
+        return sprintf(self::REDIS_SIGHT_SHOW_TAG_KEY,$sightId);
     }
 }

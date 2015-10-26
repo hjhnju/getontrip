@@ -85,9 +85,9 @@ class Search_Logic_Search{
                         'topic'     => $arrTopic['data'],
                         'book'      => $arrBook['data'],
                         'video'     => $arrVideo['data'],
-                        'wiki'      => $arrKeyword['data'],
-                        'num'       => strval($arrKeyword['num'] + $arrVideo['num'] + $arrTopic['num'] + $arrBook['num']),
+                        'wiki'      => $arrKeyword['data'],                        
                     ),
+                    'content_num'       => strval($arrKeyword['num'] + $arrVideo['num'] + $arrTopic['num'] + $arrBook['num']),
                 );
                 break;
         }

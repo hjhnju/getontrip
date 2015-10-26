@@ -39,7 +39,7 @@
 		     <div class=" form">
                   <form class="cmxform form-horizontal tasi-form" id="Form" method="post" action="/admin/tagapi/saveRelation" novalidate="novalidate"  onsubmit="">                                             
                        <div class="form-group ">
-                         <label for="tag_first" class="control-label col-lg-2">一级标签列表：</label>
+                         <label for="tag_first" class="control-label col-lg-2">一级分类标签：</label>
                           <div class="col-lg-10">  
                               {%foreach $data_first as $key=>$item%}
                               <label class="radio-inline">
@@ -51,8 +51,8 @@
                               </label>
                               {%/foreach%}                                                             
                            </div> 
-                           
-                          <label for="tag_second" class="control-label col-lg-2">二级标签列表：</label>
+                          <div></div>
+                          <label for="tag_second" class="control-label col-lg-2">二级分类标签：</label>
                           <div class="col-lg-10"> 
                              {%foreach $data_second as $key=>$val%}
                                <label class="checkbox-inline">

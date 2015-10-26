@@ -28,7 +28,7 @@ class ApiController extends Base_Controller_Api {
         $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
         $sightId    = isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
         $strTags    = isset($_REQUEST['tags'])?trim($_REQUEST['tags']):'';
-        $intOrder   = isset($_REQUEST['order'])?intval($_REQUEST['order']):2;
+        $intOrder   = isset($_REQUEST['order'])?intval($_REQUEST['order']):1;
         if((empty($sightId) && empty($strTags))){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }

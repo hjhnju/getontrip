@@ -57,9 +57,9 @@ class Sight_Logic_Sight extends Base_Logic{
     public function getSightDetail($sightId,$page,$pageSize,$order,$strTags = ''){
         $arrRet      = array();
         $arrDataTags = array();
-        $arrDataTags = $this->logicSightTag->getTagsBySight($sightId);
         if(empty($strTags)){//默认选中第一个标签来筛选话题
-            $strTags = isset($arrDataTags[0]['id'])?$arrDataTags[0]['id']:'';
+            $arrDataTags = $this->logicSightTag->getTagsBySight($sightId);        
+            $strTags     = isset($arrDataTags[0]['id'])?$arrDataTags[0]['id']:'';
         }
         
         if($strTags == self::STR_LANDSCAPE){

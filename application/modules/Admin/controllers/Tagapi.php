@@ -108,4 +108,12 @@ class TagapiController extends Base_Controller_Api{
         return $this->ajax($allList['list']);    
     }
     
+    public function saveRelationAction(){
+        $firstId   = $_REQUEST['firstid'];
+        $secondIds = isset($_REQUEST['secondid'])?$_REQUEST['secondid']:array();
+        
+        $ret = Tag_Api::editTagRelation($firstId, $secondIds);
+        return $this->redirect("/admin/tag/edit?id=".$firstId);
+    }
+    
 }

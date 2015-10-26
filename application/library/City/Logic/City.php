@@ -356,7 +356,7 @@ class City_Logic_City{
      * @return array
      */
     public function getCityFromName($strName){
-        $arrRet = array('id' => '','name' => '');
+        $ret = '';
         if (preg_match("/^[\x7f-\xff]+$/", $strName)) {
             $strName   = str_replace("市", "", $strName);
             $tmpCity   = $this->queryCityPrefix($strName, 1, 1);            
@@ -373,12 +373,10 @@ class City_Logic_City{
             $objCity->fetch(array('id' => $val['id'],'status' => City_Type_Status::PUBLISHED));
             $id      = strval($objCity->id);
             if(!empty($id)){
-                $arrRet['id']   = $id;
-                $arrRet['name'] = str_replace("市","",$val['name']);
-                return $arrRet;
+                return $id;
             }            
         }
-        return $arrRet;
+        return $ret;
     }
     
     public function provice(){

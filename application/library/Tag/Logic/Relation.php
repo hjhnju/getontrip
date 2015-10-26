@@ -43,6 +43,7 @@ class Tag_Logic_Relation extends Base_Logic{
     
     public function editTagRelation($topTagId, $arrTagIds){
         $arrTags = $this->getTagRelation($topTagId, 1, PHP_INT_MAX);
+        $ret     = true;
         foreach ($arrTags['list'] as $val){
             $objTagRelation = new Tag_Object_Relation();
             $objTagRelation->fetch(array('id' => $val['id']));

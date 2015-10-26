@@ -17,7 +17,7 @@ class EditAction extends Yaf_Action_Abstract {
       	        $arrRet['list'][$index]['checked'] = false;
       	    }
       	}
-      	if(empty($id)){
+      	if(empty($id) && isset($arrRet['list'][0])){
       	    $arrRet['list'][0]['checked'] = true;
       	}
         $this->_view->assign('data_first', $arrRet['list']);  

@@ -22,7 +22,7 @@ class EditAction extends Yaf_Action_Abstract {
       	}
         $this->_view->assign('data_first', $arrRet['list']);  
         
-        $id = empty($id)?$arrRet['list'][0]['id']:$id;
+        $id = empty($id)?(isset($arrRet['list'][0]['id'])?$arrRet['list'][0]['id']:''):$id;
         $arrSub = Tag_Api::getTagRelation($id, 1, 10);
         foreach ($arrSub['list'] as $key => $val){
             $arrIds[] = $val['classifytag_id'];

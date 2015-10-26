@@ -100,7 +100,7 @@ class Search_Logic_Search{
     public function label($labelId, $page, $pageSize){
         $arrRet    = array();
         $arrData   = array();        
-        $arrRet['image']     = Base_Image::getUrlByName(Base_Config::getConfig('searchlabel')->image,400,200);
+        $arrRet['image']     = Base_Image::getUrlByName(Base_Config::getConfig('searchlabel')->image);
         if($page == 1){
             $listTag = new Tag_List_Tag();
             $listTag->setFilter(array('type' => Tag_Type_Tag::SEARCH));

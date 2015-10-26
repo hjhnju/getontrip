@@ -61,7 +61,7 @@ class ApiController extends Base_Controller_Api {
      * @return json
      */
     public function listAction() {
-        $type      = isset($_REQUEST['type'])?intval($_REQUEST['type']):Collect_Type::TOPIC;
+        $type      = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
         if(empty($type)){

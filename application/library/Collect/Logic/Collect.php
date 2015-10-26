@@ -83,17 +83,19 @@ class Collect_Logic_Collect{
      */
     public function getCollect($type, $user_id, $page, $pageSize){
         $arrRet      = array();
-        $listCollect = new Collect_List_Collect();
-        $listCollect->setFilter(array(
-            'type'    => $type,
-            'user_id' => $user_id,
-        ));
-        $listCollect->setPage($page);
-        $listCollect->setPagesize($pageSize);
-        $arrCollect = $listCollect->toArray();
-        if(empty($arrCollect['list'])){
-            return array();
-        }
+        if($type !== Collect_Type::COTENT){
+            $listCollect = new Collect_List_Collect();
+            $listCollect->setFilter(array(
+                'type'    => $type,
+                'user_id' => $user_id,
+            ));
+            $listCollect->setPage($page);
+            $listCollect->setPagesize($pageSize);
+            $arrCollect = $listCollect->toArray();
+            if(empty($arrCollect['list'])){
+                return array();
+            }
+        }        
         switch ($type){
             case Collect_Type::SIGHT:
                 $logicSight = new Sight_Logic_Sight();

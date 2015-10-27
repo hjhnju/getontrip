@@ -45,7 +45,7 @@ foreach ($arrTopic as $topic){
     $obj->hot2 = $hot2;
     $obj->save();
     
-    $listSightTopic = new Sight_List_Topic();
+    /*$listSightTopic = new Sight_List_Topic();
     $listSightTopic->setPagesize(PHP_INT_MAX);
     $listSightTopic->setFilter(array('topic_id' => $topic));
     $ret = $listSightTopic->toArray();
@@ -58,5 +58,5 @@ foreach ($arrTopic as $topic){
         foreach ($arrKeys as $key){
             $redis->delete($key);
         }
-    }
+    }*/
 }

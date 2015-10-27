@@ -6,8 +6,6 @@
  */
 class Home_Logic_List{
     
-    protected $_model;
-    
     protected $_logicTopic;
     
     protected $_logicSight;
@@ -24,8 +22,7 @@ class Home_Logic_List{
     
     const DEFAULT_CITY_ID = 2; //默认城市北京
     
-    public function __construct(){
-        $this->_model        = new GisModel();
+    public function __construct(){       
         $this->_logicTopic   = new Topic_Logic_Topic();
         $this->_logicSight   = new Sight_Logic_Sight();
         $this->_logicCollect = new Collect_Logic_Collect();
@@ -43,10 +40,11 @@ class Home_Logic_List{
         $arr   = array();
         $redis = Base_Redis::getInstance();
         $model = new TopicModel();
+        $modelGis  = new GisModel();
         Yaf_Session::getInstance()->set(Home_Keys::SESSION_USER_X_NAME,$x);
         Yaf_Session::getInstance()->set(Home_Keys::SESSION_USER_Y_NAME,$y);
         //找出所有由近到远的景点
-        $arr = $this->_model->getNearSight(array(
+        $arr = $modelGis->getNearSight(array(
             'x'=>$x,
             'y'=>$y,            
         ),$page,$pageSize);

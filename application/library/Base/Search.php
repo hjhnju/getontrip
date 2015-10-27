@@ -13,8 +13,6 @@ class Base_Search {
         'name',
         'content',
         'title',
-        'subtitle',
-        'desc',
     );
     
     //支持的检索表
@@ -76,7 +74,6 @@ class Base_Search {
         }else{
             $url .='&hl.simple.pre='.urlencode('').'&hl.simple.post='.urlencode('');
         }
-        
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

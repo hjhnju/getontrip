@@ -18,6 +18,8 @@ class Search_Logic_Search{
     
     protected $logicCollect;
     
+    protected $logicHotWord;
+    
     
     public function __construct(){
         $this->logicCity    = new City_Logic_City();
@@ -25,6 +27,7 @@ class Search_Logic_Search{
         $this->logicTopic   = new Topic_Logic_Topic();
         $this->logicCollect = new Collect_Logic_Collect();
         $this->logicComment = new Comment_Logic_Comment();
+        $this->logicHotWord = new Search_Logic_Word();
     }
     
     /**
@@ -101,6 +104,7 @@ class Search_Logic_Search{
                 );
                 break;
         }
+        $this->logicHotWord->addSearchWord($query);
         return $arrRet;
     }
     

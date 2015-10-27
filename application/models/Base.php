@@ -6,7 +6,7 @@ class BaseModel {
 
     /**
      */
-    protected $db;
+    public $db;
 
     public function __construct() {
         $this->db  = Base_Db::getInstance('getontrip');

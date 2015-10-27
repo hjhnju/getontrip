@@ -8,6 +8,8 @@ class ApiController extends Base_Controller_Api {
     
     const PAGESIZE = 4;
     
+    const HOT_WORD_NUM = 10;
+    
     public function init() {
         $this->setNeedLogin(false);
         parent::init();        
@@ -47,6 +49,18 @@ class ApiController extends Base_Controller_Api {
         $logic      = new Search_Logic_Search();
         $ret        = $logic->search($query, $page, $pageSize, $type);
         $this->ajaxDecode($ret);
+    }
+    
+    /**
+     * 接口3：/api/search/hotWord
+     * 热门搜索词接口
+     * @param integer size,条数，默认是10
+     */
+    public function hotWordAction(){
+        $size       = isset($_REQUEST['size'])?intval($_REQUEST['size']):self::HOT_WORD_NUM;
+        $logic      = new Search_Logic_Word();
+        $arrContent = $logic->getSearchHotWord($size);
+        return $this->ajax($arrContent);
     }
     
 }

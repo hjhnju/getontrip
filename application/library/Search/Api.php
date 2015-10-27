@@ -63,4 +63,27 @@ class Search_Api{
         $logic = new Search_Logic_Label();
         return $logic->addNewTag($name, $type, $arrObjIds);
     }
+    
+    /**
+     * 接口6:Search_Api::getQueryWords($page, $pageSize, $arrConf = array())
+     * @param integer $page
+     * @param integer $pageSize
+     * @param array $arrConf
+     * @return array
+     */
+    public static function getQueryWords($page, $pageSize, $arrConf = array()){
+        $logic = new Search_Logic_Word();
+        return $logic->getQueryWords($page, $pageSize, $arrConf);
+    }
+    
+    /**
+     * 接口7:Search_Api::editQueryWordStatus($word, $status)
+     * @param string $word
+     * @param integer $status
+     * @return boolean
+     */
+    public static function editQueryWordStatus($word, $status){
+        $logic = new Search_Logic_Word();
+        return $logic->editQueryWordStatus($word, $status);
+    }
 }

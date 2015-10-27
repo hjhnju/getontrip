@@ -6,8 +6,6 @@
 
 class User_RetCode extends Base_RetCode{
     
-    const NOT_LOGIN        = 2 ;   //未登录
-    
     const LOGIN_FAIL       = 1025; //登录失败
     
     const SIGN_OUT_FIAL    = 1026; //登出失败    

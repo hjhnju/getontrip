@@ -57,4 +57,15 @@ class Video_Api{
         $logicVideo = new Video_Logic_Video();
         return $logicVideo->addVideo($arrParam);
     }
+    
+    /**
+     * 接口6:Video_Api::getVideoInfo($id)
+     * 根据ID获取视频信息
+     * @param string $id
+     * @return array
+     */
+    public static function getVideoInfo($id){
+        $logicVideo = new Video_Logic_Video();
+        return $logicVideo->getVideoByInfo($id);
+    }
 }

@@ -46,7 +46,7 @@ class Base_Controller_Abstract extends Yaf_Controller_Abstract
             header("Content-Type: application/json; charset=UTF-8");
             
             $arrRtInfo = array();
-            $arrRtInfo['status'] = 2;
+            $arrRtInfo['status'] = Base_RetCode::SESSION_NOT_LOGIN;
             $arrRtInfo['statusInfo'] = '未登录';
             $arrRtInfo['data']= array();
             

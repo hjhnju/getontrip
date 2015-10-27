@@ -25,6 +25,7 @@ class Base_Search {
         'video',  
         'wiki',
         'city',
+        'content',
     );
     
     /**
@@ -56,7 +57,6 @@ class Base_Search {
             'name',
             'title',
             'content',
-            'content_desc',
         );
         if(empty($arrNeedKey)){
             $param = implode(",",self::$arrPrams);
@@ -66,12 +66,8 @@ class Base_Search {
         $param  = urlencode($param);
         $from   = ($page-1)*$pageSize;
         $url    = Base_Config::getConfig('solr')->url.'/solr/'.$type.'/select?q='.$query.'&wt=json&fl='.$param."&start=".$from."&rows=".$pageSize;
-        if($type == 'video'){
-            $url   .= '&hl=true&hl.fl=title';
-        }elseif($type == 'topic'){
+        if($type == 'content'){
             $url   .= '&hl=true&hl.fl=title'.urlencode(',')."content";
-        }elseif($type == 'book'){
-            $url   .= '&hl=true&hl.fl=title'.urlencode(',')."content_desc";
         }else{
             $url   .= '&hl=true&hl.fl=name';
         }        
@@ -80,6 +76,7 @@ class Base_Search {
         }else{
             $url .='&hl.simple.pre='.urlencode('').'&hl.simple.post='.urlencode('');
         }
+        
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -88,15 +85,15 @@ class Base_Search {
         curl_close($ch);
         
         $arrRet = json_decode($ret,true);
+        
         foreach ($arrRet['response']['docs'] as $key => $val){
-            if($type == 'book'){
-                $arrRet['response']['docs'][$key]['title'] = isset($arrRet['highlighting'][$val['id']]['title'][0])?$arrRet['highlighting'][$val['id']]['title'][0]:''; 
-                $arrRet['response']['docs'][$key]['content_desc']  = isset($arrRet['highlighting'][$val['id']]['content_desc'][0])?$arrRet['highlighting'][$val['id']]['content_desc'][0]:'';
-            }elseif($type == 'video'){
-                $arrRet['response']['docs'][$key]['title'] = isset($arrRet['highlighting'][$val['id']]['title'][0])?$arrRet['highlighting'][$val['id']]['title'][0]:'';                
-            }elseif($type == 'topic'){
-                $arrRet['response']['docs'][$key]['title']     = isset($arrRet['highlighting'][$val['id']]['title'][0])?$arrRet['highlighting'][$val['id']]['title'][0]:'';
-                $arrRet['response']['docs'][$key]['subtitle']  = isset($arrRet['highlighting'][$val['id']]['content'][0])?$arrRet['highlighting'][$val['id']]['content'][0]:'';
+            if($type == 'content'){
+                $val['title'][0]   = isset($val['title'][0])?$val['title'][0]:'';
+                $val['content'][0] = isset($val['content'][0])?$val['content'][0]:'';
+                $arrRet['response']['docs'][$key]['search_type']  = $val['search_type'][0];
+                $arrRet['response']['docs'][$key]['title']    = isset($arrRet['highlighting'][$val['unique_id']]['title'][0])?$arrRet['highlighting'][$val['unique_id']]['title'][0]:$val['title'][0]; 
+                $arrRet['response']['docs'][$key]['content']  = isset($arrRet['highlighting'][$val['unique_id']]['content'][0])?$arrRet['highlighting'][$val['unique_id']]['content'][0]:$val['content'][0];
+                unset($arrRet['response']['docs'][$key]['unique_id']);
             }else{
                 $arrRet['response']['docs'][$key]['name']  = isset($arrRet['highlighting'][$val['id']]['name'][0])?$arrRet['highlighting'][$val['id']]['name'][0]:'';
             }          

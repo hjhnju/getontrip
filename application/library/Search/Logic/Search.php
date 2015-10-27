@@ -18,11 +18,6 @@ class Search_Logic_Search{
     
     protected $logicCollect;
     
-    protected $logicBook;
-    
-    protected $logicVideo;
-    
-    protected $logicKeyword;
     
     public function __construct(){
         $this->logicCity    = new City_Logic_City();
@@ -30,9 +25,6 @@ class Search_Logic_Search{
         $this->logicTopic   = new Topic_Logic_Topic();
         $this->logicCollect = new Collect_Logic_Collect();
         $this->logicComment = new Comment_Logic_Comment();
-        $this->logicBook    = new Book_Logic_Book();
-        $this->logicVideo   = new Video_Logic_Video();
-        $this->logicKeyword = new Keyword_Logic_Keyword();
     }
     
     /**
@@ -57,37 +49,55 @@ class Search_Logic_Search{
                 break;
             case Search_Type_Search::CONTENT:
                 //内容信息
-                $arrTopic    = $this->logicTopic->searchTopic($query, $page, $pageSize);
-                $arrBook     = $this->logicBook->search($query, $page, $pageSize);
-                $arrVideo    = $this->logicVideo->search($query, $page, $pageSize);
-                $arrKeyword  = $this->logicKeyword->search($query, $page, $pageSize);
-                $arrRet = array(
-                    'topic'     => $arrTopic['data'],
-                    'book'      => $arrBook['data'],
-                    'video'     => $arrVideo['data'],
-                    'wiki'      => $arrKeyword['data'],
-                    'num'       => strval($arrKeyword['num'] + $arrVideo['num'] + $arrTopic['num'] + $arrBook['num']),
-                );
+                $arrRet = Base_Search::Search('content', $query, $page, $pageSize, array('id','unique_id','search_type','title','content'));
+                foreach ($arrRet['data'] as $key => $val){
+                    if($val['search_type'] == 'topic'){
+                        $topic = Topic_Api::getTopicById($val['id']);
+                        $arrRet['data'][$key]['image'] = Base_Image::getUrlByName($topic['image']);
+                    }elseif($val['search_type'] == 'book'){                       
+                        $book = Book_Api::getBookInfo($val['id']);
+                        $arrRet['data'][$key]['image'] = Base_Image::getUrlByName($book['image']);
+                    }elseif($val['search_type'] == 'video'){
+                        $video = Video_Api::getVideoInfo($val['id']);
+                        $arrContent['data'][$key]['url']   = isset($video['url'])?$video['url']:'';
+                        $arrRet['data'][$key]['image'] = Base_Image::getUrlByName($video['image']);
+                    }else{
+                        $keyword = Keyword_Api::queryById($val['id']);
+                        $arrContent['data'][$key]['url'] = isset($keyword['url'])?$keyword['url']:'';
+                        $arrRet['data'][$key]['image'] = Base_Image::getUrlByName($keyword['image']);
+                    }
+                }
                 break;
             default :
                 $arrCity     = $this->logicCity->search($query, $page, $pageSize);
                 $arrSight    = $this->logicSight->search($query, $page, $pageSize);
-                $arrTopic    = $this->logicTopic->searchTopic($query, $page, $pageSize);
-                $arrBook     = $this->logicBook->search($query, $page, $pageSize);
-                $arrVideo    = $this->logicVideo->search($query, $page, $pageSize);
-                $arrKeyword  = $this->logicKeyword->search($query, $page, $pageSize);
+                $arrContent = Base_Search::Search('content', $query, $page, $pageSize, array('id','unique_id','search_type','title','content'));
+                foreach ($arrContent['data'] as $key => $val){
+                    if($val['search_type'] == 'topic'){
+                        $topic = Topic_Api::getTopicById($val['id']);
+                        $arrContent['data'][$key]['image'] = Base_Image::getUrlByName($topic['image']);
+                    }elseif($val['search_type'] == 'book'){                       
+                        $book = Book_Api::getBookInfo($val['id']);
+                        $arrContent['data'][$key]['image'] = Base_Image::getUrlByName($book['image']);
+                    }elseif($val['search_type'] == 'video'){
+                        $video = Video_Api::getVideoInfo($val['id']);
+                        $arrContent['data'][$key]['url']   = isset($video['url'])?$video['url']:'';
+                        $arrContent['data'][$key]['image'] = Base_Image::getUrlByName($video['image']);
+                    }else{
+                        $keyword = Keyword_Api::queryById($val['id']);
+                        $arrContent['data'][$key]['url'] = isset($keyword['url'])?$keyword['url']:'';
+                        $arrContent['data'][$key]['image'] = Base_Image::getUrlByName($keyword['image']);
+                    }
+                    $arrContent['data'][$key]['title']   = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['title']));
+                    $arrContent['data'][$key]['content'] = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['content']));
+                }
                 $arrRet = array(
                     'city'        => $arrCity['data'],
                     'city_num'    => $arrCity['num'],
                     'sight'       => $arrSight['data'],
                     'sight_num'   => $arrSight['num'],
-                    'content' => array(
-                        'topic'     => $arrTopic['data'],
-                        'book'      => $arrBook['data'],
-                        'video'     => $arrVideo['data'],
-                        'wiki'      => $arrKeyword['data'],                        
-                    ),
-                    'content_num'       => strval($arrKeyword['num'] + $arrVideo['num'] + $arrTopic['num'] + $arrBook['num']),
+                    'content'     => $arrContent['data'],
+                    'content_num' => $arrContent['num'],
                 );
                 break;
         }

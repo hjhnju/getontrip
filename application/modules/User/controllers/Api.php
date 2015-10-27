@@ -56,7 +56,7 @@ class ApiController extends Base_Controller_Page{
     public function getinfoAction() {
         $userId   = User_Api::getCurrentUser();
         if(empty($userId)){
-            return $this->ajaxError(User_RetCode::NOT_LOGIN,User_RetCode::getMsg(User_RetCode::NOT_LOGIN));
+            return $this->ajaxError(User_RetCode::SESSION_NOT_LOGIN,User_RetCode::getMsg(User_RetCode::SESSION_NOT_LOGIN));
         }
         $type     = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         if(empty($type)){
@@ -77,7 +77,7 @@ class ApiController extends Base_Controller_Page{
     public function addinfoAction() {
         $userId     = User_Api::getCurrentUser();
         if(empty($userId)){
-            return $this->ajaxError(User_RetCode::NOT_LOGIN,User_RetCode::getMsg(User_RetCode::NOT_LOGIN));
+            return $this->ajaxError(User_RetCode::SESSION_NOT_LOGIN,User_RetCode::getMsg(User_RetCode::SESSION_NOT_LOGIN));
         }
         $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         $strParam   = isset($_REQUEST['param'])?trim($_REQUEST['param']):'';
@@ -99,7 +99,7 @@ class ApiController extends Base_Controller_Page{
     public function editinfoAction(){
         $userId     = User_Api::getCurrentUser();
         if(empty($userId)){
-            return $this->ajaxError(User_RetCode::NOT_LOGIN,User_RetCode::getMsg(User_RetCode::NOT_LOGIN));
+            return $this->ajaxError(User_RetCode::SESSION_NOT_LOGIN,User_RetCode::getMsg(User_RetCode::SESSION_NOT_LOGIN));
         }
         $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         $strParam   = isset($_REQUEST['param'])?trim($_REQUEST['param']):'';

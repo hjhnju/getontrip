@@ -501,4 +501,10 @@ class Book_Logic_Book extends Base_Logic{
         }
         return $temp;
     }
+    
+    public function getBookInfo($id){
+        $objBook = new Book_Object_Book();
+        $objBook->fetch(array('id' => $id));
+        return $objBook->toArray();
+    }
 }

@@ -73,4 +73,15 @@ class Book_Api{
         $logicBook = new Book_Logic_Book();
         return $logicBook->getBookSourceFromIsbn($strIsbn, $type);
     }
+    
+    /**
+     * 接口7：Book_Api::getBookInfo($id)
+     * 根据ID获取图书信息
+     * @param string $id
+     * @return array
+     */
+    public static function getBookInfo($id){
+        $logicBook = new Book_Logic_Book();
+        return $logicBook->getBookInfo($id);
+    }
 }

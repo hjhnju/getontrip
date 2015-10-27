@@ -35,12 +35,12 @@ function addImage($sightId = ''){
                  continue;
              }
          }
-         /*if(!empty($val['image'])){
+         if(!empty($val['image'])){
              $image = $val['image'];
              $content  = file_get_contents("http://123.57.67.165:8301/Pic/".$image);
              $filename = $image ;
              $res = $oss->writeFileContent($filename, $content);
-         }*/
+         }
          if(isset($val['content'])){
              $content = $val['content'];
          }
@@ -52,7 +52,7 @@ function addImage($sightId = ''){
          }
      }
      
-     /*$listBook = new Book_List_Book();
+     $listBook = new Book_List_Book();
      $listBook->setPagesize(PHP_INT_MAX);
      $arrBook = $listBook->toArray();
      foreach ($arrBook['list'] as $val){
@@ -122,7 +122,7 @@ function addImage($sightId = ''){
      $arrKeys = $redis->keys("topic_tag_*");
      foreach ($arrKeys as $key){
          $redis->delete($key);
-     }*/
+     }
 }
 
 function delImage($sightId = ''){

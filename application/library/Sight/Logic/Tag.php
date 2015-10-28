@@ -14,22 +14,23 @@ class Sight_Logic_Tag extends Base_Logic{
     const HIDE_TAG = -1;
     
     /**
-     * 5 景观标签
+     * 10 景观标签
      * @var integer
      */
-    const LANDSCAPE = 5;
+    const LANDSCAPE = 10;
     
     /**
-     * 6 视频标签
+     * 11 书籍标签
      * @var integer
      */
-    const VIDEO    = 6;
+    const BOOK    = 11;
     
     /**
-     * 7 书籍标签
+     * 12 视频标签
      * @var integer
      */
-    const BOOK    = 7;
+    const VIDEO    = 12;
+        
     
     const STR_LANDSCAPE = 'landscape';
     

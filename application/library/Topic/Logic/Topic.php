@@ -100,10 +100,12 @@ class Topic_Logic_Topic extends Base_Logic{
      */
     public function getNewTopic($sightId,$period = self::DEFAULT_DAYS, $page, $pageSize, $strTags = ''){
         $logicTag = new Tag_Logic_Tag;        
-        if($logicTag->getTagType($strTags) != Tag_Type_Tag::GENERAL){
-            $arrRet     = $this->model->getNewTopicIds($sightId, $strTags, $page, $pageSize);
+        if($logicTag->getTagType($strTags) == Tag_Type_Tag::CLASSIFY){
+            $arrRet     = $this->model->getHotTopicIds($sightId,$strTags,$page,$pageSize,$period);
+        }elseif($logicTag->getTagType($strTags) == Tag_Type_Tag::TOP_CLASS){
+            $arrRet     = $this->getTopTopicIds($strTags, $sightId, $page, $pageSize);
         }else{
-            $arrRet     = $this->getGeneralTopics($strTags, $page, $pageSize);
+            $arrRet     = $this->getGeneralTopicIds($strTags, $page, $pageSize);
         }        
         foreach($arrRet as $key => $val){    
             $topicDetail               = $this->model->getTopicDetail($val['id'],$page);

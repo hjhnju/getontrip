@@ -23,13 +23,13 @@ class Sight_Logic_Tag extends Base_Logic{
      * 11 书籍标签
      * @var integer
      */
-    const BOOK    = 11;
+    const BOOK      = 11;
     
     /**
      * 12 视频标签
      * @var integer
      */
-    const VIDEO    = 12;
+    const VIDEO     = 12;
         
     
     const STR_LANDSCAPE = 'landscape';
@@ -45,13 +45,13 @@ class Sight_Logic_Tag extends Base_Logic{
     }
     
     public function getTagsBySight($sightId){ 
-        $arrRet          = array();
         $arrTopTag       = array();
-        $arrGeneralTag   = array();
         $arrCommonTag    = array();
         $arrLessTopicTag = array(); 
         $arrTopicIds     = array();
-        /*$redis           = Base_Redis::getInstance();
+        
+        /*$arrRet          = array();
+        $redis           = Base_Redis::getInstance();
         $arrRet    = $redis->zRange(Sight_Keys::getSightShowTagIds($sightId),0,-1);
         if(!empty($arrRet)){
             foreach ($arrRet as $val){
@@ -64,8 +64,7 @@ class Sight_Logic_Tag extends Base_Logic{
             return $arrCommonTag;
         }*/
         
-        $limit_num       = Base_Config::getConfig('showtag')->topicnum;        
-        
+        $limit_num   = Base_Config::getConfig('showtag')->topicnum;                
         $strTopicIds = $this->_logicTopic->getTopicIdBySight($sightId);
         if(!empty($strTopicIds)){
             $arrTopicIds = explode(",",$strTopicIds);

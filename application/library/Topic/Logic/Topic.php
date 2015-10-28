@@ -69,7 +69,10 @@ class Topic_Logic_Topic extends Base_Logic{
             $arrRet     = $this->getGeneralTopicIds($strTags, $page, $pageSize);
         }   
         foreach($arrRet as $key => $val){
-            $topicDetail = $this->model->getTopicDetail($val['id'],$page);          
+            $topicDetail = $this->model->getTopicDetail($val['id'],$page); 
+            if(empty($topicDetail['title'])){
+                continue;
+            }         
             $arrRet[$key]['title']     = trim($topicDetail['title']);
             $arrRet[$key]['subtitle']  = trim($topicDetail['subtitle']);
             //话题访问人数            

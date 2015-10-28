@@ -478,7 +478,7 @@ class Topic_Logic_Topic extends Base_Logic{
  
         //删除评论
         $listComment = new Comment_List_Comment();
-        $listComment->setFilter(array('topic_id' => $id));
+        $listComment->setFilter(array('obj_id' => $id));
         $listComment->setPagesize(PHP_INT_MAX);
         $arrComment = $listComment->toArray();
         foreach ($arrComment['list'] as $index => $val){

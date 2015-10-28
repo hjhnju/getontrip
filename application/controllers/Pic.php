@@ -11,6 +11,10 @@ class PicController extends Base_Controller_Page {
 
     /**
      * 图片浏览
+     * /pic/xxx.jpg             后面可以拼接尺寸参数如下几种情况：
+     * @200h_100w、@e200h_e100w  固定一条边,另一条边按原图比例进行缩放 
+     * @c200h_c100w              居中适应的缩放并裁剪
+     * @f200h_f100w              强制缩放不裁剪
      */
     public function indexAction() {
         $width    = 0;

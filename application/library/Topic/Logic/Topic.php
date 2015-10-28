@@ -61,10 +61,12 @@ class Topic_Logic_Topic extends Base_Logic{
      */
     public function getHotTopic($sightId,$period=self::DEFAULT_DAYS,$page=1,$pageSize=self::DEFAULT_SIZE,$strTags=''){
         $logicTag = new Tag_Logic_Tag;
-        if($logicTag->getTagType($strTags) != Tag_Type_Tag::GENERAL){
+        if($logicTag->getTagType($strTags) == Tag_Type_Tag::CLASSIFY){
             $arrRet     = $this->model->getHotTopicIds($sightId,$strTags,$page,$pageSize,$period);
+        }elseif($logicTag->getTagType($strTags) == Tag_Type_Tag::TOP_CLASS){
+            $arrRet     = $this->getTopTopicIds($strTags, $sightId, $page, $pageSize);
         }else{
-            $arrRet     = $this->getGeneralTopics($strTags, $page, $pageSize);
+            $arrRet     = $this->getGeneralTopicIds($strTags, $page, $pageSize);
         }   
         foreach($arrRet as $key => $val){
             $topicDetail = $this->model->getTopicDetail($val['id'],$page);          
@@ -811,7 +813,7 @@ class Topic_Logic_Topic extends Base_Logic{
      * @param integer $pageSize
      * @return array
      */
-    public function getGeneralTopics($strTag,$page,$pageSize){
+    public function getGeneralTopicIds($strTag,$page,$pageSize){
         $arrTags       = explode(",",$strTag);
         $listTopicTage = new Topic_List_Tag();
         $arrRet        = array();
@@ -824,6 +826,47 @@ class Topic_Logic_Topic extends Base_Logic{
                 $arrRet[] = array('id' => strval($val['topic_id']));
             }
         }        
+        return $arrRet;
+    }
+    
+    /**
+     * 获取通用标签所包含的话题ID集合
+     * @param string $strTag
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function getTopTopicIds($strTag, $sightId, $page, $pageSize){
+        $arrTags         = array();
+        $arrIds          = array();
+        $logicTag        = new Tag_Logic_Tag();
+        $limit_num       = Base_Config::getConfig('showtag')->topicnum;
+        $strTopicIds = $this->getTopicIdBySight($sightId);
+        if(!empty($strTopicIds)){
+            $arrTopicIds = explode(",",$strTopicIds);
+        }
+        foreach ($arrTopicIds as $id){
+            $arrTags = $logicTag->getTopicTags($id);
+            foreach ($arrTags as $val){
+                $tag = $logicTag->getTagByName($val);
+                $num = $this->model->getTopicNumByTag($tag['id'], $sightId);
+                if($num < $limit_num){
+                    if(!in_array($tag['id'],$arrIds)){
+                        $arrIds[] = $tag['id'];
+                    }
+                }
+            }
+        }
+        $listTopicTage = new Topic_List_Tag();
+        $arrRet        = array();
+        $strFilter     = implode(",",$arrIds);
+        $listTopicTage->setFilterString("`tag_id` in (".$strFilter.")");
+        $listTopicTage->setPage($page);
+        $listTopicTage->setPagesize($pageSize);
+        $ret = $listTopicTage->toArray();
+        foreach ($ret['list'] as $val){
+            $arrRet[] = array('id' => strval($val['topic_id']));
+        }
         return $arrRet;
     }
     

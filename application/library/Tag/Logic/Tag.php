@@ -99,14 +99,18 @@ class Tag_Logic_Tag extends Base_Logic{
      * @return boolean
      */
     public function delTag($id){
-        $objTag = new Tag_Object_Tag();
-        $objTag->fetch(array('id' => $id));
-        $ret1 = $objTag->remove();
-    
         $listTopictag = new Topic_List_Tag();
         $listTopictag->setFilter(array('tag_id' => $id));
         $listTopictag->setPagesize(PHP_INT_MAX);
         $arrList = $listTopictag->toArray();
+        if(!empty($arrList['list'])){
+            return false;
+        }
+        
+        $objTag = new Tag_Object_Tag();
+        $objTag->fetch(array('id' => $id));
+        $ret1 = $objTag->remove();
+      
         foreach ($arrList['list'] as $val){
             $objTag = new Topic_Object_Tag();
             $objTag->fetch(array('id'=>$val['id']));            

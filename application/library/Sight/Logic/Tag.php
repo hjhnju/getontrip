@@ -45,10 +45,12 @@ class Sight_Logic_Tag extends Base_Logic{
     
     public function getTagsBySight($sightId){ 
         $arrRet          = array();
+        $arrTopTag       = array();
+        $arrGeneralTag   = array();
         $arrCommonTag    = array();
         $arrLessTopicTag = array(); 
         $arrTopicIds     = array();
-        $redis           = Base_Redis::getInstance();
+        /*$redis           = Base_Redis::getInstance();
         $arrRet    = $redis->zRange(Sight_Keys::getSightShowTagIds($sightId),0,-1);
         if(!empty($arrRet)){
             foreach ($arrRet as $val){
@@ -59,19 +61,10 @@ class Sight_Logic_Tag extends Base_Logic{
                 $arrCommonTag[]  = $arrData;
             }
             return $arrCommonTag;
-        }
+        }*/
         
-        $limit_num       = Base_Config::getConfig('showtag')->topicnum;
-        $listSightTag = new Sight_List_Tag();
-        $listSightTag->setFilter(array('sight_id' => $sightId));
-        $listSightTag->setPagesize(PHP_INT_MAX);
-        $arrTemp = $listSightTag->toArray();
-        foreach ($arrTemp['list'] as $key => $val){
-            $arrGeneralTag[$key]['id']   = trim($val['tag_id']);
-            $tag  = $this->_logicTag->getTagById($val['tag_id']);
-            $arrGeneralTag[$key]['type'] = strval(Tag_Type_Tag::GENERAL);
-            $arrGeneralTag[$key]['name'] = trim($tag['name']);
-        }
+        $limit_num       = Base_Config::getConfig('showtag')->topicnum;        
+        
         $strTopicIds = $this->_logicTopic->getTopicIdBySight($sightId);
         if(!empty($strTopicIds)){
             $arrTopicIds = explode(",",$strTopicIds);
@@ -81,37 +74,39 @@ class Sight_Logic_Tag extends Base_Logic{
             foreach ($arrTags as $val){
                 $temp = array();
                 $tag  = $this->_logicTag->getTagByName($val);
-                //通用标签，如果话题数达不到条件范围则不显示
-                if($tag['type'] == Tag_Type_Tag::GENERAL){
-                    $temp['id']     = strval($tag['id']);
-                    $temp['type']   = strval($tag['type']);
-                    $temp['name']   = $val;
-                    if(!in_array($temp,$arrCommonTag) && !empty($temp)){
-                        $num = $this->_modelTopic->getTopicNumByTag($tag['id'], $sightId);
-                        if( $num >= $limit_num){
+                
+                $temp['id']     = strval($tag['id']);
+                $temp['type']   = strval($tag['type']);
+                $temp['name']   = $val;
+                if(!empty($temp)){
+                    $num = $this->_modelTopic->getTopicNumByTag($tag['id'], $sightId);
+                    if($num >= $limit_num && $tag['weight'] !== self::HIDE_TAG){
+                        if(!in_array($temp,$arrCommonTag) ){
                             $arrCommonTag[] = $temp;
-                        }                        
+                        }
+                    }else{
+                        $arrLessTopicTag[]  = $temp['id'];
                     }
-                }else{//分类标签，可能需要归结到一级分类标签来显示
-                    $temp['id']     = strval($tag['id']);
-                    $temp['type']   = strval($tag['type']);
-                    $temp['name']   = $val;  
-                    if(!empty($temp)){
-                        $num = $this->_modelTopic->getTopicNumByTag($tag['id'], $sightId);
-                        if($num >= $limit_num && $tag['weight'] !== self::HIDE_TAG){
-                            if(!in_array($temp,$arrCommonTag) ){
-                                $arrCommonTag[] = $temp;
-                            }                            
-                        }else{
-                            $arrLessTopicTag[]  = $temp['id'];
-                        } 
-                    }
-                }                 
+                }               
             }
         }
-        if(count($arrLessTopicTag) >= $limit_num){
-            $logic  = new Tag_Logic_Relation();
-            $arrCommonTag = array_merge($arrCommonTag,$logic->groupByTop($arrLessTopicTag));
+        if(!empty($arrLessTopicTag)){
+            $logic     = new Tag_Logic_Relation();
+            $arrTopTag = $logic->groupByTop($arrLessTopicTag);
+        }
+        
+        $listSightTag = new Sight_List_Tag();
+        $listSightTag->setFilter(array('sight_id' => $sightId));
+        $listSightTag->setPagesize(PHP_INT_MAX);
+        $arrTemp = $listSightTag->toArray();
+        foreach ($arrTemp['list'] as $key => $val){
+            //$num = $this->_modelTopic->getTopicNumByTag($val['tag_id']);
+            $temp['id']   = trim($val['tag_id']);
+            $tag  = $this->_logicTag->getTagById($val['tag_id']);
+            $temp['type'] = strval(Tag_Type_Tag::GENERAL);
+            $temp['name'] = trim($tag['name']);
+            
+            $arrCommonTag[] =       $temp;
         }
         
         //判断有无视频,书籍,而增加相应标签      
@@ -127,10 +122,12 @@ class Sight_Logic_Tag extends Base_Logic{
         if(!empty($video)){
             $arrCommonTag[] = array('id' => strval(self::STR_VIDEO),'type' => strval(self::VIDEO), 'name' => '视频');
         }        
-        foreach ($arrCommonTag as $index => $tag){
+        
+        /*foreach ($arrCommonTag as $index => $tag){
             $data = $tag['id'].",".$tag['type'].",".$tag['name'];
             $redis->zAdd(Sight_Keys::getSightShowTagIds($sightId),$index,$data);  
-        }
+        }*/
+        $arrCommonTag = array_merge($arrTopTag,$arrCommonTag);
         return $arrCommonTag;
     }
 }

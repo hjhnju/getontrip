@@ -11,9 +11,10 @@ class Tag_Logic_Relation extends Base_Logic{
         $arrTemp   = array();
         $arrRet    = array();
         $limit_num = Base_Config::getConfig('showtag')->topicnum;
+        $limit_num = 1;
         foreach ($arrTags as $tag){
             $objTagRelation = new Tag_Object_Relation();
-            $objTagRelation->fetch(array('classifytag_id' => $tag));
+            $objTagRelation->fetch(array('classifytag_id' => $tag));            
             if(isset($arrRet[$objTagRelation->toptagId])){
                 $arrTemp[$objTagRelation->toptagId] += 1;
             }else{
@@ -24,7 +25,7 @@ class Tag_Logic_Relation extends Base_Logic{
             if($val >= $limit_num){
                 $tmp  = array();
                 $tag  = $this->_logicTag->getTagById($key);
-                $tmp['id']   = $key;
+                $tmp['id']   = strval($key);
                 $tmp['type'] = strval(Tag_Type_Tag::TOP_CLASS);
                 $tmp['name'] = trim($tag['name']);
                 $arrRet[]  = $tmp;

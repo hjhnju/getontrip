@@ -138,11 +138,11 @@ class TopicModel extends BaseModel{
      * @return number
      */
     public function getTopicNumByTag($tagId, $sightId){  
-        $redis  = Base_Redis::getInstance();  
-        $total  = $redis->hGet(Tag_Keys::getTagTopicNumKey(),$sightId); 
-        if(!empty($total)){
-            return $total;
-        }
+       // $redis  = Base_Redis::getInstance();  
+       // $total  = $redis->hGet(Tag_Keys::getTagTopicNumKey(),$sightId); 
+       // if(!empty($total)){
+       //     return $total;
+       // }
         $objTag = new Tag_Object_Tag();
         $objTag->fetch(array('id' => $tagId));
         if($objTag->type == Tag_Type_Tag::GENERAL){
@@ -154,7 +154,7 @@ class TopicModel extends BaseModel{
             $sql   = "select count(distinct(a.topic_id)) from `sight_topic` a, `topic_tag` b, `topic` c where a.sight_id = $sightId and b.tag_id = $tagId and a.topic_id = b.topic_id and a.topic_id = c.id and c.status = ".Topic_Type_Status::PUBLISHED;
             $total = $this->db->fetchOne($sql);
         }
-        $redis->hSet(Tag_Keys::getTagTopicNumKey(),$sightId,$total);
+       // $redis->hSet(Tag_Keys::getTagTopicNumKey(),$sightId,$total);
         return $total;
     }
 }

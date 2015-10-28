@@ -27,7 +27,7 @@ class TagapiController extends Base_Controller_Api{
         $num    = 0;
         $arrRet = array();
         foreach ($List['list'] as $val){
-            if($val['type'] == Tag_Type_Tag::NORMAL || $val['type'] == Tag_Type_Tag::SEARCH){
+            if($val['type'] == Tag_Type_Tag::NORMAL){
                 continue;
             }
             $val['type_name'] = Tag_Type_Tag::getTypeName($val['type']);

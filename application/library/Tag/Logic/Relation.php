@@ -25,6 +25,9 @@ class Tag_Logic_Relation extends Base_Logic{
             if($val >= $limit_num){
                 $tmp  = array();
                 $tag  = $this->_logicTag->getTagById($key);
+                if(!isset($tag['name'])){
+                    continue;
+                }
                 $tmp['id']   = strval($key);
                 $tmp['type'] = strval(Tag_Type_Tag::TOP_CLASS);
                 $tmp['name'] = trim($tag['name']);

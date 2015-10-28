@@ -18,19 +18,28 @@ class TagapiController extends Base_Controller_Api{
         //第一条数据的起始位置，比如0代表第一条数据
         $start=isset($_REQUEST['start'])?$_REQUEST['start']:0; 
         $pageSize=isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX; 
-        $page=($start/$pageSize)+1;
+        //$page=($start/$pageSize)+1;
          
         $arrParam = isset($_REQUEST['params'])?$_REQUEST['params']:array();
-        $List=Tag_Api::getTagList($page, $pageSize,$arrParam);
         
-        foreach ($List['list'] as $key => $val){
-            $List['list'][$key]['type_name'] = Tag_Type_Tag::getTypeName($val['type']);
+        $List=Tag_Api::getTagList(1, PHP_INT_MAX,$arrParam);
+        
+        $num    = 0;
+        $arrRet = array();
+        foreach ($List['list'] as $val){
+            if($val['type'] == Tag_Type_Tag::NORMAL || $val['type'] == Tag_Type_Tag::SEARCH){
+                continue;
+            }
+            $val['type_name'] = Tag_Type_Tag::getTypeName($val['type']);
+            $arrRet[]         = $val;
+            $num += 1;
         }
         
+        $arrRet = array_slice($arrRet, $start, $pageSize);
     
-        $retList['recordsFiltered'] =$List['total'];
-        $retList['recordsTotal'] = $List['total']; 
-        $retList['data'] =$List['list'];
+        $retList['recordsFiltered'] =$num;
+        $retList['recordsTotal'] = $num; 
+        $retList['data'] =$arrRet;
 
     
 		    return $this->ajax($retList);

@@ -123,12 +123,12 @@ class Sight_Logic_Tag extends Base_Logic{
         if(!empty($video)){
             $arrCommonTag[] = array('id' => strval(self::STR_VIDEO),'type' => strval(self::VIDEO), 'name' => '视频');
         }        
+        $arrCommonTag = array_merge($arrTopTag,$arrCommonTag);
         
         /*foreach ($arrCommonTag as $index => $tag){
             $data = $tag['id'].",".$tag['type'].",".$tag['name'];
             $redis->zAdd(Sight_Keys::getSightShowTagIds($sightId),$index,$data);  
         }*/
-        $arrCommonTag = array_merge($arrTopTag,$arrCommonTag);
         return $arrCommonTag;
     }
 }

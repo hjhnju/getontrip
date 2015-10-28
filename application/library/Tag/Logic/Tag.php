@@ -21,10 +21,12 @@ class Tag_Logic_Tag extends Base_Logic{
         if(!empty($arrParam)){
             $listTag->setFilter($arrParam);
             if (isset($arrParam['type'])&&$arrParam['type']==Tag_Type_Tag::SEARCH) {
-                $listTag->setOrder('weight asc');
+                $listTag->setOrder('`weight` asc');
             }else{
-                $listTag->setOrder('id desc');
+                $listTag->setOrder('`id` desc');
             }
+        }else{
+            $listTag->setOrder('`type` desc');
         }
         return $listTag->toArray();
     }

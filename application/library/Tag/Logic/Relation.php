@@ -10,8 +10,7 @@ class Tag_Logic_Relation extends Base_Logic{
     public function groupByTop($arrTags){
         $arrTemp   = array();
         $arrRet    = array();
-        $limit_num = Base_Config::getConfig('showtag')->topicnum;
-        $limit_num = 1;
+        $limit_num = Base_Config::getConfig('showtag')->firstnum;
         foreach ($arrTags as $tag){
             $objTagRelation = new Tag_Object_Relation();
             $objTagRelation->fetch(array('classifytag_id' => $tag));            

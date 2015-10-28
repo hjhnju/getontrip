@@ -62,11 +62,11 @@ class Search_Logic_Search{
                         $arrRet['data'][$key]['image'] = isset($book['image'])?Base_Image::getUrlByName($book['image']):'';
                     }elseif($val['search_type'] == 'video'){
                         $video = Video_Api::getVideoInfo($val['id']);
-                        $arrContent['data'][$key]['url']   = isset($video['url'])?$video['url']:'';
+                        $arrRet['data'][$key]['url']   = isset($video['url'])?$video['url']:'';
                         $arrRet['data'][$key]['image'] = isset($video['image'])?Base_Image::getUrlByName($video['image']):'';
                     }else{
                         $keyword = Keyword_Api::queryById($val['id']);
-                        $arrContent['data'][$key]['url'] = isset($keyword['url'])?$keyword['url']:'';
+                        $arrRet['data'][$key]['url'] = isset($keyword['url'])?$keyword['url']:'';
                         $arrRet['data'][$key]['image'] = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
                     }
                 }

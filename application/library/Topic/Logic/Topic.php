@@ -850,18 +850,17 @@ class Topic_Logic_Topic extends Base_Logic{
         if(!empty($strTopicIds)){
             $arrTopicIds = explode(",",$strTopicIds);
         }
-        foreach ($arrTopicIds as $id){
-            $arrTags = $logicTag->getTopicTags($id);
-            foreach ($arrTags as $val){
-                $tag = $logicTag->getTagByName($val);
-                $num = $this->model->getTopicNumByTag($tag['id'], $sightId);
-                if($num < $limit_num){
-                    if(!in_array($tag['id'],$arrIds)){
-                        $arrIds[] = $tag['id'];
-                    }
+        
+        $arrSecond = Tag_Api::getTagRelation($strTag, 1, PHP_INT_MAX);
+        foreach ($arrSecond['list'] as $tag){
+            $num = $this->model->getTopicNumByTag($tag['classifytag_id'], $sightId);
+            if($num < $limit_num){
+                if(!in_array($tag['classifytag_id'],$arrIds)){
+                    $arrIds[] = $tag['classifytag_id'];
                 }
             }
         }
+        
         $listTopicTage = new Topic_List_Tag();
         $arrRet        = array();
         $strFilter     = implode(",",$arrIds);

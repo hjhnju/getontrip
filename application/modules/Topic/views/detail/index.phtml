@@ -56,9 +56,9 @@
     </div>
     <div class="text-from">
        {%if empty($post.from_detail) eq 0%}
-            来自：{%$post.from%}
+            内容来自{%$post.from%}
        {%elseif empty($post.from) eq 0%}
-            来自:{%$post.from%}&nbsp;&nbsp;<a href="{%$post.url%}" target="_blank">查看原网页</a>
+            <a href="{%$post.url%}" target="_blank">内容来自{%$post.from%}，查看原网页</a>
        {%/if%} 
     </div>
   </div>

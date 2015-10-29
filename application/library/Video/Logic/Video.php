@@ -76,7 +76,7 @@ class Video_Logic_Video extends Base_Logic{
         
         foreach($html->find('li.list_item') as $e){           
             $info = array();
-            $info['title']     = trim(html_entity_decode($e->getAttribute('data-widget-searchlist-tvname')));
+            $info['title']     = $e->getAttribute('data-widget-searchlist-tvname');
             $diversity         = intval($e->getAttribute('data-widget-searchlist-pagesize'));
             $info['type']      = ($diversity > 1)?Video_Type_Type::ALBUM:Video_Type_Type::VIDEO;
             $info['catageory'] = html_entity_decode($e->getAttribute('data-widget-searchlist-catageory'));
@@ -84,7 +84,7 @@ class Video_Logic_Video extends Base_Logic{
             $info['url']       = trim($ret->getAttribute("href"));        
             $ret               = $e->find('a.figure img',0);
             $info['image']     = $this->uploadPic($ret->getAttribute("src"),$url);
-            $info['status']    = Video_Type_Status::NOTPUBLISHED;
+            $info['status']    = Video_Type_Status::PUBLISHED;
             $info['from']      = '爱奇艺';
             $info['create_time'] = time();          
             
@@ -117,7 +117,11 @@ class Video_Logic_Video extends Base_Logic{
             if(empty($id)){
                 $objVideo          = new Video_Object_Video();
                 $objVideo->sightId = $sightId;
-                $objVideo->title   = Base_Util_String::getHtmlEntity($info['title']);
+                $objVideo->title   = Base_Util_String::delStartEmpty(Base_Util_String::getHtmlEntity($info['title']));
+                if(empty($objVideo->title)){
+                    $this->delPic($info['image']);
+                    continue;
+                }
                 $objVideo->from    = $info['from'];
                 $objVideo->url     = $info['url'];
                 $objVideo->image   = $info['image'];
@@ -125,7 +129,7 @@ class Video_Logic_Video extends Base_Logic{
                 $objVideo->status  = $info['status'];
                 $objVideo->len     = $info['len'];
                 $objVideo->guid    = $guid;
-                $objVideo->weight  = $this->getVideoNum($sightId) + 1;
+                $objVideo->weight  = $this->getAllVideoNum($sightId) + 1;
                 $objVideo->save();
             }else{//删除上传了的图片，其它字段不改变
                 $this->delPic($info['image']);
@@ -154,6 +158,14 @@ class Video_Logic_Video extends Base_Logic{
             $arrVideo[$key]['from']  = isset($video['from'])?trim($video['from']):'';
         }
         return array('data' => $arrVideo, 'num' => $num);
+    }
+    
+    public function getAllVideoNum($sighId){
+        $listVideo = new Video_List_Video();
+        $listVideo->setFilter(array('sight_id' => $sighId));
+        $listVideo->setPagesize(PHP_INT_MAX);
+        $count = $listVideo->countAll();
+        return $count;
     }
     
     public function getVideoNum($sighId, $status = Video_Type_Status::PUBLISHED){
@@ -211,7 +223,7 @@ class Video_Logic_Video extends Base_Logic{
                 $objVideo->$key = $val;
             }
         }
-        $objVideo->weight = $this->getVideoNum($arrParam['sight_id'])+1;
+        $objVideo->weight = $this->getAllVideoNum($arrParam['sight_id'])+1;
         return $objVideo->save();
     }
     

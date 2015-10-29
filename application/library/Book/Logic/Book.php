@@ -181,7 +181,7 @@ class Book_Logic_Book extends Base_Logic{
             
             $temp[$key]['image']  = $this->uploadPic($image);
             
-            $temp[$key]['status'] = Book_Type_Status::NOTPUBLISHED;
+            $temp[$key]['status'] = Book_Type_Status::PUBLISHED;
             
             $temp[$key]['pages']  = isset($detail['pages'])?$detail['pages']:'';
             
@@ -225,7 +225,7 @@ class Book_Logic_Book extends Base_Logic{
                 $objBook->contentDesc = $temp[$key]['content_desc'];
                 $objBook->catalog     = $temp[$key]['catalog'];
                 $objBook->publishTime = $temp[$key]['publish_time'];
-                $objBook->weight      = $this->getBookNum($sightId) + 1;
+                $objBook->weight      = $this->getAllBookNum($sightId) + 1;
                 $objBook->save();               
                 
                 $objBook->status  = $temp[$key]['status'];                
@@ -296,7 +296,7 @@ class Book_Logic_Book extends Base_Logic{
             }
         }
         if(!empty($sightId)){
-            $objBook->weight = $this->getBookNum($sightId)+1;
+            $objBook->weight = $this->getAllBookNum($sightId)+1;
         }        
         $ret =  $objBook->save();
         
@@ -383,7 +383,14 @@ class Book_Logic_Book extends Base_Logic{
         return $ret;
     }
     
-    public static function getBookNum($sightId, $status = Book_Type_Status::PUBLISHED){
+    public function getAllBookNum($sightId){        
+        $listSightBook = new Sight_List_Book();
+        $listSightBook->setFilter(array('sight_id' => $sightId));
+        $listSightBook->setPagesize(PHP_INT_MAX);
+        return $listSightBook->countAll();
+    }
+    
+    public function getBookNum($sightId, $status = Book_Type_Status::PUBLISHED){
         if($status == Book_Type_Status::PUBLISHED){
             $redis = Base_Redis::getInstance();
             $ret   = $redis->hGet(Sight_Keys::getSightTongjiKey($sightId),Sight_Keys::BOOK);

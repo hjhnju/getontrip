@@ -1,8 +1,8 @@
 <?php
 require_once("env.inc.php");
 $redis = Base_Redis::getInstance();
-//热度更新后，要删除掉有些缓存 
-//热度计算公式:一个月内或一周内(收藏数+内回复数+访问数)
+//热度更新后，要删除掉一些缓存 
+//热度计算公式:一个月内或一周内(收藏数+回复数+访问数)
 if(isset($argv[1])){
     $arrTopic = $argv[1];
 }else{

@@ -64,7 +64,8 @@ class Sight_Logic_Tag extends Base_Logic{
             return $arrCommonTag;
         }*/
         
-        $limit_num   = Base_Config::getConfig('showtag')->topicnum;                
+        $limit_num       = Base_Config::getConfig('showtag')->topicnum; 
+        $limit_general   = Base_Config::getConfig('showtag')->firstnum;
         $strTopicIds = $this->_logicTopic->getTopicIdBySight($sightId);
         if(!empty($strTopicIds)){
             $arrTopicIds = explode(",",$strTopicIds);
@@ -100,7 +101,10 @@ class Sight_Logic_Tag extends Base_Logic{
         $listSightTag->setPagesize(PHP_INT_MAX);
         $arrTemp = $listSightTag->toArray();
         foreach ($arrTemp['list'] as $key => $val){
-            //$num = $this->_modelTopic->getTopicNumByTag($val['tag_id']);
+            $num = $this->_modelTopic->getTopicNumByTag($val['tag_id'],$sightId);
+            if($num < $limit_general){
+                continue;
+            }
             $temp['id']   = trim($val['tag_id']);
             $tag  = $this->_logicTag->getTagById($val['tag_id']);
             $temp['type'] = strval(Tag_Type_Tag::GENERAL);

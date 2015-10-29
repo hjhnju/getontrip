@@ -865,7 +865,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $listTopicTage = new Topic_List_Tag();
         $arrRet        = array();
         $strFilter     = implode(",",$arrIds);
-        $listTopicTage->setFilterString("`tag_id` in (".$strFilter.")");
+        $listTopicTage->setFilterString("`tag_id` in (".$strFilter.") and `topic_id` in (".$strTopicIds.")");
         $listTopicTage->setPage($page);
         $listTopicTage->setPagesize($pageSize);
         $ret = $listTopicTage->toArray();

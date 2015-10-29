@@ -62,6 +62,9 @@ if($type == 'Wiki' || $type == 'All'){
 }elseif($type == 'Video'){
     //删除视频
      $listVideo = new Video_List_Video();
+     if($sightId !== -1){
+         $listVideo->setFilter(array('sight_id' => $sightId));
+     }
      $listVideo->setPagesize(PHP_INT_MAX);
      $arrVideo = $listVideo->toArray();
      foreach ($arrVideo['list'] as $val){
@@ -74,27 +77,25 @@ if($type == 'Wiki' || $type == 'All'){
      }
 }else{
      //删除书籍
-     $listBook = new Book_List_Book();
-     $listBook->setPagesize(PHP_INT_MAX);
-     $arrBook = $listBook->toArray();
-     foreach ($arrBook['list'] as $val){
-         if(!empty($val['image'])){
-             $ret = $logic->delPic($val['image']);
-         }
-         $objBook = new Book_Object_Book();
-         $objBook->fetch(array('id' => $val['id']));
-         $objBook->remove();
-        
-         $listSightBook = new Sight_List_Book();
-         $listSightBook->setFilter(array('book_id' => $val['id']));
-         $listSightBook->setPagesize(PHP_INT_MAX);
-         $arrSightBook  = $listSightBook->toArray();
-         foreach ($arrSightBook['list'] as $data){
-             $objSightBook = new Sight_Object_Book();
-             $objSightBook->fetch(array('id' => $data['id']));
-             $objSightBook->remove();
-         }
-     }
+    $listSightBook = new Sight_List_Book();
+    if($sightId !== -1){
+        $listSightBook->setFilter(array('sight_id' => $sightId));
+    }
+    $listSightBook->setPagesize(PHP_INT_MAX);
+    $arrSightBook  = $listSightBook->toArray();
+    foreach ($arrSightBook['list'] as $data){
+        $objSightBook = new Sight_Object_Book();
+        $objSightBook->fetch(array('id' => $data['id']));
+        $bookId = $objSightBook->bookId;
+        $objSightBook->remove();
+    
+        $objBook = new Book_Object_Book();
+        $objBook->fetch(array('id' => $bookId));
+        if(!empty($val['image'])){
+            $ret = $logic->delPic($val['image']);
+        }
+        $objBook->remove();
+    }
 }
 foreach ($arrSight as $id){
     switch($type){

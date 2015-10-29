@@ -387,6 +387,9 @@ class Keyword_Logic_Keyword extends Base_Logic{
                 $objKeywordCatalog->keywordId = $objKeyword->id;
                 $objKeywordCatalog->save();
             }
+            if(empty($arrTemp)){
+                Base_Log::error('sight '.$sight.' can not get wiki!');
+            }
             $arrRet[] = $arrTemp;
             $html->clear();
         }

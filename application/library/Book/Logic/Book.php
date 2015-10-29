@@ -122,6 +122,9 @@ class Book_Logic_Book extends Base_Logic{
                 }
             }
         }
+        if(empty($arrIds)){
+            Base_Log::error('sight '.$sightId.' can not get jd books!');
+        }
         $key        = 0;
         foreach ($arrIds as $val){
             $base = new WareProductDetailSearchListGetRequest();

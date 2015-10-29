@@ -73,7 +73,7 @@ class Video_Logic_Video extends Base_Logic{
         //视频总数
         //$item  = $html->find('div.mod-page a',-2);
         //$count = $item->getAttribute('data-key')*self::PAGE_SIZE;
-        
+        $count = 0;
         foreach($html->find('li.list_item') as $index => $e){           
             $info = array();
             $info['title']     = $e->getAttribute('data-widget-searchlist-tvname');
@@ -139,6 +139,10 @@ class Video_Logic_Video extends Base_Logic{
                 $this->delPic($info['image']);
             }
             $arrData[]       = $info;
+            $count += 1;
+        }
+        if(empty($count)){
+            Base_Log::error('sight '.$sightId.' can not get aqiyi videos!');
         }
         $html->clear();
         return $arrData;

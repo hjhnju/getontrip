@@ -130,7 +130,9 @@ class Book_Logic_Book extends Base_Logic{
             $base->setClient("m");           
             $ret = $c->execute($base);
             $temparr = json_decode($ret->resp,true);
-           
+            if(!isset($temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['productInfo'])){
+                continue;
+            }
             $arr   = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['productInfo'];
             //$image = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['imagePaths'][0];
             if(!$arr['isbook']){
@@ -184,8 +186,8 @@ class Book_Logic_Book extends Base_Logic{
             $arr = json_decode($ret,true);
             $info =  isset($arr["jingdong_ware_bookbigfield_get_responce"]["BookBigFieldEntity"][0]["book_big_field_info"])?$arr["jingdong_ware_bookbigfield_get_responce"]["BookBigFieldEntity"][0]["book_big_field_info"]:'';
             
-            $temp[$key]['content_desc'] = empty($summary)?$info["content_desc"]:$summary;
-            $temp[$key]['catalog']      = empty($catalog)?$info['catalogue']:$catalog;         
+            $temp[$key]['content_desc'] = empty($summary)?(isset($info["content_desc"])?$info["content_desc"]:''):$summary;
+            $temp[$key]['catalog']      = empty($catalog)?(isset($info['catalogue'])?$info['catalogue']:''):$catalog;         
             
             $temp[$key]['content_desc'] = Base_Util_String::delStartEmpty($temp[$key]['content_desc']);
             $temp[$key]['catalog']      = Base_Util_String::delStartEmpty($temp[$key]['catalog']);

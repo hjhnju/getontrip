@@ -74,9 +74,13 @@ class Video_Logic_Video extends Base_Logic{
         //$item  = $html->find('div.mod-page a',-2);
         //$count = $item->getAttribute('data-key')*self::PAGE_SIZE;
         
-        foreach($html->find('li.list_item') as $e){           
+        foreach($html->find('li.list_item') as $index => $e){           
             $info = array();
             $info['title']     = $e->getAttribute('data-widget-searchlist-tvname');
+            if(empty($info['title'])){
+                $test = $html->find("h3.result_title a",$index);
+                $info['title'] = $test->getAttribute('title');
+            }
             $diversity         = intval($e->getAttribute('data-widget-searchlist-pagesize'));
             $info['type']      = ($diversity > 1)?Video_Type_Type::ALBUM:Video_Type_Type::VIDEO;
             $info['catageory'] = html_entity_decode($e->getAttribute('data-widget-searchlist-catageory'));

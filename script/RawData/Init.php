@@ -59,11 +59,43 @@ if($type == 'Wiki' || $type == 'All'){
             $objKeywordCatalog->remove();
         }
     }
+}elseif($type == 'Video'){
+    //删除视频
+     $listVideo = new Video_List_Video();
+     $listVideo->setPagesize(PHP_INT_MAX);
+     $arrVideo = $listVideo->toArray();
+     foreach ($arrVideo['list'] as $val){
+         if(!empty($val['image'])){
+             $ret = $logic->delPic($val['image']);
+         }
+         $objVideo = new Video_Object_Video();
+         $objVideo->fetch(array('id' => $val['id']));
+         $objVideo->remove();
+     }
+}else{
+     //删除书籍
+     $listBook = new Book_List_Book();
+     $listBook->setPagesize(PHP_INT_MAX);
+     $arrBook = $listBook->toArray();
+     foreach ($arrBook['list'] as $val){
+         if(!empty($val['image'])){
+             $ret = $logic->delPic($val['image']);
+         }
+         $objBook = new Book_Object_Book();
+         $objBook->fetch(array('id' => $val['id']));
+         $objBook->remove();
+        
+         $listSightBook = new Sight_List_Book();
+         $listSightBook->setFilter(array('book_id' => $val['id']));
+         $listSightBook->setPagesize(PHP_INT_MAX);
+         $arrSightBook  = $listSightBook->toArray();
+         foreach ($arrSightBook['list'] as $data){
+             $objSightBook = new Sight_Object_Book();
+             $objSightBook->fetch(array('id' => $data['id']));
+             $objSightBook->remove();
+         }
+     }
 }
-
-
-
-
 foreach ($arrSight as $id){
     switch($type){
         case 'Book':

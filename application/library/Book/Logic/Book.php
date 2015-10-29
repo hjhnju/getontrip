@@ -225,6 +225,7 @@ class Book_Logic_Book extends Base_Logic{
                 $objBook->contentDesc = $temp[$key]['content_desc'];
                 $objBook->catalog     = $temp[$key]['catalog'];
                 $objBook->publishTime = $temp[$key]['publish_time'];
+                $objBook->weight      = $this->getBookNum($sightId) + 1;
                 $objBook->save();               
                 
                 $objBook->status  = $temp[$key]['status'];                
@@ -246,6 +247,11 @@ class Book_Logic_Book extends Base_Logic{
      */
     public function editBook($id,$arrInfo){
         $objBook = new Book_Object_Book();
+        $sightId = '';
+        if(isset($arrInfo['sight_id'])){
+            $sightId = $arrInfo['sight_id'];
+            unset($arrInfo['sight_id']);
+        }
         $objBook->fetch(array('id' => $id));
         foreach ($arrInfo as $key => $val){
             if(in_array($key,$this->fields)){
@@ -256,7 +262,19 @@ class Book_Logic_Book extends Base_Logic{
                 $objBook->$key = $val;
             }
         }
-        return $objBook->save();
+        if(!empty($sightId)){
+            $objBook->weight = $this->getBookNum($sightId)+1;
+        }
+        
+        $ret =  $objBook->save();
+        
+        if(!empty($sightId)){
+            $objSightBook = new Sight_Object_Book();
+            $objSightBook->sightId = $sightId;
+            $objSightBook->bookId  = $objBook->id;
+            $objSightBook->save();
+        }      
+        return $ret;
     }
     
     /**
@@ -277,12 +295,18 @@ class Book_Logic_Book extends Base_Logic{
                 $objBook->$key = $val;
             }
         }
-        $ret1 =  $objBook->save();
-        $objSightBook = new Sight_Object_Book();
-        $objSightBook->sightId = $sightId;
-        $objSightBook->bookId  = $objBook->id;
-        $ret2 = $objSightBook->save();
-        return $ret1&&$ret2;
+        if(!empty($sightId)){
+            $objBook->weight = $this->getBookNum($sightId)+1;
+        }        
+        $ret =  $objBook->save();
+        
+        if(!empty($sightId)){
+            $objSightBook = new Sight_Object_Book();
+            $objSightBook->sightId = $sightId;
+            $objSightBook->bookId  = $objBook->id;
+            $objSightBook->save();
+        }      
+        return $ret;
     }
     
     /**
@@ -506,5 +530,50 @@ class Book_Logic_Book extends Base_Logic{
         $objBook = new Book_Object_Book();
         $objBook->fetch(array('id' => $id));
         return $objBook->toArray();
+    }
+    
+    /**
+     * 修改某景点下的书籍的权重
+     * @param integer $sightId 景点ID
+     * @param integer $id 书籍ID
+     * @param integer $to 需要排的位置
+     * @return boolean
+     */
+    public function changeWeight($sightId, $id, $to){
+        $objBook = new Book_Object_Book();
+        $objBook->fetch(array('id' => $id));
+        $from       = $objBook->weight;
+        $objBook->weight = $to;
+    
+        $bAsc = ($to > $from)?1:0;
+        $min  = min(array($from,$to));
+        $max  = max(array($from,$to));
+        
+        $arrBookIds    = array();
+        $listSightBook = new Sight_List_Book();
+        $listSightBook->setFilter(array('sight_id' => $sightId));
+        $arrSightBook  = $listSightBook->toArray();
+        foreach ($arrSightBook['list'] as $val){
+            $arrBookIds[] = $val['book_id'];
+        }
+        
+        $filter = implode(",",$arrBookIds);
+        $listBook = new Book_List_Book();
+        $listBook->setPagesize(PHP_INT_MAX);
+        $listBook->setFilterString("`id` in (".$filter.")");
+        $listBook->setOrder('weight asc');
+        $arrBook = $listBook->toArray();
+        $arrBook = array_slice($arrBook['list'],$min-1+$bAsc,$max-$min);
+        $ret = $objBook->save();
+        foreach ($arrBook as $key => $val){
+            $objBook->fetch(array('id' => $val['id']));
+            if($bAsc){
+                $objBook->weight = $min + $key ;
+            }else{
+                $objBook->weight = $max - $key;
+            }
+            $objBook->save();
+        }
+        return $ret;
     }
 }

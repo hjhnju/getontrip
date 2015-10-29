@@ -77,10 +77,10 @@ class Sight_Logic_Sight extends Base_Logic{
             }else{
                 $arrRet =  $this->logicTopic->getHotTopic($sightId,self::DEFAULT_HOT_PERIOD,$page,$pageSize,$strTags);
             }
-            $logicTag = new Tag_Logic_Tag();
-            foreach ($arrRet as $key => $val){
-                 $arrRet[$key]['tags'] = $logicTag->getTopicTags($val['id']);
-            }
+            //$logicTag = new Tag_Logic_Tag();
+            //foreach ($arrRet as $key => $val){
+            //     $arrRet[$key]['tags'] = $logicTag->getTopicTags($val['id']);
+            //}
         }
         return array(
             'tags'=>$arrDataTags,

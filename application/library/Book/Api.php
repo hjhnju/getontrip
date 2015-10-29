@@ -84,4 +84,17 @@ class Book_Api{
         $logicBook = new Book_Logic_Book();
         return $logicBook->getBookInfo($id);
     }
+    
+    /**
+     * 接口8：Book_Api::changeWeight($sightId, $id, $to)
+     * 修改某景点下的书籍的权重
+     * @param integer $sightId 景点ID
+     * @param integer $id 书籍ID
+     * @param integer $to 需要排的位置
+     * @return boolean
+     */
+    public static function changeWeight($sightId, $id, $to){
+        $logicBook = new Book_Logic_Book();
+        return $logicBook->changeWeight($sightId, $id, $to);
+    }
 }

@@ -125,6 +125,7 @@ class Video_Logic_Video extends Base_Logic{
                 $objVideo->status  = $info['status'];
                 $objVideo->len     = $info['len'];
                 $objVideo->guid    = $guid;
+                $objVideo->weight  = $this->getVideoNum($sightId) + 1;
                 $objVideo->save();
             }else{//删除上传了的图片，其它字段不改变
                 $this->delPic($info['image']);
@@ -210,6 +211,7 @@ class Video_Logic_Video extends Base_Logic{
                 $objVideo->$key = $val;
             }
         }
+        $objVideo->weight = $this->getVideoNum($arrParam['sight_id'])+1;
         return $objVideo->save();
     }
     
@@ -231,12 +233,46 @@ class Video_Logic_Video extends Base_Logic{
      * @param string $strGuid
      * @return number|''
      */
-    public static function getVideoByGuid($strGuid){
+    public function getVideoByGuid($strGuid){
         $objVideo = new Video_Object_Video();
         $objVideo->fetch(array('guid' => $strGuid));
         if($objVideo->id){
             return $objVideo->id;
         }
         return '';
+    }
+    
+    /**
+     * 修改某景点下的视频的权重
+     * @param integer $id 视频ID
+     * @param integer $to 需要排的位置
+     * @return boolean
+     */
+    public function changeWeight($id,$to){
+        $objVideo = new Video_Object_Video();
+        $objVideo->fetch(array('id' => $id));
+        $from       = $objVideo->weight;
+        $objVideo->weight = $to;
+    
+        $bAsc = ($to > $from)?1:0;
+        $min  = min(array($from,$to));
+        $max  = max(array($from,$to));
+        $listVideo = new Video_List_Video();
+        $listVideo->setPagesize(PHP_INT_MAX);
+        $listVideo->setFilter(array('sight_id' => $objVideo->sightId));
+        $listVideo->setOrder('weight asc');
+        $arrVideo = $listVideo->toArray();
+        $arrVideo = array_slice($arrVideo['list'],$min-1+$bAsc,$max-$min);
+        $ret = $objVideo->save();
+        foreach ($arrVideo as $key => $val){
+            $objVideo->fetch(array('id' => $val['id']));
+            if($bAsc){
+                $objVideo->weight = $min + $key ;
+            }else{
+                $objVideo->weight = $max - $key;
+            }
+            $objVideo->save();
+        }
+        return $ret;
     }
 }

@@ -95,42 +95,33 @@ class Book_Logic_Book extends Base_Logic{
         $c->secretKey = $appSecret;
         
         $url  = "http://search.jd.com/Search?keyword=".$name."&enc=utf-8&book=y&page=".$page;
+        
         $html = file_get_html($url);
-        $items  = $html->find('li.item-book div.p-img a');
+        $items  = $html->find('li.gl-item');
         foreach ($items as $item){
-            $str = $item->getAttribute('href');           
-            preg_match("/\/(\d+).htm/is", $str, $match);
-            if(isset($match[1])){
-                $arrIds[] = $match[1];
-            }
+            $str = $item->getAttribute('data-sku');                       
+            $arrIds[] = $str;
         }
         if(count($arrIds) >= self::PAGE_SIZE){
             $url = "http://search.jd.com/s.php?keyword=".$name."&enc=utf-8&book=y&page=".($page+1)."&start=".count($arrIds);
             $html = file_get_html($url);
-            $items  = $html->find('li.item-book div.p-img a');
+            $items  = $html->find('li.gl-item');
             foreach ($items as $item){
-                $str = $item->getAttribute('href');
-                preg_match("/\/(\d+).htm/is", $str, $match);
-                if(isset($match[1])){
-                    $arrIds[] = $match[1];
-                }
+                $str = $item->getAttribute('data-sku');                       
+                $arrIds[] = $str;
             }
         }else{//如果全词找不全，就分词再搜索
             $arrNames = Base_Util_String::ChineseAnalyzer($name);
             foreach ($arrNames as $name){
                 $url  = "http://search.jd.com/Search?keyword=".$name."&enc=utf-8&book=y&page=".$page;
                 $html = file_get_html($url);
-                $items  = $html->find('li.item-book div.p-img a');
+                $items  = $html->find('li.gl-item');
                 foreach ($items as $item){
-                    $str = $item->getAttribute('href');
-                    preg_match("/\/(\d+).htm/is", $str, $match);
-                    if(isset($match[1])){
-                        $arrIds[] = $match[1];
-                    }
+                    $str = $item->getAttribute('data-sku');                       
+                    $arrIds[] = $str;
                 }
             }
         }
-        
         $key        = 0;
         foreach ($arrIds as $val){
             $base = new WareProductDetailSearchListGetRequest();
@@ -226,9 +217,9 @@ class Book_Logic_Book extends Base_Logic{
                 $objBook->catalog     = $temp[$key]['catalog'];
                 $objBook->publishTime = $temp[$key]['publish_time'];
                 $objBook->weight      = $this->getAllBookNum($sightId) + 1;
+                $objBook->status      = $temp[$key]['status'];
                 $objBook->save();               
                 
-                $objBook->status  = $temp[$key]['status'];                
                 $objSightBook     = new Sight_Object_Book();
                 $objSightBook->sightId = $sightId;
                 $objSightBook->bookId  = $objBook->id;

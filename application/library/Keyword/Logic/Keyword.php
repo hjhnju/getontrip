@@ -61,6 +61,14 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $num = $this->getKeywordNumBySight($arrInfo['sight_id']);
             $obj->weight = $num + 1;
             $ret = $obj->save();
+            
+            if(isset($arrInfo['stauts']) && $arrInfo['status'] == Keyword_Type_Status::PUBLISHED){
+                $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
+                $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$arrInfo['sight_id']."&type=Wiki&num=".$conf['thirddata'] ['initnum'];
+                $http = Base_Network_Http::instance()->url($url);
+                $http->timeout(1);
+                $http->exec();
+            }
         }
         if($ret){
             return $obj->id;
@@ -87,6 +95,13 @@ class Keyword_Logic_Keyword extends Base_Logic{
         }
         if($bCheck){
             $ret =  $obj->save();
+            if(isset($arrInfo['stauts']) && $arrInfo['status'] == Keyword_Type_Status::PUBLISHED){
+                $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
+                $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$arrInfo['sight_id']."&type=Wiki&num=".$conf['thirddata'] ['initnum'];
+                $http = Base_Network_Http::instance()->url($url);
+                $http->timeout(1);
+                $http->exec();
+            }
         }
         if($ret){
             return $obj->id;

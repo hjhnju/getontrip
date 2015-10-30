@@ -71,12 +71,11 @@ class Tag_Logic_Relation extends Base_Logic{
         $arrTag = $listTag->toArray();
         foreach ($arrTag['list'] as $key => $val){
              $sub = Tag_Api::getTagRelation($val['id'], 1, PHP_INT_MAX);
-             foreach ($sub ['list'] as $val){
+             foreach ($sub['list'] as $val){
                  $temp['id']   = $val['classifytag_id'];
                  $tag          = Tag_Api::getTagInfo($temp['id']);
                  $temp['name'] = $tag['name'];
-                 $arrTag['list'][$key]['subtags'][] = $temp;
-                 
+                 $arrTag['list'][$key]['subtags'][] = $temp;                 
              }
         }
         return $arrTag;

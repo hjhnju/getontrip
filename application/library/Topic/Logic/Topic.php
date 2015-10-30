@@ -66,7 +66,7 @@ class Topic_Logic_Topic extends Base_Logic{
         }elseif($logicTag->getTagType($strTags) == Tag_Type_Tag::TOP_CLASS){
             $arrRet     = $this->getTopTopicIds($strTags, $sightId, $page, $pageSize);
         }else{
-            $arrRet     = $this->getGeneralTopicIds($strTags, $page, $pageSize);
+            $arrRet     = $this->model->getHotTopicIds('',$strTags, $page, $pageSize,$period);
         }   
         foreach($arrRet as $key => $val){
             $topicDetail = $this->model->getTopicDetail($val['id'],$page); 
@@ -846,8 +846,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $strTopicIds = $this->getTopicIdBySight($sightId);
         if(!empty($strTopicIds)){
             $arrTopicIds = explode(",",$strTopicIds);
-        }
-        
+        }        
         $arrSecond = Tag_Api::getTagRelation($strTag, 1, PHP_INT_MAX);
         foreach ($arrSecond['list'] as $tag){
             $num = $this->model->getTopicNumByTag($tag['classifytag_id'], $sightId);
@@ -857,17 +856,8 @@ class Topic_Logic_Topic extends Base_Logic{
                 }
             }
         }
-        
-        $listTopicTage = new Topic_List_Tag();
-        $arrRet        = array();
-        $strFilter     = implode(",",$arrIds);
-        $listTopicTage->setFilterString("`tag_id` in (".$strFilter.") and `topic_id` in (".$strTopicIds.")");
-        $listTopicTage->setPage($page);
-        $listTopicTage->setPagesize($pageSize);
-        $ret = $listTopicTage->toArray();
-        foreach ($ret['list'] as $val){
-            $arrRet[] = array('id' => strval($val['topic_id']));
-        }
+        $strTagIds     = implode(",",$arrIds);
+        $arrRet        = $this->model->getHotTopicIdsByTopicAndTag($strTopicIds, $strTagIds, $page, $pageSize);
         return $arrRet;
     }
     

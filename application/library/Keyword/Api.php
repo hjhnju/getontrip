@@ -78,6 +78,7 @@ class Keyword_Api{
     
     /**
      * 接口7：Keyword_Api::getKeywordNum($sighId)
+     * 查询一个景点下的词条的个数
      * @param integer $sighId
      * @param integer $status，默认是已发布的状态，可以不传
      * @return number

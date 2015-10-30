@@ -320,7 +320,7 @@ class Base_Extract {
 	        $content = '<p>'.$content.'</p>';
 	    }
 	    //去除开头空格
-	    $content = mb_ereg_replace('(\s|　|&nbsp;|\xc2\xa0)*', '', $content);
+	    $content = mb_ereg_replace('^(\s|　|&nbsp;|\xc2\xa0)*', '', $content);
 	    //去掉br标签	    
 	    $content = preg_replace( '/<br.*?>/is', '</p><p>', $content );
 	    

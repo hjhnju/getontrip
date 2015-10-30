@@ -40,7 +40,7 @@ $(document).ready(function() {
                         //['table', ['table']],
                         //['height', ['height']],
                         ['style', ['bold', 'clear']],
-                        ['insert', ['hr', 'link', 'picture']],
+                        ['insert', ['hr', 'picture','imagedesc']],
                         ['view', ['codeview']]
                     ],
                     onInit: function() {
@@ -370,24 +370,27 @@ $(document).ready(function() {
                     status = $(this).attr('data-status');
                     action = $(this).attr('data-action');
                     //先判断图片 
-                    if (action === 'PUBLISHED' && !$('#image').val()) {
-                        toastr.warning('发布之前必须上传图片');
-                        return false;
-                    }
-                    //判断指定来源
-                    if ($('#from_name').attr('data-id') == '0') {
-                        toastr.warning('发布之前必须指定来源');
-                        return false;
-                    }
-                    //判断正文
-                    if (!$("#summernote").code()) {
-                        toastr.warning('正文不能为空。');
-                        return false;
-                    }
-                    //判断详细来源
-                    if (!$('#from_detail').val() && !$('#url').val()) {
-                        toastr.warning('详细来源和原文链接不能同时为空。');
-                        return false;
+                    if (action === 'PUBLISHED') {
+                        if (!$('#image').val()) {
+                            toastr.warning('发布之前必须上传图片');
+                            return false;
+                        }
+                        //判断指定来源
+                        if ($('#from_name').attr('data-id') == '0') {
+                            toastr.warning('发布之前必须指定来源');
+                            return false;
+                        }
+                        //判断正文
+                        if (!$("#summernote").code()) {
+                            toastr.warning('正文不能为空。');
+                            return false;
+                        }
+                        //判断详细来源
+                        if (!$('#from_detail').val() && !$('#url').val()) {
+                            toastr.warning('详细来源和原文链接不能同时为空。');
+                            return false;
+                        }
+
                     }
                 });
 
@@ -444,7 +447,7 @@ $(document).ready(function() {
                         //分类标签 
                         $('input[data-name="form-tag"]:checked').each(function() {
                             tag_id_array.push(Number($(this).val()));
-                        }); 
+                        });
                         if (tag_id_array.length == 0) {
                             toastr.warning('分类标签不能为空！');
                             return false;

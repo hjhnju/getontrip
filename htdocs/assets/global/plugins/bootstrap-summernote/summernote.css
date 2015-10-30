@@ -11,3 +11,7 @@
 .note-editable p {
    margin:0px;
 }
+p.imagedesc{
+	cursor: pointer;
+	color: blueviolet;
+}

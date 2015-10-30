@@ -82,9 +82,11 @@ class Sight_Logic_Sight extends Base_Logic{
                  $arrRet[$key]['tags'] = $logicTag->getTopicTags($val['id']);
             }
         }
+        $sight = Sight_Api::getSightById($sightId);
         return array(
-            'tags'=>$arrDataTags,
-            'data'=>$arrRet,           
+            'tags' => $arrDataTags,
+            'list' => $arrRet,     
+            'name' => $sight['name'],      
         );
     }
     

@@ -173,7 +173,7 @@ $(document).ready(function() {
                             name: $('#source-name').val(),
                             url: $('#source-url').val(),
                             type: $('#source-type').val(),
-                            group:$('#source-group').val()
+                            group: $('#source-group').val()
                         },
                         "async": false,
                         "error": function(e) {
@@ -233,7 +233,7 @@ $(document).ready(function() {
                     var type = $(this).attr('data-type');
                     $('#tag_type').val(type);
                     $('#tagModal').modal();
-                }); 
+                });
                 //点击创建新标签
                 $('#addTag-btn').click(function(event) {
                     if (!$('#tag_name').val()) {
@@ -242,7 +242,7 @@ $(document).ready(function() {
                     }
                     var data = {
                         name: $('#tag_name').val(),
-                        type:$('#tag_type').val()
+                        type: $('#tag_type').val()
                     };
                     $.ajax({
                         "url": "/admin/Tagapi/save",
@@ -254,14 +254,14 @@ $(document).ready(function() {
                         "success": function(response) {
                             if (response.status == 0) {
                                 var data = response.data;
-                                $('#div-tag-'+data.type+' label:last').after('<label class="checkbox-inline"><input type="checkbox" name="form-tag" data-name="form-tag" id="" value="' + data.id + '" >' + data.name + '</label>');
+                                $('#div-tag-' + data.type + ' label:last').after('<label class="checkbox-inline"><input type="checkbox" name="form-tag" data-name="form-tag" id="" value="' + data.id + '" >' + data.name + '</label>');
                                 $('input[data-name="form-tag"]').attr('checked', false);
                                 $('#div-tag input:last').attr('checked', 'ture');
                                 //绑定Uniform
                                 Metronic.initUniform($('input[data-name="form-tag"]'));
 
                                 //隐藏模态框
-                                 $('#tagModal').modal('hide'); 
+                                $('#tagModal').modal('hide');
                             }
                         }
                     });
@@ -374,6 +374,21 @@ $(document).ready(function() {
                         toastr.warning('发布之前必须上传图片');
                         return false;
                     }
+                    //判断指定来源
+                    if ($('#from_name').attr('data-id') == '0') {
+                        toastr.warning('发布之前必须指定来源');
+                        return false;
+                    }
+                    //判断正文
+                    if (!$("#summernote").code()) {
+                        toastr.warning('正文不能为空。');
+                        return false;
+                    }
+                    //判断详细来源
+                    if (!$('#from_detail').val() && !$('#url').val()) {
+                        toastr.warning('详细来源和原文链接不能同时为空。');
+                        return false;
+                    }
                 });
 
                 //标题字数统计
@@ -398,7 +413,7 @@ $(document).ready(function() {
                     title: '无来源网址的“来源标注”情况',
                     content: '(1)来源为期刊: 姓名，文章名，杂志名+期数 <br>(2)来源为专著: 姓名，专著名'
                 });
-            } 
+            }
 
 
         }
@@ -413,8 +428,10 @@ $(document).ready(function() {
                     //序列化表单  
                     var param = $("#Form").serializeObject();
 
-                    //特殊处理景点 
+                    tag_id_array = [];
                     sight_id_array = [];
+
+                    //特殊处理景点 
                     if ($('#sight_tag').val() == 'sight') {
                         $('#sight_alert span button').each(function() {
                             sight_id_array.push(Number($(this).attr('data-id')));
@@ -424,23 +441,29 @@ $(document).ready(function() {
                             return false;
                         }
 
+                        //分类标签 
+                        $('input[data-name="form-tag"]:checked').each(function() {
+                            tag_id_array.push(Number($(this).val()));
+                        }); 
+                        if (tag_id_array.length == 0) {
+                            toastr.warning('分类标签不能为空！');
+                            return false;
+                        }
+
                     }
 
                     //特殊处理通用标签 
-                    tag_id_array = [];
                     if ($('#sight_tag').val() == 'tag') {
                         $('input[data-name="form-generaltag"]:checked').each(function() {
                             tag_id_array.push(Number($(this).val()));
                         });
                         if (tag_id_array.length == 0) {
-                            toastr.warning('至少选择一个通用标签吧');
+                            toastr.warning('至少选择一个通用标签吧！');
                             return false;
                         }
                     }
-                    //分类和普通标签
-                    $('input[data-name="form-tag"]:checked').each(function() {
-                        tag_id_array.push(Number($(this).val()));
-                    });
+
+
                     param.tags = tag_id_array;
                     param.sights = sight_id_array;
                     param.from = from = $('#from_name').attr('data-id');
@@ -492,10 +515,13 @@ $(document).ready(function() {
             // validate signup form on keyup and submit
             validate = $("#Form").validate({
                 rules: {
-                    title: "required"
+                    title: "required",
+                    subtitle: 'required'
                 },
                 messages: {
-                    title: "这可是主标题，不能为空呀！"
+                    title: "这可是主标题，不能为空呀！",
+                    subtitle: "副标题不能为空！"
+
                 }
             });
         }

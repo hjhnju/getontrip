@@ -78,7 +78,11 @@ class  SightapiController extends Base_Controller_Api{
             $sightInfo['tagList']['normalTag'] = $normalTag; 
             $sightInfo['tagList']['generalTag'] = $generalTag; 
             $sightInfo['tagList']['classifyTag'] = $classifyTag; 
-             
+
+
+            //处理话题数量
+           // $sightInfo['topic_num'] = Topic_Api::getTopicNum(array('sightId'=>$sight_id,'status'=>Topic_Type_Status::PUBLISHED));
+            
             $tmpList[$i]=$sightInfo;
         }
         

@@ -31,11 +31,14 @@ class  TopicapiController extends Base_Controller_Api{
         
         //处理状态值 
         $tmpList = $List['list'];
-        for($i=0; $i<count($tmpList); $i++) { 
+        for($i=0; $i<count($tmpList); $i++) {  
             $tmpList[$i]["statusName"] = Topic_Type_Status::getTypeName($tmpList[$i]["status"]);
             $topic = Topic_Api::getTopicById($tmpList[$i]['id']);
             $tmpList[$i]["symbols"]    = Base_Util_String::checkEnglishSymbol($topic['content']);
-            
+            $tmpList[$i]["subtitle"] =isset($topic["subtitle"])?$topic["subtitle"]:'';
+            $tmpList[$i]["isContent"] =empty($topic["content"])?false:true;
+
+
             //处理景点名称
             $sightlist = $tmpList[$i]['sights'];
             for($j=0; $j<count($sightlist); $j++){
@@ -70,6 +73,32 @@ class  TopicapiController extends Base_Controller_Api{
                 $tmpList[$i]["img_hash"] = $img['img_hash'];
                 $tmpList[$i]["img_type"] = $img['img_type'];
             }
+
+            //若存在标签处理相关标签
+            if (isset($tmpList[$i]['tags'])) {
+                $tag_id_array = $tmpList[$i]['tags'];  
+                $normalTag = array();
+                $generalTag = array();
+                $classifyTag = array(); 
+                for ($j=0; $j < count($tag_id_array); $j++) { 
+                    $tag = $tag_id_array[$j];
+                    switch ($tag['type']) {
+                      case Tag_Type_Tag::NORMAL:
+                        array_push($normalTag,$tag); 
+                        break; 
+                      case Tag_Type_Tag::GENERAL:
+                        array_push($generalTag,$tag); 
+                        break;
+                      case Tag_Type_Tag::CLASSIFY:
+                        array_push($classifyTag,$tag); 
+                        break;
+                    } 
+                }
+                $tmpList[$i]['tagList']['normalTag'] = $normalTag; 
+                $tmpList[$i]['tagList']['generalTag'] = $generalTag; 
+                $tmpList[$i]['tagList']['classifyTag'] = $classifyTag; 
+            }
+            
          }
        
         $List['list']=$tmpList;

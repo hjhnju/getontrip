@@ -272,7 +272,7 @@ class Base_Extract {
 	    }
 	    
 	    //去除开头空格
-	    $content = mb_ereg_replace('(\s|　|&nbsp;|\xc2\xa0)*', '', $content);
+	    $content = mb_ereg_replace('^(\s|　|&nbsp;|\xc2\xa0)*', '', $content);
 	    
 	    $content = preg_replace( '/<p.*?>/is', '<p>', $content );
 	    $content = preg_replace( '/<b\s.*?>/is', '<b>', $content );

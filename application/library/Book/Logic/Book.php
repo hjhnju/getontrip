@@ -192,15 +192,24 @@ class Book_Logic_Book extends Base_Logic{
             $temp[$key]['content_desc'] = empty($summary)?(isset($info["content_desc"])?$info["content_desc"]:''):$summary;
             $temp[$key]['catalog']      = empty($catalog)?(isset($info['catalogue'])?$info['catalogue']:''):$catalog;         
             
-            $temp[$key]['content_desc'] = Base_Util_String::delStartEmpty($temp[$key]['content_desc']);
-            $temp[$key]['catalog']      = Base_Util_String::delStartEmpty($temp[$key]['catalog']);
-            
             //摘要为空时,不取此条数据
             if(empty($temp[$key]['content_desc'])){
                 $this->delPic($temp[$key]['image']);
                 continue;
             }
-    
+            $fomat = new  Base_Extract("",$temp[$key]['content_desc']);
+            $temp[$key]['content_desc']  = $fomat->preProcess();
+            $temp[$key]['content_desc']  = $fomat->dataUpdate($temp[$key]['content_desc']);
+            
+            if(!empty($temp[$key]['catalog'])){
+                $fomat = new  Base_Extract("",$temp[$key]['catalog']);
+                $temp[$key]['catalog']  = $fomat->preProcess();
+                $temp[$key]['catalog']  = $fomat->dataUpdate($temp[$key]['catalog']);
+            }            
+            
+            $temp[$key]['content_desc'] = Base_Util_String::trimall($temp[$key]['content_desc']);
+            $temp[$key]['catalog']      = Base_Util_String::trimall($temp[$key]['catalog']);
+            
             $objBook = new Book_Object_Book();
             $id      = $this->getBookIdByISBN($temp[$key]['isbn']);
             if(!empty($id)){
@@ -345,8 +354,8 @@ class Book_Logic_Book extends Base_Logic{
                 unset($arrBook['isbn']);
             }
             $arrBook['info'] = $strDesc;
-            //$arrBook['content_desc'] = strip_tags($arrBook['content_desc']);
-            //$arrBook['content_desc'] = str_replace("&nbsp;", " ", $arrBook['content_desc']);
+            $arrBook['content_desc'] = html_entity_decode($arrBook['content_desc']);
+            $arrBook['content_desc'] = Base_Util_String::trimall($arrBook['content_desc']);
             $arrBook['image']        = isset($arrBook['image'])?Base_Image::getUrlByName($arrBook['image']):'';
             $logicCollect            = new Collect_Logic_Collect();
             $arrBook['collected']    = strval($logicCollect->checkCollect(Collect_Type::BOOK, $bookId));
@@ -502,6 +511,21 @@ class Book_Logic_Book extends Base_Logic{
             if(empty($temp['catalog'])){
                 $temp['catalog']      = $catalog;
             }
+            if(!empty($temp['content_desc'])){
+                $fomat = new  Base_Extract("",$temp['content_desc']);
+                $temp['content_desc']  = $fomat->preProcess();
+                $temp['content_desc']  = $fomat->dataUpdate($temp['content_desc']);
+            }
+            
+            if(!empty($temp['catalog'])){
+                $fomat = new  Base_Extract("",$temp['catalog']);
+                $temp['catalog']  = $fomat->preProcess();
+                $temp['catalog']  = $fomat->dataUpdate($temp['catalog']);
+            }
+            
+            $temp['content_desc'] = Base_Util_String::trimall($temp['content_desc']);
+            $temp['catalog']      = Base_Util_String::trimall($temp['catalog']);
+            
             $temp['status'] = Book_Type_Status::NOTPUBLISHED;
             
         }else{

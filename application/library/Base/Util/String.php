@@ -93,7 +93,7 @@ class Base_Util_String {
 	}
 	
 	/**
-	 * 去掉字符串开头空格
+	 * 去掉字符串开头空格，同时去掉html标签，并对html实体编码转码成符号
 	 * @param string $str
 	 * @return string
 	 */

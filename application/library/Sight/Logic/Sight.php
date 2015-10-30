@@ -159,6 +159,7 @@ class Sight_Logic_Sight extends Base_Logic{
             $arrRet['list'][$key]['tags']      = Tag_Api::getTagBySight($val['id']);
             $arrRet['list'][$key]['book_num']  = intval(Book_Api::getBookNum($val['id']));
             $arrRet['list'][$key]['video_num'] = intval(Video_Api::getVideoNum($val['id']));
+            $arrRet['list'][$key]['topic_num'] = intval(Topic_Api::getTopicNum(array('sightId'=>$val['id'],'status'=>Topic_Type_Status::PUBLISHED)));
         }
         return $arrRet;
     }

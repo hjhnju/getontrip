@@ -771,18 +771,13 @@ class Topic_Logic_Topic extends Base_Logic{
         }
         if(!empty($arrTopics['list'])){
             foreach ($arrTopics['list'] as $topic){
-                $arrInfo['id'] = $topic['id'];
+                $arrInfo['id'] = $topic['topic_id'];
                 $objTopic      = new Topic_Object_Topic();
                 $objTopic->fetch($arrInfo);
                 if(!empty($objTopic->id)){
                     $count += 1;   
                 }
             }
-        }else{
-            $listTopic = new Topic_List_Topic();
-            $listTopic->setFilter($arrInfo);
-            $ret       = $listTopic->toArray();
-            $count     = $ret['total'];
         }
         return $count;
     }

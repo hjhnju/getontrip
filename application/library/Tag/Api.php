@@ -135,4 +135,16 @@ class Tag_Api{
         $logicTagRelation = new Tag_Logic_Relation();
         return $logicTagRelation->editTagRelation($topTagId, $arrTagIds);
     }
+    
+    /**
+     * 接口12:Tag_Api::getAllClassTags($page, $pageSize)
+     * 获取分类标签列表，按照一级分类 分组的
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public static function getAllClassTags($page, $pageSize){
+        $logicTagRelation = new Tag_Logic_Relation();
+        return $logicTagRelation->getAllClassTags($page, $pageSize);
+    }
 }

@@ -43,7 +43,7 @@ class TopicModel extends BaseModel{
     
     public function getHotTopicIdsByTopicAndTag($strTopicIds,$strTags,$page,$pageSize){
         $from = ($page-1)*$pageSize;
-        $sql  = "SELECT a.id FROM `topic`  a,`topic_tag`  b WHERE a.status = ".Topic_Type_Status::PUBLISHED." and a.id=b.topic_id AND b.tag_id in(".$strTags.") and a.id in(".$strTopicIds.")ORDER by a.hot2 desc, a.update_time desc limit $from,$pageSize";
+        $sql  = "SELECT a.id FROM `topic`  a,`topic_tag`  b WHERE a.status = ".Topic_Type_Status::PUBLISHED." and a.id=b.topic_id AND b.tag_id in(".$strTags.") and a.id in(".$strTopicIds.") ORDER by a.hot2 desc, a.update_time desc limit $from,$pageSize";
         try {
             $data = $this->db->fetchAll($sql);
         } catch (Exception $ex) {

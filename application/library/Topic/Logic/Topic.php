@@ -766,8 +766,10 @@ class Topic_Logic_Topic extends Base_Logic{
             $listTopic->setPagesize(PHP_INT_MAX);
             $arrTopics = $listTopic->toArray();
         }
-        if(!empty($arrTopics['list'])){
+        if(isset($arrInfo['sightId'])){
             unset($arrInfo['sightId']);
+        }
+        if(!empty($arrTopics['list'])){
             foreach ($arrTopics['list'] as $topic){
                 $arrInfo['id'] = $topic['id'];
                 $objTopic      = new Topic_Object_Topic();

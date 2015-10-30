@@ -149,6 +149,13 @@ class Base_Util_String {
 	        }
 	    }
 	    $so->close();
+	    if(count($arrRet) == 1){
+	        $arrRet = array();
+	        $len = mb_strlen($str);
+	        for($i=0;$i<$len;$i++){
+	            $arrRet[] = mb_substr($str,$i,1);
+	        }
+	    }
 	    return $arrRet;
 	}
 	

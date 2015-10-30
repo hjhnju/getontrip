@@ -79,7 +79,7 @@ class Keyword_Api{
     /**
      * 接口7：Keyword_Api::getKeywordNum($sighId)
      * @param integer $sighId
-     * @param integer $status
+     * @param integer $status，默认是已发布的状态，可以不传
      * @return number
      */
     public static function getKeywordNum($sighId, $status = Keyword_Type_Status::PUBLISHED){

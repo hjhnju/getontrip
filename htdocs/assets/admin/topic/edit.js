@@ -36,11 +36,11 @@ $(document).ready(function() {
                         //['font', ['strikethrough']],
                         //['fontsize', ['fontsize']],
                         //['color', ['color']],
-                        ['para', ['paragraph']],
+                        //['para', ['paragraph']],
                         //['table', ['table']],
                         //['height', ['height']],
                         ['style', ['bold', 'clear']],
-                        ['insert', ['hr', 'picture','imagedesc']],
+                        ['insert', ['hr', 'link', 'picture','imagedesc']],
                         ['view', ['codeview']]
                     ],
                     onInit: function() {

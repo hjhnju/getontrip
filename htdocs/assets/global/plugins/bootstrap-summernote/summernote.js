@@ -4274,8 +4274,7 @@
          */
         this.createImageDesc = function($editable, imageDescInfo, options) {
 
-            var descText = imageDescInfo.text;
-            var isNewWindow = imageDescInfo.newWindow;
+            var descText = imageDescInfo.text; 
             var rng = imageDescInfo.range || this.createRange($editable);
             var isTextChanged = rng.toString() !== descText;
 
@@ -4285,17 +4284,20 @@
 
 
             var imagedescs = [];
-            if (isTextChanged) {
+            var imagedesc = rng.insertNode($('<P class="imagedesc">' + descText + '</P>')[0]);
+                imagedescs.push(imagedesc);
+        /*    if (isTextChanged) {
                 // Create a new link when text changed.
                 var imagedesc = rng.insertNode($('<P class="imagedesc">' + descText + '</P>')[0]);
                 imagedescs.push(imagedesc);
             } else {
                 imagedescs = style.styleNodes(rng, {
                     nodeName: 'P',
+                    className:'imagedesc',
                     expandClosestSibling: true,
                     onlyPartialContains: true
                 });
-            }
+            }*/
 
 
             var startRange = range.createFromNodeBefore(list.head(imagedescs));
@@ -5870,7 +5872,7 @@
 
                 $imageDescDialog.one('shown.bs.modal', function() {
                     $imageDescText.val(imageDescInfo.text);
-
+                    toggleBtn($imageDescBtn, $imageDescText.val());
                     $imageDescText.on('input', function() {
                         toggleBtn($imageDescBtn, $imageDescText.val());
                         // if linktext was modified by keyup,

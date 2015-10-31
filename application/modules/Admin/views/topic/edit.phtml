@@ -331,6 +331,14 @@
                           </div>
                       </div>
                       <div class="form-group ">
+                          <label for="url" class="control-label col-lg-2">英文标点及数量：</label>
+                          <div class="col-lg-5"> 
+                              {%foreach $englishSymbol as $key=>$item%} 
+                                <span class="label label-danger">&nbsp;&nbsp;{%$item.name%}&nbsp;&nbsp;&nbsp;<span class="badge">{%$item.num%}</span></span>
+                              {%/foreach%} 
+                          </div>
+                      </div>
+                      <div class="form-group ">
                           <label for="summernote" class="control-label col-lg-2">正文：<br/>(注：若想从服务器删除图片，请选中图片点击删除按钮)</label>
                           <div class="col-lg-10">
                               <div id="summernote" ></div>

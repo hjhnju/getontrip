@@ -100,6 +100,9 @@ class EditAction extends Yaf_Action_Abstract {
                $postInfo["img_type"] = $img['img_type'];
             }  
 
+            //处理正文的英文标点
+            $englishSymbol = Base_Util_String::englishSymbol($postInfo["content"]);
+            $this->getView()->assign('englishSymbol', $englishSymbol);
             $this->getView()->assign('post', $postInfo);
            
 

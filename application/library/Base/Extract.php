@@ -321,6 +321,9 @@ class Base_Extract {
 	    }
 	    //去除开头空格
 	    $content = mb_ereg_replace('^(\s|　|&nbsp;|\xc2\xa0)*', '', $content);
+	    //去掉没有内容的图片描述
+	    $content = mb_ereg_replace('<p class="imagedesc">(\s|　|&nbsp;|\xc2\xa0)*<\/p>', '', $content);
+	     
 	    //去掉br标签	    
 	    $content = preg_replace( '/<br.*?>/is', '</p><p>', $content );
 	    

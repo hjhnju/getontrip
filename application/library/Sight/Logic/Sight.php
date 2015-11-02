@@ -57,10 +57,6 @@ class Sight_Logic_Sight extends Base_Logic{
     public function getSightDetail($sightId,$page,$pageSize,$order,$strTags = ''){
         $arrRet      = array();
         $arrDataTags = array();
-        if(empty($strTags)){//默认选中第一个标签来筛选话题
-            $arrDataTags = $this->logicSightTag->getTagsBySight($sightId); 
-            $strTags     = isset($arrDataTags[0]['id'])?$arrDataTags[0]['id']:'';                             
-        }
         if($strTags == self::STR_LANDSCAPE){
             $logic      = new Keyword_Logic_Keyword();
             $arrRet     = $logic->getKeywordList($sightId,$page,$pageSize);
@@ -83,11 +79,7 @@ class Sight_Logic_Sight extends Base_Logic{
             }
         }
         $sight = Sight_Api::getSightById($sightId);
-        return array(
-            'tags' => $arrDataTags,
-            'list' => $arrRet,     
-            'name' => $sight['name'],      
-        );
+        return $arrRet;
     }
     
     /**

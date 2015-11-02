@@ -14,32 +14,12 @@ class ApiController extends Base_Controller_Api {
     }
     
     /**
-     * 接口1：/api/book
-     * 书籍列表接口
-     * @param integer page
-     * @param integer pageSize
-     * @param integer sightId,景点ID
-     * @return json
-     */
-    public function indexAction() {
-        $page       = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
-        $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
-        $sightId    = isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
-        if(empty($sightId)){
-            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
-        }
-        $logic      = new Book_Logic_Book();
-        $ret        = $logic->getBookList($sightId,$page,$pageSize,array('status' => Book_Type_Status::PUBLISHED));
-        $this->ajax($ret);
-    } 
-    
-    /**
-     * 接口2:/api/book/detail
+     * 接口1:/api/book
      * 书籍详情接口
      * @param integer book,书籍ID
      * @return json
      */
-    public function detailAction(){
+    public function indexAction(){
         $bookId     = isset($_REQUEST['book'])?intval($_REQUEST['book']):'';
         if(empty($bookId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));

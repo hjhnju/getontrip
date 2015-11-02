@@ -14,12 +14,12 @@ class ApiController extends Base_Controller_Api {
     }
     
     /**
-     * 接口1：/api/topic/detail
+     * 接口1：/api/topic
      * 话题详情页接口
      * @param integer topicId，话题ID
      * @return json
      */
-    public function detailAction() {
+    public function indexAction() {
         $topicId    = isset($_REQUEST['topicId'])?intval($_REQUEST['topicId']):'';
         if(empty($topicId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));

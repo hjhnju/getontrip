@@ -635,6 +635,22 @@
         };
 
         /**
+         * @method makePredByNodeNameAndClassName
+         *
+         * returns predicate which judge whether nodeName is same
+         *
+         * @param {String} nodeName
+         * @return {Function}
+         */
+        var makePredByNodeNameAndClassName = function(nodeName,className) {
+            nodeName = nodeName.toUpperCase(); 
+            
+            return function(node) {
+                return node && node.nodeName.toUpperCase() === nodeName && node.className===className;
+            };
+        };
+
+        /**
          * @method isText
          *
          *
@@ -694,6 +710,7 @@
         };
 
         var isAnchor = makePredByNodeName('A');
+        var isImageDesc = makePredByNodeNameAndClassName('P','imagedesc');
 
         var isParaInline = function(node) {
             return isInline(node) && !!ancestor(node, isPara);
@@ -1556,6 +1573,7 @@
             /** @property {String} emptyPara */
             emptyPara: '<p>' + blankHTML + '</p>',
             makePredByNodeName: makePredByNodeName,
+            makePredByNodeNameAndClassName:makePredByNodeNameAndClassName,
             isEditable: isEditable,
             isControlSizing: isControlSizing,
             buildLayoutInfo: buildLayoutInfo,
@@ -1575,6 +1593,7 @@
             isBlockquote: isBlockquote,
             isBodyContainer: isBodyContainer,
             isAnchor: isAnchor,
+            isImageDesc:isImageDesc,
             isDiv: makePredByNodeName('DIV'),
             isLi: isLi,
             isBR: makePredByNodeName('BR'),
@@ -2055,8 +2074,11 @@
             this.isOnList = makeIsOn(dom.isList);
             // isOnAnchor: judge whether range is on anchor node or not
             this.isOnAnchor = makeIsOn(dom.isAnchor);
-            // isOnAnchor: judge whether range is on cell node or not
+            // isOnCell: judge whether range is on cell node or not
             this.isOnCell = makeIsOn(dom.isCell);
+
+            // isOnImageDesc: judge whether range is on imagesesc node or not
+            this.isOnImageDesc = makeIsOn(dom.isImageDesc);
 
             /**
              * @param {Function} pred
@@ -2479,6 +2501,11 @@
                     shapeNone: 'times',
                     remove: 'trash-o'
                 },
+                imagedesc: {
+                    insert: 'dashcube', 
+                    undesc: 'unlink',
+                    edit: 'edit'
+                },
                 link: {
                     link: 'link',
                     unlink: 'unlink',
@@ -2544,7 +2571,7 @@
                 ['para', ['ul', 'ol', 'paragraph']],
                 ['height', ['height']],
                 ['table', ['table']],
-                ['insert', ['link', 'picture', 'hr']],
+                ['insert', ['link', 'picture', 'hr', 'imagedesc']],
                 ['view', ['fullscreen', 'codeview']],
                 ['help', ['help']]
             ],
@@ -2621,7 +2648,7 @@
             onkeydown: null, // keydown
             onImageUpload: null, // imageUpload
             onImageUploadError: null, // imageUploadError
-            onMediaDelete: null,// media delete , 
+            onMediaDelete: null, // media delete , 
             onToolbarClick: null,
             onsubmit: null,
 
@@ -2671,8 +2698,8 @@
                 },
 
                 mac: {
-                   'ENTER': 'insertParagraph',
-                   // 'ENTER':'insertBr',
+                    'ENTER': 'insertParagraph',
+                    // 'ENTER':'insertBr',
                     'CMD+Z': 'undo',
                     'CMD+SHIFT+Z': 'redo',
                     'TAB': 'tab',
@@ -2738,6 +2765,12 @@
                     maximumFileSizeError: 'Maximum file size exceeded.',
                     url: 'Image URL',
                     remove: 'Remove Image'
+                },
+                imagedesc: { 
+                    insert: 'Insert imagedesc',
+                    undesc: 'Undesc',
+                    edit: 'Edit',
+                    textToDisplay: 'Text to display' 
                 },
                 link: {
                     link: 'Link',
@@ -2806,7 +2839,7 @@
                 history: {
                     undo: 'Undo',
                     redo: 'Redo'
-                }
+                } 
             }
         }
     };
@@ -3165,6 +3198,8 @@
 
             styleInfo.image = dom.isImg(target) && target;
             styleInfo.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
+            styleInfo.imagedesc = rng.isOnImageDesc() && dom.ancestor(rng.sc, dom.isImageDesc);
+
             styleInfo.ancestors = dom.listAncestor(rng.sc, dom.isEditable);
             styleInfo.range = rng;
 
@@ -3484,16 +3519,16 @@
         /**
          * insert Br 
          */
-        this.insertBr = function(){
+        this.insertBr = function() {
             var rng = range.create();
 
             // deleteContents on range.
             rng = rng.deleteContents();
-            
-            $br=$('<br>');
+
+            $br = $('<br>');
             //handler.invoke('editor.insertNodeBefore', $editable, $br[0]);
-            rng.sc.appendChild($br[0]); 
-            rng = range.createFromNodeAfter($br[0]).select(); 
+            rng.sc.appendChild($br[0]);
+            rng = range.createFromNodeAfter($br[0]).select();
         }
 
     };
@@ -3882,11 +3917,11 @@
             afterCommand($editable);
         };
 
-        this.insertBr = function($editable){
+        this.insertBr = function($editable) {
             beforeCommand($editable);
             typing.insertBr($editable);
             afterCommand($editable);
-        } 
+        }
 
         /**
          * @method insertOrderedList
@@ -3938,7 +3973,7 @@
                 $image.css({
                     display: '',
                     width: Math.min($editable.width(), $image.width())
-                }); 
+                });
 
                 //修改3 此处增加两行恢复焦点
                 handler.invoke('restoreRange', $editable);
@@ -3961,7 +3996,7 @@
          * insert node
          * @param {Node} $editable
          * @param {Node} node
-        */
+         */
         this.insertNode = function($editable, node) {
             beforeCommand($editable);
             range.create().insertNode(node);
@@ -4206,6 +4241,99 @@
                 text: rng.toString(),
                 isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : false,
                 url: $anchor.length ? $anchor.attr('href') : ''
+            };
+        };
+
+
+        /**
+         * undesc
+         *
+         * @type command
+         *
+         * @param {jQuery} $editable
+         */
+        this.undesc = function($editable) {
+            var rng = this.createRange($editable);
+            if (rng.isOnImageDesc()) {
+                var imagedesc = dom.ancestor(rng.sc, dom.isImageDesc);
+                rng = range.createFromNode(imagedesc);
+                rng.select();
+
+                beforeCommand($editable); 
+                imagedesc.parentNode.removeChild(imagedesc);
+                afterCommand($editable);
+            }
+        };
+
+        /**
+         * create ImageDesc (command)
+         *
+         * @param {jQuery} $editable
+         * @param {Object} linkInfo
+         * @param {Object} options
+         */
+        this.createImageDesc = function($editable, imageDescInfo, options) {
+
+            var descText = imageDescInfo.text;
+            var isNewWindow = imageDescInfo.newWindow;
+            var rng = imageDescInfo.range || this.createRange($editable);
+            var isTextChanged = rng.toString() !== descText;
+
+            options = options || dom.makeLayoutInfo($editable).editor().data('options');
+
+            beforeCommand($editable);
+
+
+            var imagedescs = [];
+            if (isTextChanged) {
+                // Create a new link when text changed.
+                var imagedesc = rng.insertNode($('<P class="imagedesc">' + descText + '</P>')[0]);
+                imagedescs.push(imagedesc);
+            } else {
+                imagedescs = style.styleNodes(rng, {
+                    nodeName: 'P',
+                    expandClosestSibling: true,
+                    onlyPartialContains: true
+                });
+            }
+
+
+            var startRange = range.createFromNodeBefore(list.head(imagedescs));
+            var startPoint = startRange.getStartPoint();
+            var endRange = range.createFromNodeAfter(list.last(imagedescs));
+            var endPoint = endRange.getEndPoint();
+
+            range.create(
+                startPoint.node,
+                startPoint.offset,
+                endPoint.node,
+                endPoint.offset
+            ).select();
+
+            afterCommand($editable);
+        };
+
+
+        /**
+         * returns ImageDesc info
+         *
+         * @return {Object}
+         * @return {WrappedRange} return.range
+         * @return {String} return.text
+         * @return {Boolean} [return.isNewWindow=true]
+         * @return {String} [return.url=""]
+         */
+        this.getImageDescInfo = function($editable) {
+            this.focus($editable);
+
+            var rng = range.create().expand(dom.isImageDesc);
+
+            // Get the first imagedesc on range(for edit).
+            var $imagedesc = $(list.head(rng.nodes(dom.isImageDesc)));
+
+            return {
+                range: rng,
+                text: rng.toString()
             };
         };
 
@@ -4735,6 +4863,13 @@
                 $linkPopover.hide();
             }
 
+            var $imagedescPopover = $popover.find('.note-imagedesc-popover');
+            if (styleInfo.imagedesc) { 
+                showPopover($imagedescPopover, posFromPlaceholder(styleInfo.imagedesc, isAirMode));
+            } else {
+                $imagedescPopover.hide();
+            }
+
             var $imagePopover = $popover.find('.note-image-popover');
             if (styleInfo.image) {
                 showPopover($imagePopover, posFromPlaceholder(styleInfo.image, isAirMode));
@@ -4845,10 +4980,10 @@
             if (styleInfo.image) {
                 var $image = $(styleInfo.image);
                 var pos = isAirMode ? $image.offset() : $image.position();
-                
+
                 //新增6 选中图片
                 range.createFromNode($image[0]).select();
-                
+
                 // include margin
                 var imageSize = {
                     w: $image.outerWidth(true),
@@ -5070,9 +5205,9 @@
         this.attach = function(layoutInfo, options) {
             if (options.airMode || options.disableDragAndDrop) {
                 // prevent default drop event
-                 $document.on('drop', function(e) {
-                     //e.preventDefault(); 
-                 }); 
+                $document.on('drop', function(e) {
+                    //e.preventDefault(); 
+                });
             } else {
                 this.attachDragAndDropEvent(layoutInfo, options);
             }
@@ -5196,12 +5331,12 @@
                 }
             });
             //}
-            layoutInfo.editable().on('paste', function(event){
+            layoutInfo.editable().on('paste', function(event) {
                 handler.invoke('saveRange', layoutInfo.editable());
-                    if ($paste) {
-                        $paste.focus();
-                    }
-                    hPasteClipboardImage(event);
+                if ($paste) {
+                    $paste.focus();
+                }
+                hPasteClipboardImage(event);
             });
             //layoutInfo.editable().on('paste', hPasteClipboardImage);
         };
@@ -5232,16 +5367,16 @@
             //var pattern3 = /class=\"(.*?)\"/gi; //去掉class样式 
             //var pattern4 = /id=\"(.*?)\"/gi; //去掉id属性 
             //var pattern5 = /\<p(.*?)\>/gi;//去掉p多余的属性
-            var pattern6 = /div/gi;//div替换为p
-            var pattern7 = /font/gi;//font替换为span
-            var pattern8 = /<\/?span(.*?)>/gi;//去掉span
-            var pattern9 = /<p(.*?)>/gi;//去掉p所有的属性
+            var pattern6 = /div/gi; //div替换为p
+            var pattern7 = /font/gi; //font替换为span
+            var pattern8 = /<\/?span(.*?)>/gi; //去掉span
+            var pattern9 = /<p(.*?)>/gi; //去掉p所有的属性
             /*var htmlstr  = html;
             html.replace(pattern, '')
             return htmlstr;*/
             //return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern2, '').replace(pattern3, '').replace(pattern4, '').replace(pattern6,'p');
-            return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern6, 'p').replace(pattern7, 'span').replace(pattern8,'').replace(pattern9,'<p>');
-           
+            return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern6, 'p').replace(pattern7, 'span').replace(pattern8, '').replace(pattern9, '<p>');
+
         }
 
         /**
@@ -5402,7 +5537,7 @@
 
             });
 
-         }
+        }
 
         //新增2  base64字符串数据转换成文件并创建名为基于文件的MIME类型。
         // Transforms Base64 string data into file and creates name for that file based on the mime type.
@@ -5667,6 +5802,105 @@
                 }).modal('show');
             });
         };
+
+    };
+
+    var ImageDescDialog = function(handler) {
+        /**
+         * toggle button status
+         *
+         * @private
+         * @param {jQuery} $btn
+         * @param {Boolean} isEnable
+         */
+        var toggleBtn = function($btn, isEnable) {
+            $btn.toggleClass('disabled', !isEnable);
+            $btn.attr('disabled', !isEnable);
+        };
+
+        /**
+         * bind enter key
+         *
+         * @private
+         * @param {jQuery} $input
+         * @param {jQuery} $btn
+         */
+        var bindEnterKey = function($input, $btn) {
+            $input.on('keypress', function(event) {
+                if (event.keyCode === key.code.ENTER) {
+                    $btn.trigger('click');
+                }
+            });
+        };
+
+        this.show = function(layoutInfo) {
+            var $editor = layoutInfo.editor(),
+                $dialog = layoutInfo.dialog(),
+                $editable = layoutInfo.editable(),
+                $popover = layoutInfo.popover(),
+                linkInfo = handler.invoke('editor.getImageDescInfo', $editable);
+
+            var options = $editor.data('options');
+
+            handler.invoke('editor.saveRange', $editable);
+            this.showImageDescDialog($editable, $dialog, linkInfo).then(function(linkInfo) {
+                handler.invoke('editor.restoreRange', $editable);
+                handler.invoke('editor.createImageDesc', $editable, linkInfo, options);
+                // hide popover after creating link
+                handler.invoke('popover.hide', $popover);
+            }).fail(function() {
+                handler.invoke('editor.restoreRange', $editable);
+            });
+        };
+
+        /**
+         * show image description dialog
+         *
+         * @param {jQuery} $editable
+         * @param {jQuery} $dialog
+         * @return {Promise}
+         */
+        this.showImageDescDialog = function($editable, $dialog, imageDescInfo) {
+
+            return $.Deferred(function(deferred) {
+                var $imageDescDialog = $dialog.find('.note-imagedesc-dialog');
+
+                var $imageDescText = $imageDescDialog.find('.note-imagedesc-text'), 
+                    $imageDescBtn = $imageDescDialog.find('.note-imagedesc-btn') ;
+
+                $imageDescDialog.one('shown.bs.modal', function() {
+                    $imageDescText.val(imageDescInfo.text);
+
+                    $imageDescText.on('input', function() {
+                        toggleBtn($imageDescBtn, $imageDescText.val());
+                        // if linktext was modified by keyup,
+                        // stop cloning text from linkUrl
+                        imageDescInfo.text = $imageDescText.val();
+                    });
+
+                    bindEnterKey($imageDescText, $imageDescBtn);
+ 
+                    $imageDescBtn.one('click', function(event) {
+                        event.preventDefault();
+
+                        deferred.resolve({
+                            range: imageDescInfo.range, 
+                            text: $imageDescText.val() 
+                        });
+                        $imageDescDialog.modal('hide');
+                    });
+                }).one('hidden.bs.modal', function() {
+                    // detach events
+                    $imageDescText.off('input keypress'); 
+                    $imageDescBtn.off('click');
+
+                    if (deferred.state() === 'pending') {
+                        deferred.reject();
+                    }
+                }).modal('show');
+            }).promise();
+
+        };
     };
 
     var HelpDialog = function(handler) {
@@ -5724,6 +5958,7 @@
             clipboard: new Clipboard(this),
             linkDialog: new LinkDialog(this),
             imageDialog: new ImageDialog(this),
+            imageDescDialog: new ImageDescDialog(this),
             helpDialog: new HelpDialog(this)
         };
 
@@ -5828,6 +6063,14 @@
             showImageDialog: function(layoutInfo) {
                 modules.imageDialog.show(layoutInfo);
             },
+
+            /**
+             * @param {Object} layoutInfo
+             */
+            showImageDescDialog: function(layoutInfo) {
+                modules.imageDescDialog.show(layoutInfo);
+            },
+
 
             /**
              * @param {Object} layoutInfo
@@ -6358,6 +6601,13 @@
                     hide: true
                 });
             },
+            imagedesc: function(lang, options) {
+                return tplIconButton(options.iconPrefix + options.icons.imagedesc.insert, {
+                    event: 'showImageDescDialog',
+                    title: lang.imagedesc.insert,
+                    hide: true
+                });
+            },
             link: function(lang, options) {
                 return tplIconButton(options.iconPrefix + options.icons.link.link, {
                     event: 'showLinkDialog',
@@ -6551,7 +6801,7 @@
 
                 var dropdown = [
                     '<div class="note-align btn-group">',
-                    leftButton + centerButton + rightButton ,
+                    leftButton + centerButton + rightButton,
                     //justifyButton,
                     '</div><div class="note-list btn-group">',
                     //indentButton + outdentButton,
@@ -6631,6 +6881,22 @@
                     linkButton + unlinkButton +
                     '</div>';
                 return tplPopover('note-link-popover', content);
+            };
+
+            var tplImageDescPopover = function() {
+                var descButton = tplIconButton(options.iconPrefix + options.icons.imagedesc.edit, {
+                    title: lang.imagedesc.edit,
+                    event: 'showImageDescDialog',
+                    hide: true
+                });
+                var undescButton = tplIconButton(options.iconPrefix + options.icons.imagedesc.undesc, {
+                    title: lang.imagedesc.undesc,
+                    event: 'undesc'
+                });
+                var content =   '<div class="note-insert btn-group">' +
+                    descButton + undescButton +
+                    '</div>';
+                return tplPopover('note-imagedesc-popover', content);
             };
 
             var tplImagePopover = function() {
@@ -6723,6 +6989,7 @@
 
             $notePopover.append(tplLinkPopover());
             $notePopover.append(tplImagePopover());
+            $notePopover.append(tplImageDescPopover());
 
             if (options.airMode) {
                 $notePopover.append(tplAirPopover());
@@ -6916,7 +7183,14 @@
                 var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
                 return tplDialog('note-image-dialog', lang.image.insert, body, footer);
             },
-
+            imagedesc: function(lang, options) {
+                var body = '<div class="form-group row-fluid">' +
+                    '<label>' + lang.imagedesc.textToDisplay + '</label>' +
+                    '<input class="note-imagedesc-text form-control span12" type="text" />' +
+                    '</div>' ;
+                var footer = '<button href="#" class="btn btn-primary note-imagedesc-btn disabled" disabled>' + lang.imagedesc.insert + '</button>';
+                return tplDialog('note-imagedesc-dialog', lang.imagedesc.insert, body, footer);
+            },
             link: function(lang, options) {
                 var body = '<div class="form-group row-fluid">' +
                     '<label>' + lang.link.textToDisplay + '</label>' +

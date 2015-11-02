@@ -184,15 +184,27 @@
                       </div>
                       <div class="form-group sight_tag" id="div-tag" >
                           <label for="tag_name" class="control-label col-lg-2 sight_tag {%if $sightSelected eq 0%}hide{%/if%}" data-type="sight">分类标签：</label>
-                          <div class="col-lg-10 sight_tag {%if $sightSelected eq 0%}hide{%/if%}" data-type="sight">  
-                              {%foreach $classifyTag as $key=>$item%}
+                          <div class="col-lg-6 sight_tag {%if $sightSelected eq 0%}hide{%/if%}" data-type="sight">  
+                            {%foreach $classifyTag as $key=>$item%}
+                            {%if empty($item.subtags) eq 0%} 
+                            <div class="alert alert-info" style="margin-bottom: 2px;padding: 2px 12px;">
+                                <span class="badge badge-sm label-danger">{%$item.name%} ：</span>  
+                                {%foreach $item.subtags as $tagskey=>$tagsitem%} 
+                                <label class="radio-inline">
+                                  <input type="radio" name="tag" data-name="form-tag" id="" value="{%$tagsitem.id%}" {%if isset($tagsitem.selected)%}checked{%/if%}>{%$tagsitem.name%}
+                                </label>
+                                {%/foreach%} 
+                            </div>
+                            {%/if%}  
+                            {%/foreach%} 
+                            <!--   {%foreach $classifyTag as $key=>$item%}
                               <label class="checkbox-inline"> 
                                 <input type='radio' name="tag" data-name="form-tag" id="" value="{%$item.id%}" {%if isset($item.selected)%}checked{%/if%}>{%$item.name%} 
                               </label>
-                              {%/foreach%}  
-                           </div>
+                              {%/foreach%}  --> 
+                          </div>
                       </div> 
-                      <div class="form-group" id="div-tag-1">
+                      <div class="form-group" id="div-tag-1" style="display:none">
                           <label for="tag_name" class="control-label col-lg-2">普通标签：</label>
                           <div class="col-lg-10">  
                               {%foreach $normalTag as $key=>$item%} 

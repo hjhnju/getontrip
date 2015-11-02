@@ -19,7 +19,7 @@ class EditAction extends Yaf_Action_Abstract {
         $generalTag = $generalTag['list']; 
 
         //获取分类标签
-        $classifyTag = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::CLASSIFY));
+        $classifyTag = Tag_Api::getAllClassTags(1, PHP_INT_MAX);
         $classifyTag = $classifyTag['list']; 
 
         //来源分组
@@ -57,13 +57,17 @@ class EditAction extends Yaf_Action_Abstract {
             }
             for($i=0; $i<count($normalTag); $i++) {   
                 if(in_array($normalTag[$i]["id"],$tag_id_array)){ 
-                    $$normalTag[$i]["selected"]="selected";
+                    $normalTag[$i]["selected"]="selected";
                 }
             }
-            for($i=0; $i<count($classifyTag); $i++) {  
-                if(in_array($classifyTag[$i]["id"],$tag_id_array)){ 
-                    $classifyTag[$i]["selected"]="selected";
+            for($i=0; $i<count($classifyTag); $i++) {
+                $subtags =  $classifyTag[$i]['subtags'];
+                for ($j=0; $j < count($subtags); $j++) { 
+                    if(in_array($subtags[$j]["id"],$tag_id_array)){ 
+                        $subtags[$j]["selected"]="selected";
+                    }
                 } 
+                $classifyTag[$i]['subtags']=$subtags;
             }
             for($i=0; $i<count($generalTag); $i++) {    
                 if(in_array($generalTag[$i]["id"],$tag_id_array)){ 

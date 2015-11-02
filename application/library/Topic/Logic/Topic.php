@@ -438,24 +438,7 @@ class Topic_Logic_Topic extends Base_Logic{
             }
             $listSighttopic->setPagesize(PHP_INT_MAX);
             $arrSighttopic = $listSighttopic->toArray();
-            $arrRet['list'][$key]['sights'] = $arrSighttopic['list'];
-            
-            if(empty($arrRet['list'][$key]['sights'])){
-                $listTopicTag = new Topic_List_Tag();
-                $listTopicTag->setFilter(array('topic_id' => $val['id']));
-                $listTopicTag->setPagesize(PHP_INT_MAX);
-                $arrTopicTag = $listTopicTag->toArray();
-                foreach ($arrTopicTag['list'] as $val){
-                    $objSightTag = new Sight_Object_Tag();
-                    $objSightTag->fetch(array('tag_id' => $val['tag_id']));
-                    $sight = Sight_Api::getSightById($objSightTag->sightId);
-                    if(!empty($sight)){
-                        $sight['sight_id'] = $sight['id'];
-                        $arrRet['list'][$key]['sights'][]  = $sight;
-                    }
-                }
-            }
-            
+            $arrRet['list'][$key]['sights'] = $arrSighttopic['list'];                                  
              
             $logicCollect      = new Collect_Logic_Collect();           
             $arrRet['list'][$key]['collect'] = $logicCollect->getTotalCollectNum(Collect_Keys::TOPIC, $val['id']);
@@ -483,23 +466,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $listSighttopic->setFilter(array('topic_id' =>$id));
         $listSighttopic->setPagesize(PHP_INT_MAX);
         $arrSighttopic = $listSighttopic->toArray();
-        $ret['sights'] = $arrSighttopic['list'];
-        
-        if(empty($ret['sight'])){
-            $listTopicTag = new Topic_List_Tag();
-            $listTopicTag->setFilter(array('topic_id' => $id));
-            $listTopicTag->setPagesize(PHP_INT_MAX);
-            $arrTopicTag = $listTopicTag->toArray();
-            foreach ($arrTopicTag['list'] as $val){
-                $objSightTag = new Sight_Object_Tag();
-                $objSightTag->fetch(array('tag_id' => $val['tag_id']));
-                $sight = Sight_Api::getSightById($objSightTag->sightId);
-                if(!empty($sight)){
-                    $ret['sights'][]  = $sight;
-                }
-            }
-        }
-        
+        $ret['sights'] = $arrSighttopic['list'];        
          
         $logicCollect      = new Collect_Logic_Collect();
         $ret['collect'] = $logicCollect->getTotalCollectNum(Collect_Keys::TOPIC, $id);

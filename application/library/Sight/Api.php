@@ -104,7 +104,7 @@ class Sight_Api{
      * @param array $arrInfo,过滤条件，话题的一些属性
      * @return integer 
      */
-    public static function getTopicNum($sightId='',$arrInfo=array()){
+    public static function getTopicNum($sightId='',$arrInfo= array('status' => Topic_Type_Status::PUBLISHED)){
         $logicSight = new Sight_Logic_Sight();
         return $logicSight->getTopicNum($sightId,$arrInfo);
     }

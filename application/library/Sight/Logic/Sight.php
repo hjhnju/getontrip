@@ -57,10 +57,6 @@ class Sight_Logic_Sight extends Base_Logic{
     public function getSightDetail($sightId,$page,$pageSize,$order,$strTags = ''){
         $arrRet      = array();
         $arrDataTags = array();
-        if(empty($strTags)){//默认选中第一个标签来筛选话题
-            $arrDataTags = $this->logicSightTag->getTagsBySight($sightId); 
-            $strTags     = isset($arrDataTags[0]['id'])?$arrDataTags[0]['id']:'';                             
-        }
         if($strTags == self::STR_LANDSCAPE){
             $logic      = new Keyword_Logic_Keyword();
             $arrRet     = $logic->getKeywordList($sightId,$page,$pageSize);
@@ -82,10 +78,8 @@ class Sight_Logic_Sight extends Base_Logic{
                  $arrRet[$key]['tags'] = $logicTag->getTopicTags($val['id']);
             }
         }
-        return array(
-            'tags'=>$arrDataTags,
-            'data'=>$arrRet,           
-        );
+        $sight = Sight_Api::getSightById($sightId);
+        return $arrRet;
     }
     
     /**
@@ -159,6 +153,7 @@ class Sight_Logic_Sight extends Base_Logic{
             $arrRet['list'][$key]['tags']      = Tag_Api::getTagBySight($val['id']);
             $arrRet['list'][$key]['book_num']  = intval(Book_Api::getBookNum($val['id']));
             $arrRet['list'][$key]['video_num'] = intval(Video_Api::getVideoNum($val['id']));
+            $arrRet['list'][$key]['topic_num'] = intval(Topic_Api::getTopicNum(array('sightId'=>$val['id'],'status'=>Topic_Type_Status::PUBLISHED)));
         }
         return $arrRet;
     }

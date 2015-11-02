@@ -442,7 +442,7 @@ class Topic_Logic_Topic extends Base_Logic{
             
             if(empty($arrRet['list'][$key]['sights'])){
                 $listTopicTag = new Topic_List_Tag();
-                $listTopicTag->setFilter(array('topic_id' => $id));
+                $listTopicTag->setFilter(array('topic_id' => $val['id']));
                 $listTopicTag->setPagesize(PHP_INT_MAX);
                 $arrTopicTag = $listTopicTag->toArray();
                 foreach ($arrTopicTag['list'] as $val){
@@ -450,6 +450,7 @@ class Topic_Logic_Topic extends Base_Logic{
                     $objSightTag->fetch(array('tag_id' => $val['tag_id']));
                     $sight = Sight_Api::getSightById($objSightTag->sightId);
                     if(!empty($sight)){
+                        $sight['sight_id'] = $sight['id'];
                         $arrRet['list'][$key]['sights'][]  = $sight;
                     }
                 }

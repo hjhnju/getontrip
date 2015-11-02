@@ -117,6 +117,7 @@ class  TopicapiController extends Base_Controller_Api{
     public function saveAction()
     {   
        $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0; 
+       $_REQUEST['sights'] = isset($_REQUEST['sights'])? $_REQUEST['sights'] : array(); 
        if($postid <= 0){
             $this->ajaxError();
        }

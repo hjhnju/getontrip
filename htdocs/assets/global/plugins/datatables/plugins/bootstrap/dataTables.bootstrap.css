@@ -267,6 +267,13 @@ div.FixedHeader_Cloned table {
     -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
+#gotopage_input:focus {
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+    border-color: #999999;
+    outline: 0;
+    text-align: center;
+}
 #gotopage{
 	cursor: pointer;
 }

@@ -1,6 +1,6 @@
 /* Set the defaults for DataTables initialisation */
 $.extend(true, $.fn.dataTable.defaults, {
-    "dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>", // default layout with horizobtal scrollable datatable
+    "dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-4 col-sm-12'i><'col-md-8 col-sm-12'p>>", // default layout with horizobtal scrollable datatable
     //"dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>", // datatable layout without  horizobtal scroll(used when bootstrap dropdowns used in the datatable cells)
     "language": {
         "lengthMenu": " _MENU_ records ",
@@ -55,7 +55,12 @@ $.fn.dataTable.ext.renderer.pageButton.bootstrap = function(settings, host, idx,
             if (e.data.action === 'refresh') {
                 var page = api.page();
                 api.page(page).draw(false);
-            } else if (e.data.action !== 'ellipsis' && e.data.action !== 'refresh') {
+            } else if (e.data.action === 'goto') {
+                var page = Number($.trim($('#gotopage_input').val())) - 1;
+                api.page(page).draw(false);
+            } else if (e.data.action == 'ellipsis') {
+
+            } else {
                 api.page(e.data.action).draw(false);
             }
         };
@@ -77,7 +82,9 @@ $.fn.dataTable.ext.renderer.pageButton.bootstrap = function(settings, host, idx,
                         break;
                         //新增 跳转到某一页
                     case 'goto':
-                        container.append('<li class="paginate_button active"><input type="text" id="gotopage_input"/><a href="#" id="gotopage">' + lang.sGoTo + '</a></li>');
+                        // container.append('<li class="paginate_button active"><input type="text" id="gotopage_input"/><a href="#" id="gotopage">' + lang.sGoTo + '</a></li>');
+                        btnDisplay = lang.sGoTo;
+                        btnClass = 'goto';
                         break;
                     case 'ellipsis':
                         btnDisplay = '&hellip;';
@@ -116,25 +123,63 @@ $.fn.dataTable.ext.renderer.pageButton.bootstrap = function(settings, host, idx,
                 }
 
                 if (btnDisplay) {
-                    node = $('<li>', {
-                            'class': classes.sPageButton + ' ' + btnClass,
-                            'aria-controls': settings.sTableId,
-                            'tabindex': settings.iTabIndex,
-                            'id': idx === 0 && typeof button === 'string' ?
-                                settings.sTableId + '_' + button : null
-                        })
-                        .append($('<a>', {
-                                'href': '#'
+                    if (button == 'goto') {
+                        node_goto = $('<li>', {
+                                'class': classes.sPageButton + ' ' + btnClass,
+                                'aria-controls': settings.sTableId,
+                                'tabindex': settings.iTabIndex,
+                                'id': idx === 0 && typeof button === 'string' ?
+                                    settings.sTableId + '_' + button : null
+                            }).append($('<input>', {
+                                'type': 'text',
+                                'id': 'gotopage_input',
+                                'max': api.page.info().pages,
+                                'min': '1'
+                            })).append($('<a>', {
+                                    'href': '#',
+                                    'id': 'gotopage'
+                                })
+                                .html(btnDisplay)
+                            )
+                            .appendTo(container);
+                        //增加页码输入框事件
+                        $('#gotopage_input').keyup(function(event) {
+                            event.preventDefault();
+                            var val = Number($(this).val());
+                            if (val < 0) {
+                                $(this).val('1');
+                            }
+                            if (val > api.page.info().pages) {
+                                $(this).val(''+(api.page.info().pages));
+                            }
+                        });
+                        settings.oApi._fnBindAction(
+                            $('#gotopage'), {
+                                action: button
+                            }, clickHandler
+                        );
+                    } else {
+                        node = $('<li>', {
+                                'class': classes.sPageButton + ' ' + btnClass,
+                                'aria-controls': settings.sTableId,
+                                'tabindex': settings.iTabIndex,
+                                'id': idx === 0 && typeof button === 'string' ?
+                                    settings.sTableId + '_' + button : null
                             })
-                            .html(btnDisplay)
-                        )
-                        .appendTo(container);
+                            .append($('<a>', {
+                                    'href': '#'
+                                })
+                                .html(btnDisplay)
+                            )
+                            .appendTo(container);
+                        settings.oApi._fnBindAction(
+                            node, {
+                                action: button
+                            }, clickHandler
+                        );
+                    }
 
-                    settings.oApi._fnBindAction(
-                        node, {
-                            action: button
-                        }, clickHandler
-                    );
+
                 }
             }
         }

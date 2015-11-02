@@ -642,11 +642,11 @@
          * @param {String} nodeName
          * @return {Function}
          */
-        var makePredByNodeNameAndClassName = function(nodeName,className) {
-            nodeName = nodeName.toUpperCase(); 
-            
+        var makePredByNodeNameAndClassName = function(nodeName, className) {
+            nodeName = nodeName.toUpperCase();
+
             return function(node) {
-                return node && node.nodeName.toUpperCase() === nodeName && node.className===className;
+                return node && node.nodeName.toUpperCase() === nodeName && node.className === className;
             };
         };
 
@@ -710,7 +710,7 @@
         };
 
         var isAnchor = makePredByNodeName('A');
-        var isImageDesc = makePredByNodeNameAndClassName('P','imagedesc');
+        var isImageDesc = makePredByNodeNameAndClassName('P', 'imagedesc');
 
         var isParaInline = function(node) {
             return isInline(node) && !!ancestor(node, isPara);
@@ -1573,7 +1573,7 @@
             /** @property {String} emptyPara */
             emptyPara: '<p>' + blankHTML + '</p>',
             makePredByNodeName: makePredByNodeName,
-            makePredByNodeNameAndClassName:makePredByNodeNameAndClassName,
+            makePredByNodeNameAndClassName: makePredByNodeNameAndClassName,
             isEditable: isEditable,
             isControlSizing: isControlSizing,
             buildLayoutInfo: buildLayoutInfo,
@@ -1593,7 +1593,7 @@
             isBlockquote: isBlockquote,
             isBodyContainer: isBodyContainer,
             isAnchor: isAnchor,
-            isImageDesc:isImageDesc,
+            isImageDesc: isImageDesc,
             isDiv: makePredByNodeName('DIV'),
             isLi: isLi,
             isBR: makePredByNodeName('BR'),
@@ -2502,7 +2502,7 @@
                     remove: 'trash-o'
                 },
                 imagedesc: {
-                    insert: 'dashcube', 
+                    insert: 'dashcube',
                     undesc: 'unlink',
                     edit: 'edit'
                 },
@@ -2766,11 +2766,11 @@
                     url: 'Image URL',
                     remove: 'Remove Image'
                 },
-                imagedesc: { 
+                imagedesc: {
                     insert: 'Insert imagedesc',
                     undesc: 'Undesc',
                     edit: 'Edit',
-                    textToDisplay: 'Text to display' 
+                    textToDisplay: 'Text to display'
                 },
                 link: {
                     link: 'Link',
@@ -2839,7 +2839,7 @@
                 history: {
                     undo: 'Undo',
                     redo: 'Redo'
-                } 
+                }
             }
         }
     };
@@ -4259,9 +4259,9 @@
                 rng = range.createFromNode(imagedesc);
                 rng.select();
 
-                beforeCommand($editable); 
+                beforeCommand($editable);
                 //imagedesc.parentNode.removeChild(imagedesc);
-                imagedesc.className='';
+                imagedesc.className = '';
                 imagedesc.removeAttribute('class');
                 afterCommand($editable);
             }
@@ -4276,45 +4276,54 @@
          */
         this.createImageDesc = function($editable, imageDescInfo, options) {
 
-            var descText = imageDescInfo.text; 
+            var descText = imageDescInfo.text;
             var rng = imageDescInfo.range || this.createRange($editable);
-            var isTextChanged = rng.ec.data.toString() !== descText;
+            var oldText = rng.ec.data ? rng.ec.data.toString() : rng.toString();
+            var isTextChanged = oldText !== descText;
 
             options = options || dom.makeLayoutInfo($editable).editor().data('options');
 
             beforeCommand($editable);
 
 
-            var imagedescs = [],imagedesc; 
-            
-            if (isTextChanged) {
-                // Create a new link when text changed.
-                imagedesc = rng.insertNode($('<P class="imagedesc">' + descText + '</P>')[0]);
-                
-            } else {
-                imagedescs = style.styleNodes(rng, {
-                    nodeName: 'P',
-                    expandClosestSibling: true,
-                    onlyPartialContains: true
-                });
-                imagedesc=imagedescs[0];
+            var imagedescs = [],
+                imagedesc;
+            if (rng.ec.nodeName=='P') {
+                imagedesc=rng.ec;
                 imagedesc.className='imagedesc';
+                imagedesc.innerHTML = descText;
+            } else {
+                if (isTextChanged) {
+                    // Create a new link when text changed.
+                    imagedesc = rng.insertNode($('<P class="imagedesc">' + descText + '</P>')[0]);
+
+                } else {
+                    imagedescs = style.styleNodes(rng, {
+                        nodeName: 'P',
+                        expandClosestSibling: true,
+                        onlyPartialContains: true
+                    });
+                    imagedesc = imagedescs[0];
+                    imagedesc.className = 'imagedesc';
+                    imagedesc.innerHTML = descText;
+                }
             }
+
             var rng = range.createFromNode(imagedesc);
             rng.select();
 
 
-        /*    var startRange = range.createFromNodeBefore(list.head(imagedescs));
-            var startPoint = startRange.getStartPoint();
-            var endRange = range.createFromNodeAfter(list.last(imagedescs));
-            var endPoint = endRange.getEndPoint();
+            /*    var startRange = range.createFromNodeBefore(list.head(imagedescs));
+                var startPoint = startRange.getStartPoint();
+                var endRange = range.createFromNodeAfter(list.last(imagedescs));
+                var endPoint = endRange.getEndPoint();
 
-            range.create(
-                startPoint.node,
-                startPoint.offset,
-                endPoint.node,
-                endPoint.offset
-            ).select();*/
+                range.create(
+                    startPoint.node,
+                    startPoint.offset,
+                    endPoint.node,
+                    endPoint.offset
+                ).select();*/
 
             afterCommand($editable);
         };
@@ -4870,7 +4879,7 @@
             }
 
             var $imagedescPopover = $popover.find('.note-imagedesc-popover');
-            if (styleInfo.imagedesc) { 
+            if (styleInfo.imagedesc) {
                 showPopover($imagedescPopover, posFromPlaceholder(styleInfo.imagedesc, isAirMode));
             } else {
                 $imagedescPopover.hide();
@@ -5871,8 +5880,8 @@
             return $.Deferred(function(deferred) {
                 var $imageDescDialog = $dialog.find('.note-imagedesc-dialog');
 
-                var $imageDescText = $imageDescDialog.find('.note-imagedesc-text'), 
-                    $imageDescBtn = $imageDescDialog.find('.note-imagedesc-btn') ;
+                var $imageDescText = $imageDescDialog.find('.note-imagedesc-text'),
+                    $imageDescBtn = $imageDescDialog.find('.note-imagedesc-btn');
 
                 $imageDescDialog.one('shown.bs.modal', function() {
                     $imageDescText.val(imageDescInfo.text);
@@ -5885,19 +5894,19 @@
                     });
 
                     bindEnterKey($imageDescText, $imageDescBtn);
- 
+
                     $imageDescBtn.one('click', function(event) {
                         event.preventDefault();
 
                         deferred.resolve({
-                            range: imageDescInfo.range, 
-                            text: $imageDescText.val() 
+                            range: imageDescInfo.range,
+                            text: $imageDescText.val()
                         });
                         $imageDescDialog.modal('hide');
                     });
                 }).one('hidden.bs.modal', function() {
                     // detach events
-                    $imageDescText.off('input keypress'); 
+                    $imageDescText.off('input keypress');
                     $imageDescBtn.off('click');
 
                     if (deferred.state() === 'pending') {
@@ -6899,7 +6908,7 @@
                     title: lang.imagedesc.undesc,
                     event: 'undesc'
                 });
-                var content =   '<div class="note-insert btn-group">' +
+                var content = '<div class="note-insert btn-group">' +
                     descButton + undescButton +
                     '</div>';
                 return tplPopover('note-imagedesc-popover', content);
@@ -7193,7 +7202,7 @@
                 var body = '<div class="form-group row-fluid">' +
                     '<label>' + lang.imagedesc.textToDisplay + '</label>' +
                     '<input class="note-imagedesc-text form-control span12" type="text" />' +
-                    '</div>' ;
+                    '</div>';
                 var footer = '<button href="#" class="btn btn-primary note-imagedesc-btn disabled" disabled>' + lang.imagedesc.insert + '</button>';
                 return tplDialog('note-imagedesc-dialog', lang.imagedesc.insert, body, footer);
             },

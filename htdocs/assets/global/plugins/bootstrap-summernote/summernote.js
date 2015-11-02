@@ -4260,7 +4260,9 @@
                 rng.select();
 
                 beforeCommand($editable); 
-                imagedesc.parentNode.removeChild(imagedesc);
+                //imagedesc.parentNode.removeChild(imagedesc);
+                imagedesc.className='';
+                imagedesc.removeAttribute('class');
                 afterCommand($editable);
             }
         };
@@ -4276,31 +4278,33 @@
 
             var descText = imageDescInfo.text; 
             var rng = imageDescInfo.range || this.createRange($editable);
-            var isTextChanged = rng.toString() !== descText;
+            var isTextChanged = rng.ec.data.toString() !== descText;
 
             options = options || dom.makeLayoutInfo($editable).editor().data('options');
 
             beforeCommand($editable);
 
 
-            var imagedescs = [];
-            var imagedesc = rng.insertNode($('<P class="imagedesc">' + descText + '</P>')[0]);
-                imagedescs.push(imagedesc);
-        /*    if (isTextChanged) {
+            var imagedescs = [],imagedesc; 
+            
+            if (isTextChanged) {
                 // Create a new link when text changed.
-                var imagedesc = rng.insertNode($('<P class="imagedesc">' + descText + '</P>')[0]);
-                imagedescs.push(imagedesc);
+                imagedesc = rng.insertNode($('<P class="imagedesc">' + descText + '</P>')[0]);
+                
             } else {
                 imagedescs = style.styleNodes(rng, {
                     nodeName: 'P',
-                    className:'imagedesc',
                     expandClosestSibling: true,
                     onlyPartialContains: true
                 });
-            }*/
+                imagedesc=imagedescs[0];
+                imagedesc.className='imagedesc';
+            }
+            var rng = range.createFromNode(imagedesc);
+            rng.select();
 
 
-            var startRange = range.createFromNodeBefore(list.head(imagedescs));
+        /*    var startRange = range.createFromNodeBefore(list.head(imagedescs));
             var startPoint = startRange.getStartPoint();
             var endRange = range.createFromNodeAfter(list.last(imagedescs));
             var endPoint = endRange.getEndPoint();
@@ -4310,7 +4314,7 @@
                 startPoint.offset,
                 endPoint.node,
                 endPoint.offset
-            ).select();
+            ).select();*/
 
             afterCommand($editable);
         };

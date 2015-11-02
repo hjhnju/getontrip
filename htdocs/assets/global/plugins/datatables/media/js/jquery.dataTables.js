@@ -1461,96 +1461,96 @@
              * @memberof DataTable#oApi
              */
             function _fnGetRowElements(settings, row, colIdx, d) {
-                    var
-                        tds = [],
-                        td = row.firstChild,
-                        name, col, o, i = 0,
-                        contents,
-                        columns = settings.aoColumns,
-                        objectRead = settings._rowReadObject;
+                var
+                    tds = [],
+                    td = row.firstChild,
+                    name, col, o, i = 0,
+                    contents,
+                    columns = settings.aoColumns,
+                    objectRead = settings._rowReadObject;
 
-                    // Allow the data object to be passed in, or construct
-                    d = d || objectRead ? {} : [];
+                // Allow the data object to be passed in, or construct
+                d = d || objectRead ? {} : [];
 
-                    var attr = function(str, td) {
-                        if (typeof str === 'string') {
-                            var idx = str.indexOf('@');
+                var attr = function(str, td) {
+                    if (typeof str === 'string') {
+                        var idx = str.indexOf('@');
 
-                            if (idx !== -1) {
-                                var attr = str.substring(idx + 1);
-                                var setter = _fnSetObjectDataFn(str);
-                                setter(d, td.getAttribute(attr));
-                            }
+                        if (idx !== -1) {
+                            var attr = str.substring(idx + 1);
+                            var setter = _fnSetObjectDataFn(str);
+                            setter(d, td.getAttribute(attr));
                         }
-                    };
+                    }
+                };
 
-                    // Read data from a cell and store into the data object
-                    var cellProcess = function(cell) {
-                        if (colIdx === undefined || colIdx === i) {
-                            col = columns[i];
-                            contents = $.trim(cell.innerHTML);
+                // Read data from a cell and store into the data object
+                var cellProcess = function(cell) {
+                    if (colIdx === undefined || colIdx === i) {
+                        col = columns[i];
+                        contents = $.trim(cell.innerHTML);
 
-                            if (col && col._bAttrSrc) {
-                                var setter = _fnSetObjectDataFn(col.mData._);
-                                setter(d, contents);
+                        if (col && col._bAttrSrc) {
+                            var setter = _fnSetObjectDataFn(col.mData._);
+                            setter(d, contents);
 
-                                attr(col.mData.sort, cell);
-                                attr(col.mData.type, cell);
-                                attr(col.mData.filter, cell);
-                            } else {
-                                // Depending on the `data` option for the columns the data can
-                                // be read to either an object or an array.
-                                if (objectRead) {
-                                    if (!col._setter) {
-                                        // Cache the setter function
-                                        col._setter = _fnSetObjectDataFn(col.mData);
-                                    }
-                                    col._setter(d, contents);
-                                } else {
-                                    d[i] = contents;
+                            attr(col.mData.sort, cell);
+                            attr(col.mData.type, cell);
+                            attr(col.mData.filter, cell);
+                        } else {
+                            // Depending on the `data` option for the columns the data can
+                            // be read to either an object or an array.
+                            if (objectRead) {
+                                if (!col._setter) {
+                                    // Cache the setter function
+                                    col._setter = _fnSetObjectDataFn(col.mData);
                                 }
+                                col._setter(d, contents);
+                            } else {
+                                d[i] = contents;
                             }
-                        }
-
-                        i++;
-                    };
-
-                    if (td) {
-                        // `tr` element was passed in
-                        while (td) {
-                            name = td.nodeName.toUpperCase();
-
-                            if (name == "TD" || name == "TH") {
-                                cellProcess(td);
-                                tds.push(td);
-                            }
-
-                            td = td.nextSibling;
-                        }
-                    } else {
-                        // Existing row object passed in
-                        tds = row.anCells;
-
-                        for (var j = 0, jen = tds.length; j < jen; j++) {
-                            cellProcess(tds[j]);
                         }
                     }
 
-                    return {
-                        data: d,
-                        cells: tds
-                    };
+                    i++;
+                };
+
+                if (td) {
+                    // `tr` element was passed in
+                    while (td) {
+                        name = td.nodeName.toUpperCase();
+
+                        if (name == "TD" || name == "TH") {
+                            cellProcess(td);
+                            tds.push(td);
+                        }
+
+                        td = td.nextSibling;
+                    }
+                } else {
+                    // Existing row object passed in
+                    tds = row.anCells;
+
+                    for (var j = 0, jen = tds.length; j < jen; j++) {
+                        cellProcess(tds[j]);
+                    }
                 }
-                /**
-                 * Create a new TR element (and it's TD children) for a row
-                 *  @param {object} oSettings dataTables settings object
-                 *  @param {int} iRow Row to consider
-                 *  @param {node} [nTrIn] TR element to add to the table - optional. If not given,
-                 *    DataTables will create a row automatically
-                 *  @param {array} [anTds] Array of TD|TH elements for the row - must be given
-                 *    if nTr is.
-                 *  @memberof DataTable#oApi
-                 */
+
+                return {
+                    data: d,
+                    cells: tds
+                };
+            }
+            /**
+             * Create a new TR element (and it's TD children) for a row
+             *  @param {object} oSettings dataTables settings object
+             *  @param {int} iRow Row to consider
+             *  @param {node} [nTrIn] TR element to add to the table - optional. If not given,
+             *    DataTables will create a row automatically
+             *  @param {array} [anTds] Array of TD|TH elements for the row - must be given
+             *    if nTr is.
+             *  @memberof DataTable#oApi
+             */
             function _fnCreateTr(oSettings, iRow, nTrIn, anTds) {
                 var
                     row = oSettings.aoData[iRow],
@@ -1846,9 +1846,9 @@
                 //修改6 如果没有内容 而且当前页不是第一页 则往前刷新一页
                 var api = new $.fn.dataTable.Api(oSettings);
                 var currentPage = api.page();
-                if(currentPage!==0&&aiDisplay.length === 0&&!oSettings.bAjaxDataGet){
-                    oSettings.bAjaxDataGet=true;
-                    api.page(currentPage-1).draw(false); 
+                if (currentPage !== 0 && aiDisplay.length === 0 && !oSettings.bAjaxDataGet) {
+                    oSettings.bAjaxDataGet = true;
+                    api.page(currentPage - 1).draw(false);
                     return;
                 }
 
@@ -1880,7 +1880,7 @@
                 } else if (!oSettings.bDestroying && !_fnAjaxUpdate(oSettings)) {
                     return;
                 }
-                
+
 
                 if (aiDisplay.length !== 0) {
                     var iStart = bServerSide ? 0 : iDisplayStart;
@@ -1920,8 +1920,8 @@
                     } else if (oLang.sEmptyTable && oSettings.fnRecordsTotal() === 0) {
                         sZero = oLang.sEmptyTable;
                     }
-                    
-                        anRows[0] = $('<tr/>', {
+
+                    anRows[0] = $('<tr/>', {
                             'class': iStripes ? asStripeClasses[0] : ''
                         })
                         .append($('<td />', {
@@ -1929,7 +1929,7 @@
                             'colSpan': _fnVisbleColumns(oSettings),
                             'class': oSettings.oClasses.sRowEmpty
                         }).html(sZero))[0];
-                     
+
                 }
 
                 /* Header and footer callbacks */
@@ -2278,12 +2278,12 @@
                 var baseAjax = {
                     "data": data,
                     "success": function(json) {
-                        /*	var error = json.error || json.sError;
-						if ( error ) {
-							_fnLog( oSettings, 0, error );
-						} 
-						oSettings.json = json.data;
-						callback( json.data );*/
+                        /*  var error = json.error || json.sError;
+                        if ( error ) {
+                            _fnLog( oSettings, 0, error );
+                        } 
+                        oSettings.json = json.data;
+                        callback( json.data );*/
 
                         //此处为修改2 
                         if (json.status == 0) {
@@ -3051,8 +3051,8 @@
                     start = settings._iDisplayStart + 1,
                     len = settings._iDisplayLength,
                     vis = settings.fnRecordsDisplay(),
-                    all = len === -1; 
-                     //console.log('total:'+vis); 
+                    all = len === -1;
+                //console.log('total:'+vis); 
                 return str.
 
                 replace(/_START_/g, formatter.call(settings, start)).
@@ -5203,7 +5203,7 @@
                         api.draw();
                     }
                     //增加
-                    
+
                     return rows.flatten().toArray();
                 };
 
@@ -5327,9 +5327,9 @@
 
                     if (redraw === undefined || redraw) {
                         //修改5 刷新当前页 
-                         var page= api.page(); 
-                         api.page(page).draw(false);
-                         //api.draw();
+                        var page = api.page();
+                        api.page(page).draw(false);
+                        //api.draw();
                     }
 
                     return data;
@@ -5624,15 +5624,15 @@
                         api.draw(false);
                     }
                 };
-                 
+
                 /*
                  * 新增1 刷新当前页面
                  * @param  {bool}   [bRedraw=true] Redraw the table or not
                  *  
                  */
                 this.fnRefresh = function(bRedraw) {
-                    var api = this.api(true); 
-                    var page= api.page(); 
+                    var api = this.api(true);
+                    var page = api.page();
 
                     api.page(page);
 
@@ -6712,10 +6712,10 @@
             // @todo - Is there need for an augment function?
             // _Api.augment = function ( inst, name )
             // {
-            // 	// Find src object in the structure from the name
-            // 	var parts = name.split('.');
+            //  // Find src object in the structure from the name
+            //  var parts = name.split('.');
 
-            // 	_Api.extend( inst, obj );
+            //  _Api.extend( inst, obj );
             // };
 
 
@@ -10719,7 +10719,8 @@
                          *    } );
                          */
                         "sPrevious": "Previous",
-                        "sRefresh":'Refresh'
+                        "sRefresh": 'Refresh',
+                        "sGoTo": 'GoTo'
                     },
 
                     /**
@@ -11239,7 +11240,7 @@
                  *      } );
                  *    } )
                  */
-                "sPaginationType": "simple_numbers",
+                "sPaginationType": "full_numbers",
 
 
                 /**
@@ -13797,20 +13798,21 @@
 
             $.extend(extPagination, {
                 //修改4 新增'refresh', 刷新按钮
+                //新增跳转到某一页
                 simple: function(page, pages) {
-                    return ['refresh','previous', 'next'];
+                    return ['refresh', 'previous', 'next', 'goto'];
                 },
 
                 full: function(page, pages) {
-                    return ['refresh','first', 'previous', 'next', 'last'];
+                    return ['refresh', 'first', 'previous', 'next', 'last', 'goto'];
                 },
 
                 simple_numbers: function(page, pages) {
-                    return ['refresh','previous', _numbers(page, pages), 'next'];
+                    return ['refresh', 'previous', _numbers(page, pages), 'next', 'goto'];
                 },
 
                 full_numbers: function(page, pages) {
-                    return ['refresh','first', 'previous', _numbers(page, pages), 'next', 'last'];
+                    return ['refresh', 'first', 'previous', _numbers(page, pages), 'next', 'last'];
                 },
 
                 // For testing and plug-ins to use
@@ -13850,7 +13852,7 @@
                                         case 'refresh':
                                             btnDisplay = lang.sRefresh;
                                             btnClass = button;
-                                            break;
+                                            break; 
                                         case 'ellipsis':
                                             container.append('<span class="ellipsis">&#x2026;</span>');
                                             break;

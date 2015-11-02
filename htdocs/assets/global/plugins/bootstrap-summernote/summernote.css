@@ -9,8 +9,7 @@
 	  -ms-interpolation-mode: bicubic;
 }
 .note-editable p {
-   margin:0px;
-   min-height: 14px;
+   margin:0px; 
 }
 p.imagedesc{
 	cursor: pointer;

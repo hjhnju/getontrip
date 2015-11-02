@@ -169,7 +169,7 @@ class Tag_Logic_Tag extends Base_Logic{
             $ret = $listTopicTag->toArray();
             foreach ($ret['list'] as $val){
                 $objTag = new Tag_Object_Tag();
-                $objTag->fetch(array('id' => $val['tag_id'], 'type' => Tag_Type_Tag::CLASSIFY));
+                $objTag->fetch(array('id' => $val['tag_id']));
                 if(!empty($objTag->id) && $objTag->weight !== -1){
                     $redis->sAdd(Topic_Keys::getTopicTagKey($topicId),$val['tag_id']);
                     $arrTags[] = $objTag->name;

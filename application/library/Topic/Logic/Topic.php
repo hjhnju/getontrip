@@ -145,14 +145,30 @@ class Topic_Logic_Topic extends Base_Logic{
         $objSightTopic = new Sight_Object_Topic();
         $objSightTopic->fetch(array('topic_id' => $topicId));
         $sightId       = $objSightTopic->sightId;
-        $arrSight      = Sight_Api::getSightById($sightId);
+        if(!empty($sightId)){
+            $arrSight      = Sight_Api::getSightById($sightId);           
+            $arrRet['sight_name']  = $arrSight['name'];           
+        }else{
+            $listTopicTag = new Topic_List_Tag();
+            $listTopicTag->setFilter(array('topic_id' => $topicId));
+            $listTopicTag->setPagesize(PHP_INT_MAX);
+            $arrTopicTag = $listTopicTag->toArray();
+            foreach ($arrTopicTag['list'] as $val){
+                $objSightTag = new Sight_Object_Tag();
+                $objSightTag->fetch(array('tag_id' => $val['tag_id']));
+                $sight = Sight_Api::getSightById($objSightTag->sightId);
+                if(!empty($sight)){
+                    $arrRet['sight_name']  = $sight['name'];
+                    break;
+                }
+            }
+        }
         
         $logicComment          = new Comment_Logic_Comment();
         $arrRet['id']          = strval($arrRet['id']);
-        $arrRet['sight_name']  = $arrSight['name'];
         $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
         $arrRet['title']       = trim($arrRet['title']);
-        $arrRet['content']     = trim($arrRet['content']); 
+        $arrRet['content']     = trim($arrRet['content']);
         
         $logicVist          = new Tongji_Logic_Visit();
         $logicVist->addVisit( Tongji_Type_Visit::TOPIC, $topicId);

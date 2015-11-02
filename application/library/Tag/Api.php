@@ -89,7 +89,7 @@ class Tag_Api{
     
     /**
      * 接口8：Tag_Api::getTagInfo($tagId, $sightId = '')
-     * 获取标签的信息
+     * 获取标签的信息,对于通用标签，同时获取话题数与景点数
      * @param integer $tagId
      * @param integer $sightId
      * @return array

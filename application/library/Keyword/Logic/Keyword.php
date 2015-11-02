@@ -287,7 +287,8 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $listKeywordCatalog->setPagesize(self::WIKI_CATALOG_NUM);
             $arrCatalog = $listKeywordCatalog->toArray();
             $arrLen     = array();
-            foreach ($arrCatalog['list'] as $data){
+            foreach ($arrCatalog['list'] as $index => $data){
+                $arrCatalog['list'][$index]['name'] = Base_Util_String::trimall($data['name']);
                 $arrLen[] = strlen($data['name']);
             }
             array_multisort($arrLen, SORT_DESC , $arrCatalog['list']);

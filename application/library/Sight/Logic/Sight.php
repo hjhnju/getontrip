@@ -56,7 +56,6 @@ class Sight_Logic_Sight extends Base_Logic{
      */
     public function getSightDetail($sightId,$page,$pageSize,$order,$strTags = ''){
         $arrRet      = array();
-        $arrDataTags = array();
         if($strTags == self::STR_LANDSCAPE){
             $logic      = new Keyword_Logic_Keyword();
             $arrRet     = $logic->getKeywordList($sightId,$page,$pageSize);

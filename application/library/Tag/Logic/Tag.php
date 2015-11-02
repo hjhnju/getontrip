@@ -287,9 +287,18 @@ class Tag_Logic_Tag extends Base_Logic{
         $objTag = new Tag_Object_Tag();
         $objTag->fetch(array('id' => intval($tagId)));
         $arrRet = $objTag->toArray();
+        $type   = $this->getTagType($tagId);
         if(!empty($sightId)){
             $logicTopic = new Topic_Logic_Topic();
             $arrRet['topic_num'] = $logicTopic->getTopicNumByTag($tagId, $sightId);
+        }elseif( $type == Tag_Type_Tag::GENERAL){
+            $listTopicTag = new Topic_List_Tag();
+            $listTopicTag->setFilter(array('tag_id' => $tagId));
+            $arrRet['topic_num'] = $listTopicTag->countAll();
+            
+            $listSightTag = new Sight_List_Tag();
+            $listSightTag->setFilter(array('tag_id' => $tagId));
+            $arrRet['sight_num'] = $listSightTag->countAll();
         }
         return $arrRet;
     }

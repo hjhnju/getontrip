@@ -16,7 +16,8 @@ $.extend(true, $.fn.dataTable.defaults, {
         "oPaginate": {
             "sPrevious": "上一页",
             "sNext": "下一页",
-            "sRefresh": '<i class="fa fa-refresh"></i>刷新'
+            "sRefresh": '<i class="fa fa-refresh"></i>刷新',
+            "sGoTo": '跳转'
         },
         "sSearch": "搜索",
         "sEmptyTable": '没有内容',
@@ -51,11 +52,10 @@ $.fn.dataTable.ext.renderer.pageButton.bootstrap = function(settings, host, idx,
         var i, ien, node, button;
         var clickHandler = function(e) {
             e.preventDefault();
-            if(e.data.action === 'refresh'){ 
-               var page= api.page(); 
-               api.page(page).draw(false);
-            }
-            else if (e.data.action !== 'ellipsis'&&e.data.action !== 'refresh') {
+            if (e.data.action === 'refresh') {
+                var page = api.page();
+                api.page(page).draw(false);
+            } else if (e.data.action !== 'ellipsis' && e.data.action !== 'refresh') {
                 api.page(e.data.action).draw(false);
             }
         };
@@ -74,6 +74,10 @@ $.fn.dataTable.ext.renderer.pageButton.bootstrap = function(settings, host, idx,
                     case 'refresh':
                         btnDisplay = lang.sRefresh;
                         btnClass = button;
+                        break;
+                        //新增 跳转到某一页
+                    case 'goto':
+                        container.append('<li class="paginate_button active"><input type="text" id="gotopage_input"/><a href="#" id="gotopage">' + lang.sGoTo + '</a></li>');
                         break;
                     case 'ellipsis':
                         btnDisplay = '&hellip;';

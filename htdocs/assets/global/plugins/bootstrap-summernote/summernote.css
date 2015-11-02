@@ -10,6 +10,7 @@
 }
 .note-editable p {
    margin:0px;
+   min-height: 14px;
 }
 p.imagedesc{
 	cursor: pointer;

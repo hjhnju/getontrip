@@ -40,10 +40,10 @@ $(document).ready(function() {
                     "targets": [0, 1],
                     "width": 20
                 }, {
-                    "targets": [2],
-                    "width": 250
+                    "targets": [2,3],
+                    "width": 150
                 }, {
-                    "targets": [3, 4, 5],
+                    "targets": [ 4, 5],
                     "width": 50
                 }, {
                     "targets": [6, 7, 8],

@@ -26,7 +26,7 @@
             },
             imagedesc: {
                 insert: '插入图片描述',
-                undesc: '删除描述',
+                undesc: '去除描述',
                 edit: '编辑图片描述',
                 textToDisplay: '显示文本' 
             },

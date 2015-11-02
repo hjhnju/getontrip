@@ -11240,7 +11240,7 @@
                  *      } );
                  *    } )
                  */
-                "sPaginationType": "full_numbers",
+                "sPaginationType": "simple_numbers",
 
 
                 /**
@@ -13812,7 +13812,7 @@
                 },
 
                 full_numbers: function(page, pages) {
-                    return ['refresh', 'first', 'previous', _numbers(page, pages), 'next', 'last'];
+                    return ['refresh', 'first', 'previous', _numbers(page, pages), 'next', 'last', 'goto'];
                 },
 
                 // For testing and plug-ins to use

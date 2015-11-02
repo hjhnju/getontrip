@@ -133,7 +133,7 @@ class Topic_Logic_Topic extends Base_Logic{
      * @param integer $topicId
      * @return Topic_Object_Topic
      */
-    public function getTopicDetail($topicId){
+    public function getTopicDetail($topicId, $sightId = ''){
         $objTopic = new Topic_Object_Topic();
         $objTopic->setFileds(array('id','title','content','from','from_detail','image','url'));
         $objTopic->fetch(array('id' => $topicId));
@@ -141,27 +141,10 @@ class Topic_Logic_Topic extends Base_Logic{
         if(empty($arrRet)){
             return $arrRet;
         }
-        
-        $objSightTopic = new Sight_Object_Topic();
-        $objSightTopic->fetch(array('topic_id' => $topicId));
-        $sightId       = $objSightTopic->sightId;
+        $arrRet['sight_name'] = '';
         if(!empty($sightId)){
-            $arrSight      = Sight_Api::getSightById($sightId);           
+            $arrSight              = Sight_Api::getSightById($sightId);           
             $arrRet['sight_name']  = $arrSight['name'];           
-        }else{
-            $listTopicTag = new Topic_List_Tag();
-            $listTopicTag->setFilter(array('topic_id' => $topicId));
-            $listTopicTag->setPagesize(PHP_INT_MAX);
-            $arrTopicTag = $listTopicTag->toArray();
-            foreach ($arrTopicTag['list'] as $val){
-                $objSightTag = new Sight_Object_Tag();
-                $objSightTag->fetch(array('tag_id' => $val['tag_id']));
-                $sight = Sight_Api::getSightById($objSightTag->sightId);
-                if(!empty($sight)){
-                    $arrRet['sight_name']  = $sight['name'];
-                    break;
-                }
-            }
         }
         
         $logicComment          = new Comment_Logic_Comment();

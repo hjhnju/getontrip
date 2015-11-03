@@ -41,6 +41,12 @@ class Base_Controller_Api extends Base_Controller_Abstract {
     protected function isAjax() {
         return true;
     }
+    
+    public function getVersion(){
+        $request = $this->getRequest();
+        $param   = $request->getParams();
+        return $param['version'];
+    }
    
     public function ajax($arrData = array(), $errorMsg = '', $status = 0){
         @header("Content-Type: application/json; charset=UTF-8");

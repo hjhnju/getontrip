@@ -230,13 +230,13 @@ class Book_Logic_Book extends Base_Logic{
                 $objBook->contentDesc = $temp[$key]['content_desc'];
                 $objBook->catalog     = $temp[$key]['catalog'];
                 $objBook->publishTime = $temp[$key]['publish_time'];
-                $objBook->weight      = $this->getAllBookNum($sightId) + 1;
                 $objBook->status      = $temp[$key]['status'];
                 $objBook->save();               
                 
                 $objSightBook     = new Sight_Object_Book();
                 $objSightBook->sightId = $sightId;
                 $objSightBook->bookId  = $objBook->id;
+                $objSightBook->weight  = $this->getAllBookNum($sightId) + 1;
                 $objSightBook->save();
             }                       
             $key += 1;
@@ -266,19 +266,15 @@ class Book_Logic_Book extends Base_Logic{
                 }
                 $objBook->$key = $val;
             }
-        }
-        if(!empty($sightId)){
-            $objBook->weight = $this->getBookNum($sightId)+1;
-        }
-        
+        }        
         $ret =  $objBook->save();
-        
-        if(!empty($sightId)){
+        foreach ($sightId as $id){
             $objSightBook = new Sight_Object_Book();
-            $objSightBook->sightId = $sightId;
+            $objSightBook->sightId = $id;
             $objSightBook->bookId  = $objBook->id;
+            $objSightBook->weight  = $this->getAllBookNum($id);
             $objSightBook->save();
-        }      
+        }    
         return $ret;
     }
     
@@ -299,16 +295,14 @@ class Book_Logic_Book extends Base_Logic{
                 $key = $this->getprop($key);
                 $objBook->$key = $val;
             }
-        }
-        if(!empty($sightId)){
-            $objBook->weight = $this->getAllBookNum($sightId)+1;
         }        
         $ret =  $objBook->save();
         
-        if(!empty($sightId)){
+        foreach($sightId as $id){
             $objSightBook = new Sight_Object_Book();
-            $objSightBook->sightId = $sightId;
+            $objSightBook->sightId = $id;
             $objSightBook->bookId  = $objBook->id;
+            $objSightBook->weight  = $this->getAllBookNum($sightId)+1;
             $objSightBook->save();
         }      
         return $ret;
@@ -326,7 +320,18 @@ class Book_Logic_Book extends Base_Logic{
        if(!empty($image)){
            $this->delPic($image);
        }
-       $objBook->remove();
+       $ret = $objBook->remove();
+       
+       $listSightBook = new Sight_List_Book();
+       $listSightBook->setFilter(array('book_id' => $id));
+       $listSightBook->setPagesize(PHP_INT_MAX);
+       $arrSightBook  = $listSightBook->toArray();
+       foreach ($arrSightBook['list'] as $val){
+           $objSightBook = new Sight_Object_Book();
+           $objSightBook->fetch(array('id' => $id));
+           $objSightBook->remove();
+       }
+       return $ret;
     }
     
     public function getBookById($bookId){
@@ -566,10 +571,10 @@ class Book_Logic_Book extends Base_Logic{
      * @return boolean
      */
     public function changeWeight($sightId, $id, $to){
-        $objBook = new Book_Object_Book();
-        $objBook->fetch(array('id' => $id));
-        $from       = $objBook->weight;
-        $objBook->weight = $to;
+        $objSightBook = new Sight_Object_Book();
+        $objSightBook->fetch(array('sight_id' => $sightId,'book_id' => $id));
+        $from       = $objSightBook->weight;
+        $objSightBook->weight = $to;
     
         $bAsc = ($to > $from)?1:0;
         $min  = min(array($from,$to));
@@ -577,28 +582,20 @@ class Book_Logic_Book extends Base_Logic{
         
         $arrBookIds    = array();
         $listSightBook = new Sight_List_Book();
-        $listSightBook->setFilter(array('sight_id' => $sightId));
-        $arrSightBook  = $listSightBook->toArray();
-        foreach ($arrSightBook['list'] as $val){
-            $arrBookIds[] = $val['book_id'];
-        }
-        
-        $filter = implode(",",$arrBookIds);
-        $listBook = new Book_List_Book();
-        $listBook->setPagesize(PHP_INT_MAX);
-        $listBook->setFilterString("`id` in (".$filter.")");
-        $listBook->setOrder('weight asc');
-        $arrBook = $listBook->toArray();
-        $arrBook = array_slice($arrBook['list'],$min-1+$bAsc,$max-$min);
-        $ret = $objBook->save();
-        foreach ($arrBook as $key => $val){
-            $objBook->fetch(array('id' => $val['id']));
+        $listSightBook->setFilter(array('sight_id' => $sightId));        
+        $listSightBook->setPagesize(PHP_INT_MAX);
+        $listSightBook->setOrder('weight asc');
+        $arrSightBook = $listSightBook->toArray();
+        $arrSightBook = array_slice($arrSightBook['list'],$min-1+$bAsc,$max-$min);
+        $ret = $objSightBook->save();
+        foreach ($arrSightBook as $key => $val){
+            $objSightBook->fetch(array('id' => $val['id']));
             if($bAsc){
-                $objBook->weight = $min + $key ;
+                $objSightBook->weight = $min + $key ;
             }else{
-                $objBook->weight = $max - $key;
+                $objSightBook->weight = $max - $key;
             }
-            $objBook->save();
+            $objSightBook->save();
         }
         return $ret;
     }

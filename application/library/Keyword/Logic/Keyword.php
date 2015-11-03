@@ -286,12 +286,12 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $listKeywordCatalog->setFilter(array('keyword_id' => $val['id']));
             $listKeywordCatalog->setPagesize(self::WIKI_CATALOG_NUM);
             $arrCatalog = $listKeywordCatalog->toArray();
-            $arrLen     = array();
+            //$arrLen     = array();
             foreach ($arrCatalog['list'] as $index => $data){
                 $arrCatalog['list'][$index]['name'] = Base_Util_String::trimall($data['name']);
-                $arrLen[] = strlen($data['name']);
+                //$arrLen[] = strlen($data['name']);
             }
-            array_multisort($arrLen, SORT_DESC , $arrCatalog['list']);
+            //array_multisort($arrLen, SORT_DESC , $arrCatalog['list']);
             $arrRet['list'][$key]['catalog'] = $arrCatalog['list'];
             $arrRet['list'][$key]['image']   = Base_Image::getUrlByName($val['image']);
         }

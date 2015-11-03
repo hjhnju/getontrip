@@ -20,7 +20,7 @@ class Sight_List_Book extends Base_List {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'sight_id', 'book_id', 'create_time', 'update_time');
+    protected $fields = array('id', 'sight_id', 'book_id', 'create_time', 'update_time', 'weight');
 
     /**
      * 整数类型的字段
@@ -32,6 +32,7 @@ class Sight_List_Book extends Base_List {
         'book_id'     => 1,
         'create_time' => 1,
         'update_time' => 1,
+        'weight'      => 1,
     );
 
     /**

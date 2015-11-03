@@ -135,7 +135,7 @@ class Topic_Logic_Topic extends Base_Logic{
      */
     public function getTopicDetail($topicId, $sightId = ''){
         $objTopic = new Topic_Object_Topic();
-        $objTopic->setFileds(array('id','title','content','from','from_detail','image','url'));
+        $objTopic->setFileds(array('id','subtitle','title','content','from','from_detail','image','url'));
         $objTopic->fetch(array('id' => $topicId));
         $arrRet   = $objTopic->toArray();
         if(empty($arrRet)){
@@ -159,8 +159,10 @@ class Topic_Logic_Topic extends Base_Logic{
         $logicComment          = new Comment_Logic_Comment();
         $arrRet['id']          = strval($arrRet['id']);
         $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
-        $arrRet['title']       = trim($arrRet['title']);
+        $arrRet['subtitle']    = Base_Util_String::trimall($arrRet['subtitle']);
+        $arrRet['title']       = Base_Util_String::trimall($arrRet['title']);
         $arrRet['content']     = trim($arrRet['content']);
+        //$arrRet['desc']        = Base_Util_String::getSubString($arrRet['content'], 30);
         
         $logicVist          = new Tongji_Logic_Visit();
         $logicVist->addVisit( Tongji_Type_Visit::TOPIC, $topicId);

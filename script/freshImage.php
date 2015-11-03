@@ -44,7 +44,7 @@ function addImage($sightId = ''){
          if(isset($val['content'])){
              $content = $val['content'];
          }
-         preg_match_all('/<img src="\/pic\/(.*?)">/', $content,$match);
+         preg_match_all('/<img src="\/pic\/(.*?)\".*?/', $content,$match);
          foreach ($match[1] as $val){
              $content  = file_get_contents("http://123.57.67.165:8301/Pic/".$val);
              $filename = $val ;
@@ -148,7 +148,7 @@ function delImage($sightId = ''){
         if(isset($val['content'])){
             $content = $val['content'];
         }        
-        preg_match_all('/<img src="\/pic\/(.*?)">/', $content,$match);
+        preg_match_all('/<img src="\/pic\/(.*?)\".*?/', $content,$match);
         foreach ($match[1] as $val){
             $oss->remove($val);
         }

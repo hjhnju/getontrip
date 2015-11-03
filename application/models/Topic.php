@@ -104,7 +104,7 @@ class TopicModel extends BaseModel{
     
         $from = ($page-1)*$pageSize;
         if(empty($strTags)){
-            $sql = "SELECT a.id FROM `topic`  a, `sight_topic` b ,`sight` c WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.sight_id = c.id and c.city_id = $cityId ORDER BY a.hot2 desc, a.update_time desc limit $from,$pageSize";            
+            $sql = "SELECT distinct(a.id) FROM `topic`  a, `sight_topic` b ,`sight` c WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.sight_id = c.id and c.city_id = $cityId ORDER BY a.hot2 desc, a.update_time desc limit $from,$pageSize";            
         }
         try {
             $data = $this->db->fetchAll($sql);

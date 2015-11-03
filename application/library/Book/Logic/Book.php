@@ -548,7 +548,6 @@ class Book_Logic_Book extends Base_Logic{
             $image                = isset($arrDouban['images']['large'])?$arrDouban['images']['large']:'';
             $temp['image']        = $this->uploadPic($image);
             $temp['status']       = Book_Type_Status::NOTPUBLISHED;
-            return $image;
         }
         return $temp;
     }

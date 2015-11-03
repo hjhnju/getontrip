@@ -34,7 +34,7 @@ class ApiController extends Base_Controller_Page{
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $ret = $this->logicLogin->setLogin($openId,$type);
-        return $this->ajax(strval($ret));
+        return $this->ajax($ret);
     }
 
     /**

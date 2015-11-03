@@ -155,7 +155,7 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
             $web =Base_Config::getConfig('web');
 
             //定义默认占位图片
-            $img->src = $web->stroot . '/v1/' . $web->version . '/asset/common/img/imgloading.gif'; 
+            $img->src = $web->stroot . '/v1/' . $web->version . '/asset/common/img/imgloading.png'; 
             $img->setAttribute('data-actualsrc',$web->root . $oldSrc);  
             
           } 

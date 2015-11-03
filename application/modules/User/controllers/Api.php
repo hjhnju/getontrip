@@ -2,7 +2,7 @@
 /**
  * 用户登录及信息修改相关操作
  */
-class ApiController extends Base_Controller_Page{
+class ApiController extends Base_Controller_Api{
     
     protected $logicLogin;
     

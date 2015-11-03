@@ -225,4 +225,21 @@ class Collect_Logic_Collect{
         }        
         return $count;
     }
+    
+    /**
+     * 获取收藏信息
+     * @param integer $page
+     * @param integer $pageSize
+     * @param array   $arrInfo
+     * @return array
+     */
+    public function getCollectList($page, $pageSize, $arrInfo = array()){
+        $list = new Collect_List_Collect();
+        $list->setPage($page);
+        $list->setPagesize($pageSize);
+        if(!empty($arrInfo)){
+            $list->setFilter($arrInfo);
+        }
+        return $list->toArray();
+    }
 }

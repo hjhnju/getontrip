@@ -266,6 +266,7 @@ div.FixedHeader_Cloned table {
     box-shadow: none;
     -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    text-align: center;
 }
 #gotopage_input:focus {
 	border-top-left-radius: 4px;

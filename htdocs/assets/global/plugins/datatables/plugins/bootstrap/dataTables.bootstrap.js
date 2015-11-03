@@ -143,10 +143,13 @@ $.fn.dataTable.ext.renderer.pageButton.bootstrap = function(settings, host, idx,
                             )
                             .appendTo(container);
                         //增加页码输入框事件
-                        $('#gotopage_input').keyup(function(event) {
+                        $('#gotopage_input').click(function(event) { 
+                            event.preventDefault();
+                            $(this).select();
+                        }).keyup(function(event) {
                             event.preventDefault();
                             var val = Number($(this).val());
-                            if (val < 0) {
+                            if (!val||val < 0) {
                                 $(this).val('1');
                             }
                             if (val > api.page.info().pages) {

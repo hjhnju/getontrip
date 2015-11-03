@@ -17,9 +17,11 @@ class DetailController extends Base_Controller_Page {
      */
     public function indexAction() {             
        $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0;
-       $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):''; 
+       $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
+       $sightId   = isset($_REQUEST['sightId'])?trim($_REQUEST['sightId']):''; 
+        
        $logic      = new Topic_Logic_Topic();
-       $postInfo    = $logic->getTopicDetail($postid,$deviceId); 
+       $postInfo    = $logic->getTopicDetail($postid,$sightId); 
        //$postInfo = Topic_Api::getTopicById($postid);
        if(!isset($postInfo['id'])){
           $this->getView()->assign('post', array()); 
@@ -35,7 +37,7 @@ class DetailController extends Base_Controller_Page {
              $postInfo["img_hash"] = $imgParams['img_hash'];
              $postInfo["img_type"] = $imgParams['img_type'];
            }/*else{
-              $postInfo["image"] = $web->stroot . '/v1/' . $web->version . '/asset/common/img/imgloading.gif'; 
+              $postInfo["image"] = $web->stroot . '/v1/' . $web->version . '/asset/common/img/imgloading.png'; 
            }*/
            
            //处理正文图片

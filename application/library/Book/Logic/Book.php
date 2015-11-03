@@ -261,7 +261,7 @@ class Book_Logic_Book extends Base_Logic{
         foreach ($arrInfo as $key => $val){
             if(in_array($key,$this->fields)){
                 $key = $this->getprop($key);
-                if(($key == 'image') && !empty($objBook->image)){
+                if(($key == 'image') && ($objBook->image !== $val)){
                     $this->delPic($objBook->image);
                 }
                 $objBook->$key = $val;

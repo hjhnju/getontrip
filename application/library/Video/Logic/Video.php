@@ -231,6 +231,7 @@ class Video_Logic_Video extends Base_Logic{
                 $objVideo->$key = $val;
             }
         }
+        $objVideo->guid   = md5($arrParam['title'].$arrParam['url'].$arrParam['sight_id']);
         $objVideo->weight = $this->getAllVideoNum($arrParam['sight_id'])+1;
         return $objVideo->save();
     }

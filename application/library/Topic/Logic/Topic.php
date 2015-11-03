@@ -196,7 +196,8 @@ class Topic_Logic_Topic extends Base_Logic{
         $logicTag = new Tag_Logic_Tag();
         $arrRet['tags'] = $logicTag->getTopicTags($topicId);
         if(!empty($arrRet['tags'])){
-            $arrRet['tags'] = str_replace("其他", "", $arrRet['tags'][0]);
+            $tag = str_replace("其他", "", $arrRet['tags'][0]);
+            $arrRet['tags'][] = $tag;
         }
         
         //这里需要更新一下热度

@@ -54,7 +54,7 @@ class Book_Api{
     /**
      * 接口5：Book_Api::addBook($arrInfo)
      * 添加书籍接口
-     * @param array $arrInfo,array('title'=>'','sight_id'=>1,...)
+     * @param array $arrInfo,array('title'=>'','sight_id'=>array(1,2),...)
      * @return boolean
      */
     public static function addBook($arrInfo){

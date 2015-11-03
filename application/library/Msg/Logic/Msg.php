@@ -196,7 +196,7 @@ class Msg_Logic_Msg {
      */
     public function sendmsg($intType, $image = '',$toid = '', $arrParam = array(), $fromid = 0) {
         $count  = 0;
-        if(empty($toid)){//这种情况对应系统消息，进行群发
+        if($intType == Msg_Type_Type::SYSTEM){//系统消息
             $listUser = new User_List_User();
             $listUser->setFields(array('id'));
             $listUser->setPagesize(PHP_INT_MAX);
@@ -216,23 +216,18 @@ class Msg_Logic_Msg {
                     $count += 1;
                 }
             }
-        }else{ //可以是系统消息，也可能是其它消息
+        }else{ //回复消息
             $objMsg = new Msg_Object_Msg();
             $objMsg->sender    = $fromid;
             $objMsg->receiver  = $toid;
             $objMsg->type      = $intType;
             $objMsg->image     = $image;
-            if(Msg_Type_Type::SYSTEM == $intType){
-                $objMsg->title     = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['title'],$arrParam['title']);
-                $strContent   = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$arrParam['content']);
-            }else{
-                $logicUser    = new User_Logic_User();
-                $userName     = $logicUser->getUserName($arrParam['user_id']);
-                $strContent   = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$userName);
-                //unset($arrParam['user_id']);
-                $objMsg->attach    = json_encode($arrParam);
-                $objMsg->title     = '';
-            }
+            $logicUser         = new User_Logic_User();
+            $userName          = $logicUser->getUserName($arrParam['user_id']);
+            $strContent        = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$userName);
+            //unset($arrParam['user_id']);
+            $objMsg->attach    = json_encode($arrParam);
+            $objMsg->title     = '';
             $objMsg->content   = $strContent;
             $objMsg->title     = Msg_Type_Type::$_arrMsgMap[$intType]['title'];
             $objMsg->receiver = $toid;

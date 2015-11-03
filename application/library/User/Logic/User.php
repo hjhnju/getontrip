@@ -68,18 +68,16 @@ class User_Logic_User extends Base_Logic{
     
     /**
      * 修改用户信息
-     * @param string $strParam
+     * @param array $arrParam
      * @return boolean
      */
-    public function editUserInfo($userId, $type, $strParam, $file = ''){
+    public function editUserInfo($userId, $type, $arrParam, $file = ''){
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId,'type' => $type));
-        $arrData  = explode(",",$strParam);
-        foreach ($arrData as $val){
-            $arrTemp = explode(":", $val);
-            if(isset($arrTemp[0]) && isset($arrTemp[1])){
-                $key           = $this->getprop($arrTemp[0]);                
-                $objUser->$key = $arrTemp[1];
+        foreach ($arrParam as $key => $val){
+            if(!empty($val)){
+                $key           = $this->getprop($key);                
+                $objUser->$key = $val;
             }            
         }
         if(!empty($file)){            
@@ -113,24 +111,22 @@ class User_Logic_User extends Base_Logic{
     /**
      * 添加用户信息,如果用户已经存在,则失败
      * @param string $userId
-     * @param string $strParam
+     * @param array $arrParam
      * @return boolean
      */
-    public function addUserInfo($userId, $type, $strParam){
+    public function addUserInfo($userId, $type, $arrParam){
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId,'type' => $type));
         if(!empty($objUser->nickName) || !empty($objUser->image)){
             return false;
         }
-        $arrData  = explode(",",$strParam);
-        foreach ($arrData as $val){
-            $arrTemp = explode(":", $val);
-            if(isset($arrTemp[0]) && isset($arrTemp[1])){
-                $key           = $this->getprop($arrTemp[0]);
+        foreach ($arrParam as $key => $val){
+            if(!empty($val)){
+                $key           = $this->getprop($key);
                 if($key == 'image'){
-                    $objUser->$key = $this->uploadPic($arrTemp[1]);
+                    $objUser->$key = $this->uploadPic($val);
                 }else{
-                    $objUser->$key = $arrTemp[1];
+                    $objUser->$key = $val;
                 }
             }
         }

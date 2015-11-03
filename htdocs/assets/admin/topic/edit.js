@@ -371,6 +371,10 @@ $(document).ready(function() {
                     action = $(this).attr('data-action');
                     //先判断图片 
                     if (action === 'PUBLISHED') {
+                        if (!$('#subtitle').val()) {
+                            toastr.warning('副标题不能为空！');
+                            return false;
+                        }
                         if (!$('#image').val()) {
                             toastr.warning('发布之前必须上传图片');
                             return false;
@@ -518,12 +522,10 @@ $(document).ready(function() {
             // validate signup form on keyup and submit
             validate = $("#Form").validate({
                 rules: {
-                    title: "required",
-                    subtitle: 'required'
+                    title: "required" 
                 },
                 messages: {
-                    title: "这可是主标题，不能为空呀！",
-                    subtitle: "副标题不能为空！"
+                    title: "这可是主标题，不能为空呀！" 
 
                 }
             });

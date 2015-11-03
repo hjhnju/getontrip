@@ -38,14 +38,9 @@
         }, {
             "data": "nick_name"
         }, {
-            "data": "city_name"
+            "data": "city"
         }, {
-            "data": function(e) {
-                if (e.sex === 1) {
-                    return '男';
-                }
-                return "女";
-            }
+            "data": 'sex_name'
         }, {
             "data": function(e) {
                 if (e.image) {

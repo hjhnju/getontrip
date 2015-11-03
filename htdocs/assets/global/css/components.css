@@ -58,6 +58,10 @@ body {
     margin: 0px !important;
     font-size: 13px;
     direction: ltr;  
+
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
 }
 
 
@@ -3918,6 +3922,11 @@ Customized Bootstrap Modal
 
 .modal .modal-header {
     border-bottom: 1px solid #EFEFEF;
+    background: #00A8B3;
+    color: #fff;
+    border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+    border-bottom: none;
 }
 
 .modal .modal-header h3 {
@@ -22192,7 +22201,7 @@ Custom tables
 }
 
 .table .btn {
-    margin-top: 0px;
+    margin-top: 5px;
     margin-left: 0px;
     margin-right: 5px;
 }

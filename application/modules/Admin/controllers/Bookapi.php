@@ -60,7 +60,7 @@ class BookapiController extends Base_Controller_Api{
         }
         $_REQUEST['status'] = $this->getStatusByActionStr(isset($_REQUEST['action'])?$_REQUEST['action']:'');
        
-        $dbRet=Book_Api::editBook($id,$_REQUEST);
+        $dbRet=Book_Api::editBook($sightId,$id,$_REQUEST);
         if ($dbRet) {
             return $this->ajax();
         }

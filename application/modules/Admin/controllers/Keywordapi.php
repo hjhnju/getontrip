@@ -13,7 +13,7 @@ class KeywordapiController extends Base_Controller_Api{
          //第一条数据的起始位置，比如0代表第一条数据
         $start=isset($_REQUEST['start'])?$_REQUEST['start']:0;
        
-        $pageSize=isset($_REQUEST['length'])?$_REQUEST['length']:20;
+        $pageSize=isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX;
 
         $page=($start/$pageSize)+1;
          

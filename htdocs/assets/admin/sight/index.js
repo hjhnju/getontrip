@@ -34,19 +34,19 @@ $(document).ready(function() {
                         }
                     }
                 },
-                "columnDefs": [{
-                    "targets": [1],
-                    "visible": false,
-                    "searchable": false
+                "columnDefs": [ {
+                    "targets": [0, 4],
+                    "width": 30
                 }, {
-                    "targets": [3, 4, 5, 6, 7],
-                    "width": 80
+                    "targets": [1,2, 3, 5, 6, 7],
+                    "width": 60
+                }, {
+                    "targets": [9,10],
+                    "width": 90
                 }],
                 "columns": [{
                     "data": "id"
-                }, {
-                    "data": 'city_id'
-                }, {
+                } , {
                     "data": "name"
                 }, {
                     "data": function(e) {
@@ -99,7 +99,7 @@ $(document).ready(function() {
                     }
                 }, {
                     "data": function(e) {
-                        return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/sight/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-success btn-xs addKeyword"  title="添加词条" data-toggle="tooltip"><i class="fa fa-buysellads"></i></button>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
+                        return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/sight/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-success btn-xs addKeyword"  title="添加景观" data-toggle="tooltip"><i class="fa fa-lightbulb-o"></i></button>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
                     }
                 }],
                 "initComplete": function(setting, json) {
@@ -152,7 +152,7 @@ $(document).ready(function() {
 
 
 
-                //点击打开添加词条模态框
+                //点击打开添加景观模态框
                 $("#editable button.addKeyword").live('click', function(event) {
                     var nRow = $(this).parents('tr')[0];
                     var data = oTable.api().row(nRow).data();
@@ -166,7 +166,7 @@ $(document).ready(function() {
                     $('#myModal').modal({});
                 });
 
-                //输入词条名称生成url
+                //输入景观名称生成url
                 $('#name').blur(function(event) {
                     var name = $.trim($(this).val());
                     if (name) {
@@ -174,7 +174,7 @@ $(document).ready(function() {
                         $('#view-link').attr('href', $('#url').val());
                     }
                 });
-                //点击保存词条或者确认并保存按钮
+                //点击保存景观或者确认并保存按钮
                 $('#Form button[type="submit"]').click(function(event) {
                     $('#status').val($(this).attr('data-status'));
                 });

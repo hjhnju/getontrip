@@ -97,6 +97,7 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  width: 210px;
 }
 .datepicker td,
 .datepicker th {

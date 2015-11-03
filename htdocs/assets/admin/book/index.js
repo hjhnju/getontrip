@@ -31,11 +31,24 @@ $(document).ready(function() {
                 "columnDefs": [{
                     "targets": [0],
                     "visible": true,
-                    "searchable": false
+                    "searchable": false,
+                    "width": 30
                 }, {
-                    "targets": [1, 2],
+                    "targets": [1],
                     "orderable": false,
                     "width": 150
+                }, {
+                    "targets": [2,3, 4,7],
+                    "orderable": false,
+                    "width": 80
+                }, {
+                    "targets": [5, 6],
+                    "orderable": false,
+                    "width": 40
+                }, {
+                    "targets": [8],
+                    "orderable": false,
+                    "width": 100
                 }],
                 "columns": [{
                     "data": "id"
@@ -72,9 +85,10 @@ $(document).ready(function() {
                 }, {
                     "data": function(e) {
                         return '';
+                        //return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/book/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>';
                         //评论
                         return '<a href="/admin/comment/list?id=' + e.id + '&table=book" target="_blank" class="btn btn-warning btn-xs comments" title="评论列表" data-toggle="tooltip"><i class="fa fa-comments-o"></i></a>';
-                        return '<a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
+                        return '<a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
                     }
                 }],
                 "initComplete": function(setting, json) {

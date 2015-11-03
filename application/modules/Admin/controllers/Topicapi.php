@@ -29,7 +29,7 @@ class  TopicapiController extends Base_Controller_Api{
         $List = Topic_Api::search($arrParam,$page,$pageSize);
         $sightArray=array();
         
-        //处理状态值 
+        //处理数据 
         $tmpList = $List['list'];
         for($i=0; $i<count($tmpList); $i++) {  
             $tmpList[$i]["statusName"] = Topic_Type_Status::getTypeName($tmpList[$i]["status"]);

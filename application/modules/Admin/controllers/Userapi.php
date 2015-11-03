@@ -26,10 +26,10 @@ class UserapiController extends Base_Controller_Api{
 
         $tmpList=$List['list'];
 
-        //添加城市名称
-        $cityArray=array(); 
+         
         foreach($tmpList as $key=>$item){
-            $tmpList[$key]['city_name'] = $item['city'];           
+            //处理性别
+            $tmpList[$key]['sex_name'] = User_Type_Info::getTypeName($item['sex']);           
         } 
 
         $List['list']=$tmpList;

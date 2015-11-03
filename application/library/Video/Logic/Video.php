@@ -21,6 +21,7 @@ class Video_Logic_Video extends Base_Logic{
        $list = new Video_List_Video();
        $arrFilter = array_merge(array('sight_id' => $sightId),$arrParam);
        $list->setFilter($arrFilter);
+       $list->setOrder('`weight` asc');
        $list->setPage($page);
        $list->setPagesize($pageSize);
        return $list->toArray();

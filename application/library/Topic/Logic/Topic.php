@@ -142,6 +142,15 @@ class Topic_Logic_Topic extends Base_Logic{
             return $arrRet;
         }
         $arrRet['sight_name'] = '';
+        
+        if(empty($sightId)){
+            $logic    = new Sight_Logic_Sight();
+            $arrSight = $logic->getSightByTopic($topicId);
+            if(!empty($arrSight['list'])){
+                $sightId = $arrSight['list'][0]['sight_id'];
+            }
+        }
+                
         if(!empty($sightId)){
             $arrSight              = Sight_Api::getSightById($sightId);           
             $arrRet['sight_name']  = $arrSight['name'];           

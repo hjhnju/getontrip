@@ -261,7 +261,7 @@ class Book_Logic_Book extends Base_Logic{
                 $objSightBook     = new Sight_Object_Book();
                 $objSightBook->sightId = $sightId;
                 $objSightBook->bookId  = $objBook->id;
-                $objSightBook->weight  = $this->getAllBookNum($sightId) + 1;
+                $objSightBook->weight  = $this->getBookWeight($sightId);
                 $objSightBook->save();
             }                       
             $key += 1;
@@ -307,7 +307,7 @@ class Book_Logic_Book extends Base_Logic{
             $objSightBook = new Sight_Object_Book();
             $objSightBook->sightId = $id;
             $objSightBook->bookId  = $objBook->id;
-            $objSightBook->weight  = $this->getAllBookNum($id);
+            $objSightBook->weight  = $this->getBookWeight($id);
             $objSightBook->save();
         }    
         return $ret;
@@ -337,10 +337,10 @@ class Book_Logic_Book extends Base_Logic{
             $objSightBook = new Sight_Object_Book();
             $objSightBook->sightId = $id;
             $objSightBook->bookId  = $objBook->id;
-            $objSightBook->weight  = $this->getAllBookNum($sightId)+1;
+            $objSightBook->weight  = $this->getBookWeight($sightId);
             $objSightBook->save();
         }      
-        return $ret;
+        return $objBook->id;
     }
     
     /**
@@ -428,11 +428,18 @@ class Book_Logic_Book extends Base_Logic{
         return $ret;
     }
     
-    public function getAllBookNum($sightId){        
+    public function getBookWeight($sightId){    
+        $maxWeight  = 0;    
         $listSightBook = new Sight_List_Book();
         $listSightBook->setFilter(array('sight_id' => $sightId));
         $listSightBook->setPagesize(PHP_INT_MAX);
-        return $listSightBook->countAll();
+        $arrSightBook  = $listSightBook->toArray();
+        foreach ($arrSightBook['list'] as $val){
+            if($val['weight'] > $maxWeight){
+                $maxWeight = $val['weight'];
+            }
+        }
+        return $maxWeight + 1;
     }
     
     public function getBookNum($sightId, $status = Book_Type_Status::PUBLISHED){

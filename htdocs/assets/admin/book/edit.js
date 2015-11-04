@@ -18,6 +18,7 @@ $(document).ready(function() {
                 this.init_isbn();
                 this.init_sight();
                 this.init_others();
+                this.init_summernote();
             },
             init_image: function() {
                 //上传图片，得到url
@@ -100,6 +101,54 @@ $(document).ready(function() {
                     }
                 });
 
+            },init_summernote:function(){
+                //初始化内容摘要编辑器
+                $('#summernote_content_desc').summernote({
+                    lang: "zh-CN",
+                    height: 300,
+                    toolbar: [ 
+                        ['style', ['bold', 'clear']], 
+                        ['view', ['codeview']]
+                    ],
+                    onInit: function() {
+                        $('#summernote_content_desc').code($('#content_desc-text').html());
+                    },  
+                    onChange: function(characters, editor, $editable) {
+                        localStorage.content_desc = $('#summernote_content_desc').code();
+                        if ($('#id').val()) {
+                            $(window).bind('beforeunload', function() {
+                                if (localStorage.content_desc) {
+                                    return '等等!!您输入的内容摘要尚未保存！!';
+                                }
+                            });
+
+                        }
+                    }
+                });
+
+                //初始化目录编辑器
+                $('#summernote_catalog').summernote({
+                    lang: "zh-CN",
+                    height: 300,
+                    toolbar: [ 
+                        ['style', ['bold', 'clear']], 
+                        ['view', ['codeview']]
+                    ],
+                    onInit: function() {
+                        $('#summernote_catalog').code($('#catalog-text').html());
+                    },  
+                    onChange: function(characters, editor, $editable) {
+                        localStorage.catalog = $('#summernote_catalog').code();
+                        if ($('#id').val()) {
+                            $(window).bind('beforeunload', function() {
+                                if (localStorage.catalog) {
+                                    return '等等!!您输入的内容摘要尚未保存！!';
+                                }
+                            });
+
+                        }
+                    }
+                });
             }
         }
 
@@ -120,17 +169,17 @@ $(document).ready(function() {
                         sight_id_array.push(Number($(this).attr('data-id')));
                     });
                     param.sight_id = sight_id_array;
+                    param.content_desc = $("#summernote_content_desc").code();
+                    param.catalog = $("#summernote_catalog").code();
+
+                    
                     param.action = action;
-                    var url = '';
-                    if (!$('#id').val()) {
-                        url = '/admin/bookapi/add';
-                    } else {
-                        url = "/admin/bookapi/save"
-                    }
+
+                    
                     //按钮disabled
                     $('#Form button[type="submit"]').btnDisable();
                     $.ajax({
-                        "url": url,
+                        "url": '/admin/bookapi/save',
                         "data": param,
                         "type": "post",
                         "dataType": "json",
@@ -139,10 +188,10 @@ $(document).ready(function() {
                             $('#Form button[type="submit"]').btnEnable();
                         },
                         "success": function(response) {
-                            if (response.status == 0) {
-                                localStorage.image = '';
-                                toastr.success('保存成功');
-
+                            if (response.status == 0) { 
+                                localStorage.content_desc = '';
+                                localStorage.catalog='';
+                                toastr.success('保存成功'); 
                             } else {
                                 alert(response.statusInfo);
                             }

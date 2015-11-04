@@ -9,6 +9,9 @@ class VideoapiController extends Base_Controller_Api{
         parent::init();
     }
     
+    /*
+     书籍列表页
+     */
     public function listAction(){
          //第一条数据的起始位置，比如0代表第一条数据
         $start=isset($_REQUEST['start'])?$_REQUEST['start']:0;
@@ -105,6 +108,34 @@ class VideoapiController extends Base_Controller_Api{
         return $this->ajaxError();
     }
   
+
+    /**
+     * 裁剪话题背景图片
+     * @return [type] [description]
+     */
+    public function cropPicAction(){
+        $postid=isset($_REQUEST['id'])?intval($_REQUEST['id']):''; 
+        $oldhash=$_REQUEST['image'];
+        $x=$_REQUEST['x'];
+        $y=$_REQUEST['y']; 
+        $width=$_REQUEST['width'];
+        $height=$_REQUEST['height']; 
+        $ret=Base_Image::cropPic($oldhash,$x,$y,$width,$height); 
+        if($ret){
+          if(!empty($postid)){
+            $params = array('image'=>$ret['image']);
+            //修改话题的图片hash
+            $bRet=Video_Api::editVideo($postid,$params);
+            if($bRet){
+               return $this->ajax($ret); 
+            }
+            return $this->ajaxError('');
+            return $this->ajaxError('400','修改话题的图片hash错误');  
+          }
+          return $this->ajax($ret); 
+        }
+        return $this->ajaxError('401','裁剪图片错误错误');  
+    }
 
    /**
      * 获取保存的状态

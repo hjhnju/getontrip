@@ -6,8 +6,8 @@ $(document).ready(function() {
 
     var Edit = function() {
 
-        var validate = null; 
-        var action='';
+        var validate = null;
+        var action = '';
         /**
          * 绑定事件
          *  
@@ -16,6 +16,7 @@ $(document).ready(function() {
             init: function() {
                 this.init_image();
                 this.init_isbn();
+                this.init_sight();
                 this.init_others();
             },
             init_image: function() {
@@ -50,6 +51,39 @@ $(document).ready(function() {
                 //根据isbn抓取数据信息
 
             },
+            init_sight: function() {
+                sight_id_array = [];
+                $('#sight_alert span button').each(function() {
+                    sight_id_array.push(Number($(this).attr('data-id')));
+                });
+
+                //景点输入框自动完成
+                $('#sight_name').typeahead({
+                    display: 'name',
+                    val: 'id',
+                    ajax: {
+                        url: '/admin/sightapi/getSightList',
+                        triggerLength: 1
+                    },
+                    itemSelected: function(item, val, text) {
+                        $("#sight_name").val('');
+                        //先判断是否已经选择
+                        var valnum = Number(val);
+                        if (!sight_id_array.in_array(valnum)) {
+                            sight_id_array.push(valnum);
+                            //添加到右侧选框中 
+                            $('#sight_alert').append('<span class="badge badge-sm label-danger" role="badge">' + text + '<button type="button" class="close" data-id="' + val + '"><span class="fa fa-remove"></span></button></span>');
+                        }
+                    }
+                });
+
+                //景点框删除景点
+                $('#sight_alert').delegate('.close', 'click', function(event) {
+                    var val = Number($(this).attr('data-id'));
+                    sight_id_array.splice($.inArray(val, sight_id_array), 1);
+                    $(this).parent().remove();
+                });
+            },
             init_others: function() {
                 $('.dpYears').datepicker({
                     autoclose: true
@@ -80,7 +114,12 @@ $(document).ready(function() {
 
                     //序列化表单  
                     var param = $("#Form").serializeObject();
- 
+                    //特殊处理景点
+                    sight_id_array = [];
+                    $('#sight_alert span button').each(function() {
+                        sight_id_array.push(Number($(this).attr('data-id')));
+                    });
+                    param.sight_id = sight_id_array;
                     param.action = action;
                     var url = '';
                     if (!$('#id').val()) {

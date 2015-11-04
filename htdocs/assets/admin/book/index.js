@@ -22,9 +22,12 @@ $(document).ready(function() {
                     "type": "POST",
                     "data": function(d) {
                         //添加额外的参数传给服务器
-                        d.sight_id = 1;
+                        d.params = {};
                         if ($("#form-sight").attr('data-sight_id')) {
-                            d.sight_id = $.trim($("#form-sight").attr('data-sight_id'));
+                            d.params.sight_id = $.trim($("#form-sight").attr('data-sight_id'));
+                        }
+                        if ($("#form-isbn").val()) {
+                            d.params.isbn = $.trim($("#form-isbn").val());
                         }
                     }
                 },
@@ -38,7 +41,7 @@ $(document).ready(function() {
                     "orderable": false,
                     "width": 150
                 }, {
-                    "targets": [2,3, 4,7],
+                    "targets": [2, 3, 4, 7],
                     "orderable": false,
                     "width": 80
                 }, {
@@ -84,8 +87,8 @@ $(document).ready(function() {
                     }
                 }, {
                     "data": function(e) {
-                        return '';
-                        //return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/book/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>';
+                         return '';
+                        return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/book/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>';
                         //评论
                         return '<a href="/admin/comment/list?id=' + e.id + '&table=book" target="_blank" class="btn btn-warning btn-xs comments" title="评论列表" data-toggle="tooltip"><i class="fa fa-comments-o"></i></a>';
                         return '<a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
@@ -107,12 +110,73 @@ $(document).ready(function() {
 
         var bindEvents = {
             init: function() {
+                this.init_action();
+                this.init_book(); 
+            },
+            init_book: function() {
+                //书籍添加器类型下拉列表 
+                $('#form-type').selectpicker();
+
+                //点击添加弹出书籍添加器
+                $('#addBook').click(function(event) {
+                    $('#myModal').modal();
+                });
+
+                 $.validator.setDefaults({
+                    submitHandler: function(data) {
+                        //序列化表单  
+                        var param = $("#Form").serializeObject();
+                        $.ajax({
+                            "url": "/admin/bookapi/add",
+                            "data": param,
+                            "type": "post",
+                            "dataType": "json",
+                            "error": function(e) {
+                                alert("服务器未正常响应，请重试");
+                            },
+                            "success": function(response) {
+                                if (response.status == 0) {
+                                    toastr.success('保存成功');
+
+                                    $('#openWin').attr('href', '/admin/book/edit?action=edit&id=' + response.data);
+                                    $('#openWin')[0].click();
+
+                                    //刷新页面
+                                    
+                                    //手工关闭模态框
+                                    $('#myModal').modal('hide');
+                                }else{
+                                     alert(response.statusInfo);
+                                }
+                            }
+                        }); 
+                    }
+                });
+
+                validations(); 
+
+                /*
+                   添加书籍表单验证
+                */
+                function validations() {
+                    // validate signup form on keyup and submit
+                    validate = $("#Form").validate({
+                        rules: {
+                            strIsbn: "required" 
+                        },
+                        messages: {
+                            strIsbn: "skuid或isbn不能为空！" 
+                        }
+                    });
+                }
+
+            },
+            init_action: function() {
                 //绑定draw事件
                 $('#editable').on('draw.dt', function() {
                     //工具提示框
                     $('[data-toggle="tooltip"]').tooltip();
                 });
-
                 //删除操作
                 $('#editable button.delete').live('click', function(e) {
                     e.preventDefault();
@@ -196,6 +260,13 @@ $(document).ready(function() {
               过滤事件
          */
         var filter = function() {
+             //输入内容点击回车查询
+            $("#form-isbn,#form-sight").keydown(function(event) {
+                if (event.keyCode == 13) {
+                    api.ajax.reload();
+                }
+            });
+
             //景点输入框自动完成
             $('#form-sight').typeahead({
                 display: 'name',

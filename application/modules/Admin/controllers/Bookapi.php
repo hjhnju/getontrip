@@ -56,8 +56,8 @@ class BookapiController extends Base_Controller_Api{
          
         $dbRet=Book_Api::addBook($bookInfo);
          
-        if(!empty($bRet)){
-            return $this->ajax($bRet);
+        if(!empty($dbRet)){
+            return $this->ajax($dbRet);
         }
         return $this->ajaxError();
     }

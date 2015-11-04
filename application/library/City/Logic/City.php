@@ -253,7 +253,8 @@ class City_Logic_City{
         $redis = Base_Redis::getInstance();
         $ret   = $this->_modeSight->getSightByCity(1,PHP_INT_MAX,$cityId);
         foreach ($ret as $val){
-            $count += $redis->sSize(Sight_Keys::getSightTopicKey($val['id']));
+            $logicTopic = new Topic_Logic_Topic();
+            $count += $logicTopic->getTopicNumBySight($val['id'], Topic_Type_Status::PUBLISHED);
         }
         return $count;
     }
@@ -343,7 +344,7 @@ class City_Logic_City{
             $arrCity[$key]['name']  = str_replace("市","",$arrCity[$key]['name']);
             $arrCity[$key]['image'] = isset($city['image'])?Base_Image::getUrlByName($city['image']):'';
             
-            $sight_num     = $logicSight->getSightsNum(array(),$val['id']);
+            $sight_num     = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
             $topic_num     = $this->getTopicNum($val['id']);
             $arrCity[$key]['desc'] = sprintf("%d个景点，%d个话题",$sight_num,$topic_num);
         }

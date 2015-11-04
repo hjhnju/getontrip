@@ -58,8 +58,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
             }
         }
         if($bCheck){
-            $num = $this->getKeywordNumBySight($arrInfo['sight_id']);
-            $obj->weight = $num + 1;
+            $obj->weight = $this->getKeywordWeight($arrInfo['sight_id']);
             $ret = $obj->save();
             
             if(isset($arrInfo['stauts']) && $arrInfo['status'] == Keyword_Type_Status::PUBLISHED){
@@ -177,6 +176,20 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $listKeyword->setFilter(array('sight_id'=>$sightId));
         $ret = $listKeyword->toArray();
         return $ret['total'];
+    }
+    
+    public function getKeywordWeight($sightId){
+        $maxWeight  = 0;
+        $listKeyword = new Keyword_List_Keyword();
+        $listKeyword->setFilter(array('sight_id' => $sightId));
+        $listKeyword->setPagesize(PHP_INT_MAX);
+        $arrKeyword  = $listKeyword->toArray();
+        foreach ($arrKeyword['list'] as $val){
+            if($val['weight'] > $maxWeight){
+                $maxWeight = $val['weight'];
+            }
+        }
+        return $maxWeight + 1;
     }
     
     /**

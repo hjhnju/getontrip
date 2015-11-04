@@ -31,7 +31,7 @@ class SightModel extends BaseModel
     public function getSightByCity($page,$pageSize,$cityId){
         $listSight = new Sight_List_Sight();
         $listSight->setFields(array('id','name','image'));
-        $listSight->setFilter(array('city_id' => $cityId));
+        $listSight->setFilter(array('city_id' => $cityId,'status' => Sight_Type_Status::PUBLISHED));
         $listSight->setPage($page);
         $listSight->setPagesize($pageSize);
         $arrSight = $listSight->toArray();

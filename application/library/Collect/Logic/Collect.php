@@ -116,7 +116,7 @@ class Collect_Logic_Collect{
                 foreach ($arrCollect['list'] as $val){
                     $temp['id']       = strval($val['obj_id']);
                     $city             = $logicCity->getCityById($val['obj_id']);
-                    $temp['image']    = Base_Image::getUrlByName($city['image']);
+                    $temp['image']    = isset($city['image'])?Base_Image::getUrlByName($city['image']):'';
                     $temp['name']     = str_replace("市","",$city['name']);
                     $temp['topicNum'] = sprintf("共%d个话题",$logicCity->getTopicNum($val['obj_id']));
                     //$temp['collect'] = strval($this->getTotalCollectNum(Collect_Type::CITY, $val['obj_id']));

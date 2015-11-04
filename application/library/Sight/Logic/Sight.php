@@ -184,7 +184,7 @@ class Sight_Logic_Sight extends Base_Logic{
                 $count    += $logicComment->getTotalCommentNum($val['id']);
             }
             //话题数
-            $topic_num     = $this->getTopicNum($val['id']);
+            $topic_num     = $this->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
             
             //书籍数
             $book_num      = Book_Api::getBookNum($val['id']);
@@ -194,6 +194,8 @@ class Sight_Logic_Sight extends Base_Logic{
             
             //景观数
             $keyword_num   = Keyword_Api::getKeywordNum($val['id']);
+            
+            $count = $topic_num + $book_num + $video_num + $keyword_num;
             
             $arrSight[$key]['desc']  = sprintf("%d个内容，%d个话题",$count,$topic_num);
         }
@@ -407,8 +409,7 @@ class Sight_Logic_Sight extends Base_Logic{
             }
         }
         $count = 0;
-        $listSightTopic = new Sight_List_Topic();
-        $objTopic = new Topic_Object_Topic();
+        $listSightTopic = new Sight_List_Topic();        
         if(!empty($sightId)){
             $listSightTopic->setFilter(array('sight_id' => $sightId));
         }
@@ -416,9 +417,10 @@ class Sight_Logic_Sight extends Base_Logic{
         $listSightTopic->setPagesize(PHP_INT_MAX);
         $arr = $listSightTopic->toArray();
         foreach ($arr['list'] as $topicId){
+            $objTopic = new Topic_Object_Topic();
             $arrFilter = array_merge(array('id' => $topicId['topic_id']),$arrConf);
             $objTopic->fetch($arrFilter);
-            if(isset($objTopic->id)){
+            if(!empty($objTopic->id)){
                 $count += 1;
             }
         }

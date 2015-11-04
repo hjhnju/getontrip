@@ -786,6 +786,7 @@ class Topic_Logic_Topic extends Base_Logic{
     public function getTopicNumBySight($sightId,$status){
         $redis = Base_Redis::getInstance();
         $num   = $redis->sCard(Sight_Keys::getSightTopicKey($sightId));
+        $num = ''; 
         if(empty($num)){
             $num = 0;
             $listTopic = new Sight_List_Topic();

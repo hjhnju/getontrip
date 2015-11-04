@@ -74,7 +74,12 @@ class Sight_Logic_Sight extends Base_Logic{
             }
             $logicTag = new Tag_Logic_Tag();
             foreach ($arrRet as $key => $val){
-                 $arrRet[$key]['tags'] = $logicTag->getTopicTags($val['id']);
+                 $arrTags = array();
+                 $tags = $logicTag->getTopicTags($val['id']);
+                 if(!empty($tags)){
+                     $arrTags[] = str_replace("其他", "", $tags[0]);
+                 }
+                 $arrRet[$key]['tags'] = $arrTags;
             }
         }
         $sight = Sight_Api::getSightById($sightId);

@@ -320,7 +320,7 @@ class Book_Logic_Book extends Base_Logic{
      */
     public function addBook($arrInfo){
         $objBook = new Book_Object_Book();
-        $sightId = '';
+        $sightId = array();
         if(isset($arrInfo['sight_id'])){
             $sightId = $arrInfo['sight_id'];
             unset($arrInfo['sight_id']);

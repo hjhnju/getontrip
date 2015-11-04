@@ -149,7 +149,7 @@ class Search_Logic_Search{
                     $temp['name']  = $arrCity['name'];
                     $temp['name']  = str_replace("市", "", $temp['name']);
                     $temp['image'] = isset($arrCity['image'])?Base_Image::getUrlByName($arrCity['image']):'';
-                    $sight_num     = $this->logicSight->getSightsNum(array(),$cityId);
+                    $sight_num     = $this->logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$cityId);
                     $topic_num     = $this->logicCity->getTopicNum($cityId);
                     $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::CITY, $cityId);
                     $temp['param1']  =  sprintf("%d个景点",$sight_num);

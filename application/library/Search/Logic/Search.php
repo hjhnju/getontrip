@@ -118,6 +118,7 @@ class Search_Logic_Search{
         if($page == 1){
             $listTag = new Tag_List_Tag();
             $listTag->setFilter(array('type' => Tag_Type_Tag::SEARCH));
+            $listTag->setOrder('`weight` asc');
             $listTag->setPagesize(self::SEARCH_LABEL_NUM);
             $arrTag           = $listTag->toArray();
             $logicSearchLabel = new Search_Logic_Label();

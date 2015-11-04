@@ -1,0 +1,78 @@
+{%extends file="../../../views/common/page.phtml"%}
+{%block name="link"%}
+{%if $isMobile%}
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/topic/css/mdetail.css" />
+{%else%}
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/topic/css/detail.css" />
+{%/if%} 
+ 
+{%/block%} 
+{%block name="content"%}
+ 
+  <div class="container">
+    {%if $isMobile%}
+    <div class="header-for-mobile">
+      <a href="#" class="header-for-mobile-download-link">
+      <span class="header-for-mobile-btn">立即下载</span>
+      <img class="header-for-mobile-logo-img" src="{%$feroot%}/common/img/app-logo.png">
+      <span class="header-for-mobile-title">途知</span>
+      <span class="header-for-mobile-meta">
+        深度旅行：旅行中的历史文化科学趣闻
+      </span>
+      </a>
+    </div> 
+    {%else%}
+    <div class="global-header">
+      <div class="main-wrap">
+        <div class="download">
+        <a href="#" class="button" data-device="ios"><i class="sprite-ico-Button_iPhone2x"></i> <span>iPhone</span></a>
+       <!--  <a href="/download/android" class="button" data-device="android-local"><i class="sprite-ico-Button_Android2x"></i> <span>Android</span></a> -->
+        </div>
+        <a href="#" target="_self" title="途知" class="logo-title">
+          <!-- <img class="header-for-mobile-logo-img" src="{%$feroot%}/common/img/app-logo.png"> -->
+          <!-- <i class="web-logo"></i> -->途知</a>
+      </div>
+    </div>
+    {%/if%} 
+  </div>
+  
+<div class="container main-wrap content-wrap"> 
+ {%if isset($post.id)%}  
+    
+      <div class="bg-img" id="bg-img" style="background-image:url('{%$feroot%}/common/img/imgloading.png'); " data-webroot="{%$webroot%}" data-image="{%$post.image%}">  
+      <div class="title-box">
+          <div class="title">
+            {%if empty($post.title)==0%}{%$post.title%}{%/if%} 
+          </div>
+          <div class="like" style="display:none;">
+             <i class="fa"></i>{%$post.collect%}
+             <i class="fa fa-eye"></i>{%$post.collect%}
+          </div>
+       </div> 
+      <div class="img-mask"></div> 
+    </div> 
+    
+  <div class="main-content">
+    <div class="main-content-inner book-rich-text">
+       {%if empty($post.content_desc)==0%}{%$post.content_desc%}{%/if%}
+    </div>
+    <!-- <div class="text-from">
+       {%if empty($post.from_detail) eq 0%}
+            内容来自{%$post.from%}
+       {%elseif empty($post.from) eq 0%}
+            <a href="{%$post.url%}" target="_blank">内容来自{%$post.from%}，查看原网页</a>
+       {%/if%} 
+    </div> -->
+  </div>
+{%/if%}  
+</div>
+ 
+
+{%/block%}
+{%block name="script"%}
+<script> 
+    require(['topic/detail'], function (main) {
+        main.init();
+    }); 
+</script>
+{%/block%}

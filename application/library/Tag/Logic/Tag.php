@@ -36,7 +36,7 @@ class Tag_Logic_Tag extends Base_Logic{
      * @param integer $size
      * @return array
      */
-    public function getHotTags($size){
+    /*public function getHotTags($size){
         $redis    = Base_Redis::getInstance();
         $arrCount = array();
         $listTag  = new Tag_List_Tag();
@@ -48,7 +48,7 @@ class Tag_Logic_Tag extends Base_Logic{
         array_multisort($arrCount, SORT_DESC , $arrTag['list']);
         $arrRet = array_slice($arrTag['list'],0,$size);
         return $arrRet;
-    }
+    }*/
     
     /**
      * 编辑标签信息

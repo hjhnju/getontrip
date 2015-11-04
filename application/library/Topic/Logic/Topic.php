@@ -189,9 +189,6 @@ class Topic_Logic_Topic extends Base_Logic{
         $redis = Base_Redis::getInstance();
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getTotalKey($topicId));
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateKey($topicId,'*'));  
-
-        $redis->hDel(Topic_Keys::getTopicHotKey(),Topic_Keys::getTotalKey($topicId));
-        $redis->hDel(Topic_Keys::getTopicHotKey(),Topic_Keys::getLateKey($topicId,'*'));
         
         $logicTag = new Tag_Logic_Tag();
         $arrRet['tags'] = $logicTag->getTopicTags($topicId);
@@ -347,25 +344,12 @@ class Topic_Logic_Topic extends Base_Logic{
      * @return integer，话题热度
      */
     public function getTopicHotDegree($topicId,$period){
-        $redis = Base_Redis::getInstance();
-        $ret   = $redis->hGet(Topic_Keys::getTopicHotKey(),Topic_Keys::getLateKey($topicId,$period));
-        if(!empty($ret)){
-            return $ret;
+        $objTopic = new Topic_Object_Topic();
+        $objTopic->fetch(array('id' => $topicId));
+        if($period == self::DEFAULT_DAYS){
+            return $objTopic->hot2;
         }
-        //话题最近收藏数
-        $logicCollect      = new Collect_Logic_Collect();
-        $collectTopicNum   = $logicCollect->getLateCollectNum(Collect_Keys::TOPIC, $topicId,$period);
-    
-        //话题最近访问人数
-        $visitTopicUv      = $this->getLateTopicVistUv($topicId, $period);
-    
-        //最近评论次数
-        $logicComment      = new Comment_Logic_Comment();
-        $commentNum        = $logicComment->getLateCommentNum($topicId, $period);
-        
-        $hotDegree         = $collectTopicNum + $commentNum + $visitTopicUv;
-        $redis->hSet(Topic_Keys::getTopicHotKey(),Topic_Keys::getLateKey($topicId,$period),$hotDegree);
-        return $hotDegree;
+        return $objTopic->hot1;
     }
     
 
@@ -511,7 +495,6 @@ class Topic_Logic_Topic extends Base_Logic{
             $objTopicTag = new Topic_Object_Tag();
             $objTopicTag->fetch(array('id' => $val['id']));
             $redis->sRemove(Topic_Keys::getTopicTagKey($id),$objTopicTag->tagId);
-            $redis->hIncrBy(Tag_Keys::getTagInfoKey($objTopicTag->tagId),'num',-1);
             $objTopicTag->remove();
         }
         //删除话题景点关系
@@ -531,8 +514,6 @@ class Topic_Logic_Topic extends Base_Logic{
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateKey($id, '*'));
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getTotalKey($id));
         $redis->delete(Topic_Keys::getTopicTagKey($id));
-        $redis->hDel(Topic_Keys::getTopicHotKey(),Topic_Keys::getLateKey($id, '*'));
-        $redis->hDel(Topic_Keys::getTopicHotKey(),Topic_Keys::getTotalKey($id));
         return $ret;
     }
     
@@ -884,23 +865,6 @@ class Topic_Logic_Topic extends Base_Logic{
     public function updateTopicRedis($type,$sightId,$topicId){
         //让缓存话题数据失效
         $redis = Base_Redis::getInstance();
-        
-        $arrKeys = $redis->keys(Sight_Keys::getIndexTopicKey($sightId, "*"));
-        foreach ($arrKeys as $key){
-            $redis->delete($key);
-        }
-        $arrKeys = $redis->keys(Sight_Keys::getHotTopicKey($sightId, "*"));
-        foreach ($arrKeys as $key){
-            $redis->delete($key);
-        }
-        $arrKeys = $redis->keys(Sight_Keys::getNewTopicKey($sightId, "*"));
-        foreach ($arrKeys as $key){
-            $redis->delete($key);
-        }
-        $arrKeys = $redis->keys(Find_Keys::getFindKey("*"));
-        foreach ($arrKeys as $key){
-            $redis->delete($key);
-        }
         
         $redis->delete(Sight_Keys::getSightTopicKey($sightId));
         $redis->hDel(Sight_Keys::getSightTongjiKey($sightId), Sight_Keys::TOPIC);

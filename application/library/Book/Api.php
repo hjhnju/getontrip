@@ -2,17 +2,16 @@
 class Book_Api{
     
     /**
-     * 接口1：Book_Api::getJdBooks($sightId,$page,$pageSize)
+     * 接口1：Book_Api::getBooks($page,$pageSize,$arrParam = array())
      * 获取京东商城图书信息
-     * @param string $sightId，景点ID
      * @param integer $page
      * @param integer $pageSize
      * @param array   $arrParam，过滤条件
      * @return array
      */
-    public static function getJdBooks($sightId,$page,$pageSize,$arrParam = array()){
+    public static function getBooks($page,$pageSize,$arrParam = array()){
         $logicBook = new Book_Logic_Book();
-        return  $logicBook->getBooks($sightId, $page, $pageSize,$arrParam);
+        return  $logicBook->getBooks($page, $pageSize,$arrParam);
     }
     
     /**

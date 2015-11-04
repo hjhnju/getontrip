@@ -19,25 +19,49 @@ class Book_Logic_Book extends Base_Logic{
      * @param integer $pageSize
      * @return array
      */
-    public function getBooks($sightId,$page,$pageSize,$arrParam = array()){
-        $listSightBook   = new Sight_List_Book();
-        $objBook         = new Book_Object_Book();
-        $arrRet          = array();
-        $listSightBook->setFilter(array('sight_id' => $sightId));
-        $listSightBook->setPage($page);
-        $listSightBook->setPagesize($pageSize);
-        $ret = $listSightBook->toArray();
-        foreach ($ret['list'] as $val){
-            $arrFilter = array_merge($arrParam,array('id' => $val['book_id']));
-            $objBook->fetch($arrFilter);
-            $data = $objBook->toArray();
-            if(!empty($data)){
-                $data['content_desc'] = trim(Base_Util_String::getSubString($data['content_desc'], self::CONTENT_LEN));
-                $arrRet[] = $data;
+    public function getBooks($page,$pageSize,$arrParam = array()){
+        $arrBook          = array();
+        if(isset($arrParam['sight_id'])){
+            $sightId    = $arrParam['sight_id'];
+            $arrBookIds = array();            
+            $listSightBook = new Sight_List_Book();
+            $listSightBook->setFilter(array('sight_id' => $sightId));
+            $listSightBook->setPagesize(PHP_INT_MAX);
+            $ret = $listSightBook->toArray();
+            foreach ($ret['list'] as $val){
+                $arrBookIds[] = $val['book_id'];
+            }
+            unset($arrParam['sight_id']);
+            $filter     = "`id` in (".implode(",",$arrBookIds).")";
+            $listBook = new Book_List_Book();
+            foreach ($arrParam as $index => $val){
+                $filter .= " and `".$index."` = ".$val;
+            }            
+            $listBook->setFilterString($filter);
+            $listBook->setPage($page);
+            $listBook->setPagesize($pageSize);
+        }else{
+            $listBook = new Book_List_Book();
+            $listBook->setFilter($arrParam);
+            $listBook->setPage($page);
+            $listBook->setPagesize($pageSize);   
+        }
+        $arrBook  = $listBook->toArray();
+        foreach ($arrBook['list'] as $key => $val){
+            $listSightBook = new Sight_List_Book();
+            $listSightBook->setFilter(array('book_id' => $val['id']));
+            $listSightBook->setPagesize(PHP_INT_MAX);
+            $arrSightBook  = $listSightBook->toArray();
+            foreach ($arrSightBook['list'] as $data){
+                $temp['id']   = $data['sight_id'];
+                $sight        = Sight_Api::getSightById($data['sight_id']);
+                $temp['name'] = $sight['name'];
+                unset($arrBook['list'][$key]['content_desc']);
+                unset($arrBook['list'][$key]['catalog']);
+                $arrBook['list'][$key]['sights'][] = $temp;
             }
         }
-        $ret['list']  = $arrRet;
-        return $ret;
+        return $arrBook;
     }
     
     /**
@@ -52,6 +76,7 @@ class Book_Logic_Book extends Base_Logic{
         $objBook         = new Book_Object_Book();
         $arrRet          = array();
         $listSightBook->setFilter(array('sight_id' => $sightId));
+        $listSightBook->setOrder('`weight` asc');
         $listSightBook->setPage($page);
         $listSightBook->setPagesize($pageSize);
         $ret = $listSightBook->toArray();
@@ -560,7 +585,19 @@ class Book_Logic_Book extends Base_Logic{
     public function getBookInfo($id){
         $objBook = new Book_Object_Book();
         $objBook->fetch(array('id' => $id));
-        return $objBook->toArray();
+        $arrBook = $objBook->toArray();
+        
+        $listSightBook = new Sight_List_Book();
+        $listSightBook->setFilter(array('book_id' => $id));
+        $listSightBook->setPagesize(PHP_INT_MAX);
+        $arrSightBook  = $listSightBook->toArray();
+        foreach ($arrSightBook['list'] as $val){
+            $temp['id']   = $val['sight_id'];
+            $sight        = Sight_Api::getSightById($val['sight_id']);
+            $temp['name'] = $sight['name'];
+            $arrBook['sights'][] = $temp;
+        }
+        return $arrBook;
     }
     
     /**

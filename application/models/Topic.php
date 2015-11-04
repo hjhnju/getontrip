@@ -61,14 +61,6 @@ class TopicModel extends BaseModel{
      * @return array
      */
     public function getNewTopicIds($sightId,$strTags,$page,$pageSize){
-        $redis = Base_Redis::getInstance();
-        //$ret   =  '';
-        //if(($page <= self::CACHE_PAGES) && empty($strTags)){
-        //    $ret = $redis->get(Sight_Keys::getNewTopicKey($sightId, $page));
-        //}
-        //if(!empty($ret)){
-        //    return array_slice(json_decode($ret,true),0,$pageSize);
-        //}
         $from = ($page-1)*$pageSize;
         if(empty($strTags)){
             $sql = "SELECT a.id FROM `topic` a, `sight_topic` b   WHERE  a.id = b.topic_id and b.sight_id = $sightId and a.status = ".Topic_Type_Status::PUBLISHED." ORDER BY a.update_time desc limit $from,$pageSize";
@@ -81,9 +73,6 @@ class TopicModel extends BaseModel{
             Base_Log::error($ex->getMessage());
             return array();
         }
-        //if(($page <= self::CACHE_PAGES) && empty($strTags)){
-        //    $redis->setex(Sight_Keys::getNewTopicKey($sightId,$page),self::REDIS_TIMEOUT,json_encode($data));
-        //}
         return $data;
     }
     

@@ -10,9 +10,6 @@ class Topic_Keys {
     const REDIS_LATE_KEY  = '%s_late_%s';
     
     const REDIS_TOTAL_KEY    = '%s_total';
-    
-    //话题热度信息
-    const REDIS_TOPIC_HOT_KEY = 'topic_hot_info';
 
     //根据话题ID，缓存话题内容，不包含统计数据
     const REDIS_TOPIC_CONTENT = 'topic_%s';
@@ -31,10 +28,6 @@ class Topic_Keys {
     
     public static function getTotalKey($id){
         return sprintf(self::REDIS_TOTAL_KEY,$id);
-    }
-    
-    public static function getTopicHotKey(){
-        return self::REDIS_TOPIC_HOT_KEY;
     }
     
     public static function getTopicContentKey($topicId){

@@ -11,16 +11,13 @@ class BookapiController extends Base_Controller_Api{
     
     public function listAction(){
          //第一条数据的起始位置，比如0代表第一条数据
-        $start=isset($_REQUEST['start'])?$_REQUEST['start']:0;
-       
-        $pageSize=isset($_REQUEST['length'])?$_REQUEST['length']:20;
-
+        $start=isset($_REQUEST['start'])?$_REQUEST['start']:0; 
+        $pageSize=isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX; 
         $page=($start/$pageSize)+1;
          
-        $sight_id =isset($_REQUEST['sight_id'])?intval($_REQUEST['sight_id']):1;
+        $arrInfo = isset($_REQUEST['params'])?$_REQUEST['params']: array(); 
         
-        
-        $List =Book_Api::getJdBooks($sight_id,$page,$pageSize);
+        $List = Book_Api::getBooks($page,$pageSize,$arrInfo);;
         
         foreach ($List['list'] as $key => $val){
             $List['list'][$key]['statusName'] = Book_Type_Status::getTypeName($val["status"]); 
@@ -40,10 +37,27 @@ class BookapiController extends Base_Controller_Api{
     /**
      * 添加词条
      */
-    function addAction(){
-        $dbRet=Keyword_Api::addKeyword($_REQUEST);
-        if ($dbRet) {
-            return $this->ajax();
+    function addAction(){ 
+
+        //根据skuid或isbn从京东或豆瓣抓取书籍数据
+        $bookInfo = Book_Api::getBookSourceFromIsbn($_REQUEST['strIsbn'], $_REQUEST['type']);
+        ob_clean(); 
+
+        //判断是否已经存在
+        $List = Book_Api::getBooks(0,PHP_INT_MAX,array('isbn'=>$bookInfo['isbn']));
+        if (intval($List['total'])>0) { 
+            //删除图片
+            $oss      = Oss_Adapter::getInstance();
+            $filename = $bookInfo['image'];
+            $res      = $oss->remove($filename);
+             
+            return $this->ajaxError('410','该本图书已经存在！'.$filename);
+        }
+         
+        $dbRet=Book_Api::addBook($bookInfo);
+         
+        if(!empty($bRet)){
+            return $this->ajax($bRet);
         }
         return $this->ajaxError();
     }
@@ -53,14 +67,13 @@ class BookapiController extends Base_Controller_Api{
      */
     function saveAction(){
         $id =isset($_REQUEST['id'])?$_REQUEST['id']:'';
-        $sightId =isset($_REQUEST['sightId'])?$_REQUEST['sightId']:'';
-        
+         
         if($id==''){
             return $this->ajaxError();
         }
         $_REQUEST['status'] = $this->getStatusByActionStr(isset($_REQUEST['action'])?$_REQUEST['action']:'');
        
-        $dbRet=Book_Api::editBook($sightId,$id,$_REQUEST);
+        $dbRet=Book_Api::editBook($id,$_REQUEST);
         if ($dbRet) {
             return $this->ajax();
         }
@@ -80,6 +93,34 @@ class BookapiController extends Base_Controller_Api{
             return $this->ajax();
         }
         return $this->ajaxError();
+    }
+
+
+    /**
+     * 裁剪话题背景图片
+     * @return [type] [description]
+     */
+    public function cropPicAction(){
+        $postid=isset($_REQUEST['id'])?intval($_REQUEST['id']):''; 
+        $oldhash=$_REQUEST['image'];
+        $x=$_REQUEST['x'];
+        $y=$_REQUEST['y']; 
+        $width=$_REQUEST['width'];
+        $height=$_REQUEST['height']; 
+        $ret=Base_Image::cropPic($oldhash,$x,$y,$width,$height); 
+        if($ret){
+          if(!empty($postid)){
+            $params = array('image'=>$ret['image']);
+            //修改话题的图片hash
+            $bRet=Book_Api::editBook($postid,$params);
+            if($bRet){
+               return $this->ajax($ret); 
+            } 
+            return $this->ajaxError('400','修改话题的图片hash错误');  
+          }
+          return $this->ajaxError('402','postid错误'); 
+        }
+        return $this->ajaxError('401','裁剪图片错误');  
     }
   
     /**

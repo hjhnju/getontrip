@@ -125,7 +125,7 @@ class  TopicapiController extends Base_Controller_Api{
        $content = $_REQUEST['content'];  
        if($content != ""){
           $spider = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
-          $_REQUEST['content'] = $spider->getReplacedContent();
+          $_REQUEST['content'] = trim($spider->getReplacedContent());
        }
        $_REQUEST['status'] = $this->getStatusByActionStr($_REQUEST['action']);
        $bRet=Topic_Api::editTopic($postid,$_REQUEST);
@@ -143,7 +143,7 @@ class  TopicapiController extends Base_Controller_Api{
        $content = $_REQUEST['content'];  
        if($content != ""){
           $spider = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
-          $_REQUEST['content'] = $spider->getReplacedContent();
+          $_REQUEST['content'] = trim($spider->getReplacedContent());
        }
        $_REQUEST['status'] = $this->getStatusByActionStr($_REQUEST['action']);
        //添加到数据库
@@ -180,7 +180,7 @@ class  TopicapiController extends Base_Controller_Api{
           $spider = Spider_Factory::getInstance("Filterimg",$content,Spider_Type_Source::STRING);
           $content = $spider->getReplacedContent($_REQUEST['url']);  
        } 
-       $_REQUEST['content'] =$content; 
+       $_REQUEST['content'] =trim($content); 
        $_REQUEST['status'] = $this->getStatusByActionStr('NOTPUBLISHED');
 
        //保存到数据库

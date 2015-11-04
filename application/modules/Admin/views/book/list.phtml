@@ -6,7 +6,36 @@
             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog  modal-lg">
                     <div class="modal-content">
-                      
+                      <form class="cmxform form-horizontal tasi-form" id="Form" method="post" action="" novalidate="novalidate">
+                        <div class="modal-header">
+                           <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                           <h4 class="modal-title">书籍添加器</h4>
+                         </div>
+                         <div class="modal-body">
+                            <div class="form-group ">
+                                <label for="type" class="control-label col-lg-2">来源</label>
+                                <div class="col-lg-5">
+                                    <select name="type" id="form-type">
+                                        <option value="1">京东</option>
+                                        <option value="2">豆瓣</option>
+                                    </select>
+                                    <label for="type" class="error"></label>
+                                </div>
+                            </div> 
+                            <div class="form-group ">
+                                <label for="strIsbn" class="control-label col-lg-2">skuid或isbn*</label>
+                                <div class="col-lg-5">
+                                    <input class="form-control" id="strIsbn" name="strIsbn"  type="text" required="" value="">
+                                    <label for="strIsbn" class="error"></label>
+                                </div>
+                            </div> 
+                         </div>
+                          <div class="modal-footer">
+                            <a class="hidden" href="" id="openWin" target="_blank"></a>
+                             <button class="btn blue" type="submit" id="">添加</button> 
+                             <button type="button" class="btn default" data-dismiss="modal">关闭</button>
+                          </div>
+                      </form> 
                     </div>
                     <!-- /.modal-content -->
                 </div>
@@ -34,11 +63,11 @@
             <!-- BEGIN content STATS --> 
             <div class="adv-table editable-table ">
                  <div class="clearfix"> 
-                   <!-- <div class="btn-group">
-                      <a  class="btn  btn-primary" href="/admin/keyword/edit">
-                          添加 <i class="fa fa-plus"></i>
-                      </a>
-                   </div> -->
+                 <!--   <div class="btn-group">
+                    <button  class="btn  btn-primary" id="addBook">
+                        添加 <i class="fa fa-plus"></i>
+                    </button>
+                 </div>  -->
                    <div class="col-xs-3 pull-right">   
                             <div class="input-group "> 
                               <input type="text" class="form-control" placeholder="输入并选择景点" aria-describedby="sightName" id="form-sight" autocomplete="off" value="{%if isset($sight)%}{%$sight.name%}{%/if%}" data-sight_id="{%if isset($sight)%}{%$sight.id%}{%/if%}">
@@ -46,6 +75,9 @@
                               <button type="button" class="btn btn-white" id="clear-sight"><i class="fa fa-remove"></i></button>
                             </span>
                            </div>
+                    </div> 
+                    <div class="col-xs-3  pull-right"> 
+                            <input type="text" class="form-control" id="form-isbn" placeholder="输入ISBN点回车"> 
                     </div>  
                 </div>  
                  
@@ -73,10 +105,15 @@
     </div>
 
 {%/block%}
-{%block name='script'%} 
-<!--  <link href="{%$feroot%}s/global/plugins/datatables/media/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/> -->
-<script src="{%$feroot%}s/global/plugins/datatables/media/js/jquery.dataTables.js" type="text/javascript"></script> 
+{%block name='link'%} 
+
  <link href="{%$feroot%}s/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css" rel="stylesheet" type="text/css"/> 
+ <link href="{%$feroot%}s/global/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" type="text/css"/> 
+{%/block%}
+{%block name='script'%}  
+<script src="{%$feroot%}s/global/plugins/datatables/media/js/jquery.dataTables.js" type="text/javascript"></script> 
+<script src="{%$feroot%}s/global/plugins/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+
 <script src="{%$feroot%}s/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js" type="text/javascript"></script> 
 <script src="{%$feroot%}s/global/plugins/typeahead/bootstrap-typeahead.js" type="text/javascript"></script>  
 <script src="{%$feroot%}s/admin/book/index.js" type="text/javascript"></script>  

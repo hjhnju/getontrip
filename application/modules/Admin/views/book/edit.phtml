@@ -54,19 +54,25 @@
               {%if isset($post.id)%}
                 <input type="hidden" name="id" id="id" value="{%$post.id%}"/>
                 <div class="form-group ">
-                      <label for="title" class="control-label col-lg-2">当前状态:</label>
-                      <label class="control-label col-lg-2" style="text-align: left;">
+                      <label for="title" class="control-label col-lg-2">当前状态：</label>
+                      <label class="control-label col-lg-3" style="text-align: left;">
                         {%$post.statusName%} 
                       </label>
-                       <label for="guid" class="control-label col-lg-2">ISBN:</label>
+                       <label for="guid" class="control-label col-lg-1">ISBN：</label>
                     <label class="control-label col-lg-2" style="text-align: left;">
                         {%if isset($post.isbn)%}{%$post.isbn%}{%/if%}
                     </label>
-                </div>  
+                </div>
+              {%else%}
+                   <!-- <a href="javascript:window.close()" id="closeWin">关闭窗口</a> -->
+                     <script type="text/javascript"> 
+                   alert('参数错误，如果想添加书籍去列表页的【书籍添加器】吧。'); 
+                   //$('#closeWin').click();
+                      </script>  
               {%/if%}  
               <div class="form-group ">
                   <label for="title" class="control-label col-lg-2">书籍名称*：</label>
-                  <div class="col-lg-5">
+                  <div class="col-lg-7">
                       <input class="form-control" id="title" name="title"  type="text" required="" value="{%if isset($post.title)%}{%$post.title%}{%/if%}"><label for="title" class="error"></label>
                   </div>
               </div>
@@ -163,18 +169,20 @@
               </div> 
               <div class="form-group ">
                   <label for="content_desc" class="control-label col-lg-2">内容摘要：</label>
-                  <div class="col-lg-5">
-                       <textarea class="form-control" id="content_desc" name="content_desc" rows="3" >{%if isset($post.content_desc)%}{%$post.content_desc%}{%/if%}</textarea>
+                  <div class="col-lg-4">
+                     <div id="summernote_content_desc" ></div>
+                       <!-- <textarea class="form-control" id="content_desc" name="content_desc" rows="3" >{%if isset($post.content_desc)%}{%$post.content_desc%}{%/if%}</textarea> -->
                        <label for="content_desc" class="error"></label>
-                  </div> 
-              </div> 
-              <div class="form-group ">
-                  <label for="catalog" class="control-label col-lg-2">目录：</label>
-                  <div class="col-lg-5">
-                       <textarea class="form-control" id="catalog" name="catalog" rows="3" >{%if isset($post.catalog)%}{%$post.catalog%}{%/if%}</textarea>
-                       <label for="catalog" class="error"></label>
-                  </div> 
-              </div> 
+                  </div>
+
+                   <label for="catalog" class="control-label col-lg-1">目录：</label>
+                  <div class="col-lg-4">
+                    <div id="summernote_catalog" ></div>
+                       <!-- <textarea class="form-control" id="catalog" name="catalog" rows="3" >{%if isset($post.catalog)%}{%$post.catalog%}{%/if%}</textarea>
+                       <label for="catalog" class="error"></label> -->
+                  </div>  
+              </div>
+               {%if isset($post.id)%}  
               <div class="form-group">
                   <div class="col-lg-offset-2 col-lg-10">
                        <button class="btn btn-danger" type="submit" id="submitBtn" data-action="NOTPUBLISHED" data-btn_text="保存">保存</button>
@@ -187,23 +195,35 @@
                       
                   </div>
               </div>
+              {%/if%}
           </form>
       </div>
 			<!-- END content STATS -->
 		</div>
 	</div>
-
+<div id="content_desc-text" style="display:none;"> 
+  {%if isset($post.content_desc)%}
+  {%$post.content_desc%} 
+  {%/if%} 
+</div>
+<div id="catalog-text" style="display:none;"> 
+  {%if isset($post.catalog)%}
+  {%$post.catalog%} 
+  {%/if%} 
+</div>
 {%/block%}
 {%block name='link'%}
 <link href="{%$feroot%}s/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css" rel="stylesheet" type="text/css"/> 
  <link href="{%$feroot%}s/global/plugins/bootstrap-fileupload/bootstrap-fileupload.css" rel="stylesheet" type="text/css"/> 
-  <link href="{%$feroot%}s/global/plugins/bootstrap-datepicker/css/datepicker.css" rel="stylesheet" type="text/css"/> 
+<link href="{%$feroot%}s/global/plugins/bootstrap-datepicker/css/datepicker.css" rel="stylesheet" type="text/css"/>
+<link href="{%$feroot%}s/global/plugins/bootstrap-summernote/summernote.css" rel="stylesheet" type="text/css"/>   
 {%/block%}
 {%block name='script'%}  
 <script src="{%$feroot%}s/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>  
 <script src="{%$feroot%}s/global/plugins/typeahead/bootstrap-typeahead.js" type="text/javascript"></script>   
 <script src="{%$feroot%}s/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script> 
- 
+<script src="{%$feroot%}s/global/plugins/bootstrap-summernote/summernote.js" type="text/javascript"></script>
+<script src="{%$feroot%}s/global/plugins/bootstrap-summernote/summernote-zh-CN.js" type="text/javascript"></script> 
 <script src="{%$feroot%}s/global/plugins/bootstrap-fileupload/bootstrap-fileupload.js" type="text/javascript"></script> 
 <script src="{%$feroot%}s/global/plugins/ajaxfileupload.js" type="text/javascript"></script> 
 <script src="{%$feroot%}s/global/plugins/jcrop/js/jquery.Jcrop.js" type="text/javascript"></script> 

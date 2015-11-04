@@ -106,7 +106,7 @@ class SearchapiController extends Base_Controller_Api{
         $tagId  = isset($_REQUEST['tagId'])?$_REQUEST['tagId']:'';
         if(!empty($tagId)){
             $bRet    = Tag_Api::delTag($tagId);
-            return $this->ajax($bRet);
+            return $this->ajax($tagId);
         }
         return $this->ajaxError();
     }

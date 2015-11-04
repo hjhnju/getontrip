@@ -87,7 +87,7 @@ $(document).ready(function() {
                     }
                 }, {
                     "data": function(e) {
-                         return '';
+                        // return '';
                         return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/book/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>';
                         //评论
                         return '<a href="/admin/comment/list?id=' + e.id + '&table=book" target="_blank" class="btn btn-warning btn-xs comments" title="评论列表" data-toggle="tooltip"><i class="fa fa-comments-o"></i></a>';
@@ -119,6 +119,7 @@ $(document).ready(function() {
 
                 //点击添加弹出书籍添加器
                 $('#addBook').click(function(event) {
+                    $btn = $('#form-addBook').button('抓取中...');
                     $('#myModal').modal();
                 });
 
@@ -132,7 +133,8 @@ $(document).ready(function() {
                             "type": "post",
                             "dataType": "json",
                             "error": function(e) {
-                                alert("服务器未正常响应，请重试");
+                                alert("服务器未正常响应，请重试"); 
+                                $btn.button('reset');
                             },
                             "success": function(response) {
                                 if (response.status == 0) {

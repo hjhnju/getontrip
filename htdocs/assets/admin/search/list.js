@@ -92,7 +92,7 @@ $(document).ready(function() {
 
                 //删除标签
                 $('#label_sortable').delegate('.close', 'click', function(event) {
-                    if (confirm("确定删除么？删除后不可恢复！") == false) {
+                    if (confirm("确定删除搜索标签么？删除后不可恢复！") == false) {
                         return false;
                     }
                     var id = $(this).attr('data-id');
@@ -100,9 +100,9 @@ $(document).ready(function() {
                     publish.remote({
                         tagId: id,
                     });
-                    publish.on('success', function(data) {
-                        //刷新当前页
-                        oTable.fnRefresh();
+                    publish.on('success', function(data) { 
+                       var $li = $('#label_sortable li[data-id="'+data+'"]'); 
+                       $li.remove();
                     });
                 }); 
 

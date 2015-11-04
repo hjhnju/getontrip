@@ -16,26 +16,25 @@ class EditAction extends Yaf_Action_Abstract {
         }
         $postInfo  = Book_Api::getBookInfo($postid); 
 
-        $sightList=array();
+        $sightSelectedList=array();
         if(!empty($postInfo)){    
             //处理状态值
             $postInfo["statusName"]=Book_Type_Status::getTypeName($postInfo['status']);
             
-            //处理所选景点
-            $sightSelectedList = array();
+            //处理所选景点 
             if (isset($postInfo['sights'])) {
                 $sightSelectedList = $postInfo['sights'];
             }  
               
             $this->getView()->assign('post', $postInfo); 
-            $this->_view->assign('sightList', $sightSelectedList);
         }
  
         if($action=="view"){ 
             $this->_view->assign('disabled', 'disabled');
         } 
+
         $this->getView()->assign('action', Admin_Type_Action::getTypeName($action));
-        
+        $this->_view->assign('sightList', $sightSelectedList);
       
     }
 }

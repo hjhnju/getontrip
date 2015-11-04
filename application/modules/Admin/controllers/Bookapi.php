@@ -72,8 +72,23 @@ class BookapiController extends Base_Controller_Api{
             return $this->ajaxError();
         }
         $_REQUEST['status'] = $this->getStatusByActionStr(isset($_REQUEST['action'])?$_REQUEST['action']:'');
-       
+        
+        //修改 content_desc
+        $content_desc = $_REQUEST['content_desc'];  
+        if($content_desc != ""){
+           $spider = Spider_Factory::getInstance("Filterimg",$content_desc,Spider_Type_Source::STRING);
+           $_REQUEST['content_desc'] = trim($spider->getReplacedContent()); 
+        }
+
+        //修改  catalog
+        $catalog = $_REQUEST['catalog'];  
+        if($catalog != ""){
+           $spider = Spider_Factory::getInstance("Filterimg",$catalog,Spider_Type_Source::STRING);
+           $_REQUEST['catalog'] = trim($spider->getReplacedContent()); 
+        } 
+
         $dbRet=Book_Api::editBook($id,$_REQUEST);
+
         if ($dbRet) {
             return $this->ajax();
         }

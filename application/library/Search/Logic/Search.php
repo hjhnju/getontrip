@@ -69,6 +69,8 @@ class Search_Logic_Search{
                         $arrRet['data'][$key]['url'] = isset($keyword['url'])?$keyword['url']:'';
                         $arrRet['data'][$key]['image'] = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
                     }
+                    $arrRet['data'][$key]['title']   = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['title']));
+                    $arrRet['data'][$key]['content'] = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['content']));
                 }
                 break;
             default :

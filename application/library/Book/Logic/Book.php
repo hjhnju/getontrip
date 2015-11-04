@@ -280,6 +280,11 @@ class Book_Logic_Book extends Base_Logic{
         $sightId = '';
         if(isset($arrInfo['sight_id'])){
             $sightId = $arrInfo['sight_id'];
+            foreach ($sightId as $id){
+                $objSightBook = new Sight_Object_Book();
+                $objSightBook->fetch(array('book_id' => $id,'sight_id'=> $sightId));                
+                $objSightBook->remove();
+            }
             unset($arrInfo['sight_id']);
         }
         $objBook->fetch(array('id' => $id));

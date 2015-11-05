@@ -23,36 +23,6 @@ $num       = isset($argv[3])?intval($argv[3]):intval(Base_Config::getConfig('thi
 $logic     = new Base_Logic();
 $redis     = Base_Redis::getInstance();
 
-//删除百科
-if($type == 'Wiki' || $type == 'All'){
-     $listkeyword = new Keyword_List_Keyword();
-     $listkeyword->setPagesize(PHP_INT_MAX);
-     if($sightId != -1){
-         $listkeyword->setFilter(array('sight_id' => $sightId));
-     }
-     $arrKeyword = $listkeyword->toArray();
-     foreach ($arrKeyword['list'] as $val){
-         if(!empty($val['image'])){
-             $ret = $logic->delPic($val['image']);
-         }
-         $objKeyword = new Keyword_Object_Keyword();
-         $objKeyword->fetch(array('id' => $val['id']));
-         $objKeyword->image   = '';
-         $objKeyword->content = '';
-         $objKeyword->save();
-        
-         $listKeywordCatalog = new Keyword_List_Catalog();
-         $listKeywordCatalog->setFilter(array('keyword_id' => $val['id']));
-         $listKeywordCatalog->setPagesize(PHP_INT_MAX);
-         $arrKeywordCatalog = $listKeywordCatalog->toArray();
-         foreach ($arrKeywordCatalog['list'] as $data){
-             $objKeywordCatalog = new Keyword_Object_Catalog();
-             $objKeywordCatalog->fetch(array('id' => $data['id']));
-             $objKeywordCatalog->remove();
-         }
-     }
-}
-
 //获取景点ID数组
 if(-1 == $sightId){
     $logic = new Sight_Logic_Sight();

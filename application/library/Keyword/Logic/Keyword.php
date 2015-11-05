@@ -393,10 +393,23 @@ class Keyword_Logic_Keyword extends Base_Logic{
         
         $objKeyword = new Keyword_Object_Keyword();
         $objKeyword->fetch(array('id' => $keywordId));
+        if(!empty($objKeyword->image)){
+            $this->delPic($objKeyword->image);
+        }
         $objKeyword->content = $arrTemp['content'];
         $objKeyword->image   = $arrTemp['image'];
         $objKeyword->status  = $arrTemp['status'];
         $objKeyword->save();
+        
+        $listKeywordCata = new Keyword_List_Catalog();
+        $listKeywordCata->setFilter(array('keyword_id' => $keywordId));
+        $listKeywordCata->setPagesize(PHP_INT_MAX);
+        $arrKeywordCata  = $listKeywordCata->toArray();
+        foreach ($arrKeywordCata['list'] as $val){
+            $objKeywordCatalog = new Keyword_Object_Catalog();
+            $objKeywordCatalog->fetch(array('id' => $val['id']));
+            $objKeywordCatalog->remove();
+        }
         
         foreach ($arrItems as $id => $item){
             $objKeywordCatalog            = new Keyword_Object_Catalog();

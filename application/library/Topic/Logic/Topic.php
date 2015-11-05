@@ -141,8 +141,7 @@ class Topic_Logic_Topic extends Base_Logic{
         if(empty($arrRet)){
             return $arrRet;
         }
-        $arrRet['sight_name'] = '';
-        
+        $arrRet['sight'] = '';
         if(empty($sightId)){
             $logic    = new Sight_Logic_Sight();
             $arrSight = $logic->getSightByTopic($topicId);
@@ -152,12 +151,13 @@ class Topic_Logic_Topic extends Base_Logic{
         }
                 
         if(!empty($sightId)){
-            $arrSight              = Sight_Api::getSightById($sightId);           
-            $arrRet['sight_name']  = $arrSight['name'];           
+            $arrSight         = Sight_Api::getSightById($sightId);           
+            $arrRet['sight']  = $arrSight['name'];           
         }
         
         $logicComment          = new Comment_Logic_Comment();
         $arrRet['id']          = strval($arrRet['id']);
+        $arrRet['sightid']     = strval($sightId);
         $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
         $arrRet['subtitle']    = Base_Util_String::trimall($arrRet['subtitle']);
         $arrRet['title']       = Base_Util_String::trimall($arrRet['title']);
@@ -630,6 +630,15 @@ class Topic_Logic_Topic extends Base_Logic{
                 $objTopictag->tagId   = $val;
                 $objTopictag->save();    
                 $redis->sAdd(Topic_Keys::getTopicTagKey($objTopic->id),$val);
+                
+                //因为有的标签直接关联景点，所有改变了话题的标签，可能会影响景点的话题数，要更新缓存
+                $listSightTag = new Sight_List_Tag();
+                $listSightTag->setFilter(array('tag_id' => $val));
+                $listSightTag->setPagesize(PHP_INT_MAX);
+                $arrSightTag  = $listSightTag->toArray();
+                foreach ($arrSightTag['list'] as $data){
+                    $redis->hDel(Sight_Keys::getSightTongjiKey($data['sight_id']), Sight_Keys::TOPIC);
+                }
             }
         }
         if(isset($arrInfo['sights'])){
@@ -687,6 +696,15 @@ class Topic_Logic_Topic extends Base_Logic{
                     $redis->sRemove(Topic_Keys::getTopicTagKey($topicId),$objTopicTag->tagId);
                     $objTopicTag->remove();
                 }
+                
+                //因为有的标签直接关联景点，所有改变了话题的标签，可能会影响景点的话题数，要更新缓存
+                $listSightTag = new Sight_List_Tag();
+                $listSightTag->setFilter(array('tag_id' => $val['tag_id']));
+                $listSightTag->setPagesize(PHP_INT_MAX);
+                $arrSightTag  = $listSightTag->toArray();
+                foreach ($arrSightTag['list'] as $data){
+                    $redis->hDel(Sight_Keys::getSightTongjiKey($data['sight_id']), Sight_Keys::TOPIC);
+                }
             }
     
             foreach($arrInfo['tags'] as $tag){
@@ -697,6 +715,15 @@ class Topic_Logic_Topic extends Base_Logic{
                     $objTopicTag->topicId = $topicId;
                     $objTopicTag->save();
                     $redis->sAdd(Topic_Keys::getTopicTagKey($topicId),$objTopicTag->tagId);
+                }
+                
+                //因为有的标签直接关联景点，所有改变了话题的标签，可能会影响景点的话题数，要更新缓存
+                $listSightTag = new Sight_List_Tag();
+                $listSightTag->setFilter(array('tag_id' => $tag));
+                $listSightTag->setPagesize(PHP_INT_MAX);
+                $arrSightTag  = $listSightTag->toArray();
+                foreach ($arrSightTag['list'] as $data){
+                    $redis->hDel(Sight_Keys::getSightTongjiKey($data['sight_id']), Sight_Keys::TOPIC);
                 }
             }
         }

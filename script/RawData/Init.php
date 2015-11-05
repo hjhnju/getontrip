@@ -28,6 +28,7 @@ if(-1 == $sightId){
         $arrSight[] = $val['id'];
     }
 }else{
+    $logci = new Base_Logic();
     $arrSight[] = $sightId;
 }
 

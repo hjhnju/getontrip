@@ -27,6 +27,7 @@ class ApiController extends Base_Controller_Api {
         }
         $sight      = Sight_Api::getSightById($sightId);
         $logic      = new Sight_Logic_Tag();
+        $arrRet['id']    = strval($sight['id']);
         $arrRet['name']  = $sight['name'];
         $arrRet['image'] = Base_Image::getUrlByName($sight['image']);
         $arrRet['tags']  = $logic->getTagsBySight($sightId);

@@ -325,7 +325,7 @@ class City_Logic_City{
             
             $logicTag  = new Tag_Logic_Tag();
             $arrTags   = $logicTag->getTopicTags($val['id']);
-            $arrRet[$key]['tag']    = isset($arrTags[0])?trim($arrTags[0]):'';
+            $arrRet[$key]['tags'] = $arrTags;
         }
         return $arrRet;
     }

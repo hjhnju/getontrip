@@ -41,6 +41,26 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
+             <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog  modal-lg">
+                    <div class="modal-content">
+                      <form class="cmxform form-horizontal tasi-form" id="Form" method="post" action="" novalidate="novalidate">
+                        <div class="modal-header">
+                           <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                           <h4 class="modal-title">书籍排序</h4>
+                         </div>
+                         <div class="modal-body"> 
+                            <div id="sortable"></div>
+                         </div>
+                          <div class="modal-footer"> 
+                             <button type="button" class="btn default" data-dismiss="modal">关闭</button>
+                          </div>
+                      </form> 
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
             <!-- /.modal -->
             <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
             <!-- BEGIN PAGE HEADER-->
@@ -91,7 +111,8 @@
                             <th>ISBN</th>
                             <th>市场价</th> 
                             <th>京东价</th>
-                            <th>链接</th> 
+                            <th>链接</th>
+                            <th>景点[权重]</th> 
                             <th>状态</th>
                             <th>操作</th>  
                           </tr>

@@ -6,7 +6,7 @@
  */
 class ListAction extends Yaf_Action_Abstract {
     public function execute() { 
-        $list = Search_Api::listLabel(1, PHP_INT_MAX);
+        $list = Search_Api::listLabel(1, PHP_INT_MAX,array());
         $this->getView()->assign('sightList', $list['list']);
         
         $arrCity = City_Api::queryCity(array('status' => City_Type_Status::PUBLISHED), 1, PHP_INT_MAX);

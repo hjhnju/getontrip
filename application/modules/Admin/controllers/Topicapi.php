@@ -227,7 +227,19 @@ class  TopicapiController extends Base_Controller_Api{
       修改话题状态
      */
     public function changeStatusAction(){
-       $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0; 
+       $idArray = isset($_REQUEST['idArray'])? $_REQUEST['idArray'] : array(); 
+ 
+       $status = $this->getStatusByActionStr($_REQUEST['action']);
+       for ($i=0; $i < count($idArray); $i++) { 
+           $postid = intval($idArray[$i]);
+           $bRet=Topic_Api::editTopic($postid,array('status'=>$status,'id'=>$postid));
+          
+           if(!$bRet){  
+              return $this->ajaxError('',$postid.'话题发布失败');
+           }
+       }
+       return $this->ajax();
+      /* $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0; 
        if($postid <= 0){
             $this->ajaxError();
        }  
@@ -236,7 +248,7 @@ class  TopicapiController extends Base_Controller_Api{
        if($bRet){ 
             return $this->ajax();
        }
-       return $this->ajaxError(); 
+       return $this->ajaxError(); */
     }
 
     /**

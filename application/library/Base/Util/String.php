@@ -90,7 +90,7 @@ class Base_Util_String {
         preg_match_all('/(　)*(\xc2\xa0)*\s*(&nbsp;)*<(.*?)>(　)*(\xc2\xa0)*\s*(&nbsp;)*/i', $str, $arr);
         foreach ($arr[0] as $i => $val){
             $val = str_replace("/", "\/", $val);
-            $str = preg_replace("/".$val."/", "", $str, 1);
+            $str = preg_replace("/".$val."/", "",$str, 1);
         }
 	    $str = Base_Util_String::getHtmlEntity($str);
 	    if(mb_strlen($str) > $length){
@@ -144,9 +144,19 @@ class Base_Util_String {
 	 */
 	public static function ChineseAnalyzer($str){
         //词性数组，只取数组中给出的词性的词，词性含义详见：http://bbs.xunsearch.com/showthread.php?tid=1235
-	    $arrAttri = array('n','nr','ns','nz','nt');
-	    $arrRet   = array();
-	    $so       = scws_new();
+        $arrSpecial = array('奥林匹克');
+	    $arrAttri   = array('n','nr','ns','nz','nt');
+	    $arrRet     = array();
+	    
+	    foreach ($arrSpecial as $data){
+	        $beforLen = strlen($str);
+	        $str      = str_replace($data, "", $str);
+	        if($beforLen > strlen($str)){
+	            $arrRet[]  = $data;
+	        }
+	    }
+	    	    
+	    $so         = scws_new();
 	    $so->send_text($str);
 	    $so->set_multi(true);
 	    $tmp = $so->get_result();

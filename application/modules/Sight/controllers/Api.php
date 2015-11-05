@@ -59,7 +59,7 @@ class ApiController extends Base_Controller_Api {
     
         $logic      = new Sight_Logic_Sight();
         $ret        = $logic->getSightDetail($sightId,$page,$pageSize,$intOrder,$strTags);
-        $this->ajax($ret);
+        $this->ajaxDecode($ret);
     }
     
     /**
@@ -99,7 +99,7 @@ class ApiController extends Base_Controller_Api {
         }
         $logic      = new Book_Logic_Book();
         $ret        = $logic->getBookList($sightId,$page,$pageSize,array('status' => Book_Type_Status::PUBLISHED));
-        $this->ajax($ret);
+        $this->ajaxDecode($ret);
     }
     
     /**

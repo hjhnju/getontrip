@@ -106,7 +106,7 @@ class Book_Logic_Book extends Base_Logic{
                 $data['title']        = Base_Util_String::getHtmlEntity($data['title']);
                 $data['image']        = Base_Image::getUrlByName($data['image']);
                 $data['content_desc'] = Base_Util_String::getSubString($data['content_desc'], self::CONTENT_LEN);
-                $data['url']          = "http://".$_SERVER['HTTP_HOST'].'/api/book/detail?book='.$data['id'];
+                $data['url']          = Base_Config::getConfig('web')->root.'/api/book/detail?book='.$data['id'];
                 $arrRet[] = $data;
             }
         }

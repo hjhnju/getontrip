@@ -429,6 +429,16 @@ class Sight_Logic_Sight extends Base_Logic{
                 $count += 1;
             }
         }
+        
+        $listSightTag = new Sight_List_Tag();
+        $listSightTag->setFilter(array('sight_id' => $sightId));
+        $listSightTag->setPagesize(PHP_INT_MAX);
+        $arrSightTag  = $listSightTag->toArray(); 
+        foreach ($arrSightTag['list'] as $val){
+            $logicTopic = new Topic_Logic_Topic();
+            $count     += $logicTopic->getTopicNumByTag($val['tag_id'], $sightId);
+        }
+        
         if(array('status' => Topic_Type_Status::PUBLISHED) == $arrConf && (!empty($sightId))){
             $redis  = Base_Redis::getInstance();
             $redis->hSet(Sight_Keys::getSightTongjiKey($sightId),Sight_Keys::TOPIC,$count);

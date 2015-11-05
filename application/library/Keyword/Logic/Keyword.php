@@ -320,9 +320,8 @@ class Keyword_Logic_Keyword extends Base_Logic{
         require_once(APP_PATH."/application/library/Base/HtmlDom.php");
         $keyword   = Keyword_Api::queryById($keywordId);
         $arrItems    = array();
-        $word        = urlencode(trim($keyword['name']));
         
-        $wikiUrl     = "http://baike.baidu.com/search/word?word=".$word;
+        $wikiUrl     = $keyword['url'];
         $html        = file_get_html($wikiUrl);
         $image       = $html->find('img');
         $name        = '';
@@ -419,7 +418,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $objKeywordCatalog->save();
         }
         if(empty($arrTemp)){
-            Base_Log::error('keyword '.$word.' can not get wiki!');
+            Base_Log::error('keyword '.$keyword['name'].' can not get wiki!');
         }
         $arrRet[] = $arrTemp;
         $html->clear();

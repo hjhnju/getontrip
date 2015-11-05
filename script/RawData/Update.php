@@ -84,7 +84,7 @@ foreach ($arrSight as $id){
         case 'Wiki':
             $redis->hDel(Sight_Keys::getSightTopicKey($id),Sight_Keys::LANDSCAPE);
             $logicWiki = new Keyword_Logic_Keyword();
-            $logicWiki->getKeywordSource($id,1,$num,Keyword_Type_Status::PUBLISHED);
+            $logicWiki->getKeywordSource($id,Keyword_Type_Status::PUBLISHED);
             break;
         case 'All':
             $redis->hDel(Sight_Keys::getSightTopicKey($id),Sight_Keys::BOOK);
@@ -98,7 +98,7 @@ foreach ($arrSight as $id){
                 $logicBook->getJdBooks($id, $i,PAGE_SIZE);
                 $logicVideo->getAiqiyiSource($id, $i);
             }
-            $logicWiki->getKeywordSource($id,1,$num,Keyword_Type_Status::PUBLISHED);
+            $logicWiki->getKeywordSource($id,Keyword_Type_Status::PUBLISHED);
             break;
         default:
             break;

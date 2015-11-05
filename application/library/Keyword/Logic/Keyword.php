@@ -62,7 +62,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $ret = $obj->save();
             
             if(isset($arrInfo['stauts']) && $arrInfo['status'] == Keyword_Type_Status::PUBLISHED){
-                $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$arrInfo['sight_id']."&type=Wiki";
+                $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$obj->id."&type=Wiki";
                 $http = Base_Network_Http::instance()->url($url);
                 $http->timeout(1);
                 $http->exec();
@@ -94,7 +94,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
         if($bCheck){
             $ret =  $obj->save();
             if(isset($arrInfo['stauts']) && $arrInfo['status'] == Keyword_Type_Status::PUBLISHED){
-                $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$arrInfo['sight_id']."&type=Wiki";
+                $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$id."&type=Wiki";
                 $http = Base_Network_Http::instance()->url($url);
                 $http->timeout(1);
                 $http->exec();
@@ -317,109 +317,104 @@ class Keyword_Logic_Keyword extends Base_Logic{
      * @param string $word
      * @return array
      */
-    public function getKeywordSource($sightId,$page,$pageSize,$status = Keyword_Type_Status::PUBLISHED){
+    public function getKeywordSource($keywordId,$status = Keyword_Type_Status::PUBLISHED){
         $arrItems  = array();
         $arrRet    = array();
         $arrTemp   = array();
         $hash      = '';
         require_once(APP_PATH."/application/library/Base/HtmlDom.php");
-        $arrsight     = Keyword_Api::queryKeywords($page,$pageSize,array('status'=>$status,'sight_id'=>$sightId));
-        foreach ($arrsight['list'] as $key  => $sight){
-            $arrItems    = array();
-            $redis       = Base_Redis::getInstance();
-            $index       = ($page-1)*$pageSize+$key+1;
-            $word        = urlencode(trim($sight['name']));
-    
-            $wikiUrl     = "http://baike.baidu.com/search/word?word=".$word;
-            $html        = file_get_html($wikiUrl);
-            $image       = $html->find('img');
-            $name        = '';
-            foreach ($image as $e){
-                $val = $e->getAttribute('data-src');
+        $keyword   = Keyword_Api::queryById($keywordId);
+        $arrItems    = array();
+        $word        = urlencode(trim($keyword['name']));
+        
+        $wikiUrl     = "http://baike.baidu.com/search/word?word=".$word;
+        $html        = file_get_html($wikiUrl);
+        $image       = $html->find('img');
+        $name        = '';
+        foreach ($image as $e){
+            $val = $e->getAttribute('data-src');
+            if(!empty($val)){
+                $name  = $val;
+                break;
+            }
+        }
+        if(empty($name)){
+            foreach ($image as $tempInd => $e){
+                if ($tempInd <= 1) {
+                    continue;
+                }
+                $val = $e->getAttribute('src');
                 if(!empty($val)){
                     $name  = $val;
                     break;
                 }
             }
-            if(empty($name)){
-                foreach ($image as $tempInd => $e){
-                    if ($tempInd <= 1) {
-                        continue;
-                    }
-                    $val = $e->getAttribute('src');
-                    if(!empty($val)){
-                        $name  = $val;
-                        break;
-                    }
-                }
-            }
-            if(!empty($name)){
-                $hash  = $this->uploadPic($name,$wikiUrl);
-            }else{
-                $hash  = $name;
-            }
-    
-            $content   = $html->find('div.card-summary-content div.para',0);
-    
-            if(empty($content)){
-                $content = $html->find('div[class="lemmaWgt-lemmaSummary lemmaWgt-lemmaSummary-light"]',0);
-                if(empty($content)){
-                    $content = $html->find('div.lemma-summary div.para',0);
-                    $content     = strip_tags($content->innertext);
-                }
-                foreach($html->find('li[class="level1"]') as $e){
-                    $ret  = $e->find("a",0);
-                    $url  = $ret->getAttribute("href")."\t";
-                    $name = html_entity_decode($ret->innertext)."\r\n";
-                    $arrItems[] = array(
-                        'name' => $name,
-                        'url'  => $wikiUrl.$url,
-                    );
-                    if(count($arrItems) >= self::WIKI_CATALOG_NUM){
-                        break;
-                    }
-                }
-            }else{
-                $content  = strip_tags($content->innertext);
-                foreach($html->find('div[class^="catalog-item "]') as $e){
-                    $ret  = $e->find("p a",0);
-                    $url  = $ret->getAttribute("href")."\t";
-                    $name = html_entity_decode($ret->innertext)."\r\n";
-                    $arrItems[] = array(
-                        'name' => $name,
-                        'url'  => $wikiUrl.$url,
-                    );
-                    if(count($arrItems) >= self::WIKI_CATALOG_NUM){
-                        break;
-                    }
-                }
-            }
-            $arrTemp['title']       = $sight['name'];
-            $arrTemp['content']     = Base_Util_String::getHtmlEntity(Base_Util_String::trimall($content));
-            $arrTemp['image']       = $hash;
-            $arrTemp['url']         = $wikiUrl;
-            $arrTemp['status']      = Keyword_Type_Status::PUBLISHED;
-            
-            $objKeyword = new Keyword_Object_Keyword();
-            $objKeyword->fetch(array('id' => $sight['id']));
-            $objKeyword->content = $arrTemp['content'];
-            $objKeyword->image   = $arrTemp['image'];
-            $objKeyword->status  = $arrTemp['status'];
-            $objKeyword->save();
-    
-            foreach ($arrItems as $id => $item){
-                $objKeywordCatalog            = new Keyword_Object_Catalog();
-                $objKeywordCatalog->name      = $item['name'];
-                $objKeywordCatalog->url       = $item['url'];
-                $objKeywordCatalog->keywordId = $objKeyword->id;
-                $objKeywordCatalog->save();
-            }
-            if(empty($arrTemp)){
-                Base_Log::error('sight '.$sight.' can not get wiki!');
-            }
-            $arrRet[] = $arrTemp;
-            $html->clear();
         }
+        if(!empty($name)){
+            $hash  = $this->uploadPic($name,$wikiUrl);
+        }else{
+            $hash  = $name;
+        }
+        
+        $content   = $html->find('div.card-summary-content div.para',0);
+        
+        if(empty($content)){
+            $content = $html->find('div[class="lemmaWgt-lemmaSummary lemmaWgt-lemmaSummary-light"]',0);
+            if(empty($content)){
+                $content = $html->find('div.lemma-summary div.para',0);
+                $content     = strip_tags($content->innertext);
+            }
+            foreach($html->find('li[class="level1"]') as $e){
+                $ret  = $e->find("a",0);
+                $url  = $ret->getAttribute("href")."\t";
+                $name = html_entity_decode($ret->innertext)."\r\n";
+                $arrItems[] = array(
+                    'name' => $name,
+                    'url'  => $wikiUrl.$url,
+                );
+                if(count($arrItems) >= self::WIKI_CATALOG_NUM){
+                    break;
+                }
+            }
+        }else{
+            $content  = strip_tags($content->innertext);
+            foreach($html->find('div[class^="catalog-item "]') as $e){
+                $ret  = $e->find("p a",0);
+                $url  = $ret->getAttribute("href")."\t";
+                $name = html_entity_decode($ret->innertext)."\r\n";
+                $arrItems[] = array(
+                    'name' => $name,
+                    'url'  => $wikiUrl.$url,
+                );
+                if(count($arrItems) >= self::WIKI_CATALOG_NUM){
+                    break;
+                }
+            }
+        }
+        $arrTemp['content']     = Base_Util_String::getHtmlEntity(Base_Util_String::trimall($content));
+        $arrTemp['image']       = $hash;
+        $arrTemp['url']         = $wikiUrl;
+        $arrTemp['status']      = Keyword_Type_Status::PUBLISHED;
+        
+        $objKeyword = new Keyword_Object_Keyword();
+        $objKeyword->fetch(array('id' => $keywordId));
+        $objKeyword->content = $arrTemp['content'];
+        $objKeyword->image   = $arrTemp['image'];
+        $objKeyword->status  = $arrTemp['status'];
+        $objKeyword->save();
+        
+        foreach ($arrItems as $id => $item){
+            $objKeywordCatalog            = new Keyword_Object_Catalog();
+            $objKeywordCatalog->name      = $item['name'];
+            $objKeywordCatalog->url       = $item['url'];
+            $objKeywordCatalog->keywordId = $objKeyword->id;
+            $objKeywordCatalog->save();
+        }
+        if(empty($arrTemp)){
+            Base_Log::error('keyword '.$word.' can not get wiki!');
+        }
+        $arrRet[] = $arrTemp;
+        $html->clear();
         return $arrRet;
     }
     

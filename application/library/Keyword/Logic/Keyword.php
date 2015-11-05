@@ -59,10 +59,9 @@ class Keyword_Logic_Keyword extends Base_Logic{
         }
         if($bCheck){
             $obj->weight = $this->getKeywordWeight($arrInfo['sight_id']);
-            $ret = $obj->save();
-            
-            if(isset($arrInfo['stauts']) && $arrInfo['status'] == Keyword_Type_Status::PUBLISHED){
-                $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$obj->id."&type=Wiki";
+            $ret = $obj->save();            
+            if(isset($arrInfo['status']) && $arrInfo['status'] == Keyword_Type_Status::PUBLISHED){
+                $url  = Base_Config::getConfig('web')->root."/InitData?sightId=".$obj->id."&type=Wiki";
                 $http = Base_Network_Http::instance()->url($url);
                 $http->timeout(1);
                 $http->exec();
@@ -93,8 +92,8 @@ class Keyword_Logic_Keyword extends Base_Logic{
         }
         if($bCheck){
             $ret =  $obj->save();
-            if(isset($arrInfo['stauts']) && $arrInfo['status'] == Keyword_Type_Status::PUBLISHED){
-                $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$id."&type=Wiki";
+            if(isset($arrInfo['status']) && (intval($arrInfo['status']) == Keyword_Type_Status::PUBLISHED)){
+                $url  = Base_Config::getConfig('web')->root."/InitData?sightId=".$id."&type=Wiki";               
                 $http = Base_Network_Http::instance()->url($url);
                 $http->timeout(1);
                 $http->exec();
@@ -112,24 +111,20 @@ class Keyword_Logic_Keyword extends Base_Logic{
      * @return boolean
      */
     public function delKeyword($id){
-        $redis     = Base_Redis::getInstance();
-        $wordInfo  = $this->queryById($id);
-        $sightId   = $this->getSightId($id);
-        $arrKeys   = $redis->keys(Keyword_Keys::getWikiInfoName($sightId, "*"));
-        foreach ($arrKeys as $key){
-            $data = $redis->hGetAll($key);
-            if($data['title'] == $wordInfo['name']){
-                $arrTemp = explode("_",$key);
-                $id      = $arrTemp[2];
-                $redis->delete($key);
-            }
-        }
-        $arrKeys = $redis->keys(Keyword_Keys::getWikiCatalogName($sightId, $id,"*"));
-        foreach ($arrKeys as $key){
-            $redis->delete($key);
+        $listCatalog = new Keyword_List_Catalog();
+        $listCatalog->setFilter(array('keyword_id' => $id));
+        $listCatalog->setPagesize(PHP_INT_MAX);
+        $arrCatalog  = $listCatalog->toArray();
+        foreach ($arrCatalog['list'] as $val){
+            $objCatalog = new Keyword_Object_Catalog();
+            $objCatalog->fetch(array('id' => $val['id']));
+            $objCatalog->remove();
         }
         $obj    = new Keyword_Object_Keyword();
         $obj->fetch(array('id' => $id));
+        if(!empty($obj->image)){
+            $this->delPic($obj->image);   
+        }
         return $obj->remove();
     }
     

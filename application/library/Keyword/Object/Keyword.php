@@ -26,7 +26,7 @@ class Keyword_Object_Keyword extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'sight_id', 'name', 'url', 'weight', 'status', 'create_user', 'update_user', 'create_time', 'update_time', 'x', 'y', 'content', 'image');
+    protected $fields = array('id', 'sight_id', 'name', 'url', 'create_time', 'update_time', 'status', 'create_user', 'update_user', 'weight', 'x', 'y', 'content', 'image');
 
     /**
      * 字段与属性隐射关系
@@ -37,12 +37,12 @@ class Keyword_Object_Keyword extends Base_Object {
         'sight_id'    => 'sightId',
         'name'        => 'name',
         'url'         => 'url',
-        'weight'      => 'weight',
+        'create_time' => 'createTime',
+        'update_time' => 'updateTime',
         'status'      => 'status',
         'create_user' => 'createUser',
         'update_user' => 'updateUser',
-        'create_time' => 'createTime',
-        'update_time' => 'updateTime',
+        'weight'      => 'weight',
         'x'           => 'x',
         'y'           => 'y',
         'content'     => 'content',
@@ -56,12 +56,12 @@ class Keyword_Object_Keyword extends Base_Object {
     protected $intProps = array(
         'id'          => 1,
         'sight_id'    => 1,
-        'weight'      => 1,
+        'create_time' => 1,
+        'update_time' => 1,
         'status'      => 1,
         'create_user' => 1,
         'update_user' => 1,
-        'create_time' => 1,
-        'update_time' => 1,
+        'weight'      => 1,
     );
 
     /**
@@ -79,7 +79,7 @@ class Keyword_Object_Keyword extends Base_Object {
     public $id;
 
     /**
-     * 景点ID
+     * 来源名称
      * @var integer
      */
     public $sightId;
@@ -97,10 +97,16 @@ class Keyword_Object_Keyword extends Base_Object {
     public $url;
 
     /**
-     * 权重值，权重为1的是主词条
+     * 创建时间
      * @var integer
      */
-    public $weight;
+    public $createTime;
+
+    /**
+     * 更新时间
+     * @var integer
+     */
+    public $updateTime;
 
     /**
      * 状态 1未确认 2已确认
@@ -121,16 +127,10 @@ class Keyword_Object_Keyword extends Base_Object {
     public $updateUser;
 
     /**
-     * 创建时间
+     * 权重值，权重为1的是主词条
      * @var integer
      */
-    public $createTime;
-
-    /**
-     * 更新时间
-     * @var integer
-     */
-    public $updateTime;
+    public $weight;
 
     /**
      * 经度

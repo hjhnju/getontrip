@@ -20,7 +20,7 @@ class Keyword_List_Keyword extends Base_List {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'sight_id', 'name', 'url', 'weight', 'status', 'create_user', 'update_user', 'create_time', 'update_time', 'x', 'y', 'content', 'image');
+    protected $fields = array('id', 'sight_id', 'name', 'url', 'create_time', 'update_time', 'status', 'create_user', 'update_user', 'weight', 'x', 'y', 'content', 'image');
 
     /**
      * 整数类型的字段
@@ -29,12 +29,12 @@ class Keyword_List_Keyword extends Base_List {
     protected $intProps = array(
         'id'          => 1,
         'sight_id'    => 1,
-        'weight'      => 1,
+        'create_time' => 1,
+        'update_time' => 1,
         'status'      => 1,
         'create_user' => 1,
         'update_user' => 1,
-        'create_time' => 1,
-        'update_time' => 1,
+        'weight'      => 1,
     );
 
     /**

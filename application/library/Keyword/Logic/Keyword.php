@@ -344,6 +344,14 @@ class Keyword_Logic_Keyword extends Base_Logic{
                 }
             }
         }
+        
+        if(empty($name)){
+            $image       = $html->find('div.summary-pic a img',0);
+            if(!empty($image)){
+                $name = $image->getAttribute('src');
+            }        
+        }
+        
         if(!empty($name)){
             $hash  = $this->uploadPic($name,$wikiUrl);
         }else{

@@ -1,7 +1,7 @@
  /*
-    京东书籍列表
-    author:fyy
- */
+      京东书籍列表
+      author:fyy
+   */
  $(document).ready(function() {
      var List = function() {
          var editBtn = '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-success btn-xs addKeyword"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
@@ -10,102 +10,103 @@
           * 初始化表格 
           */
          var initTable = function() {
-                 oTable = $('#editable').dataTable({
-                     "serverSide": true, //分页，取数据等等的都放到服务端去
-                     "processing": true, //载入数据的时候是否显示“载入中”
-                     "pageLength": 10, //首次加载的数据条数  
-                     "searching": false, //是否开启本地分页
-                     "ordering": false,
-                     "ajax": {
-                         "url": "/admin/videoapi/list",
-                         "type": "POST",
-                         "data": function(d) {
-                             //添加额外的参数传给服务器
-                             d.sight_id = 1;
-                             if ($("#form-sight").attr('data-sight_id')) {
-                                 d.sight_id = $.trim($("#form-sight").attr('data-sight_id'));
-                             }
-                             d.params = {};
-                             if ($('#form-title').val()) {
-                                 d.params.title = $('#form-title').val();
-                             }
+             oTable = $('#editable').dataTable({
+                 "serverSide": true, //分页，取数据等等的都放到服务端去
+                 "processing": true, //载入数据的时候是否显示“载入中”
+                 "pageLength": 10, //首次加载的数据条数  
+                 "searching": false, //是否开启本地分页
+                 "ordering": false,
+                 "ajax": {
+                     "url": "/admin/videoapi/list",
+                     "type": "POST",
+                     "data": function(d) {
+                         //添加额外的参数传给服务器
+                         d.sight_id = 1;
+                         if ($("#form-sight").attr('data-sight_id')) {
+                             d.sight_id = $.trim($("#form-sight").attr('data-sight_id'));
                          }
-                     },
-                     "columnDefs": [{
-                         "targets": [1, 3],
-                         "orderable": false,
-                         "width": 150
-                     }, {
-                         "targets": [0, 2, 4, 5, 6, 8],
-                         "orderable": false,
-                         "width": 50
-                     }, {
-                         "targets": [7],
-                         "orderable": false,
-                         "width": 100
-                     }],
-                     "columns": [{
-                         "data": 'id'
-                     }, {
-                         "data": 'title'
-                     }, {
-                         "data": 'sight_name'
-                     }, {
-                         "data": function(e) {
-                             if (e.image) {
-                                 return '<a href="/pic/' + e.image + '" target="_blank"><img alt="" src="' + e.image.getNewUrlByUrl(80, 22, 'f') + '"/></a><button type="button" class="btn btn-primary btn-xs editPic" title="修改图片" data-toggle="tooltip" style="margin: 0px 0px 0px 5px;"><i class="fa fa-image"></i></button>';
-                             }
-                             return '暂无';
+                         d.params = {};
+                         if ($('#form-title').val()) {
+                             d.params.title = $('#form-title').val();
                          }
-                     }, {
-                         "data": 'from'
-                     }, {
-                         "data": 'typeName'
-                     }, {
-                         "data": function(e) {
-                             if (e.url) {
-                                 return '<a href="' + e.url + '" target="_blank" title="' + e.url + '">' + (e.url.length > 20 ? e.url.substr(0, 20) + '...' : e.url) + '</a>';
-                             }
-                             return '暂无';
-                         }
-                     }, {
-                         "data": function(e) {
-                             if (e.statusName == '未发布') {
-                                 return e.statusName + '<button type="button" class="btn btn-primary btn-xs publish" title="发布" data-toggle="tooltip" ><i class="fa fa-check-square-o"></i></button><button type="button" class="btn btn-default btn-xs to-black" title="加入黑名单" data-toggle="tooltip" ><i class="fa fa-frown-o"></i></button>';
-                             } else if (e.statusName == '已发布') {
-                                 return e.statusName + '<button type="button" class="btn btn-warning btn-xs cel-publish" title="取消发布" data-toggle="tooltip" ><i class="fa fa-close"></i></button><button type="button" class="btn btn-default btn-xs to-black" title="加入黑名单" data-toggle="tooltip" ><i class="fa fa-frown-o"></i></button>';
-                             } else {
-                                 return e.statusName + '<button type="button" class="btn btn-default btn-xs cel-black" title="取消黑名单" data-toggle="tooltip" ><i class="fa fa-smile-o"></i></button>';
-                             }
-
-                         }
-                     }, {
-                         'data': function(e) {
-                             if (e.weight) {
-                                 return e.weight + '  <button class="btn btn-primary  btn-xs weight" title="修改排序" data-toggle="tooltip"><i class="fa fa-reorder"></i></button>'
-                             }
-                         }
-                     }, {
-                         "data": function(e) {
-                             return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/video/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>';
-
-                             //评论
-                             return '<a href="/admin/comment/list?id=' + e.id + '&table=video" target="_blank" class="btn btn-warning btn-xs comments" title="评论列表" data-toggle="tooltip"><i class="fa fa-comments-o"></i></a>';
-                             return '<a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
-                         }
-                     }],
-                     "initComplete": function(setting, json) {
-                         //工具提示框
-                         //$('[data-toggle="tooltip"]').tooltip();
                      }
-                 });
+                 },
+                 "columnDefs": [{
+                     "targets": [1, 3],
+                     "orderable": false,
+                     "width": 150
+                 }, {
+                     "targets": [0, 2, 4, 5, 6, 8],
+                     "orderable": false,
+                     "width": 50
+                 }, {
+                     "targets": [7],
+                     "orderable": false,
+                     "width": 100
+                 }],
+                 "columns": [{
+                     "data": 'id'
+                 }, {
+                     "data": 'title'
+                 }, {
+                     "data": 'sight_name'
+                 }, {
+                     "data": function(e) {
+                         if (e.image) {
+                             return '<a href="/pic/' + e.image + '" target="_blank"><img alt="" src="' + e.image.getNewUrlByUrl(80, 22, 'f') + '"/></a><button type="button" class="btn btn-primary btn-xs editPic" title="修改图片" data-toggle="tooltip" style="margin: 0px 0px 0px 5px;"><i class="fa fa-image"></i></button>';
+                         }
+                         return '暂无';
+                     }
+                 }, {
+                     "data": 'from'
+                 }, {
+                     "data": 'typeName'
+                 }, {
+                     "data": function(e) {
+                         if (e.url) {
+                             return '<a href="' + e.url + '" target="_blank" title="' + e.url + '">' + (e.url.length > 20 ? e.url.substr(0, 20) + '...' : e.url) + '</a>';
+                         }
+                         return '暂无';
+                     }
+                 }, {
+                     "data": function(e) {
+                         if (e.statusName == '未发布') {
+                             return e.statusName + '<button type="button" class="btn btn-primary btn-xs publish" title="发布" data-toggle="tooltip" ><i class="fa fa-check-square-o"></i></button><button type="button" class="btn btn-default btn-xs to-black" title="加入黑名单" data-toggle="tooltip" ><i class="fa fa-frown-o"></i></button>';
+                         } else if (e.statusName == '已发布') {
+                             return e.statusName + '<button type="button" class="btn btn-warning btn-xs cel-publish" title="取消发布" data-toggle="tooltip" ><i class="fa fa-close"></i></button><button type="button" class="btn btn-default btn-xs to-black" title="加入黑名单" data-toggle="tooltip" ><i class="fa fa-frown-o"></i></button>';
+                         } else {
+                             return e.statusName + '<button type="button" class="btn btn-default btn-xs cel-black" title="取消黑名单" data-toggle="tooltip" ><i class="fa fa-smile-o"></i></button>';
+                         }
 
-                 api = oTable.api();
-             }
-             /**
-              * 绑定事件
-              *  
-              */
+                     }
+                 }, {
+                     'data': function(e) {
+                         if (e.weight) {
+                             return e.weight + '  <button class="btn btn-primary  btn-xs weight" title="修改排序" data-toggle="tooltip"><i class="fa fa-reorder"></i></button>'
+                         }
+                     }
+                 }, {
+                     "data": function(e) {
+                         return '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/video/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>';
+
+                         //评论
+                         return '<a href="/admin/comment/list?id=' + e.id + '&table=video" target="_blank" class="btn btn-warning btn-xs comments" title="评论列表" data-toggle="tooltip"><i class="fa fa-comments-o"></i></a>';
+                         return '<a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
+                     }
+                 }],
+                 "initComplete": function(setting, json) {
+                     //工具提示框
+                     //$('[data-toggle="tooltip"]').tooltip();
+                 }
+             });
+
+             api = oTable.api();
+         }
+
+         /**
+          * 绑定事件
+          *  
+          */
          var bindEvents = {
              init: function() {
                  this.initEvents();

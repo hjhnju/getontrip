@@ -40,10 +40,10 @@ $(document).ready(function() {
                     "targets": [0, 1],
                     "width": 20
                 }, {
-                    "targets": [2,3],
+                    "targets": [2, 3],
                     "width": 150
                 }, {
-                    "targets": [ 4, 5],
+                    "targets": [4, 5],
                     "width": 50
                 }, {
                     "targets": [6, 7, 8],
@@ -178,7 +178,7 @@ $(document).ready(function() {
                         if (!data.image) {
                             toastr.warning('发布之前必须上传背景图片');
                             return;
-                        } 
+                        }
                         if (!data.subtitle) {
                             toastr.warning('副标题不能为空！');
                             return;
@@ -199,12 +199,12 @@ $(document).ready(function() {
                             if (!data.tagList.generalTag.length) {
                                 toastr.warning('通用标签不能为空！');
                                 return;
-                            } 
+                            }
                         } else {
                             if (!data.tagList.classifyTag.length) {
                                 toastr.warning('分类标签不能为空！');
                                 return;
-                            } 
+                            }
                         }
 
                         action = 'PUBLISHED';
@@ -213,7 +213,7 @@ $(document).ready(function() {
                     }
                     var publish = new Remoter('/admin/topicapi/changeStatus');
                     publish.remote({
-                        id: data.id,
+                        idArray: [data.id],
                         action: action
                     });
                     publish.on('success', function(data) {
@@ -248,6 +248,33 @@ $(document).ready(function() {
                          });*/
                 });
 
+                //批量发布操作
+                $('#editable button.all-publish').live('click', function(e) {
+                    e.preventDefault();
+                    var datas = oTable.api().rows().data();
+                    var idArray=[];
+                    for (var i = 0; i < datas.length; i++) {
+                        var data = datas[i];
+                        if (data.image && data.subtitle && data.isContent && data.from && (data.from_detail || data.url)) {
+                            if ((!!data.sights.length && !!data.tagList.classifyTag.length) || (!data.sights.length && !!data.tagList.generalTag.length)) {
+                                if (data.statusName!=='已发布') { 
+                                   idArray.push(data.id);
+                                }
+                            }
+                        }
+                    };
+                    var action = 'PUBLISHED';
+                    var publish = new Remoter('/admin/topicapi/changeStatus');
+                    publish.remote({
+                        idArray: idArray,
+                        action: action
+                    });
+                    publish.on('success', function(data) {
+                        //刷新当前页
+                        oTable.fnRefresh();
+                    });
+
+                });
 
                 //打开关闭详情
                 $('#editable').delegate('tbody td a[for="details"]', 'click', function(event) {

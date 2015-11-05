@@ -325,6 +325,9 @@ class City_Logic_City{
             
             $logicTag  = new Tag_Logic_Tag();
             $arrTags   = $logicTag->getTopicTags($val['id']);
+            foreach ($arrTags as $index => $data){
+                $arrTags[$index] = str_replace("其他", "", $data);
+            }
             $arrRet[$key]['tags'] = $arrTags;
         }
         return $arrRet;

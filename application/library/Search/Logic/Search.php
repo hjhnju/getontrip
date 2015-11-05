@@ -173,7 +173,7 @@ class Search_Logic_Search{
                     $arrTopicIds   = explode(",",$strTopicIds);
                     $count         = 0;
                     foreach ($arrTopicIds as $id){
-                        $count    += $this->logicComment->getTotalCommentNum($sightId);
+                        $count    += $this->logicComment->getTotalCommentNum($id);
                     }
                     $topic_num     = $this->logicSight->getTopicNum($sightId,array('status' => Topic_Type_Status::PUBLISHED));
                     $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $sightId);

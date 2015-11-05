@@ -1,8 +1,7 @@
  /*
-
-           京东书籍列表
-            author:fyy
-           */
+    京东书籍列表
+    author:fyy
+ */
  $(document).ready(function() {
      var List = function() {
          var editBtn = '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-success btn-xs addKeyword"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
@@ -37,7 +36,7 @@
                          "orderable": false,
                          "width": 150
                      }, {
-                         "targets": [0, 2, 4, 5, 6,8],
+                         "targets": [0, 2, 4, 5, 6, 8],
                          "orderable": false,
                          "width": 50
                      }, {

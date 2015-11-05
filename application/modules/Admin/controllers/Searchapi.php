@@ -11,12 +11,11 @@ class SearchapiController extends Base_Controller_Api{
     
  
     /**
-     * list
+     * 获取某个搜索标签信息
      *  
      */    
     public function listAction(){  
-        //第一条数据的起始位置，比如0代表第一条数据
-        //
+        //第一条数据的起始位置，比如0代表第一条数据 
         $start    = isset($_REQUEST['start'])?$_REQUEST['start']:0; 
         $pageSize = isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX; 
         $page     = ($start/$pageSize)+1;
@@ -39,7 +38,7 @@ class SearchapiController extends Base_Controller_Api{
     }
 
     /**
-     * list
+     * 查询搜索标签列表标签list
      *  
      */    
     public function labellistAction(){  
@@ -151,7 +150,7 @@ class SearchapiController extends Base_Controller_Api{
 
     
     /**
-     * 修改搜索标签的
+     * 修改搜索标签的权重
      * @return [type] [description]
     */
     public function changeWeightAction(){
@@ -163,6 +162,73 @@ class SearchapiController extends Base_Controller_Api{
             return $this->ajax();
         }
         return $this->ajaxError();
+    }
+
+    /**
+     * 搜索热词列表
+     * @return [array] [description]
+     */
+    public function wordListAction()
+    {
+        //第一条数据的起始位置，比如0代表第一条数据 
+        $start    = isset($_REQUEST['start'])?$_REQUEST['start']:0; 
+        $pageSize = isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX; 
+        $page     = ($start/$pageSize)+1;
+        $arrConf = isset($_REQUEST['params'])?$_REQUEST['params']:array(); 
+        
+
+        $List = Search_Api::getQueryWords($page, $pageSize, $arrConf);
+        for ($i=0; $i < count($List) ; $i++) { 
+            //处理状态
+            $List[$i]['statusName'] = Search_Type_Word::getTypeName($List[$i]['status']);
+             
+        }
+
+        $retList['recordsFiltered'] = count($List);
+        $retList['recordsTotal'] = count($List);
+        $retList['data'] = $List;        
+        return   $this->ajax($retList);
+
+    }
+
+    /*
+      修改热词的状态
+     */
+    public function changeWordStatusAction()
+    {
+        $word = isset($_REQUEST['word'])? $_REQUEST['word'] : ''; 
+        $action = isset($_REQUEST['action'])? $_REQUEST['action'] : 'AUDITING';
+       
+        $status = $this->getStatusByActionStr($action); 
+ 
+        $dbRet = Search_Api::editQueryWordStatus($word, $status);
+        if ($dbRet) {
+            return $this->ajax();
+        }
+        return $this->ajaxError();
+    }
+
+        /**
+     * 获取保存的状态
+     * @param  [type] $action [description]
+     * @return [type]         [description]
+     */
+    public function getStatusByActionStr($action){
+        switch ($action) {
+         case 'AUDITING':
+           $status = Search_Type_Word::AUDITING;
+           break;
+         case 'AUDITPASS':
+           $status = Search_Type_Word::AUDITPASS;
+           break;
+        case 'AUDITFAILED':
+           $status = Search_Type_Word::AUDITFAILED;
+           break;
+         default:
+           $status = Search_Type_Word::AUDITING;
+           break;
+       } 
+       return   $status;
     }
      
 }

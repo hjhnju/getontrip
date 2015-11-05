@@ -70,9 +70,9 @@ class Base_Search {
             $url   .= '&hl=true&hl.fl=name';
         }        
         if(self::HIGHT_LIGHT){
-            $url .='&hl.simple.pre='.urlencode('<b>').'&hl.simple.post='.urlencode('</b>');
+            $url .='&hl.fragsize=17&hl.simple.pre='.urlencode('<b>').'&hl.simple.post='.urlencode('</b>');
         }else{
-            $url .='&hl.simple.pre='.urlencode('').'&hl.simple.post='.urlencode('');
+            $url .='&hl.fragsize=17&hl.simple.pre='.urlencode('').'&hl.simple.post='.urlencode('');
         }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

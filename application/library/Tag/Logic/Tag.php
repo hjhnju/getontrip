@@ -170,7 +170,7 @@ class Tag_Logic_Tag extends Base_Logic{
             foreach ($ret['list'] as $val){
                 $objTag = new Tag_Object_Tag();
                 $objTag->fetch(array('id' => $val['tag_id']));
-                if(!empty($objTag->id) && $objTag->weight !== -1){
+                if(!empty($objTag->id)){
                     $redis->sAdd(Topic_Keys::getTopicTagKey($topicId),$val['tag_id']);
                     $arrTags[] = $objTag->name;
                     $ret       = $redis->hSet(Tag_Keys::getTagInfoKey($val['tag_id']),'name',$objTag->name);

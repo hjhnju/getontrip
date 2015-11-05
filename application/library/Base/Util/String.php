@@ -84,7 +84,14 @@ class Base_Util_String {
 	 */
 	public static function getSubString($str,$length){
 	    $str = self::delStartEmpty($str);
-	    $str = mb_ereg_replace('(\s|　|&nbsp;|\xc2\xa0)*', '', $str);
+	    //$str = mb_ereg_replace('(\s|　|&nbsp;|\xc2\xa0)*', '', $str);
+	    //去掉所有标签两旁的空白
+	    $arr = array();
+        preg_match_all('/(　)*(\xc2\xa0)*\s*(&nbsp;)*<(.*?)>(　)*(\xc2\xa0)*\s*(&nbsp;)*/i', $str, $arr);
+        foreach ($arr[0] as $i => $val){
+            $val = str_replace("/", "\/", $val);
+            $str = preg_replace("/".$val."/", "", $str, 1);
+        }
 	    $str = Base_Util_String::getHtmlEntity($str);
 	    if(mb_strlen($str) > $length){
 	        return mb_substr($str,0,$length,'utf-8')."..";

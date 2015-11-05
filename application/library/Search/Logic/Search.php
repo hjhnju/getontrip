@@ -69,6 +69,8 @@ class Search_Logic_Search{
                         $arrRet['data'][$key]['url'] = isset($keyword['url'])?$keyword['url']:'';
                         $arrRet['data'][$key]['image'] = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
                     }
+                    $arrRet['data'][$key]['title']   = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['title']));
+                    $arrRet['data'][$key]['content'] = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['content']));
                 }
                 break;
             default :
@@ -118,6 +120,7 @@ class Search_Logic_Search{
         if($page == 1){
             $listTag = new Tag_List_Tag();
             $listTag->setFilter(array('type' => Tag_Type_Tag::SEARCH));
+            $listTag->setOrder('`weight` asc');
             $listTag->setPagesize(self::SEARCH_LABEL_NUM);
             $arrTag           = $listTag->toArray();
             $logicSearchLabel = new Search_Logic_Label();

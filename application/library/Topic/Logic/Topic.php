@@ -162,7 +162,10 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrRet['subtitle']    = Base_Util_String::trimall($arrRet['subtitle']);
         $arrRet['title']       = Base_Util_String::trimall($arrRet['title']);
         $arrRet['content']     = trim($arrRet['content']);
-        //$arrRet['desc']        = Base_Util_String::getSubString($arrRet['content'], 30);
+        $arrRet['shareurl']    = Base_Config::getConfig('web')->root.'/topic/detail?&id='.$topicId;;
+        $arrRet['contenturl']  = $arrRet['shareurl'].'&isapp=1';
+       
+        //$arrRet['desc']      = Base_Util_String::getSubString($arrRet['content'], 30);
         
         $logicVist          = new Tongji_Logic_Visit();
         $logicVist->addVisit( Tongji_Type_Visit::TOPIC, $topicId);
@@ -505,6 +508,7 @@ class Topic_Logic_Topic extends Base_Logic{
         foreach ($arrSightTopic['list'] as $data){
             $objSightTopic = new Sight_Object_Topic();
             $objSightTopic->fetch(array('id' => $data['id']));
+            $redis->hDel(Sight_Keys::getSightTongjiKey($objSightTopic->sightId), Sight_Keys::TOPIC);
             $redis->sRemove(Sight_Keys::getSightTopicKey($objSightTopic->sightId),$id);
             $num = $redis->sCard(Sight_Keys::getSightTopicKey($objSightTopic->sightId));
             $objSightTopic->remove();
@@ -847,11 +851,13 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrSecond = Tag_Api::getTagRelation($strTag, 1, PHP_INT_MAX);
         foreach ($arrSecond['list'] as $tag){
             $num = $this->model->getTopicNumByTag($tag['classifytag_id'], $sightId);
-            if($num < $limit_num){
+            $objTag = new Tag_Object_Tag();
+            $objTag->fetch(array('id' => $tag['classifytag_id']));
+            if($num < $limit_num || $objTag->weight == -1){
                 if(!in_array($tag['classifytag_id'],$arrIds)){
                     $arrIds[] = $tag['classifytag_id'];
                 }
-            }
+           }
         }
         $strTagIds     = implode(",",$arrIds);
         $arrRet        = $this->model->getHotTopicIdsByTopicAndTag($strTopicIds, $strTagIds, $page, $pageSize);

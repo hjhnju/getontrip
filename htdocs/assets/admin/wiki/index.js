@@ -1,6 +1,6 @@
 /*
 
- 京东书籍列表
+ wiki列表
   author:fyy
  */
 $(document).ready(function() {

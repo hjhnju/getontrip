@@ -1,5 +1,5 @@
  /*
-      京东书籍列表
+      视频列表
       author:fyy
    */
  $(document).ready(function() {

@@ -26,6 +26,7 @@ class Book_Logic_Book extends Base_Logic{
             $arrBookIds = array();            
             $listSightBook = new Sight_List_Book();
             $listSightBook->setFilter(array('sight_id' => $sightId));
+            $listSightBook->setOrder('`weight` asc');
             $listSightBook->setPagesize(PHP_INT_MAX);
             $ret = $listSightBook->toArray();
             foreach ($ret['list'] as $val){
@@ -38,28 +39,43 @@ class Book_Logic_Book extends Base_Logic{
                 $filter .= " and `".$index."` = ".$val;
             }            
             $listBook->setFilterString($filter);
-            $listBook->setPage($page);
-            $listBook->setPagesize($pageSize);
+            $listBook->setPage(1);
+            $listBook->setPagesize(PHP_INT_MAX);
+            $arrBook = $listBook->toArray();
+            foreach ($arrBookIds as $key => $id){
+                $arrBook['list'][$key] = $id;
+            }            
+            $arrBook['list'] = array_slice($arrBook['list'], ($page-1)*$pageSize,$pageSize);
         }else{
             $listBook = new Book_List_Book();
-            $listBook->setFilter($arrParam);
+            if(!empty($arrParam)){
+                $listBook->setFilter($arrParam);
+            }          
             $listBook->setPage($page);
-            $listBook->setPagesize($pageSize);   
+            $listBook->setPagesize($pageSize);
+            $arrBook = $listBook->toArray();  
+            foreach ($arrBook['list'] as $key => $val){
+                $arrBook['list'][$key] = $val['id'];   
+            }
         }
-        $arrBook  = $listBook->toArray();
+        
         foreach ($arrBook['list'] as $key => $val){
+            $arrBook['list'][$key] = Book_Api::getBookInfo($val);
             $listSightBook = new Sight_List_Book();
-            $listSightBook->setFilter(array('book_id' => $val['id']));
+            $listSightBook->setFilter(array('book_id' => $val));
+            //$listSightBook->setOrder('`create_time` desc, `weight` asc');
             $listSightBook->setPagesize(PHP_INT_MAX);
             $arrSightBook  = $listSightBook->toArray();
+            $arrBook['list'][$key]['sights'] = array();
             foreach ($arrSightBook['list'] as $data){
-                $temp['id']   = $data['sight_id'];
-                $sight        = Sight_Api::getSightById($data['sight_id']);
-                $temp['name'] = $sight['name'];
-                unset($arrBook['list'][$key]['content_desc']);
-                unset($arrBook['list'][$key]['catalog']);
+                $temp['id']     = $data['sight_id'];
+                $sight          = Sight_Api::getSightById($data['sight_id']);
+                $temp['name']   = $sight['name'];               
+                $temp['weight'] = $data['weight']; 
                 $arrBook['list'][$key]['sights'][] = $temp;
             }
+            unset($arrBook['list'][$key]['content_desc']);
+            unset($arrBook['list'][$key]['catalog']);
         }
         return $arrBook;
     }

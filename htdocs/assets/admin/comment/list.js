@@ -93,8 +93,7 @@ $(document).ready(function() {
 
             api = oTable.api();
         }
-        filters();
-        bindEvents();
+       
 
 
         /**

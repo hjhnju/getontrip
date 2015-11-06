@@ -8,7 +8,7 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-							<h4 class="modal-title">添加城市信息</h4>
+							<h4 class="modal-title">添加景点信息</h4>
 						</div>
 						<div class="modal-body">
 							  
@@ -28,7 +28,7 @@
 			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 			<!-- BEGIN PAGE HEADER-->
 			<h3 class="page-title">
-			  {%$action%}城市 <small>reports & statistics</small>
+			  {%$action%}景点 <small>reports & statistics</small>
 			</h3>
 			<div class="page-bar">
 				<ul class="page-breadcrumb">
@@ -39,11 +39,11 @@
 					</li>
 					<li>
 						<i class="fa fa-list-ul"></i>
-						<a href="/admin/city/list">城市管理</a>
+						<a href="/admin/sight">景点管理</a>
 						<i class="fa fa-angle-right"></i>
 					</li>
 					<li>
-						<a href="#">{%$action%}城市</a>
+						<a href="#">{%$action%}景点</a>
 					</li>
 				</ul>
 			</div>
@@ -53,15 +53,44 @@
                   <form class="cmxform form-horizontal tasi-form" id="Form" method="post" action="" novalidate="novalidate" >
                     {%if isset($post.id)%}
                     <input type="hidden" name="id" id="id" value="{%$post.id%}"/>
-                    <input type="hidden" name="status" id="status" value="{%$post.status%}"/>
                     {%/if%}
                   	
                       <div class="form-group ">
-                          <label for="name" class="control-label col-lg-2">城市名称*</label>
+                          <label for="name" class="control-label col-lg-2">名称*</label>
                           <div class="col-lg-5">
-                              <input class="form-control" id="name" name="name" minlength="2" type="text" required="" value="{%if isset($post.name)%}{%$post.name%}{%/if%}" readonly="" /><label for="name" class="error"></label>
+                              <input class="form-control" id="name" name="name" minlength="2" type="text" required="" value="{%if isset($post.name)%}{%$post.name%}{%/if%}"><label for="name" class="error"></label>
                           </div>
-                      </div>   
+                      </div>
+                      <div class="form-group ">
+                          <label for="level" class="control-label col-lg-2">级别*</label> 
+                          <div class="col-lg-5"> 
+                          <select class="form-control" name="level" id="level"> 
+							             {%foreach $levelArray as $key=>$item%}
+		                          <option value="{%$item%}" {%if isset($post.level) and $item eq $post.level%}selected{%/if%} >{%$item%}</option>
+		                       {%/foreach%}
+							</select>
+							<label for="level" class="error"></label>
+						  </div>
+                      </div>
+
+                      <div class="form-group ">
+                          <label for="describe" class="control-label col-lg-2">描述</label>
+                          <div class="col-lg-5">
+                               <textarea class="form-control" id="describe" name="describe" rows="3" >{%if isset($post.describe)%}{%$post.describe%}{%/if%}</textarea>
+                               <label for="describe" class="error"></label>
+                          </div> 
+                      </div>
+                      <div class="form-group ">
+                          <label for="city_name" class="control-label col-lg-2">所属城市*</label>
+                          <div class="col-lg-5">
+                          	   <input  id="city_id" name="city_id"  type="hidden" value="{%if isset($post.city_id)%}{%$post.city_id%}{%/if%}">
+                               <input class="form-control" id="city_name" name="city_name"  type="text" required=""  autocomplete="off" value="{%if isset($post.city_name)%}{%$post.city_name%}{%/if%}"/> 
+                               <label for="city_name" class="error"></label>
+                          </div>
+                           <div class="col-lg-5">
+                           	<p class="help-block">输入后请在下拉框选择(键盘也可选择)，否则无效</p> 
+                           </div>
+                      </div>
                        <div class="form-group ">
                           <label for="xy" class="control-label col-lg-2">坐标*</label>
                           <div class="col-lg-5">
@@ -88,7 +117,7 @@
                                      <img src="{%$webroot%}/pic/{%$post.image%}@f190w_f80h" alt=""> 
                                     {%/if%}
                                   </div> 
-                                    <button id="crop-img" class="btn btn-primary fileupload-crop{%if empty($post.image)==1%} hidden{%/if%}" type="button" data-corpUrl="city"><i class="fa fa-cut"></i>裁剪</button>
+                                    <button id="crop-img" class="btn btn-primary fileupload-crop{%if empty($post.image)==1%} hidden{%/if%}" type="button" data-corpUrl="wiki"><i class="fa fa-cut"></i>裁剪</button>
                                     <input type="hidden" id="jcrop-ratio" data-width="414" data-height="166"/>
                                   <div>
                                    <span class="btn btn-white btn-file">
@@ -106,9 +135,9 @@
                       <div class="form-group">
                           <div class="col-lg-offset-2 col-lg-10">
                                <button class="btn btn-danger" type="submit" id="submitBtn" data-action="NOTPUBLISHED" data-btn_text="保存">保存</button>
-                               <button class="btn btn-danger" type="submit" data-action="PUBLISHED" data-btn_text="开通">开通</button>
+                               <button class="btn btn-danger" type="submit" data-action="PUBLISHED" data-btn_text="发布">发布</button>
                                {%if isset($post.id)%} 
-                                 <a class="btn btn-default"  href="/admin/city/list">返回列表</a> 
+                                 <a class="btn btn-default"  href="/admin/sight">返回列表</a> 
                                 {%else%}
                                 <button class="btn btn-default"  name="reset"  type="reset">重置</button> 
                                 {%/if%}
@@ -137,7 +166,7 @@
 <script src="{%$feroot%}s/global/plugins/bootstrap-fileupload/bootstrap-fileupload.js" type="text/javascript"></script> 
 <script src="{%$feroot%}s/global/plugins/ajaxfileupload.js" type="text/javascript"></script> 
 <script src="{%$feroot%}s/global/plugins/jcrop/js/jquery.Jcrop.js" type="text/javascript"></script> 
-<script src="{%$feroot%}s/admin/city/edit.js" type="text/javascript"></script>
+<script src="{%$feroot%}s/admin/sight/edit.js" type="text/javascript"></script>
 <script src="{%$feroot%}s/admin/utils/map/index.js" type="text/javascript"></script>  
 <script src="{%$feroot%}s/admin/utils/cropimg/index.js" type="text/javascript"></script> 
 

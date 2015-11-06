@@ -21,9 +21,9 @@
         left: 0;
         bottom: 10px;
         width: 100%;
-        font-size: 20px;
+        font-size: 24px;
         vertical-align: middle;
-        padding: 0 15px;
+        padding: 0 20px;
         line-height: 1.2;
         .title {
             color: #fff;
@@ -117,9 +117,7 @@
     height: 62px;
     overflow: hidden;
     line-height: 1;
-    display: none;
     background: #fff;
-    display: block;
 }
 
 .header-for-mobile-btn {
@@ -162,4 +160,58 @@
     color: #666;
     padding: 0 0 12px;
     margin-left: 58px;
+}
+
+@media (max-width: 320px) {
+    .bg-img .title-box {
+        padding: 0px 14px;
+    }
+    .main-content .main-content-inner {
+        margin: 14px 14px 0;
+    }
+    .main-content .main-content-inner.rich-text {
+        font-size: 16px;
+        line-height: 26px;
+    }
+    .header-for-mobile {
+        height: 60px;
+    }
+    .header-for-mobile-btn {
+        padding: 6px 8px;
+    }
+    .header-for-mobile-logo-img {
+        width: 40px;
+        height: 40px;
+        margin-top: 10px;
+    }
+    .header-for-mobile-title {
+        margin-left: 48px;
+        padding: 6px 0px 2px 0px;
+    }
+    .header-for-mobile-meta {
+        margin-left: 48px;
+        line-height: 14px;
+    }
+}
+
+@media (min-width: 480px) {
+    .main-wrap {
+        max-width: 640px;
+        min-width: 300px;
+        margin: 0 auto;
+    }
+    .content-wrap {
+        overflow: hidden;
+    }
+}
+
+@media (min-width: 640px) {
+    .header-for-mobile {
+        max-width: 640px;
+        min-width: 300px;
+        margin: 0 auto;
+    }
+    .header-for-mobile-download-link {
+        padding: 0 10px 0 0;
+    }
 }

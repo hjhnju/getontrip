@@ -66,10 +66,17 @@
             <!-- BEGIN content STATS --> 
             <div class="adv-table editable-table "> 
                  <div class="clearfix">
-                      
+                     <div class="col-xs-2 pull-right">   
+                        <div class="input-group ">
+                          <select name="" id="form-status"> 
+                            <option value="">全部状态</option> 
+                             {%foreach $statusArray as $key=>$item%} 
+                                  <option value="{%$key%}">{%$item%}</option> 
+                            {%/foreach%}  
+                          </select>
+                       </div>
+                    </div> 
                 </div>    
-               <input type="hidden" id="search-id">
-                
                <table class="table table-striped table-hover table-bordered dataTable" id="editable">
                      <thead>
                          <tr role="row"> 

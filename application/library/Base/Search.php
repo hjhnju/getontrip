@@ -63,7 +63,7 @@ class Base_Search {
         }
         $param  = urlencode($param);
         $from   = ($page-1)*$pageSize;
-        $url    = Base_Config::getConfig('solr')->url.'/solr/'.$type.'/select?q='.$query.'&wt=json&fl='.$param."&start=".$from."&rows=".$pageSize;
+        $url    = '/solr/'.$type.'/select?q='.$query.'&wt=json&fl='.$param."&start=".$from."&rows=".$pageSize;
         if($type == 'content'){
             $url   .= '&hl=true&hl.fl=title'.urlencode(',')."content";
         }else{
@@ -75,10 +75,16 @@ class Base_Search {
             $url .='&hl.fragsize=17&hl.simple.pre='.urlencode('').'&hl.simple.post='.urlencode('');
         }
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_URL, Base_Solr::getInstance().$url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         $ret = curl_exec($ch);
+        
+        if(false == $ret){
+            curl_setopt($ch, CURLOPT_URL, Base_Solr::getInstance().$url);
+            $ret = curl_exec($ch);
+        }
+        
         curl_close($ch);
         
         $arrRet = json_decode($ret,true);

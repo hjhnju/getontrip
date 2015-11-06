@@ -6,11 +6,18 @@ class Search_Logic_Word extends Base_Logic{
     protected $fields = array('id', 'word', 'deviceid', 'create_time', 'update_time', 'userid', 'status');
     
     public function addSearchWord($word){
+        $status = Search_Type_Word::AUDITING;
+        $objSearchWord = new Search_Object_Word();
+        $objSearchWord->fetch(array('word' => $word));
+        if(!empty($objSearchWord->status)){
+            $status = $objSearchWord->status;
+        }
+        
         $objSearchWord = new Search_Object_Word();
         $objSearchWord->word     = $word;
         $objSearchWord->deviceid = isset($_COOKIE['device_id'])?trim($_COOKIE['device_id']):'';
         $objSearchWord->userid   = User_Api::getCurrentUser();
-        $objSearchWord->status   = Search_Type_Word::AUDITING;
+        $objSearchWord->status   = $status;
         return $objSearchWord->save();
     }
     

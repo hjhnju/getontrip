@@ -143,15 +143,11 @@ $(document).ready(function() {
                     name: "required",
                     xy: {
                         required: true
-                    },
-                    image: {
-                        required: (action === 'publish')
-                    }
+                    } 
                 },
                 messages: {
                     name: "城市名称不能为空哦！",
-                    xy: "坐标不能为空",
-                    image: '发布之前必须上传图片'
+                    xy: "坐标不能为空" 
                 }
             });
 

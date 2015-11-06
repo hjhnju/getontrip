@@ -5,9 +5,9 @@ class Collect_Keys {
 
     const REDIS_SIGHT_INFO_KEY   = 'collect_sight_info';
 
-    const REDIS_ANSWER_INFO_KEY  = 'collect_city_info';
+    const REDIS_CITY_INFO_KEY  = 'collect_city_info';
     
-    const REDIS_THEME_INFO_KEY   = 'collect_book_info';
+    const REDIS_BOOK_INFO_KEY   = 'collect_book_info';
     
     const REDIS_LATE_KEY         = '%s_late_%s';
     

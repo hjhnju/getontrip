@@ -114,7 +114,7 @@ class BookapiController extends Base_Controller_Api{
 
 
     /**
-     * 裁剪话题背景图片
+     * 裁剪书籍背景图片
      * @return [type] [description]
      */
     public function cropPicAction(){

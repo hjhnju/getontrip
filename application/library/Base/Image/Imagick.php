@@ -300,10 +300,13 @@ class Base_Image_Imagick {
     }
 
     // 输出图像
-    public function output($quality = 100,$header = true) {
+    public function output($quality = 100, $radius = '', $sigma = '',$header = true) {
         if($header) header('Content-type: '.$this->type);
         if(empty($quality)){
             $quality = 100;
+        }
+        if(!empty($radius) && !empty($sigma)){
+            $this->image->adaptiveblurimage($radius, $sigma);
         }
         $this->image->setimagecompressionquality($quality);
         echo $this->image->getImagesBlob();

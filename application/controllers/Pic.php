@@ -15,12 +15,15 @@ class PicController extends Base_Controller_Page {
      * @200h_100w、@e200h_e100w  固定一条边,另一条边按原图比例进行缩放 
      * @c200h_c100w              居中适应的缩放并裁剪
      * @f200h_f100w              强制缩放不裁剪
+     * @参数后面还可以加r,s设置模糊效果,如@e200h_e100w_9r_3s
      */
     public function indexAction() {
-        $width    = 0;
-        $height   = 0;
-        $quality  = 100;
+        $width     = 0;
+        $height    = 0;
+        $quality   = 100;
         $scaleType = '';
+        $radius    = '';
+        $sigma     = '';
         $hash = $this->_request->get('hash');
         if (empty($hash)) {
             header("HTTP/1.1 404 Not Found");
@@ -51,6 +54,12 @@ class PicController extends Base_Controller_Page {
                         break;
                     case 'q':
                         $quality = intval(substr($val,0,$num-1));
+                        break;
+                    case 'r':
+                        $radius = intval(substr($val,0,$num-1));
+                        break;
+                    case 's':
+                        $sigma  = intval(substr($val,0,$num-1));
                         break;
                     default :
                         break;
@@ -98,7 +107,7 @@ class PicController extends Base_Controller_Page {
                     $imagick->resize_to($width,$height,'force');
                 }
             }
-            echo $imagick->output($quality);
+            echo $imagick->output($quality,$radius,$sigma);
         }
         exit;
     }

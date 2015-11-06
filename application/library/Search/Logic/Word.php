@@ -47,7 +47,16 @@ class Search_Logic_Word extends Base_Logic{
             Base_Log::error($ex->getMessage());
             return array();
         }
-        return $data;
+        
+        $sql_count = 'select count(distinct(`word`)) from `search_word` where '.$strWhere;
+        $num       = $model->db->fetchOne($sql_count);
+        return array(
+            'page' => $page,
+            'pagesize' => $pageSize,
+            'pageall' => ceil($num/$pageSize),
+            'total' => $num,
+            'list' => $data,
+        );
     }
     
     

@@ -53,7 +53,7 @@ class Video_Logic_Video extends Base_Logic{
             }else{
                 $arrRet['list'][$key]['len'] = sprintf("时长：%s",$val['len']);
             }
-            unset($arrRet['list'][$key]['type']);
+            $arrRet['list'][$key]['type']    = strval($val['type']);
         }
         return $arrRet['list'];
     }

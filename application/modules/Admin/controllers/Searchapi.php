@@ -178,15 +178,18 @@ class SearchapiController extends Base_Controller_Api{
         
 
         $List = Search_Api::getQueryWords($page, $pageSize, $arrConf);
-        for ($i=0; $i < count($List) ; $i++) { 
-            //处理状态
-            $List[$i]['statusName'] = Search_Type_Word::getTypeName($List[$i]['status']);
-             
-        }
 
-        $retList['recordsFiltered'] = count($List);
-        $retList['recordsTotal'] = count($List);
-        $retList['data'] = $List;        
+        $tmpList=$List['list'];
+        for ($i=0; $i < count($tmpList) ; $i++) { 
+            //处理状态
+            $tmpList[$i]['statusName'] = Search_Type_Word::getTypeName($tmpList[$i]['status']);
+             
+        } 
+        $List['list'] =  $tmpList;
+        $retList['recordsFiltered'] =$List['total'];
+        $retList['recordsTotal'] = $List['total']; 
+        $retList['data'] =$List['list'];    
+
         return   $this->ajax($retList);
 
     }

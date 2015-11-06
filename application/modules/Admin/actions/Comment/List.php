@@ -29,8 +29,8 @@ class ListAction extends Yaf_Action_Abstract {
         		$typeName=Comment_Type_Type::getTypeName(Comment_Type_Type::WIKI);
         		break;
         	default:
-        		$type=Comment_Type_Type::TOPIC;
-        		$typeName=Comment_Type_Type::getTypeName(Comment_Type_Type::TOPIC);
+        		$type = '';
+        		$typeName = '评论';
         		break;
         } 
 

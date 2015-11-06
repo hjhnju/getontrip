@@ -22,19 +22,30 @@ $(document).ready(function() {
                     "type": "POST",
                     "data": function(d) {
                         //添加额外的参数传给服务器 
-                        if ($("#search-id").val()) {
-                            d.id = Number($.trim($("#search-id").val()));
+                        d.params={};
+                        if ($("#form-status").val()) {
+                            d.params.status = $.trim($("#form-status").val());
                         }
                     }
                 },
-                "columnDefs": [ ],
+                "columnDefs": [],
                 "columns": [{
                     "data": 'word'
                 }, {
-                    "data": 'statusName'
+                    "data": function(e) {
+                        if (e.status == 1) {
+                            return e.statusName + '<i class="fa fa-2x fa-clock-o color-uncheck"></i>';
+                        } else if (e.status == 2) {
+                            return e.statusName + '<i class="fa fa-2x fa-check color-check"></i>';
+                        } else if (e.status == 3) {
+                            return e.statusName + '<i class="fa fa-2x fa-close color-uncheck"></i>';
+                        } else {
+                            return '未知状态';
+                        }
+                    }
                 }, {
                     "data": function(e) {
-                        return '<button class="btn btn-primary btn-xs status" data-action="AUDITPASS"  title="通过审核" data-toggle="tooltip" >通过审核</button>'+ '<button class="btn btn-danger btn-xs status" data-action="AUDITFAILED" title="未通过审核" data-toggle="tooltip" >未通过审核</button>';
+                        return '<button class="btn btn-primary btn-xs status" data-action="AUDITPASS"  title="通过审核" data-toggle="tooltip" >通过审核</button>' + '<button class="btn btn-danger btn-xs status" data-action="AUDITFAILED" title="未通过审核" data-toggle="tooltip" >未通过审核</button>';
 
                     }
                 }],
@@ -51,18 +62,18 @@ $(document).ready(function() {
          *  
          */
         var bindEvents = {
-            init: function() {
-                this.addObj();
+            init: function() { 
                 //绑定draw事件
                 $('#editable').on('draw.dt', function() {
                     //工具提示框
                     $('[data-toggle="tooltip"]').tooltip();
-                }); 
+                });
 
-                 
-
+                //状态下拉列表 
+                $('#form-status').selectpicker();
+ 
                 //修改状态
-                $('#editable').delegate('button.status', 'click', function(event) { 
+                $('#editable').delegate('button.status', 'click', function(event) {
                     var nRow = $(this).parents('tr')[0];
                     var data = oTable.api().row(nRow).data();
                     var change = new Remoter('/admin/searchapi/changeWordStatus');
@@ -75,89 +86,22 @@ $(document).ready(function() {
                         oTable.fnRefresh();
                     });
                 });
-  
-            },
-            addObj: function() {
-                $.validator.setDefaults({
-                    submitHandler: function(data) {
-                        //序列化表单  
-                        var param = $("#myModal #Form").serializeObject();
-                        $.ajax({
-                            "url": "/admin/searchapi/addLabel",
-                            "data": param,
-                            "type": "post",
-                            "dataType": "json",
-                            "error": function(e) {
-                                alert("服务器未正常响应，请重试");
-                            },
-                            "success": function(response) {
-                                if (response.status == 0) {
-                                    toastr.success('保存成功');
-                                    //手工关闭模态框
-                                    $('#myModal').modal('hide');
-                                    //刷新当前页
-                                    oTable.fnRefresh();
-                                } else {
-                                    alert(response.statusInfo);
-                                }
-                            }
-                        });
 
-                    }
-                });
-                validations();
-
-
-
-                /*
-                  表单验证
-                 */
-                function validations() {
-                    // validate signup form on keyup and submit
-                    validate = $("#Form").validate({
-                        rules: {
-                            obj_id: "required"
-                        },
-                        messages: {
-                            obj_id: "对象不能为空！"
-                        }
-                    });
-                }
-            }
+            } 
         }
 
         /*
           过滤事件
          */
         var filter = function() {
-            $('#form-status,#form-type').change(function(event) {
+            $('#form-status').change(function(event) {
                 //触发dt的重新加载数据的方法
                 api.ajax.reload();
-            });
-
-            //选择标签
-                $('#label_sortable').delegate('.click', 'click', function(event) {
-                    var id = $(this).attr('data-id');
-                    $("#search-id").val(id);
-                    api.ajax.reload();
-                });
+            }); 
+           
         }
-
-
-        /**
-         * 打开详情
-         * @param  {[type]} oTable [description]
-         * @param  {[type]} nTr    [description]
-         * @return {[type]}        [description]
-         */
-        var fnFormatDetails = function(oTable, nTr) {
-            // return moment.unix(e.update_time).format(FORMATER);
-            var aData = oTable.fnGetData(nTr);
-            var sOut = '<table cellpadding="5" cellspacing="0" border="0" width="100%">';
-            sOut += '<tr><td>消息内容：:' + aData.content + '</td></tr>';
-            sOut += '</table>';
-            return sOut;
-        }
+ 
+   
         return {
             init: function() {
                 initTable()

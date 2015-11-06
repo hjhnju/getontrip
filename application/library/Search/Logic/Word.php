@@ -40,7 +40,7 @@ class Search_Logic_Word extends Base_Logic{
                 $strWhere .= ' and `'.$key."` = $val";
             }
         }
-        $sql = "select distinct(`word`), `status` from `search_word` where ".$strWhere." order by create_time desc limit $from, $pageSize ";
+        $sql = "select distinct(`word`), `status` from `search_word` where ".$strWhere." order by `status` desc, create_time desc limit $from, $pageSize ";
         try {
             $data = $model->db->fetchAll($sql);
         } catch (Exception $ex) {

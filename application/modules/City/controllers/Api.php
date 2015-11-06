@@ -30,6 +30,9 @@ class ApiController extends Base_Controller_Page {
      */
     public function indexAction() {
         $city  = isset($_REQUEST['city'])?trim($_REQUEST['city']):self::DEFAULT_CITY_NUM;
+        if(empty($city)){
+            $city = self::DEFAULT_CITY_NUM;
+        }
         $logic = new Home_Logic_List();
         $ret   = $logic->getHomeData($city);
         return $this->ajax($ret);

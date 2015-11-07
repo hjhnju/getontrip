@@ -76,7 +76,6 @@ class Video_Logic_Video extends Base_Logic{
                 $arrVideo['list'][$key] = $val['id'];   
             }
         }
-        
         foreach($arrVideo['list'] as $key => $val){
             $arrVideo['list'][$key] = Video_Api::getVideoInfo($val);
             $listSightVideo = new Sight_List_Video();
@@ -88,8 +87,8 @@ class Video_Logic_Video extends Base_Logic{
                 $temp['id']     = $data['sight_id'];
                 $temp['name']   = $sight['name'];
                 $temp['weight'] = $data['weight'];
-                $arrVideo['list'][$key]['sights'][] = $temp;
             }
+            $arrVideo['list'][$key]['sights'][] = $temp;
         }
         return $arrVideo;
     }

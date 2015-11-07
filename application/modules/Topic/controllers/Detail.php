@@ -64,8 +64,11 @@ class DetailController extends Base_Controller_Page {
     /**
      *  预览页面
     */
-    public function previewAction() {             
+    public function previewAction() {  
        $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0;
+       return $this->redirect('/topic/detail?id='.$postid); 
+
+       
        $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):''; 
        $logic      = new Topic_Logic_Topic();
        $postInfo    = $logic->getTopicDetail($postid,$deviceId); 

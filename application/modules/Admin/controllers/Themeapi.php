@@ -117,17 +117,16 @@ class  ThemeapiController extends Base_Controller_Api{
         if($ret){
           if(!empty($postid)){
             $params = array('image'=>$ret['image']);
-            //修改话题的图片hash
+            //修改图片hash
             $bRet=Theme_Api::editTheme($postid,$params);
             if($bRet){
                return $this->ajax($ret); 
-            }
-            return $this->ajaxError('');
-            return $this->ajaxError('400','修改话题的图片hash错误');  
+            } 
+            return $this->ajaxError('400','修改图片hash错误');  
           }
           return $this->ajax($ret); 
         }
-        return $this->ajaxError('401','裁剪图片错误错误');  
+        return $this->ajaxError('401','裁剪图片错误');  
     }
     
      /**

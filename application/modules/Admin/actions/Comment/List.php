@@ -11,6 +11,9 @@ class ListAction extends Yaf_Action_Abstract {
     	$statusArray=Comment_Type_Status::$names;
         $statusArray=array_reverse($statusArray,true);
 
+        $typeArray=Comment_Type_Type::$names;
+        $typeArray=array_reverse($typeArray,true);
+
         switch ($tableName) {
         	case 'topic':
         		$type=Comment_Type_Type::TOPIC;
@@ -34,7 +37,8 @@ class ListAction extends Yaf_Action_Abstract {
         		break;
         } 
 
-    	$this->getView()->assign('statusArray', $statusArray);
+        $this->getView()->assign('statusArray', $statusArray);
+    	$this->getView()->assign('typeArray', $typeArray);
     	$this->getView()->assign('type', $type);
     	$this->getView()->assign('typeName', $typeName); 
     	$this->getView()->assign('obj_id', $obj_id);

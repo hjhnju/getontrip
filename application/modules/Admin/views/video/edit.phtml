@@ -104,7 +104,7 @@
                             <label for="type" class="error"></label>
                         </div>
                     </div>
-                     <div class="form-group ">
+                     <!-- <div class="form-group ">
                         <label for="sight_id" class="control-label col-lg-2">景点*：</label>
                         <div class="col-lg-5">  
                            <div class="input-group "> 
@@ -115,7 +115,22 @@
                            </div>
                            <label for="sight_id" class="error"></label>
                         </div>
-                     </div>
+                     </div> -->
+                    <div class="form-group">
+                      <label for="sight_id" class="control-label col-lg-2">景点：</label>
+                       <div class="col-lg-3 sight_tag" data-type="sight"> 
+                           <input class="form-control" id="sight_name" type="text"  autocomplete="off"  placeholder="输入景点后请在下拉框选择"/>
+                      </div>
+                       <div class="col-lg-3 sight_tag"  data-type="sight">
+                         <div class="alert alert-info" role="alert" id="sight_alert">
+                              {%foreach $sightList as $key=>$item%}
+                              <span class="badge badge-sm label-danger" role="badge">   {%$item.name%}
+                                <button type="button" class="close" data-id="{%$item.id%}"><span class="fa fa-remove"></span></button>
+                              </span> 
+                               {%/foreach%}  
+                         </div> 
+                       </div>
+                    </div>
                     <div class="form-group"> 
                           <label for="" class="control-label col-lg-2">图片</label>
                           <div class="col-md-9">

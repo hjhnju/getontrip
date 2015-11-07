@@ -21,12 +21,14 @@ $(document).ready(function() {
                     "url": "/admin/Commentapi/list",
                     "type": "POST",
                     "data": function(d) {
-                        d.obj_id = $.trim($('#form-obj_id').val());
-                        d.type = $.trim($('#form-type').val())
+                        d.obj_id = $.trim($('#form-obj_id').val()); 
                         d.params = {};
                         //添加额外的参数传给服务器 
                         if ($("#form-status").val()) {
                             d.params.status = $.trim($("#form-status").val());
+                        }
+                        if ($("#form-type").val()) {
+                            d.type = $.trim($('#form-type').val())
                         }
                     }
                 },
@@ -112,6 +114,9 @@ $(document).ready(function() {
                 //状态下拉列表 
                 $('#form-status').selectpicker();
 
+                //类型下拉列表 
+                $('#form-type').selectpicker();
+
                 //打开关闭回复列表
                 $('#editable').delegate('tbody td a[for="details"]', 'click', function(event) {
                     event.preventDefault();
@@ -158,7 +163,7 @@ $(document).ready(function() {
                过滤事件
            */
         var filter = function() {
-            $('#form-status').change(function(event) {
+            $('#form-status,#form-type').change(function(event) {
                 //触发dt的重新加载数据的方法
                 api.ajax.reload();
             });

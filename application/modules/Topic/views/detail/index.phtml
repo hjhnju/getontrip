@@ -1,10 +1,10 @@
 {%extends file="../../../views/common/page.phtml"%}
 {%block name="link"%}
-{%if $isMobile%}
+{%if $isMobile%}{%else%}{%/if%} 
 <link rel="stylesheet" type="text/css" href="{%$feroot%}/topic/css/mdetail.css" />
-{%else%}
-<link rel="stylesheet" type="text/css" href="{%$feroot%}/topic/css/detail.css" />
-{%/if%} 
+
+<!-- <link rel="stylesheet" type="text/css" href="{%$feroot%}/topic/css/detail.css" /> -->
+
  
 {%/block%} 
 {%block name="content"%}
@@ -39,7 +39,7 @@
 <div class="container main-wrap content-wrap"> 
  {%if isset($post.id)%}  
     {%if $isapp eq 0%}  
-      <div class="bg-img" id="bg-img" style="background-image:url('{%$feroot%}/common/img/imgloading.png'); " data-webroot="{%$webroot%}" data-image="{%$post.image%}">  
+      <div class="bg-img" id="bg-img" style="background-image:url('{%$feroot%}/common/img/imgloading.png'); " data-webroot="{%$webroot%}" data-image="{%$post.image%}{%if empty($post.image)==0%}{%$post.image%}{%/if%}">  
       <div class="title-box">
           <div class="title">
             {%if empty($post.title)==0%}{%$post.title%}{%/if%} 

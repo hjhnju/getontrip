@@ -19,13 +19,16 @@ class EditAction extends Yaf_Action_Abstract {
             $this->getView()->assign('post', '');
         }
         $postInfo  = Video_Api::getVideoInfo($postid); 
+        
+        $sightSelectedList=array();
         if(!empty($postInfo)){    
             //处理状态值
             $postInfo["statusName"]=Video_Type_Status::getTypeName($postInfo['status']);
-
-            //处理景点名称
-            $sightInfo = Sight_Api::getSightById($postInfo['sight_id']);
-            $postInfo['sight_name'] = $sightInfo['name'];
+ 
+            //处理所选景点 
+            if (isset($postInfo['sights'])) {
+                $sightSelectedList = $postInfo['sights'];
+            }  
            
             $this->getView()->assign('post', $postInfo); 
         }
@@ -33,7 +36,9 @@ class EditAction extends Yaf_Action_Abstract {
         if($action=="view"){ 
             $this->_view->assign('disabled', 'disabled');
         } 
+
         $this->getView()->assign('action', Admin_Type_Action::getTypeName($action));
+        $this->_view->assign('sightList', $sightSelectedList);
         
       
     }

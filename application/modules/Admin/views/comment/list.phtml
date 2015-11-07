@@ -33,8 +33,7 @@
             <!-- END PAGE HEADER-->
             <!-- BEGIN content STATS --> 
             <div class="adv-table editable-table "> 
-              <input type="hidden" id="form-obj_id" value="{%$obj_id%}">
-              <input type="hidden" id="form-type" value="{%$type%}">  
+              <input type="hidden" id="form-obj_id" value="{%$obj_id%}">   
                  <div class="clearfix">
                     <div class="col-xs-2 pull-right">   
                         <div class="input-group ">
@@ -42,6 +41,16 @@
                              <option value="">全部状态</option>   
                              {%foreach $statusArray as $key=>$item%} 
                                   <option value="{%$key%}">{%$item%}</option> 
+                             {%/foreach%}  
+                          </select>
+                       </div>
+                   </div>
+                   <div class="col-xs-2 pull-right">   
+                        <div class="input-group ">
+                          <select name="" id="form-type">
+                             <option value="">全部类型</option>   
+                             {%foreach $typeArray as $key=>$item%} 
+                                  <option value="{%$key%}" {%if $key eq $type%}selected{%/if%}>{%$item%}</option> 
                              {%/foreach%}  
                           </select>
                        </div>

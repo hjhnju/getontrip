@@ -235,7 +235,7 @@ class  TopicapiController extends Base_Controller_Api{
            $bRet=Topic_Api::editTopic($postid,array('status'=>$status,'id'=>$postid));
           
            if(!$bRet){  
-              return $this->ajaxError('',$postid.'话题发布失败');
+              return $this->ajaxError('501',$postid.'话题发布失败');
            }
        }
        return $this->ajax();
@@ -270,13 +270,12 @@ class  TopicapiController extends Base_Controller_Api{
             $bRet=Topic_Api::editTopic($postid,$params);
             if($bRet){
                return $this->ajax($ret); 
-            }
-            return $this->ajaxError('');
+            } 
             return $this->ajaxError('400','修改话题的图片hash错误');  
           }
           return $this->ajax($ret); 
         }
-        return $this->ajaxError('401','裁剪图片错误错误');  
+        return $this->ajaxError('401','裁剪图片错误');  
     }
  
 

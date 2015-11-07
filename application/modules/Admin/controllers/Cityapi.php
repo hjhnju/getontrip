@@ -188,8 +188,7 @@ class CityapiController extends Base_Controller_Api{
             $bRet = City_Api::editCity($postid,$params);
             if($bRet){
                return $this->ajax($ret); 
-            }
-            return $this->ajaxError('');
+            } 
             return $this->ajaxError('400','修改话题的图片hash错误');  
           }
           return $this->ajax($ret); 

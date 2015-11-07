@@ -47,6 +47,10 @@ $(document).ready(function() {
                 });
             },
             init_sight: function() {
+                sight_id_array = [];
+                $('#sight_alert span button').each(function() {
+                    sight_id_array.push(Number($(this).attr('data-id')));
+                });
                 //景点输入框自动完成
                 $('#sight_name').typeahead({
                     display: 'name',
@@ -56,14 +60,22 @@ $(document).ready(function() {
                         triggerLength: 1
                     },
                     itemSelected: function(item, val, text) {
-                        $("#sight_name").val(text);
-                        $("#sight_name").attr('data-sight_id', val);
+                        $("#sight_name").val('');
+                        //先判断是否已经选择
+                        var valnum = Number(val);
+                        if (!sight_id_array.in_array(valnum)) {
+                            sight_id_array.push(valnum);
+                            //添加到右侧选框中 
+                            $('#sight_alert').append('<span class="badge badge-sm label-danger" role="badge">' + text + '<button type="button" class="close" data-id="' + val + '"><span class="fa fa-remove"></span></button></span>');
+                        }
                     }
                 });
+
                 //景点框删除景点
-                $('#clear-sight').click(function(event) {
-                    $("#sight_name").val('');
-                    $("#sight_name").attr('data-sight_id', '');
+                $('#sight_alert').delegate('.close', 'click', function(event) {
+                    var val = Number($(this).attr('data-id'));
+                    sight_id_array.splice($.inArray(val, sight_id_array), 1);
+                    $(this).parent().remove();
                 });
 
             },
@@ -99,11 +111,12 @@ $(document).ready(function() {
                     var param = $("#Form").serializeObject();
 
                     //特殊处理景点
-                    if (!$('#sight_name').attr('data-sight_id')) {
-                        toastr.warning('景点不能为空！');
-                        return false;
-                    }
-                    param.sight_id = Number($('#sight_name').attr('data-sight_id'));
+                    sight_id_array = [];
+                    $('#sight_alert span button').each(function() {
+                        sight_id_array.push(Number($(this).attr('data-id')));
+                    });
+                    param.sight_id = sight_id_array;
+
                     //param.type = Number(param.type);
                     param.action = action;
 
@@ -128,7 +141,12 @@ $(document).ready(function() {
                             if (response.status == 0) {
                                 localStorage.image = '';
                                 toastr.success('保存成功');
-
+                                  if (url.indexOf('add') >= 0) {
+                                    //resetForm();
+                                    window.location.href = '/admin/video/edit?action=edit&id=' + response.data;
+                                } else {
+                                    window.location.reload();
+                                }
                             } else {
                                 alert(response.statusInfo);
                             }

@@ -43,7 +43,10 @@ class BookapiController extends Base_Controller_Api{
 
         //根据skuid或isbn从京东或豆瓣抓取书籍数据
         $bookInfo = Book_Api::getBookSourceFromIsbn($_REQUEST['strIsbn'], $_REQUEST['type']);
-        ob_clean(); 
+        ob_clean();  
+        if (empty($bookInfo['isbn'])) {
+            return $this->ajaxError('411','抓不到书籍，请核对skuid或isbn信息！');
+        }
 
         //判断是否已经存在
         $List = Book_Api::getBooks(0,PHP_INT_MAX,array('isbn'=>$bookInfo['isbn']));
@@ -133,7 +136,7 @@ class BookapiController extends Base_Controller_Api{
             if($bRet){
                return $this->ajax($ret); 
             } 
-            return $this->ajaxError('400','修改话题的图片hash错误');  
+            return $this->ajaxError('400','修改图片hash错误');  
           }
           return $this->ajaxError('402','postid错误'); 
         }

@@ -606,7 +606,7 @@ var Metronic = function() {
             //按钮可用
         $.fn.btnEnable = function(opts) {
             var defaults = {
-                text_attr: 'data-btn_text', //允许输入的最大字数    
+                text_attr: 'data-btn_text', //根据css 查找原有文字 css   
             }
             var option = $.extend(defaults, opts);
             $.each(this, function() {
@@ -617,12 +617,13 @@ var Metronic = function() {
         //按钮不可用
         $.fn.btnDisable = function(opts) {
             var defaults = {
-                text: '<i class="fa fa-spinner fa-pulse"></i>保存中，请稍后', //允许输入的最大字数    
+                icon:'<i class="fa fa-spinner fa-pulse"></i>',
+                text: '保存中，请稍后', //允许输入的最大字数    
             }
             var option = $.extend(defaults, opts);
             $.each(this, function() {
                 $(this).attr('disabled', 'disabled');
-                $(this).html(option.text);
+                $(this).html(option.icon+option.text);
             });
         };
     }

@@ -29,6 +29,9 @@ $(document).ready(function() {
                         }
                         if ($('#form-user_id').attr("checked")) {
                             d.params.create_user = $('#form-user_id').val();
+                        } 
+                         if ($("#form-tag").val()) {
+                            d.params.tag_id = Number($.trim($("#form-tag").attr('data-tag_id')));
                         }
                     }
                 },
@@ -41,15 +44,15 @@ $(document).ready(function() {
                     "width": 20
                 }, {
                     "targets": [2, 3],
-                    "width": 150
+                    "width": 100
                 }, {
                     "targets": [4, 5],
                     "width": 50
                 }, {
-                    "targets": [6, 7, 8],
+                    "targets": [6, 7, 8,9],
                     "width": 50
                 }, {
-                    "targets": [9],
+                    "targets": [10],
                     "width": 100
                 }],
                 "columns": [{
@@ -80,6 +83,26 @@ $(document).ready(function() {
                         return strArray.join(',');
                     }
 
+                }, {
+                    "data": function(e) {
+                        var tagStr = '';
+                        var normalTagStr = '';
+                        var classifyTag = e.tagList.classifyTag;
+                        var generalTag = e.tagList.generalTag;
+                        var normalTag = e.tagList.normalTag;
+
+                        for (var i = 0; i < classifyTag.length; i++) {
+                            tagStr = tagStr + '<span class="label label-success" style="display: inline-block;">' + classifyTag[i].name + '</span>';
+                        };
+                        for (var i = 0; i < generalTag.length; i++) {
+                            tagStr = tagStr + '<span class="label label-warning" style="display: inline-block;">' + generalTag[i].name +  '</span>';
+                        };
+                        for (var i = 0; i < normalTag.length; i++) {
+                            normalTagStr = normalTagStr + '<span class="label label-default" style="display: inline-block;">' + normalTag[i].name + '</span>';
+                        };
+                        normalTagStr=normalTagStr ? '<div style="margin: 5px 0px;max-width: 320px;" class="normalTagDiv_' + e.id + ' hide">' + normalTagStr + '</div><button class="btn btn-default btn-xs trigger-normalTag show" title="" data-toggle="tooltip">显示普通标签</button>' : normalTagStr;
+                        return '<div style="margin: 5px 0px;max-width: 320px;">'+tagStr + '</div>' + normalTagStr;
+                    }
                 }, {
                     "data": function(e) {
                         if (e.image) {
@@ -220,32 +243,7 @@ $(document).ready(function() {
                         //刷新当前页
                         oTable.fnRefresh();
                     });
-
-
-
-                    /*     var status = data.status;
-                         if ($(this).hasClass('publish')) {
-                             status = 5;
-                         } else {
-                             status = 1;
-                         }
-                         $.ajax({
-                             "url": "/admin/topicapi/changeStatus",
-                             "data": {
-                                 id: data.id,
-                                 status: status
-                             },
-                             "type": "post",
-                             "error": function(e) {
-                                 alert("服务器未正常响应，请重试");
-                             },
-                             "success": function(response) {
-                                 if (response.status == 0) {
-                                     //刷新当前页
-                                     oTable.fnRefresh();  
-                                 }
-                             }
-                         });*/
+ 
                 });
 
                 //批量发布操作
@@ -288,7 +286,7 @@ $(document).ready(function() {
                     } else {
                         /* Open this row */
                         img.attr('class', 'fa fa-minus');
-                        oTable.fnOpen(nTr, this.fnFormatDetails(oTable, nTr), 'details');
+                        oTable.fnOpen(nTr, bindEvents.fnFormatDetails(oTable, nTr), 'details');
                     }
                 });
             },
@@ -308,7 +306,7 @@ $(document).ready(function() {
          */
         var filter = function() {
             //输入内容点击回车查询
-            $("#form-title,#form-sight").keydown(function(event) {
+            $("#form-title,#form-sight,#form-tag").keydown(function(event) {
                 if (event.keyCode == 13) {
                     api.ajax.reload();
                 }
@@ -334,6 +332,30 @@ $(document).ready(function() {
             $('#clear-sight').click(function(event) {
                 $("#form-sight").val('');
                 $("#form-sight").attr('data-sight_id', '');
+                //触发dt的重新加载数据的方法
+                api.ajax.reload();
+            });
+
+            //景点输入框自动完成
+            $('#form-tag').typeahead({
+                display: 'name',
+                val: 'id',
+                ajax: {
+                    url: '/admin/tagapi/gettagList',
+                    triggerLength: 1
+                },
+                itemSelected: function(item, val, text) {
+                    $("#form-tag").val(text);
+                    $("#form-tag").attr('data-tag_id', val);
+                    //触发dt的重新加载数据的方法
+                    api.ajax.reload();
+                }
+            });
+
+            //景点框后的清除按钮，清除所选的景点
+            $('#clear-tag').click(function(event) {
+                $("#form-tag").val('');
+                $("#form-tag").attr('data-tag_id', '');
                 //触发dt的重新加载数据的方法
                 api.ajax.reload();
             });

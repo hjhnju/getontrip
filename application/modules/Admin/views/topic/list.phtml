@@ -60,10 +60,18 @@
                     </div>
                     <div class="col-xs-3  pull-right"> 
                             <input type="text" class="form-control" id="form-title" placeholder="输入标题点回车"> 
-                    </div>   
-                     <div class="col-xs-3 pull-right">   
+                    </div> 
+                    <div class="col-xs-2 pull-right">   
                             <div class="input-group "> 
-                              <input type="text" class="form-control" placeholder="输入并选择景点" aria-describedby="sightName" id="form-sight" autocomplete="off" value="{%if isset($sight)%}{%$sight.name%}{%/if%}" data-sight_id="{%if isset($sight)%}{%$sight.id%}{%/if%}"/>
+                              <input type="text" class="form-control" placeholder="输入选择标签" aria-describedby="tagName" id="form-tag" autocomplete="off" value="{%if isset($tag)%}{%$tag.name%}{%/if%}" data-tag_id="{%if isset($tag)%}{%$tag.id%}{%/if%}">
+                              <span class="input-group-btn">
+                              <button type="button" class="btn btn-white" id="clear-tag"><i class="fa fa-remove"></i></button>
+                            </span>
+                           </div>
+                     </div>  
+                     <div class="col-xs-2 pull-right">   
+                            <div class="input-group "> 
+                              <input type="text" class="form-control" placeholder="输入选择景点" aria-describedby="sightName" id="form-sight" autocomplete="off" value="{%if isset($sight)%}{%$sight.name%}{%/if%}" data-sight_id="{%if isset($sight)%}{%$sight.id%}{%/if%}"/>
                               <span class="input-group-btn">
                               <button type="button" class="btn btn-white" id="clear-sight"><i class="fa fa-remove"></i></button>
                             </span>
@@ -80,6 +88,9 @@
                             <th>来源</th>
                             <th>原文链接</th> 
                             <th>相关景点</th>
+                            <th>标签<br>
+                              <span class="label label-success">分类</span>
+                              <span class="label label-warning">通用</span> </th>
                             <th>背景图片</th>
                             <th>收藏/评论</th> 
                             <th>英文标点</th> 

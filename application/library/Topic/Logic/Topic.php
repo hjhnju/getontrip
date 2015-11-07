@@ -373,27 +373,33 @@ class Topic_Logic_Topic extends Base_Logic{
             $sight_id  = $arrParam['sight_id'];
             unset($arrParam['sight_id']);
         }
-    
         $listTopic = new Topic_List_Topic();
         if(isset($arrParam['title'])){
             $filter = "`title` like '%".$arrParam['title']."%' and ";
             unset($arrParam['title']);
         }
-        
         if(isset($arrParam['tag_id'])){
             $listTopicTag = new Topic_List_Tag();
             $listTopicTag->setFilter(array('tag_id' => $arrParam['tag_id']));
             $listTopicTag->setPagesize(PHP_INT_MAX);
             $arrTopicTag  = $listTopicTag->toArray();
-            foreach ($arrTopicTag['list'] as $data){
-                $arrTopics[] = $data['topic_id'];
+            if(empty($arrTopics)){
+                foreach ($arrTopicTag['list'] as $data){
+                    $arrTopics[] = $data['topic_id'];
+                }
+            }else{
+                $arrTemp = array();
+                foreach ($arrTopicTag['list'] as $data){
+                    $arrTemp[] = $data['topic_id'];
+                }
+                $arrTopics = array_intersect($arrTopics,$arrTemp);
             }
             unset($arrParam['tag_id']);
         }
         foreach ($arrParam as $key => $val){
             $filter .= "`".$key."` = $val and ";
         }
-        if(!empty($arrTopics)){
+        if(!empty($sight_id) || !empty($arrTopics)){
             $strTopics = implode(",",$arrTopics);
             if(empty($strTopics)){
                 $strTopics = -1;

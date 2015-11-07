@@ -379,11 +379,21 @@ class Topic_Logic_Topic extends Base_Logic{
             $filter = "`title` like '%".$arrParam['title']."%' and ";
             unset($arrParam['title']);
         }
-    
+        
+        if(isset($arrParam['tag_id'])){
+            $listTopicTag = new Topic_List_Tag();
+            $listTopicTag->setFilter(array('tag_id' => $arrParam['tag_id']));
+            $listTopicTag->setPagesize(PHP_INT_MAX);
+            $arrTopicTag  = $listTopicTag->toArray();
+            foreach ($arrTopicTag['list'] as $data){
+                $arrTopics[] = $data['topic_id'];
+            }
+            unset($arrParam['tag_id']);
+        }
         foreach ($arrParam as $key => $val){
             $filter .= "`".$key."` = $val and ";
         }
-        if(!empty($sight_id)){
+        if(!empty($arrTopics)){
             $strTopics = implode(",",$arrTopics);
             if(empty($strTopics)){
                 $strTopics = -1;

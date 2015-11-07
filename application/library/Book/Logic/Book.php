@@ -26,20 +26,26 @@ class Book_Logic_Book extends Base_Logic{
             $arrBookIds = array();            
             $listSightBook = new Sight_List_Book();
             $listSightBook->setFilter(array('sight_id' => $sightId));
-            $listSightBook->setOrder('`weight` asc');
+            if(isset($arrParam['order'])){
+                $listSightBook->setOrder($arrParam['order']);
+                unset($arrParam['order']);
+            }
             $listSightBook->setPagesize(PHP_INT_MAX);
             $ret = $listSightBook->toArray();
             foreach ($ret['list'] as $val){
                 $arrBookIds[] = $val['book_id'];
             }
             unset($arrParam['sight_id']);
-            $filter     = "`id` in (".implode(",",$arrBookIds).")";
+            $filter      = "`id` in (".implode(",",$arrBookIds).")";
+            if(isset($arrParam['title'])){
+                $filter .= " and `title` like '".$arrParam['title']."%'";
+                unset($arrParam['title']);
+            }
             $listBook = new Book_List_Book();
             foreach ($arrParam as $index => $val){
                 $filter .= " and `".$index."` = ".$val;
             }            
             $listBook->setFilterString($filter);
-            $listBook->setPage(1);
             $listBook->setPagesize(PHP_INT_MAX);
             $arrBook = $listBook->toArray();
             foreach ($arrBookIds as $key => $id){
@@ -49,7 +55,15 @@ class Book_Logic_Book extends Base_Logic{
         }else{
             $listBook = new Book_List_Book();
             if(!empty($arrParam)){
-                $listBook->setFilter($arrParam);
+                $filter = "1";
+                if(isset($arrParam['title'])){
+                    $filter = " and `title` like '".$arrParam['title']."%'";
+                    unset($arrParam['title']);
+                }
+                foreach ($arrParam as $key => $val){
+                    $filter .= " and `".$key."` =".$val;
+                }
+                $listBook->setFilterString($filter);
             }          
             $listBook->setPage($page);
             $listBook->setPagesize($pageSize);

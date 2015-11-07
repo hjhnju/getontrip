@@ -2,7 +2,7 @@
 class Video_Api{
     
     /**
-     * 接口1：Video_Api::getVideos($sightId,$page,$pageSize,$arrParam = array())
+     * 接口1：Video_Api::getVideos($page,$pageSize,$arrParam = array())
      * 获取爱奇艺视频信息
      * @param integer $page,页码
      * @param integer $pageSize

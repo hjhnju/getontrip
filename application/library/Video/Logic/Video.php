@@ -57,9 +57,9 @@ class Video_Logic_Video extends Base_Logic{
                     $listVideo->setOrder($arrParam['order']);
                     unset($arrParam['order']);
                 }
-                $filter = '';
+                $filter = '1';
                 if(isset($arrParam['title'])){
-                    $filter .= "`title` like '".$arrParam['title']."%'";
+                    $filter .= " and `title` like '".$arrParam['title']."%'";
                 }
                 unset($arrParam['title']);
                 foreach ($arrParam as $index => $val){
@@ -199,7 +199,7 @@ class Video_Logic_Video extends Base_Logic{
                 $info['len'] = strval($intLen);
             }
             
-            $guid = md5($info['title'].$info['url'].$sightId);
+            $guid = md5($info['title'].$info['url']);
             $id   = $this->getVideoByGuid($guid);            
             if(empty($id)){
                 $objVideo          = new Video_Object_Video();
@@ -355,7 +355,7 @@ class Video_Logic_Video extends Base_Logic{
                 $objVideo->$key = $val;
             }
         }
-        $objVideo->guid   = md5($arrParam['title'].$arrParam['url'].$arrParam['sight_id']);
+        $objVideo->guid   = md5($arrParam['title'].$arrParam['url']);
         $ret =             $objVideo->save();
         
         foreach ($arrSight as $sightId){

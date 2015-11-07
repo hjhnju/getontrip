@@ -63,7 +63,6 @@ class Book_Logic_Book extends Base_Logic{
             $arrBook['list'][$key] = Book_Api::getBookInfo($val);
             $listSightBook = new Sight_List_Book();
             $listSightBook->setFilter(array('book_id' => $val));
-            //$listSightBook->setOrder('`create_time` desc, `weight` asc');
             $listSightBook->setPagesize(PHP_INT_MAX);
             $arrSightBook  = $listSightBook->toArray();
             $arrBook['list'][$key]['sights'] = array();

@@ -17,14 +17,81 @@ class Video_Logic_Video extends Base_Logic{
      * @param array   $arrParam,过滤条件
      * @return array
      */
-    public function getVideos($sightId,$page,$pageSize,$arrParam = array()){
-       $list = new Video_List_Video();
-       $arrFilter = array_merge(array('sight_id' => $sightId),$arrParam);
-       $list->setFilter($arrFilter);
-       $list->setOrder('`weight` asc');
-       $list->setPage($page);
-       $list->setPagesize($pageSize);
-       return $list->toArray();
+    public function getVideos($page,$pageSize,$arrParam = array()){
+        $arrVideo          = array();
+        if(isset($arrParam['sight_id'])){
+            $sightId    = $arrParam['sight_id'];
+            $arrVideoIds = array();            
+            $listSightVideo = new Sight_List_Video();
+            $listSightVideo->setFilter(array('sight_id' => $sightId));
+            if(isset($arrParam['order'])){
+                $listSightVideo->setOrder($arrParam['order']);
+                unset($arrParam['order']);
+            }
+            $listSightVideo->setPagesize(PHP_INT_MAX);
+            $ret = $listSightVideo->toArray();
+            foreach ($ret['list'] as $val){
+                $arrVideoIds[] = $val['video_id'];
+            }
+            unset($arrParam['sight_id']);
+            $filter     = "`id` in (".implode(",",$arrVideoIds).")";
+            $listVideo = new Video_List_Video();
+            if(isset($arrParam['title'])){
+                $filter .= " and `title` like '".$arrParam['title']."%'";
+            }
+            unset($arrParam['title']);
+            foreach ($arrParam as $index => $val){
+                $filter .= " and `".$index."` = ".$val;
+            }            
+            $listVideo->setFilterString($filter);
+            $listVideo->setPagesize(PHP_INT_MAX);
+            $arrVideo = $listVideo->toArray();
+            foreach ($arrVideoIds as $key => $id){
+                $arrVideo['list'][$key] = $id;
+            }            
+            $arrVideo['list'] = array_slice($arrVideo['list'], ($page-1)*$pageSize,$pageSize);
+        }else{
+            $listVideo = new Video_List_Video();
+            if(!empty($arrParam)){
+                if(isset($arrParam['order'])){
+                    $listVideo->setOrder($arrParam['order']);
+                    unset($arrParam['order']);
+                }
+                $filter = '';
+                if(isset($arrParam['title'])){
+                    $filter .= "`title` like '".$arrParam['title']."%'";
+                }
+                unset($arrParam['title']);
+                foreach ($arrParam as $index => $val){
+                    $filter .= " and `".$index."` = ".$val;
+                } 
+                if(!empty($filter)){
+                    $listVideo->setFilterString($filter);
+                }
+            }          
+            $listVideo->setPage($page);
+            $listVideo->setPagesize($pageSize);
+            $arrVideo = $listVideo->toArray();  
+            foreach ($arrVideo['list'] as $key => $val){
+                $arrVideo['list'][$key] = $val['id'];   
+            }
+        }
+        
+        foreach($arrVideo['list'] as $key => $val){
+            $arrVideo['list'][$key] = Video_Api::getVideoInfo($val);
+            $listSightVideo = new Sight_List_Video();
+            $listSightVideo->setFilter(array('video_id' => $val));
+            $listSightVideo->setPagesize(PHP_INT_MAX);
+            $arrSightVideo  = $listSightVideo->toArray();
+            foreach ($arrSightVideo['list'] as $data){
+                $sight          = Sight_Api::getSightById($data['sight_id']);
+                $temp['id']     = $data['sight_id'];
+                $temp['name']   = $sight['name'];
+                $temp['weight'] = $data['weight'];
+                $arrVideo['list'][$key]['sights'][] = $temp;
+            }
+        }
+        return $arrVideo;
     }
     
     /**
@@ -36,24 +103,38 @@ class Video_Logic_Video extends Base_Logic{
      * @return array
      */
     public function getVideoList($sightId,$page,$pageSize,$arrParam = array()){
-        $list = new Video_List_Video();
-        $arrFilter = array_merge(array('sight_id' => $sightId),$arrParam);
-        $list->setFields(array('id','title','url','image','len','type'));
-        $list->setFilter($arrFilter);
-        $list->setOrder('`weight` asc');
-        $list->setPage($page);
-        $list->setPagesize($pageSize);
-        $arrRet = $list->toArray();
-        foreach($arrRet['list'] as $key => $val){
-            $arrRet['list'][$key]['id']    = strval($val['id']);
-            $arrRet['list'][$key]['title'] = Base_Util_String::getHtmlEntity($val['title']);
-            $arrRet['list'][$key]['image'] = Base_Image::getUrlByName($val['image']);
+        $listSightVideo = new Sight_List_Video();
+        $listSightVideo->setFilter(array('sight_id' => $sightId));
+        $listSightVideo->setOrder('`weight` asc');
+        $listSightVideo->setPagesize(PHP_INT_MAX);
+        $ret = $listSightVideo->toArray();
+        foreach ($ret['list'] as $val){
+            $arrVideoIds[] = $val['video_id'];
+        }
+        $filter     = "`id` in (".implode(",",$arrVideoIds).")";
+        $listVideo = new Video_List_Video();
+        foreach ($arrParam as $key => $val){
+            $filter .=" and `".$key."` =".$val;
+        }
+        $listVideo->setFilterString($filter);
+        $listVideo->setPagesize(PHP_INT_MAX);
+        $arrVideo = $listVideo->toArray();
+        foreach ($arrVideoIds as $key => $id){
+            $arrVideo['list'][$key] = $id;
+        }
+        $arrVideo['list'] = array_slice($arrVideo['list'], ($page-1)*$pageSize,$pageSize);
+
+        foreach($arrVideo['list'] as $key => $val){
+            $arrRet['list'][$key]['id']    = strval($val);
+            $video = Video_Api::getVideoInfo($val);
+            $arrRet['list'][$key]['title'] = Base_Util_String::getHtmlEntity($video['title']);
+            $arrRet['list'][$key]['image'] = Base_Image::getUrlByName($video['image']);
             if($val['type'] == Video_Type_Type::ALBUM){
-                $arrRet['list'][$key]['len'] = sprintf("合辑：共%d集",$val['len']);
+                $arrRet['list'][$key]['len'] = sprintf("合辑：共%d集",$video['len']);
             }else{
-                $arrRet['list'][$key]['len'] = sprintf("时长：%s",$val['len']);
+                $arrRet['list'][$key]['len'] = sprintf("时长：%s",$video['len']);
             }
-            $arrRet['list'][$key]['type']    = strval($val['type']);
+            $arrRet['list'][$key]['type']    = strval($video['type']);
         }
         return $arrRet['list'];
     }
@@ -122,7 +203,6 @@ class Video_Logic_Video extends Base_Logic{
             $id   = $this->getVideoByGuid($guid);            
             if(empty($id)){
                 $objVideo          = new Video_Object_Video();
-                $objVideo->sightId = $sightId;
                 $objVideo->title   = Base_Util_String::delStartEmpty(Base_Util_String::getHtmlEntity($info['title']));
                 if(empty($objVideo->title)){
                     $this->delPic($info['image']);
@@ -135,8 +215,14 @@ class Video_Logic_Video extends Base_Logic{
                 $objVideo->status  = $info['status'];
                 $objVideo->len     = $info['len'];
                 $objVideo->guid    = $guid;
-                $objVideo->weight  = $this->getAllVideoNum($sightId) + 1;
                 $objVideo->save();
+                
+                $objSightVideo = new Sight_Object_Video();
+                $objSightVideo->sightId = $sightId;
+                $objSightVideo->videoId = $objVideo->id;
+                $objSightVideo->weight  = $this->getAllVideoNum($sightId);
+                $objSightVideo->save();
+              
             }else{//删除上传了的图片，其它字段不改变
                 $this->delPic($info['image']);
             }
@@ -170,12 +256,18 @@ class Video_Logic_Video extends Base_Logic{
         return array('data' => $arrVideo, 'num' => $num);
     }
     
-    public function getAllVideoNum($sighId){
-        $listVideo = new Video_List_Video();
-        $listVideo->setFilter(array('sight_id' => $sighId));
-        $listVideo->setPagesize(PHP_INT_MAX);
-        $count = $listVideo->countAll();
-        return $count;
+    public function getAllVideoNum($sightId){
+        $maxWeight  = 0;    
+        $listSightVideo = new Sight_List_Video();
+        $listSightVideo->setFilter(array('sight_id' => $sightId));
+        $listSightVideo->setPagesize(PHP_INT_MAX);
+        $arrSightVideo  = $listSightVideo->toArray();
+        foreach ($arrSightVideo['list'] as $val){
+            if($val['weight'] > $maxWeight){
+                $maxWeight = $val['weight'];
+            }
+        }
+        return $maxWeight + 1;
     }
     
     public function getVideoNum($sighId, $status = Video_Type_Status::PUBLISHED){
@@ -186,14 +278,16 @@ class Video_Logic_Video extends Base_Logic{
                 return $ret;
             }
         }
-        $listVideo = new Video_List_Video();
-        if(!empty($status)){
-            $listVideo->setFilter(array('sight_id' => $sighId, 'status' => $status));
-        }else{
-            $listVideo->setFilter(array('sight_id' => $sighId));
+        $count          = 0;
+        $listSightVideo = new Sight_List_Video();
+        $listSightVideo->setFilter(array('sight_id' => $sighId));
+        $listSightVideo->setPagesize(PHP_INT_MAX);
+        $arrSightVideo  = $listSightVideo->toArray();
+        foreach ($arrSightVideo['list'] as $val){
+            if($val['statu'] == $status){
+                $count += 1;
+            }
         }
-        $listVideo->setPagesize(PHP_INT_MAX);
-        $count = $listVideo->countAll();
         if($status == Video_Type_Status::PUBLISHED){
             $redis = Base_Redis::getInstance();
             $redis->hSet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::VIDEO,$count);
@@ -207,8 +301,23 @@ class Video_Logic_Video extends Base_Logic{
      * @param array $arrParam
      */
     public function editVideo($id, $arrParam){
+        $arrSight = array();
+        if(isset($arrParam['sight_id'])){
+            $listSightVideo = new Sight_List_Video();
+            $listSightVideo->setFilter(array('video_id' => $id));
+            $listSightVideo->setPagesize(PHP_INT_MAX);
+            $arrSightVideo  = $listSightVideo->toArray();
+            foreach ($arrSightVideo['list'] as $val){
+                $objSightVideo = new Sight_Object_Video();
+                $objSightVideo->fetch(array('id' => $val['id']));
+                $objSightVideo->remove();
+            }
+            $arrSight = $arrParam['sight_id'];
+            unset($arrParam['sight_id']);
+        }
         $objVideo = new Video_Object_Video();
         $objVideo->fetch(array('id' => $id));
+        
         foreach ($arrParam as $key => $val){
             if(in_array($key,$this->fields)){
                 $key = $this->getprop($key);
@@ -218,6 +327,14 @@ class Video_Logic_Video extends Base_Logic{
                 $objVideo->$key = $val;
             }
         }
+        
+        foreach ($arrSight as $sightId){
+            $objSightVideo = new Sight_Object_Video();
+            $objSightVideo->sightId = $sightId;
+            $objSightVideo->videoId = $id;
+            $objSightVideo->weight  = $this->getAllVideoNum($sightId);
+            $objSightVideo->save();
+        }
         return $objVideo->save();
     }
     
@@ -226,6 +343,11 @@ class Video_Logic_Video extends Base_Logic{
      * @param array $arrParam
      */
     public function addVideo($arrParam){
+        $arrSight = array();
+        if(isset($arrParam['sight_id'])){
+            $arrSight = $arrParam['sight_id'];
+            unset($arrParam['sight_id']);
+        }
         $objVideo = new Video_Object_Video();
         foreach ($arrParam as $key => $val){
             if(in_array($key,$this->fields)){
@@ -234,8 +356,16 @@ class Video_Logic_Video extends Base_Logic{
             }
         }
         $objVideo->guid   = md5($arrParam['title'].$arrParam['url'].$arrParam['sight_id']);
-        $objVideo->weight = $this->getAllVideoNum($arrParam['sight_id'])+1;
-        return $objVideo->save();
+        $ret =             $objVideo->save();
+        
+        foreach ($arrSight as $sightId){
+            $objSightVideo = new Sight_Object_Video();
+            $objSightVideo->sightId = $sightId;
+            $objSightVideo->videoId = $objVideo->id;
+            $objSightVideo->weight  = $this->getAllVideoNum($sightId);
+            $objSightVideo->save();
+        }
+        return $objVideo->id;
     }
     
     /**
@@ -243,6 +373,16 @@ class Video_Logic_Video extends Base_Logic{
      * @param integer $id
      */
     public function delVideo($id){
+        $listSightVideo = new Sight_List_Video();
+        $listSightVideo->setFilter(array('video_id' => $id));
+        $listSightVideo->setPagesize(PHP_INT_MAX);
+        $arrSightVideo  = $listSightVideo->toArray();
+        foreach ($arrSightVideo['list'] as $val){
+            $objSightVideo = new Sight_Object_Video();
+            $objSightVideo->fetch(array('id' => $val['id']));
+            $objSightVideo->remove();
+        }
+        
         $objVideo = new Video_Object_Video();
         $objVideo->fetch(array('id' => $id));
         if(!empty($objVideo->image)){

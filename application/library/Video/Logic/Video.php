@@ -373,6 +373,8 @@ class Video_Logic_Video extends Base_Logic{
      * @param integer $id
      */
     public function delVideo($id){
+        $arrSightIds    = array();
+        $weight         = '';
         $listSightVideo = new Sight_List_Video();
         $listSightVideo->setFilter(array('video_id' => $id));
         $listSightVideo->setPagesize(PHP_INT_MAX);
@@ -380,6 +382,8 @@ class Video_Logic_Video extends Base_Logic{
         foreach ($arrSightVideo['list'] as $val){
             $objSightVideo = new Sight_Object_Video();
             $objSightVideo->fetch(array('id' => $val['id']));
+            $weight = $objSightVideo->weight;
+            $arrSightIds[] = $objSightVideo->sightId;
             $objSightVideo->remove();
         }
         
@@ -388,7 +392,22 @@ class Video_Logic_Video extends Base_Logic{
         if(!empty($objVideo->image)){
             $this->delPic($objVideo->image);
         }
-        return $objVideo->remove();
+        $ret = $objVideo->remove();
+        
+        foreach ($arrSightIds as $id){
+            $listSightVideo = new Sight_List_Video();
+            $listSightVideo->setFilterString("`weight` >".$weight);
+            $listSightVideo->setPagesize(PHP_INT_MAX);
+            $arrSightVideo  = $listSightVideo->toArray();
+            foreach ($arrSightVideo['list'] as $val){
+                $objSightVideo = new Sight_Object_Video();
+                $objSightVideo->fetch(array('id' => $val['id']));
+                $objSightVideo->weight -= 1;
+                $objSightVideo->save();
+            }
+        }
+        
+        return $ret;
     }
     
     /**
@@ -422,7 +441,7 @@ class Video_Logic_Video extends Base_Logic{
         $max  = max(array($from,$to));
         $listSightVideo = new Sight_List_Video();
         $listSightVideo->setPagesize(PHP_INT_MAX);
-        $listSightVideo->setFilter(array('sight_id' => sightId));
+        $listSightVideo->setFilter(array('sight_id' => $sightId));
         $listSightVideo->setOrder('weight asc');
         $arrSightVideo = $listSightVideo->toArray();
         $arrSightVideo = array_slice($arrSightVideo['list'],$min-1+$bAsc,$max-$min);

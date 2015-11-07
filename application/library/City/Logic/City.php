@@ -349,7 +349,7 @@ class City_Logic_City{
             
             $sight_num     = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
             $topic_num     = $this->getTopicNum($val['id']);
-            $arrCity[$key]['desc'] = sprintf("%d个景点，%d个话题",$sight_num,$topic_num);
+            $arrCity[$key]['desc'] = sprintf("%d个景点，%d篇内容",$sight_num,$topic_num);
         }
         return  array('data' => $arrCity,'num' => $num);
     }

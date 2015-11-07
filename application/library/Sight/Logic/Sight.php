@@ -183,26 +183,14 @@ class Sight_Logic_Sight extends Base_Logic{
         
             $strTopicIds   = $logicTopic->getTopicIdBySight($val['id']);
             $arrTopicIds   = explode(",",$strTopicIds);
-            //评论数
-            $count         = 0;
-            foreach ($arrTopicIds as $id){
-                $count    += $logicComment->getTotalCommentNum($val['id']);
-            }
+            //类别数
+            $logic  = new Sight_Logic_Tag();
+            $count  = count($logic->getTagsBySight($val['id']));
+            
             //话题数
             $topic_num     = $this->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
             
-            //书籍数
-            $book_num      = Book_Api::getBookNum($val['id']);
-            
-            //视频数
-            $video_num     = Video_Api::getVideoNum($val['id']);
-            
-            //景观数
-            $keyword_num   = Keyword_Api::getKeywordNum($val['id']);
-            
-            $count = $topic_num + $book_num + $video_num + $keyword_num;
-            
-            $arrSight[$key]['desc']  = sprintf("%d个内容，%d个话题",$count,$topic_num);
+            $arrSight[$key]['desc']  = sprintf("%d个类别，%d篇内容",$count,$topic_num);
         }
         return array('data' => $arrSight, 'num' => $num);
     }

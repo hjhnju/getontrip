@@ -69,14 +69,14 @@ class Video_Api{
     }
     
     /**
-     * 接口7：Video_Api::changeWeight($id,$to)
+     * 接口7：Video_Api::changeWeight($sightId,$id,$to)
      * 修改某景点下的视频的权重
      * @param integer $id 视频ID
      * @param integer $to 需要排的位置
      * @return boolean
      */
-    public static function changeWeight($id,$to){
+    public static function changeWeight($sightId,$id,$to){
         $logicVideo = new Video_Logic_Video();
-        return $logicVideo->changeWeight($id,$to);
+        return $logicVideo->changeWeight($sightId,$id,$to);
     }
 }

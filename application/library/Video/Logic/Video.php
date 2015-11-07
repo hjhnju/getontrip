@@ -410,30 +410,30 @@ class Video_Logic_Video extends Base_Logic{
      * @param integer $to 需要排的位置
      * @return boolean
      */
-    public function changeWeight($id,$to){
-        $objVideo = new Video_Object_Video();
-        $objVideo->fetch(array('id' => $id));
-        $from       = $objVideo->weight;
-        $objVideo->weight = $to;
+    public function changeWeight($sightId,$id,$to){
+        $objSightVideo = new Sight_Object_Video();
+        $objSightVideo->fetch(array('sight_id'=>$sightId,'video_id' => $id));
+        $from          = $objSightVideo->weight;
+        $objSightVideo->weight = $to;
     
         $bAsc = ($to > $from)?1:0;
         $min  = min(array($from,$to));
         $max  = max(array($from,$to));
-        $listVideo = new Video_List_Video();
-        $listVideo->setPagesize(PHP_INT_MAX);
-        $listVideo->setFilter(array('sight_id' => $objVideo->sightId));
-        $listVideo->setOrder('weight asc');
-        $arrVideo = $listVideo->toArray();
-        $arrVideo = array_slice($arrVideo['list'],$min-1+$bAsc,$max-$min);
-        $ret = $objVideo->save();
-        foreach ($arrVideo as $key => $val){
-            $objVideo->fetch(array('id' => $val['id']));
+        $listSightVideo = new Sight_List_Video();
+        $listSightVideo->setPagesize(PHP_INT_MAX);
+        $listSightVideo->setFilter(array('sight_id' => sightId));
+        $listSightVideo->setOrder('weight asc');
+        $arrSightVideo = $listSightVideo->toArray();
+        $arrSightVideo = array_slice($arrSightVideo['list'],$min-1+$bAsc,$max-$min);
+        $ret = $objSightVideo->save();
+        foreach ($arrSightVideo as $key => $val){
+            $objSightVideo->fetch(array('id' => $val['id']));
             if($bAsc){
-                $objVideo->weight = $min + $key ;
+                $objSightVideo->weight = $min + $key ;
             }else{
-                $objVideo->weight = $max - $key;
+                $objSightVideo->weight = $max - $key;
             }
-            $objVideo->save();
+            $objSightVideo->save();
         }
         return $ret;
     }

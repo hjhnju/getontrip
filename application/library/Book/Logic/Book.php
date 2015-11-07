@@ -305,6 +305,39 @@ class Book_Logic_Book extends Base_Logic{
      * @return boolean
      */
     public function editBook($id,$arrInfo){
+        if(isset($arrInfo['status'])&&($arrInfo['status'] == Book_Type_Status::BLACKLIST)){
+            $arrSightIds = array();
+            $weight      = array();
+            $objBook = new Book_Object_Book();
+            $objBook->fetch(array('id' => $id));
+            $objBook->status = Book_Type_Status::BLACKLIST;
+            $listSightBook = new Sight_List_Book();
+            $listSightBook->setFilter(array('video_id' => $id));
+            $listSightBook->setPagesize(PHP_INT_MAX);
+            $arrSightBook  = $listSightBook->toArray();
+            foreach ($arrSightBook['list'] as $val){
+                $objSightBook = new Book_Object_Book();
+                $objSightBook->fetch(array('id' => $val['id']));
+                $weight[] = $objSightBook->weight;
+                $arrSightIds[] = $objSightBook->sightId;
+                $objSightBook->remove();
+            }
+        
+            foreach ($arrSightIds as $key => $id){
+                $listSightBook = new Sight_List_Book();
+                $listSightBook->setFilterString("`weight` >".$weight[$key]);
+                $listSightBook->setPagesize(PHP_INT_MAX);
+                $arrSightBook  = $listSightBook->toArray();
+                foreach ($arrSightBook['list'] as $val){
+                    $objSightBook = new Sight_Object_Video();
+                    $objSightBook->fetch(array('id' => $val['id']));
+                    $objSightBook->weight -= 1;
+                    $objSightBook->save();
+                }
+            }
+            return $objBook->save();
+        }
+        
         $objBook = new Book_Object_Book();
         $sightId = array();
         if(isset($arrInfo['sight_id'])){
@@ -378,6 +411,8 @@ class Book_Logic_Book extends Base_Logic{
      * @return boolean
      */
     public function delBook($id){
+       $arrSightIds    = array();
+       $weight         = array();
        $objBook = new Book_Object_Book();
        $objBook->fetch(array('id' => $id));
        $image   = $objBook->image;
@@ -393,7 +428,22 @@ class Book_Logic_Book extends Base_Logic{
        foreach ($arrSightBook['list'] as $val){
            $objSightBook = new Sight_Object_Book();
            $objSightBook->fetch(array('id' => $id));
+           $weight[]      = $objSightBook->weight;
+           $arrSightIds[] = $objSightBook->sightId;
            $objSightBook->remove();
+       }
+       
+       foreach ($arrSightIds as $key => $id){
+           $listSightBook = new Sight_List_Book();
+           $listSightBook->setFilterString("`weight` >".$weight[$key]);
+           $listSightBook->setPagesize(PHP_INT_MAX);
+           $arrSightBook  = $listSightBook->toArray();
+           foreach ($arrSightBook['list'] as $val){
+               $objSightBook = new Sight_Object_Book();
+               $objSightBook->fetch(array('id' => $val['id']));
+               $objSightBook->weight -= 1;
+               $objSightBook->save();
+           }
        }
        return $ret;
     }

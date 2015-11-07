@@ -79,6 +79,7 @@ class Video_Logic_Video extends Base_Logic{
         foreach($arrVideo['list'] as $key => $val){
             $temp = array();
             $arrVideo['list'][$key] = Video_Api::getVideoInfo($val);
+            $arrVideo['list'][$key]['sights'] = array();
             $listSightVideo = new Sight_List_Video();
             $listSightVideo->setFilter(array('video_id' => $val));
             $listSightVideo->setPagesize(PHP_INT_MAX);
@@ -89,7 +90,10 @@ class Video_Logic_Video extends Base_Logic{
                 $temp['name']   = $sight['name'];
                 $temp['weight'] = $data['weight'];
             }
-            $arrVideo['list'][$key]['sights'][] = $temp;
+            if(!empty($temp)){
+                $arrVideo['list'][$key]['sights'][] = $temp;
+            }
+            
         }
         return $arrVideo;
     }

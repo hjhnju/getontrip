@@ -348,8 +348,9 @@ class Book_Logic_Book extends Base_Logic{
             return $objBook->save();
         }
         
-        $objBook = new Book_Object_Book();
-        $sightId = array();
+        $objBook   = new Book_Object_Book();
+        $sightId   = array();
+        
         if(isset($arrInfo['sight_id'])){
             $sightId = $arrInfo['sight_id'];
             unset($arrInfo['sight_id']);
@@ -365,7 +366,6 @@ class Book_Logic_Book extends Base_Logic{
             }
         }
         $objBook->fetch(array('id' => $id));
-        $arrInfo = $objBook->toArray();
         foreach ($arrInfo as $key => $val){
             if(in_array($key,$this->fields)){
                 $key = $this->getprop($key);
@@ -376,7 +376,7 @@ class Book_Logic_Book extends Base_Logic{
             }
         }        
         $ret =  $objBook->save();
-        foreach ($sightId as $id){
+        foreach ($sightId as $key => $id){
             $objSightBook = new Sight_Object_Book();
             $objSightBook->sightId = $id;
             $objSightBook->bookId  = $objBook->id;

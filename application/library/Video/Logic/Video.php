@@ -18,7 +18,9 @@ class Video_Logic_Video extends Base_Logic{
      * @return array
      */
     public function getVideos($page,$pageSize,$arrParam = array()){
-        $arrVideo          = array();
+        $arrVideo['list']   = array();
+        $arrRet['list']     = array();
+        $title    = '';
         if(isset($arrParam['sight_id'])){
             $sightId    = $arrParam['sight_id'];
             $arrVideoIds = array();            
@@ -30,44 +32,41 @@ class Video_Logic_Video extends Base_Logic{
             }
             $listSightVideo->setPagesize(PHP_INT_MAX);
             $ret = $listSightVideo->toArray();
-            foreach ($ret['list'] as $val){
-                $arrVideoIds[] = $val['video_id'];
-            }
-            unset($arrParam['sight_id']);
-            $filter     = "`id` in (".implode(",",$arrVideoIds).")";
-            $listVideo = new Video_List_Video();
             if(isset($arrParam['title'])){
-                $filter .= " and `title` like '".$arrParam['title']."%'";
+                $title  = $arrParam['title'];
+                unset($arrParam['title']);
             }
-            unset($arrParam['title']);
-            foreach ($arrParam as $index => $val){
-                $filter .= " and `".$index."` = ".$val;
-            }            
-            $listVideo->setFilterString($filter);
-            $listVideo->setPagesize(PHP_INT_MAX);
-            $arrVideo = $listVideo->toArray();
-            foreach ($arrVideoIds as $key => $id){
-                $arrVideo['list'][$key] = $id;
-            }            
-            $arrVideo['list'] = array_slice($arrVideo['list'], ($page-1)*$pageSize,$pageSize);
+            foreach ($ret['list'] as $val){
+                $arrParam = array_merge($arrParam,array('id' => $val['video_id']));                
+                $objVideo = new Video_Object_Video();
+                $objVideo->fetch($arrParam);
+                $arrTmpVideo = $objVideo->toArray();
+                if(!empty($title) && isset($arrTmpVideo['title'])){
+                    if( false ==  strstr($arrTmpVideo['title'],$title)){
+                        continue;
+                    }
+                }
+                if(!empty($arrTmpVideo)){
+                    $arrVideo['list'][] = $arrTmpVideo['id'];
+                }
+            }          
+            $arrVideo['page'] = $page;
+            $arrVideo['pagesize'] = $pageSize;
+            $arrVideo['pageall'] = ceil(count($arrVideo['list'])/$pageSize);
+            $arrVideo['total'] = count($arrVideo['list']);
+            $arrVideo['list'] = array_slice($arrVideo['list'], ($page-1)*$pageSize,$pageSize); 
         }else{
             $listVideo = new Video_List_Video();
             if(!empty($arrParam)){
-                if(isset($arrParam['order'])){
-                    $listVideo->setOrder($arrParam['order']);
-                    unset($arrParam['order']);
-                }
-                $filter = '1';
+                $filter = "1";
                 if(isset($arrParam['title'])){
-                    $filter .= " and `title` like '".$arrParam['title']."%'";
+                    $filter = " and `title` like '".$arrParam['title']."%'";
+                    unset($arrParam['title']);
                 }
-                unset($arrParam['title']);
-                foreach ($arrParam as $index => $val){
-                    $filter .= " and `".$index."` = ".$val;
-                } 
-                if(!empty($filter)){
-                    $listVideo->setFilterString($filter);
+                foreach ($arrParam as $key => $val){
+                    $filter .= " and `".$key."` =".$val;
                 }
+                $listVideo->setFilterString($filter);
             }          
             $listVideo->setPage($page);
             $listVideo->setPagesize($pageSize);
@@ -76,6 +75,10 @@ class Video_Logic_Video extends Base_Logic{
                 $arrVideo['list'][$key] = $val['id'];   
             }
         }
+        $arrRet['page'] = $arrVideo['page'];
+        $arrRet['pagesize'] = $arrVideo['pagesize'];
+        $arrRet['pageall'] = $arrVideo['pageall'];
+        $arrRet['total'] = $arrVideo['total'];
         foreach($arrVideo['list'] as $key => $val){
             $temp = array();
             $arrVideo['list'][$key] = Video_Api::getVideoInfo($val);

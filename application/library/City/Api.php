@@ -112,4 +112,15 @@ class City_Api{
         $logicCity = new City_Logic_City();
         return $logicCity->getCityFromName($strName);
     }
+    
+    /**
+     * 接口10：City_Api::getCityNum($arrInfo)
+     * 根据条件获取城市数量
+     * @param array $arrInfo,eg:array('status'=>xxx);
+     * @param integer
+     */
+    public static function getCityNum($arrInfo){
+        $logicCity = new City_Logic_City();
+        return $logicCity->getCityNum($arrInfo);
+    }
 }

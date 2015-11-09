@@ -400,4 +400,12 @@ class City_Logic_City{
         }
         return $arrRet['list'];
     }
+    
+    public function getCityNum($arrInfo){
+        $listCity = new City_List_City();
+        if(!empty($arrInfo)){
+            $listCity->setFilter($arrInfo);
+        }
+        return $listCity->getTotal();
+    }
 }

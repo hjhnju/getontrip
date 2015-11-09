@@ -18,7 +18,10 @@ class EditAction extends Yaf_Action_Abstract {
         if($postid==''){
             $this->getView()->assign('post', '');
         }
+        else{
+            
         $postInfo  = Video_Api::getVideoInfo($postid); 
+        }
         
         $sightSelectedList=array();
         if(!empty($postInfo)){    

@@ -106,8 +106,7 @@ class Book_Logic_Book extends Base_Logic{
         $arrRet          = array();
         $listSightBook->setFilter(array('sight_id' => $sightId));
         $listSightBook->setOrder('`weight` asc');
-        $listSightBook->setPage($page);
-        $listSightBook->setPagesize($pageSize);
+        $listSightBook->setPagesize(PHP_INT_MAX);
         $ret = $listSightBook->toArray();
         foreach ($ret['list'] as $val){
             $arrFilter = array_merge($arrParam,array('id' => $val['book_id']));
@@ -311,7 +310,7 @@ class Book_Logic_Book extends Base_Logic{
             $objBook = new Book_Object_Book();
             $objBook->fetch(array('id' => $id));
             $objBook->status = Book_Type_Status::BLACKLIST;
-            $listSightook = new Sight_List_Book();
+            $listSightBook = new Sight_List_Book();
             $listSightBook->setFilter(array('video_id' => $id));
             $listSightBook->setPagesize(PHP_INT_MAX);
             $arrSightBook  = $listSightBook->toArray();

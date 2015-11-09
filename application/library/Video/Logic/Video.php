@@ -238,7 +238,19 @@ class Video_Logic_Video extends Base_Logic{
     public function getVideoByInfo($videoId){
         $objVideo = new Video_Object_Video();
         $objVideo->fetch(array('id' => $videoId));
-        return $objVideo->toArray();
+        $arrVideo = $objVideo->toArray();
+        
+        $listSightVideo = new Sight_List_Video();
+        $listSightVideo->setFilter(array('video_id' => $videoId));
+        $listSightVideo->setPagesize(PHP_INT_MAX);
+        $arrSightVideo  = $listSightVideo->toArray();
+        foreach ($arrSightVideo['list'] as $val){
+            $temp['id']   = $val['sight_id'];
+            $sight        = Sight_Api::getSightById($val['sight_id']);
+            $temp['name'] = $sight['name'];
+            $arrVideo['sights'][] = $temp;
+        }
+        return $arrVideo;
     }
     
     public function search($query, $page, $pageSize){

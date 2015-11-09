@@ -805,10 +805,10 @@ class Topic_Logic_Topic extends Base_Logic{
         $count     = 0;
         $listTopic = new Sight_List_Topic();
         $listTopic->setPagesize(PHP_INT_MAX);
-        $arrTopics = $listTopic->toArray();
         if(!empty($sightId)){
             $listTopic->setFilter(array('sight_id' => $sightId));
         }
+        $arrTopics = $listTopic->toArray();
         if(isset($arrInfo['sightId'])){
             unset($arrInfo['sightId']);
         }

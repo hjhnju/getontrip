@@ -52,7 +52,7 @@ class Book_Logic_Book extends Base_Logic{
                     $arrBook['list'][] = $arrTmpBook['id'];
                 }
             }          
-            $arrBook['page'] = $page;
+           $arrBook['page'] = $page;
             $arrBook['pagesize'] = $pageSize;
             $arrBook['pageall'] = ceil(count($arrBook['list'])/$pageSize);
             $arrBook['total'] = count($arrBook['list']);
@@ -124,7 +124,7 @@ class Book_Logic_Book extends Base_Logic{
             $data = $objBook->toArray();
             if(!empty($data)){
                 $temp['id']           = strval($data['id']);
-                $temp['title']        = Base_Util_String::getHtmlEntity($data['title']);
+                $temp['title']        = empty($data['title'])?'':"作者是：".Base_Util_String::getHtmlEntity($data['title']);
                 $temp['image']        = Base_Image::getUrlByName($data['image']);
                 $temp['author']       = isset($data['author'])?trim($data['author']):'';
                 $temp['content_desc'] = Base_Util_String::getSubString($data['content_desc'], self::CONTENT_LEN);
@@ -322,11 +322,11 @@ class Book_Logic_Book extends Base_Logic{
             $objBook->fetch(array('id' => $id));
             $objBook->status = Book_Type_Status::BLACKLIST;
             $listSightBook = new Sight_List_Book();
-            $listSightBook->setFilter(array('video_id' => $id));
+            $listSightBook->setFilter(array('book_id' => $id));
             $listSightBook->setPagesize(PHP_INT_MAX);
             $arrSightBook  = $listSightBook->toArray();
             foreach ($arrSightBook['list'] as $val){
-                $objSightBook = new Book_Object_Book();
+                $objSightBook = new Sight_Object_Book();
                 $objSightBook->fetch(array('id' => $val['id']));
                 $weight[] = $objSightBook->weight;
                 $arrSightIds[] = $objSightBook->sightId;
@@ -365,6 +365,7 @@ class Book_Logic_Book extends Base_Logic{
             }
         }
         $objBook->fetch(array('id' => $id));
+        $arrInfo = $objBook->toArray();
         foreach ($arrInfo as $key => $val){
             if(in_array($key,$this->fields)){
                 $key = $this->getprop($key);
@@ -465,24 +466,21 @@ class Book_Logic_Book extends Base_Logic{
         $arrBook = $objBook->toArray();
         $strDesc = '';
         if(!empty($arrBook)){
-            $arrBook['id']        = strval($arrBook['id']);            
+            $arrBook['id']        = strval($arrBook['id']);  
+            $arrTemp = array();          
             if(!empty($arrBook['author'])){
-                $strDesc .= $arrBook['author'];
-                unset($arrBook['author']);
+                $arrTemp[]  = $arrBook['author'];
             }
             if(!empty($arrBook['press'])){
-                $strDesc .= "/".$arrBook['press'];
-                unset($arrBook['press']);
+                $arrTemp[]  = $arrBook['press'];
             }
             if(!empty($arrBook['publish_time'])){
-                $strDesc .= "/".$arrBook['publish_time'];
-                unset($arrBook['publish_time']);
+                $arrTemp[]  = $arrBook['publish_time'];
             }
             if(!empty($arrBook['isbn'])){
-                $strDesc .= "/ISBN:".$arrBook['isbn'];
-                unset($arrBook['isbn']);
+                $arrTemp[]  = 'ISBN:'.$arrBook['isbn'];
             }
-            $arrBook['info'] = $strDesc;
+            $arrBook['info'] = implode("/",$arrTemp);
             $arrBook['content_desc'] = htmlspecialchars_decode($arrBook['content_desc']);
             $arrBook['content_desc'] = Base_Util_String::delStartEmpty($arrBook['content_desc']);
             $arrBook['image']        = isset($arrBook['image'])?Base_Image::getUrlByName($arrBook['image']):'';

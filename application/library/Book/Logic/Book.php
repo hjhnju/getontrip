@@ -101,25 +101,25 @@ class Book_Logic_Book extends Base_Logic{
      * @return array
      */
     public function getBookList($sightId,$page,$pageSize,$arrParam = array()){
-        $listSightBook   = new Sight_List_Book();
-        $objBook         = new Book_Object_Book();
+        $listSightBook   = new Sight_List_Book();      
         $arrRet          = array();
         $listSightBook->setFilter(array('sight_id' => $sightId));
         $listSightBook->setOrder('`weight` asc');
         $listSightBook->setPagesize(PHP_INT_MAX);
         $ret = $listSightBook->toArray();
         foreach ($ret['list'] as $val){
+            $objBook         = new Book_Object_Book();
             $arrFilter = array_merge($arrParam,array('id' => $val['book_id']));
-            $objBook->setFileds(array('id','title','image','author','content_desc'));
-            $objBook->fetch($arrFilter);
+            $objBook->fetch($arrFilter);            
             $data = $objBook->toArray();
             if(!empty($data)){
-                $data['id']           = strval($data['id']);
-                $data['title']        = Base_Util_String::getHtmlEntity($data['title']);
-                $data['image']        = Base_Image::getUrlByName($data['image']);
-                $data['content_desc'] = Base_Util_String::getSubString($data['content_desc'], self::CONTENT_LEN);
-                $data['url']          = Base_Config::getConfig('web')->root.'/api/book/detail?book='.$data['id'];
-                $arrRet[] = $data;
+                $temp['id']           = strval($data['id']);
+                $temp['title']        = Base_Util_String::getHtmlEntity($data['title']);
+                $temp['image']        = Base_Image::getUrlByName($data['image']);
+                $temp['author']       = isset($data['author'])?trim($data['author']):'';
+                $temp['content_desc'] = Base_Util_String::getSubString($data['content_desc'], self::CONTENT_LEN);
+                $temp['url']          = Base_Config::getConfig('web')->root.'/api/book/detail?book='.$data['id'];
+                $arrRet[] = $temp;
             }
         }
         $arrRet = array_slice($arrRet,($page-1)*$pageSize,$pageSize);

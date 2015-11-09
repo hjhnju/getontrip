@@ -315,6 +315,7 @@ class Book_Logic_Book extends Base_Logic{
      * @return boolean
      */
     public function editBook($id,$arrInfo){
+        $this->updateRedis($id);
         if(isset($arrInfo['status'])&&($arrInfo['status'] == Book_Type_Status::BLACKLIST)){
             $arrSightIds = array();
             $weight      = array();
@@ -328,9 +329,14 @@ class Book_Logic_Book extends Base_Logic{
             foreach ($arrSightBook['list'] as $val){
                 $objSightBook = new Sight_Object_Book();
                 $objSightBook->fetch(array('id' => $val['id']));
+                
+                $redis = Base_Redis::getInstance();
+                $redis->hDel(Sight_Keys::getSightTongjiKey($val['sight_id']),Sight_Keys::BOOK);
+                
                 $weight[] = $objSightBook->weight;
                 $arrSightIds[] = $objSightBook->sightId;
                 $objSightBook->remove();
+                               
             }
         
             foreach ($arrSightIds as $key => $id){
@@ -381,7 +387,8 @@ class Book_Logic_Book extends Base_Logic{
             $objSightBook->sightId = $id;
             $objSightBook->bookId  = $objBook->id;
             $objSightBook->weight  = $this->getBookWeight($id);
-            $objSightBook->save();
+            $objSightBook->save();    
+            
         }    
         return $ret;
     }
@@ -412,7 +419,11 @@ class Book_Logic_Book extends Base_Logic{
             $objSightBook->bookId  = $objBook->id;
             $objSightBook->weight  = $this->getBookWeight($sightId);
             $objSightBook->save();
+            
+            $redis = Base_Redis::getInstance();
+            $redis->hDel(Sight_Keys::getSightTongjiKey($id),Sight_Keys::BOOK);
         }      
+        $this->updateRedis($objBook->id);
         return $objBook->id;
     }
     
@@ -424,6 +435,7 @@ class Book_Logic_Book extends Base_Logic{
     public function delBook($id){
        $arrSightIds    = array();
        $weight         = array();
+       $this->updateRedis($id);
        $objBook = new Book_Object_Book();
        $objBook->fetch(array('id' => $id));
        $image   = $objBook->image;
@@ -736,5 +748,16 @@ class Book_Logic_Book extends Base_Logic{
             $objSightBook->save();
         }
         return $ret;
+    }
+    
+    public function updateRedis($bookId){
+        $redis = Base_Redis::getInstance();
+        $listSightBook = new Sight_List_Book();
+        $listSightBook->setFilter(array('book_id' => $bookId));
+        $listSightBook->setPagesize(PHP_INT_MAX);
+        $arrSightBook  = $listSightBook->toArray();
+        foreach ($arrSightBook['list'] as $val){
+            $redis->hDel(Sight_Keys::getSightTongjiKey($val['sight_id']),Sight_Keys::BOOK);
+        }
     }
 }

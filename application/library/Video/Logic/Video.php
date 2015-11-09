@@ -315,6 +315,7 @@ class Video_Logic_Video extends Base_Logic{
      * @param array $arrParam
      */
     public function editVideo($id, $arrParam){
+        $this->updateRedis($id);
         if(isset($arrParam['status'])&&($arrParam['status'] == Video_Type_Status::BLACKLIST)){
             $arrSightIds = array();
             $weight      = array();
@@ -410,8 +411,9 @@ class Video_Logic_Video extends Base_Logic{
             $objSightVideo->sightId = $sightId;
             $objSightVideo->videoId = $objVideo->id;
             $objSightVideo->weight  = $this->getAllVideoNum($sightId);
-            $objSightVideo->save();
+            $objSightVideo->save();            
         }
+        $this->updateRedis($objVideo->id);
         return $objVideo->id;
     }
     
@@ -422,6 +424,7 @@ class Video_Logic_Video extends Base_Logic{
     public function delVideo($id){
         $arrSightIds    = array();
         $weight         = array();
+        $this->updateRedis($id);
         $listSightVideo = new Sight_List_Video();
         $listSightVideo->setFilter(array('video_id' => $id));
         $listSightVideo->setPagesize(PHP_INT_MAX);
@@ -503,5 +506,16 @@ class Video_Logic_Video extends Base_Logic{
             $objSightVideo->save();
         }
         return $ret;
+    }
+    
+    public function updateRedis($videoId){
+        $redis = Base_Redis::getInstance();
+        $listSightVideo = new Sight_List_Video();
+        $listSightVideo->setFilter(array('video_id' => $videoId));
+        $listSightVideo->setPagesize(PHP_INT_MAX);
+        $arrSightVideo  = $listSightVideo->toArray();
+        foreach ($arrSightVideo['list'] as $val){
+            $redis->hDel(Sight_Keys::getSightTongjiKey($val['sight_id']),Sight_Keys::VIDEO);
+        }
     }
 }

@@ -77,23 +77,23 @@ class BookapiController extends Base_Controller_Api{
             return $this->ajaxError();
         }
         $_REQUEST['status'] = $this->getStatusByActionStr(isset($_REQUEST['action'])?$_REQUEST['action']:'');
-        
+       
         //修改 content_desc
-        $content_desc = $_REQUEST['content_desc'];  
+        $content_desc = isset($_REQUEST['content_desc'])?$_REQUEST['content_desc']:'';  
         if($content_desc != ""){
            $spider = Spider_Factory::getInstance("Filterimg",$content_desc,Spider_Type_Source::STRING);
            $_REQUEST['content_desc'] = trim($spider->getReplacedContent()); 
         }
 
         //修改  catalog
-        $catalog = $_REQUEST['catalog'];  
+        $catalog = isset($_REQUEST['catalog'])?$_REQUEST['catalog']:'';  
         if($catalog != ""){
            $spider = Spider_Factory::getInstance("Filterimg",$catalog,Spider_Type_Source::STRING);
            $_REQUEST['catalog'] = trim($spider->getReplacedContent()); 
         } 
 
-        $dbRet=Book_Api::editBook($id,$_REQUEST);
-
+        $dbRet = Book_Api::editBook($id,$_REQUEST);
+ 
         if ($dbRet) {
             return $this->ajax();
         }
@@ -160,6 +160,24 @@ class BookapiController extends Base_Controller_Api{
         }
         return $this->ajaxError();
     }
+
+
+    /*
+      批量修改状态
+     */
+    public function changeStatusAction(){
+       $idArray = isset($_REQUEST['idArray'])? $_REQUEST['idArray'] : array(); 
+ 
+       $status = $this->getStatusByActionStr($_REQUEST['action']);
+       for ($i=0; $i < count($idArray); $i++) { 
+           $postid = intval($idArray[$i]);
+           $bRet = Book_Api::editBook($postid,array('status'=>$status)); 
+           if(!$bRet){  
+              return $this->ajaxError('501','ID:【'.$postid.'】修改状态失败');
+           }
+       }
+       return $this->ajax();
+   }
 
     /**
      * 获取保存的状态

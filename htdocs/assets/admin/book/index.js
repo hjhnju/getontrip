@@ -94,9 +94,9 @@ $(document).ready(function() {
                 }, {
                     "data": function(e) {
                         if (e.statusName == '未发布') {
-                            return e.statusName + '<button type="button" class="btn btn-primary btn-xs publish" title="发布" data-toggle="tooltip" ><i class="fa fa-check-square-o"></i></button><button type="button" class="btn btn-default btn-xs to-black" title="加入黑名单" data-toggle="tooltip" ><i class="fa fa-frown-o"></i></button>';
+                            return e.statusName + '<button type="button" class="btn btn-primary btn-xs publish" title="发布" data-toggle="tooltip" ><i class="fa fa-check-square-o"></i></button><button type="button" class="btn btn-danger btn-xs to-black" title="加入黑名单" data-toggle="tooltip" ><i class="fa fa-frown-o"></i></button>';
                         } else if (e.statusName == '已发布') {
-                            return e.statusName + '<button type="button" class="btn btn-warning btn-xs cel-publish" title="取消发布" data-toggle="tooltip" ><i class="fa fa-close"></i></button><button type="button" class="btn btn-default btn-xs to-black" title="加入黑名单" data-toggle="tooltip" ><i class="fa fa-frown-o"></i></button>';
+                            return e.statusName + '<button type="button" class="btn btn-warning btn-xs cel-publish" title="取消发布" data-toggle="tooltip" ><i class="fa fa-close"></i></button><button type="button" class="btn btn-danger btn-xs to-black" title="加入黑名单" data-toggle="tooltip" ><i class="fa fa-frown-o"></i></button>';
                         } else {
                             return e.statusName + '<button type="button" class="btn btn-default btn-xs cel-black" title="取消黑名单" data-toggle="tooltip" ><i class="fa fa-smile-o"></i></button>';
                         }
@@ -126,6 +126,7 @@ $(document).ready(function() {
 
         var bindEvents = {
             init: function() {
+                this.init_table();
                 this.init_action();
                 this.init_book();
             },
@@ -134,7 +135,7 @@ $(document).ready(function() {
                 $('#form-type').selectpicker();
 
                 //点击添加弹出书籍添加器
-                $('#addBook').click(function(event) { 
+                $('#addBook').click(function(event) {
                     $("#Form")[0].reset();
                     $('#myModal').modal();
                 });
@@ -144,8 +145,10 @@ $(document).ready(function() {
                         //序列化表单  
                         var param = $("#Form").serializeObject();
                         //按钮disabled
-                        $('#Form button[type="submit"]').btnDisable({text:'正在生成书籍，请稍后'});
-                         
+                        $('#Form button[type="submit"]').btnDisable({
+                            text: '正在生成书籍，请稍后'
+                        });
+
                         $.ajax({
                             "url": "/admin/bookapi/add",
                             "data": param,
@@ -194,11 +197,6 @@ $(document).ready(function() {
 
             },
             init_action: function() {
-                //绑定draw事件
-                $('#editable').on('draw.dt', function() {
-                    //工具提示框
-                    $('[data-toggle="tooltip"]').tooltip();
-                });
 
                 //状态下拉列表 
                 $('#form-status').selectpicker();
@@ -259,6 +257,9 @@ $(document).ready(function() {
                 //黑名单操作操作
                 $('#editable button.to-black,#editable button.cel-black').live('click', function(e) {
                     e.preventDefault();
+                    if (confirm("确定加入黑名单么 ?加入黑名单后，将不再抓取该书籍，且该书籍与景点的关系将解除。") == false) {
+                        return;
+                    }
                     var nRow = $(this).parents('tr')[0];
                     var data = oTable.api().row(nRow).data();
                     var action;
@@ -293,7 +294,8 @@ $(document).ready(function() {
                     sight_name = $('#form-sight').val();
                     sight_id = $('#form-sight').attr('data-sight_id');
                     var params = {
-                        'sight_id': sight_id
+                        'sight_id': sight_id,
+                        'order': '`weight` asc'
                     };
                     //查询当前景点下的所有词条
                     $.ajax({
@@ -372,6 +374,58 @@ $(document).ready(function() {
                     }
 
                 });
+
+                //批量操作
+                $('#editable button.all-action').live('click', function(e) {
+                    e.preventDefault();
+                    var datas = oTable.api().rows('.selected').data();
+                    var idArray = [];
+
+                    var action = $(this).attr('data-action');
+                    if (action == 'BLACKLIST') {
+                        if (confirm("确定加入黑名单么 ?加入黑名单后，将不再抓取该书籍，且该书籍与景点的关系将解除。") == false) {
+                            return;
+                        }
+                    }
+                    for (var i = 0; i < datas.length; i++) {
+                        var data = datas[i];
+                        if (action == 'PUBLISHED' && !data.image) {
+                            toastr.warning('发布之前必须上传背景图片');
+                            return;
+                        }
+                        idArray.push(data.id);
+                    };
+                    if (!idArray.length) {
+                        toastr.warning('请选择一行！');
+                        return false;
+                    }
+
+                    var publish = new Remoter('/admin/bookapi/changeStatus');
+                    publish.remote({
+                        idArray: idArray,
+                        action: action
+                    });
+                    publish.on('success', function(data) {
+                        //刷新当前页
+                        oTable.fnRefresh();
+                    });
+
+                });
+            },
+            init_table: function() {
+
+                //绑定draw事件
+                $('#editable').on('draw.dt', function() {
+                    //工具提示框
+                    $('[data-toggle="tooltip"]').tooltip();
+
+                    //绑定选择事件
+                    $('#editable tbody tr').click(function(event) {
+                        $(this).toggleClass('selected');
+                    });
+                });
+
+
             }
         }
 

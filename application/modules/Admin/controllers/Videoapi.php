@@ -110,6 +110,23 @@ class VideoapiController extends Base_Controller_Api{
         }
         return $this->ajaxError();
     }
+
+    /*
+      批量修改状态
+     */
+    public function changeStatusAction(){
+       $idArray = isset($_REQUEST['idArray'])? $_REQUEST['idArray'] : array(); 
+ 
+       $status = $this->getStatusByActionStr($_REQUEST['action']);
+       for ($i=0; $i < count($idArray); $i++) { 
+           $postid = intval($idArray[$i]);
+           $bRet = Video_Api::editVideo($postid,array('status'=>$status)); 
+           if(!$bRet){  
+              return $this->ajaxError('501','ID:【'.$postid.'】修改状态失败');
+           }
+       }
+       return $this->ajax();
+   }
   
 
     /**

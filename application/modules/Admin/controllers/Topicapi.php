@@ -235,7 +235,7 @@ class  TopicapiController extends Base_Controller_Api{
            $bRet=Topic_Api::editTopic($postid,array('status'=>$status,'id'=>$postid));
           
            if(!$bRet){  
-              return $this->ajaxError('501',$postid.'话题发布失败');
+              return $this->ajaxError('501',$postid.'话题修改状态失败');
            }
        }
        return $this->ajax();

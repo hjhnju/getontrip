@@ -21,7 +21,7 @@ $(document).ready(function() {
                     "url": "/admin/Commentapi/list",
                     "type": "POST",
                     "data": function(d) {
-                        d.obj_id = $.trim($('#form-obj_id').val()); 
+                        d.obj_id = $.trim($('#form-obj_id').val());
                         d.params = {};
                         //添加额外的参数传给服务器 
                         if ($("#form-status").val()) {
@@ -57,7 +57,10 @@ $(document).ready(function() {
                     }
                 }, {
                     "data": function(e) {
-                        return '<a href="#?id=' + e.to_user_id + '" title="' + e.to_name + '">' + e.to_name.subString(10) + '</a>';
+                        if (e.to_user_id) {
+                            return '<a href="#?id=' + e.to_user_id + '" title="' + e.to_name + '">' + e.to_name.subString(10) + '</a>';
+                        }
+                        return '';
                     }
                 }, {
                     "data": "content"
@@ -95,7 +98,7 @@ $(document).ready(function() {
 
             api = oTable.api();
         }
-       
+
 
 
         /**

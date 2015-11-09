@@ -99,6 +99,7 @@ $(document).ready(function() {
                 $('#city_name').typeahead({
                     display: 'name',
                     val: 'id',
+                    data:['status'],
                     ajax: {
                         url: '/admin/cityapi/getCityList',
                         triggerLength: 1
@@ -109,6 +110,13 @@ $(document).ready(function() {
                          text: value of the *display* property*/
                         $("#city_name").val(text);
                         $("#city_id").val(val);
+                        if (item.attr('data-status')!=2) {
+
+                          $('#city_statusName').show().html('<label class="error">该城市未发布，但您仍可以发布景点</label>');
+
+                        }else{
+                           $('#city_statusName').hide(); 
+                        }
                     }
                 });
 

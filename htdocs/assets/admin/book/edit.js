@@ -207,15 +207,11 @@ $(document).ready(function() {
                     title: "required",
                     isbn: {
                         required: true
-                    },
-                    image: {
-                        required: (action === 'PUBLISHED')
-                    }
+                    } 
                 },
                 messages: {
                     title: "书籍名称不能为空哦！",
-                    isbn: "ISBN不能为空！",
-                    image: '发布之前必须上传图片'
+                    isbn: "ISBN不能为空！" 
                 }
             });
 

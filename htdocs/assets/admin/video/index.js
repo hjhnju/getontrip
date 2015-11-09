@@ -1,7 +1,7 @@
  /*
-           视频列表
-           author:fyy
-        */
+             视频列表
+             author:fyy
+ */
  $(document).ready(function() {
      var List = function() {
          var editBtn = '<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-success btn-xs addKeyword"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
@@ -29,11 +29,11 @@
                              d.params.sight_id = Number($.trim($("#form-sight").attr('data-sight_id')));
                          }
                          if ($("#form-status").val()) {
-                             d.params.status = $.trim($("#form-status").val());
+                             d.params.status = Number($.trim($("#form-status").val()));
                          }
 
                          if ($("#form-type").val()) {
-                             d.params.type = $.trim($("#form-type").val());
+                             d.params.type = Number($.trim($("#form-type").val()));
                          }
                      }
                  },
@@ -90,9 +90,9 @@
                  }, {
                      "data": function(e) {
                          if (e.statusName == '未发布') {
-                             return e.statusName + '<button type="button" class="btn btn-primary btn-xs publish" title="发布" data-toggle="tooltip" ><i class="fa fa-check-square-o"></i></button><button type="button" class="btn btn-default btn-xs to-black" title="加入黑名单" data-toggle="tooltip" ><i class="fa fa-frown-o"></i></button>';
+                             return e.statusName + '<button type="button" class="btn btn-primary btn-xs publish" title="发布" data-toggle="tooltip" ><i class="fa fa-check-square-o"></i></button><button type="button" class="btn btn-danger btn-xs to-black" title="加入黑名单" data-toggle="tooltip" ><i class="fa fa-frown-o"></i></button>';
                          } else if (e.statusName == '已发布') {
-                             return e.statusName + '<button type="button" class="btn btn-warning btn-xs cel-publish" title="取消发布" data-toggle="tooltip" ><i class="fa fa-close"></i></button><button type="button" class="btn btn-default btn-xs to-black" title="加入黑名单" data-toggle="tooltip" ><i class="fa fa-frown-o"></i></button>';
+                             return e.statusName + '<button type="button" class="btn btn-warning btn-xs cel-publish" title="取消发布" data-toggle="tooltip" ><i class="fa fa-close"></i></button><button type="button" class="btn btn-danger btn-xs to-black" title="加入黑名单" data-toggle="tooltip" ><i class="fa fa-frown-o"></i></button>';
                          } else {
                              return e.statusName + '<button type="button" class="btn btn-default btn-xs cel-black" title="取消黑名单" data-toggle="tooltip" ><i class="fa fa-smile-o"></i></button>';
                          }
@@ -121,15 +121,26 @@
           */
          var bindEvents = {
              init: function() {
+                 this.init_table();
                  this.initEvents();
                  this.editPic();
              },
-             initEvents: function() {
+             init_table: function() {
+
                  //绑定draw事件
                  $('#editable').on('draw.dt', function() {
                      //工具提示框
                      $('[data-toggle="tooltip"]').tooltip();
+
+                     //绑定选择事件
+                     $('#editable tbody tr').click(function(event) {
+                         $(this).toggleClass('selected');
+                     });
                  });
+
+
+             },
+             initEvents: function() {
 
                  //状态下拉列表 
                  $('#form-status').selectpicker();
@@ -305,6 +316,41 @@
                              }
                          });
                      }
+
+                 });
+
+                 //批量操作
+                 $('#editable button.all-action').live('click', function(e) {
+                     e.preventDefault();
+                     var datas = oTable.api().rows('.selected').data();
+                     var idArray = [];
+                     var action = $(this).attr('data-action');
+                     if (action == 'BLACKLIST') {
+                         if (confirm("确定加入黑名单么 ?加入黑名单后，将不再抓取该视频，且该视频与景点的关系将解除。") == false) {
+                             return;
+                         }
+                     }
+                     for (var i = 0; i < datas.length; i++) {
+                         var data = datas[i];
+                         /* if (action=='PUBLISHED'&&!data.image) {
+                              toastr.warning('发布之前必须上传背景图片');
+                              return;
+                          }*/
+                         idArray.push(data.id);
+                     };
+                     if (!idArray.length) {
+                         toastr.warning('请选择一行！');
+                         return false;
+                     }
+                     var publish = new Remoter('/admin/videoapi/changeStatus');
+                     publish.remote({
+                         idArray: idArray,
+                         action: action
+                     });
+                     publish.on('success', function(data) {
+                         //刷新当前页
+                         oTable.fnRefresh();
+                     });
 
                  });
              },

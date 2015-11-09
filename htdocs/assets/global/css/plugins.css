@@ -891,6 +891,13 @@ Datatables Plugin(in v1.3)
   width: 8px !important;
 }
 
+table.dataTable tbody tr.selected {
+    background-color: #B0BED9;
+}
+table.dataTable tbody tr:hover.selected {
+    background-color: #a9b7d1;
+}
+
 @media (max-width: 768px) {
   .dataTables_wrapper .dataTables_length .form-control,
   .dataTables_wrapper .dataTables_filter .form-control {

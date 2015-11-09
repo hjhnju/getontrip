@@ -311,7 +311,7 @@ class Book_Logic_Book extends Base_Logic{
             $objBook = new Book_Object_Book();
             $objBook->fetch(array('id' => $id));
             $objBook->status = Book_Type_Status::BLACKLIST;
-            $listSightBook = new Sight_List_Book();
+            $listSightook = new Sight_List_Book();
             $listSightBook->setFilter(array('video_id' => $id));
             $listSightBook->setPagesize(PHP_INT_MAX);
             $arrSightBook  = $listSightBook->toArray();
@@ -488,11 +488,8 @@ class Book_Logic_Book extends Base_Logic{
         $arrBook  = $arrBook['data'];
         foreach ($arrBook as $key => $val){
             $book = $this->getBookById($val['id']);
-            $arrBook[$key]['title'] = empty($val['title'])?trim($book['title']):$val['title'];
-            $arrBook[$key]['desc']  = empty($val['content_desc'])?trim($book['content_desc']):$val['content_desc'];
-            $arrBook[$key]['desc']  = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($arrBook[$key]['desc']));
             $arrBook[$key]['image'] = $book['image'];
-            unset($arrBook[$key]['content_desc']);
+            $arrBook[$key]['search_type'] = 'book';
         }
         return array('data' => $arrBook, 'num' => $num);
     }

@@ -252,10 +252,11 @@ class Video_Logic_Video extends Base_Logic{
         $arrVideo  = $arrVideo['data'];
         foreach ($arrVideo as $key => $val){
             $video = $this->getVideoByInfo($val['id']);            
-            $arrVideo[$key]['title'] = empty($val['title'])?trim($video['title']):$val['title'];
-            $arrVideo[$key]['image'] = isset($video['image'])?Base_Image::getUrlByName($video['image']):'';
-            $arrVideo[$key]['url']   = isset($video['url'])?trim($video['url']):'';
-            $arrVideo[$key]['from']  = isset($video['from'])?trim($video['from']):'';
+            $arrVideo[$key]['title']       = empty($val['title'])?trim($video['title']):$val['title'];
+            $arrVideo[$key]['image']       = isset($video['image'])?Base_Image::getUrlByName($video['image']):'';
+            $arrVideo[$key]['url']         = isset($video['url'])?trim($video['url']):'';
+            $arrVideo[$key]['content']     = isset($video['from'])?trim($video['from']):'';
+            $arrVideo[$key]['search_type'] = 'video';
         }
         return array('data' => $arrVideo, 'num' => $num);
     }
@@ -288,7 +289,7 @@ class Video_Logic_Video extends Base_Logic{
         $listSightVideo->setPagesize(PHP_INT_MAX);
         $arrSightVideo  = $listSightVideo->toArray();
         foreach ($arrSightVideo['list'] as $val){
-            if($val['statu'] == $status){
+            if($val['status'] == $status){
                 $count += 1;
             }
         }

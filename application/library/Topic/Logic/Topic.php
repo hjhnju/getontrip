@@ -426,6 +426,7 @@ class Topic_Logic_Topic extends Base_Logic{
             $listTopictag->setFilter(array('topic_id' => $val['id']));
             $listTopictag->setPagesize(PHP_INT_MAX);
             $arrTag = $listTopictag->toArray();
+            $arrRet['list'][$key]['tags'] = array(); 
             foreach ($arrTag['list'] as $index => $data){
                 $objTag = new Tag_Object_Tag();
                 $objTag->fetch(array('id' => $data['tag_id']));
@@ -786,10 +787,9 @@ class Topic_Logic_Topic extends Base_Logic{
         $num       = $arrTopic['num'];
         $arrTopic  = $arrTopic['data'];
         foreach ($arrTopic as $key => $val){
-            $topic = $this->getTopicById($val['id']);
-            $arrTopic[$key]['title']     = empty($val['title'])?($topic['title']):$val['title'];
-            $arrTopic[$key]['subtitle']  = empty($val['subtitle'])?($topic['subtitle']):$val['subtitle'];
-            $arrTopic[$key]['image']     = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
+            $topic = $this->getTopicById($val['id']);           
+            $arrTopic[$key]['image']       = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
+            $arrTopic[$key]['search_type'] = 'topic';
         }
         return array('data' => $arrTopic,'num' => $num);
     }

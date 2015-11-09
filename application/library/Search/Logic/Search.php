@@ -18,6 +18,12 @@ class Search_Logic_Search{
     
     protected $logicCollect;
     
+    protected $logicBook;
+    
+    protected $logicVideo;
+    
+    protected $logicKeyword;
+    
     protected $logicHotWord;
     
     
@@ -26,6 +32,9 @@ class Search_Logic_Search{
         $this->logicSight   = new Sight_Logic_Sight();
         $this->logicTopic   = new Topic_Logic_Topic();
         $this->logicCollect = new Collect_Logic_Collect();
+        $this->logicBook    = new Book_Logic_Book();
+        $this->logicVideo   = new Video_Logic_Video();
+        $this->logicKeyword = new Keyword_Logic_Keyword();
         $this->logicComment = new Comment_Logic_Comment();
         $this->logicHotWord = new Search_Logic_Word();
     }
@@ -77,6 +86,13 @@ class Search_Logic_Search{
                 $arrCity     = $this->logicCity->search($query, $page, $pageSize);
                 $arrSight    = $this->logicSight->search($query, $page, $pageSize);
                 $arrContent = Base_Search::Search('content', $query, $page, $pageSize, array('id','unique_id','search_type','title','content'));
+                
+                $arrTopic    = $this->logicTopic->searchTopic($query, $page, 2);
+                $arrVideo    = $this->logicVideo->search($query, $page, 1);
+                $arrBook     = $this->logicBook->search($query, $page, 1);
+                if(($arrTopic['num'] >= 2)&&(!empty($arrBook['num']))&&(!empty($arrVideo['num']))){
+                    $arrContent['data'] = array_merge($arrTopic['data'],$arrBook['data'],$arrVideo['data']);
+                }
                 foreach ($arrContent['data'] as $key => $val){
                     if($val['search_type'] == 'topic'){
                         $topic = Topic_Api::getTopicById($val['id']);

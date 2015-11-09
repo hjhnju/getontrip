@@ -231,7 +231,7 @@ class Book_Logic_Book extends Base_Logic{
             
             $temp[$key]['image']  = $this->uploadPic($image);
             
-            $temp[$key]['status'] = Book_Type_Status::PUBLISHED;
+            $temp[$key]['status'] = Book_Type_Status::NOTPUBLISHED;
             
             $temp[$key]['pages']  = isset($detail['pages'])?$detail['pages']:'';
             

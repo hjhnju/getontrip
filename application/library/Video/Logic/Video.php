@@ -289,7 +289,9 @@ class Video_Logic_Video extends Base_Logic{
         $listSightVideo->setPagesize(PHP_INT_MAX);
         $arrSightVideo  = $listSightVideo->toArray();
         foreach ($arrSightVideo['list'] as $val){
-            if($val['status'] == $status){
+            $objVideo = new Video_Object_Video();
+            $objVideo->fetch(array('id' => $val['video_id']));
+            if($objVideo->status == $status){
                 $count += 1;
             }
         }

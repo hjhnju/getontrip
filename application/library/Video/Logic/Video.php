@@ -107,40 +107,32 @@ class Video_Logic_Video extends Base_Logic{
      * @return array
      */
     public function getVideoList($sightId,$page,$pageSize,$arrParam = array()){
+        $arrRet         = array();
         $listSightVideo = new Sight_List_Video();
         $listSightVideo->setFilter(array('sight_id' => $sightId));
         $listSightVideo->setOrder('`weight` asc');
         $listSightVideo->setPagesize(PHP_INT_MAX);
         $ret = $listSightVideo->toArray();
         foreach ($ret['list'] as $val){
-            $arrVideoIds[] = $val['video_id'];
-        }
-        $filter     = "`id` in (".implode(",",$arrVideoIds).")";
-        $listVideo = new Video_List_Video();
-        foreach ($arrParam as $key => $val){
-            $filter .=" and `".$key."` =".$val;
-        }
-        $listVideo->setFilterString($filter);
-        $listVideo->setPagesize(PHP_INT_MAX);
-        $arrVideo = $listVideo->toArray();
-        foreach ($arrVideoIds as $key => $id){
-            $arrVideo['list'][$key] = $id;
-        }
-        $arrVideo['list'] = array_slice($arrVideo['list'], ($page-1)*$pageSize,$pageSize);
-
-        foreach($arrVideo['list'] as $key => $val){
-            $arrRet['list'][$key]['id']    = strval($val);
-            $video = Video_Api::getVideoInfo($val);
-            $arrRet['list'][$key]['title'] = Base_Util_String::getHtmlEntity($video['title']);
-            $arrRet['list'][$key]['image'] = Base_Image::getUrlByName($video['image']);
-            if($val['type'] == Video_Type_Type::ALBUM){
-                $arrRet['list'][$key]['len'] = sprintf("合辑：共%d集",$video['len']);
-            }else{
-                $arrRet['list'][$key]['len'] = sprintf("时长：%s",$video['len']);
+            $objVideo = new Video_Object_Video();
+            $arrParam = array_merge($arrParam,array('id' => $val['video_id']));
+            $objVideo->fetch($arrParam);
+            $arrVideo = $objVideo->toArray();
+            if(!empty($arrVideo)){
+                $temp['id']    = strval($arrVideo['id']);
+                $video = Video_Api::getVideoInfo($arrVideo['id']);
+                $temp['title'] = Base_Util_String::getHtmlEntity($video['title']);
+                $temp['image'] = Base_Image::getUrlByName($video['image']);
+                if($video['type'] == Video_Type_Type::ALBUM){
+                    $temp['len'] = sprintf("合辑：共%d集",$video['len']);
+                }else{
+                    $temp['len'] = sprintf("时长：%s",$video['len']);
+                }
+                $temp['type']    = strval($video['type']);
+                $arrRet[] = $temp;
             }
-            $arrRet['list'][$key]['type']    = strval($video['type']);
         }
-        return $arrRet['list'];
+        return array_slice($arrRet,($page-1)*$pageSize,$pageSize);
     }
         
     /**

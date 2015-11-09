@@ -333,7 +333,7 @@ class Video_Logic_Video extends Base_Logic{
                 $arrSightIds[] = $objSightVideo->sightId;
                 $objSightVideo->remove();
             }
-            
+            $arrSightIds = array_unique($arrSightIds);
             foreach ($arrSightIds as $key => $id){
                 $listSightVideo = new Sight_List_Video();
                 $listSightVideo->setFilterString("`weight` >".$weight[$key]);

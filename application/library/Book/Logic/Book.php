@@ -335,10 +335,9 @@ class Book_Logic_Book extends Base_Logic{
                 
                 $weight[] = $objSightBook->weight;
                 $arrSightIds[] = $objSightBook->sightId;
-                $objSightBook->remove();
-                               
+                $objSightBook->remove();                               
             }
-        
+            $arrSightIds = array_unique($arrSightIds);
             foreach ($arrSightIds as $key => $id){
                 $listSightBook = new Sight_List_Book();
                 $listSightBook->setFilterString("`weight` >".$weight[$key]);

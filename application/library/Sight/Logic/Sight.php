@@ -332,8 +332,8 @@ class Sight_Logic_Sight extends Base_Logic{
         $objSight = new Sight_Object_Sight();
         $objSight->fetch(array('id' =>$sightId));
         foreach ($arrInfo as $key => $val){
-            $key = $this->getprop($key);
             if(in_array($key,$this->_fileds)){
+                $key = $this->getprop($key);
                 $objSight->$key = $val;
             }           
         }

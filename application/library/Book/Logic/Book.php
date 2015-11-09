@@ -122,6 +122,7 @@ class Book_Logic_Book extends Base_Logic{
                 $arrRet[] = $data;
             }
         }
+        $arrRet = array_slice($arrRet,($page-1)*$pageSize,$pageSize);
         return $arrRet;
     }
     

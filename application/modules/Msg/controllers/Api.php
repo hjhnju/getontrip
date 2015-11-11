@@ -9,7 +9,7 @@ class ApiController extends Base_Controller_Api {
     const PAGESIZE = 2;
     
     public function init() {
-        $this->setNeedLogin(false);
+        $this->setNeedLogin(true);
         parent::init();        
     }
     
@@ -24,7 +24,6 @@ class ApiController extends Base_Controller_Api {
         $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;                      
         $logic     = new Msg_Logic_Msg();
-        $this->userid = 1153;
         $ret       = $logic->getList($this->userid,$page, $pageSize);
         return $this->ajax($ret);
     }  

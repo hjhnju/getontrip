@@ -59,8 +59,6 @@ class Book_Object_Book extends Base_Object {
      */
     protected $intProps = array(
         'id'          => 1,
-        'price_jd'    => 1,
-        'price_mart'  => 1,
         'pages'       => 1,
         'status'      => 1,
         'create_time' => 1,
@@ -133,13 +131,13 @@ class Book_Object_Book extends Base_Object {
 
     /**
      * 京东价格
-     * @var integer
+     * @var 
      */
     public $priceJd;
 
     /**
      * 市场价格
-     * @var integer
+     * @var 
      */
     public $priceMart;
 

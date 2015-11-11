@@ -28,8 +28,6 @@ class Book_List_Book extends Base_List {
      */
     protected $intProps = array(
         'id'          => 1,
-        'price_jd'    => 1,
-        'price_mart'  => 1,
         'pages'       => 1,
         'status'      => 1,
         'create_time' => 1,

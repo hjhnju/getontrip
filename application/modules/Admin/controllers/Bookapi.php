@@ -21,6 +21,7 @@ class BookapiController extends Base_Controller_Api{
          
         $arrInfo = isset($_REQUEST['params'])?$_REQUEST['params']: array(); 
 
+     
         if (isset($arrInfo['action'])) {
             $arrInfo['status'] = $this->getStatusByActionStr($arrInfo['action']);
         }

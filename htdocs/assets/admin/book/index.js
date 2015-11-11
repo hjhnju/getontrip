@@ -237,7 +237,7 @@ $(document).ready(function() {
                             toastr.warning('发布之前必须上传背景图片！');
                             return;
                         }
-                        if (!data.sights.length||!data.title||!data.author||!data.press||!data.url||!data.publish_time||!data.content_desc) {
+                        if (!data.sights.length || !data.title || !data.author || !data.press || !data.url || !data.publish_time || !data.content_desc) {
                             toastr.warning('发布之前请将信息补全！');
                             return;
                         }
@@ -300,7 +300,7 @@ $(document).ready(function() {
                     var params = {
                         sight_id: sight_id,
                         order: '`weight` asc',
-                        action : 'PUBLISHED'
+                        action: 'PUBLISHED'
                     };
                     //查询当前景点下的所有词条
                     $.ajax({
@@ -326,17 +326,20 @@ $(document).ready(function() {
                             $('#sortable').html(li);
                             $("#sortable").sortable({
                                 //revert: true,
-                                start: function(d, li) { 
-                                    oldIndex = $(li.item).index()+1; 
+                                start: function(d, li) {
+                                    oldIndex = $(li.item).index() + 1;
                                     oldNum = Number($('#sortable li[data-key="' + oldIndex + '"]').attr('data-weight'));
                                 },
-                                stop: function(d, li) { 
-                                     newIndex = $(li.item).index()+1; 
+                                stop: function(d, li) {
+                                    newIndex = $(li.item).index() + 1;
                                     newNum = Number($('#sortable li[data-key="' + newIndex + '"]').attr('data-weight'));
                                     if (oldNum === newNum) {
                                         return;
                                     }
-                                    changeWeight($(li.item).attr('data-id'), newNum, sight_id,oldIndex,newIndex);
+                                    if (oldIndex < newIndex) {
+                                        newNum++;
+                                    }
+                                    changeWeight($(li.item).attr('data-id'), oldNum, newNum, sight_id, oldIndex, newIndex);
                                 }
                             });
                             //弹出模态框
@@ -344,7 +347,7 @@ $(document).ready(function() {
                         }
                     });
 
-                    function changeWeight(id, to, sight_id,fromIndex,toIndex) {
+                    function changeWeight(id, from, to, sight_id, fromIndex, toIndex) {
                         $.ajax({
                             "url": "/admin/bookapi/changeWeight",
                             "data": {
@@ -359,25 +362,43 @@ $(document).ready(function() {
                             "success": function(response) {
                                 api.ajax.reload();
 
-                                //序号更新
+                                //序号更新,权重更新
                                 var $span = $('#sortable span[data-key="' + fromIndex + '"]');
-
+                                var $li = $('#sortable li[data-key="' + fromIndex + '"]');
                                 if (fromIndex < toIndex) {
+                                    //从上往下的情况
+                                    //序号更新
                                     for (var i = (fromIndex + 1); i <= toIndex; i++) {
                                         var $ospan = $('#sortable span[data-key="' + i + '"]').html('【' + (i - 1) + '】');
                                         $ospan.attr('data-key', i - 1);
                                     }
+                                    //权重更新
+                                    $("#sortable li").each(function() {
+                                        var weight =Number($(this).attr('data-weight'));
+                                        if (weight>to) {
+                                           $(this).attr('data-weight',(weight+1)); 
+                                        }
+                                    });
+                                    
                                 } else {
+                                    //从下往上的情况
+                                    //序号更新
                                     for (var i = (fromIndex - 1); i >= toIndex; i--) {
                                         var $ospan = $('#sortable span[data-key="' + i + '"]').html('【' + (i + 1) + '】');
                                         $ospan.attr('data-key', i + 1);
                                     }
+                                    //权重更新
+                                    $("#sortable li").each(function() {
+                                        var weight =$(this).attr('data-weight'); 
+                                        $(this).attr('data-weight',(weight+1));  
+                                    });
                                 }
                                 //最后处理移动的
                                 $span.html('【' + toIndex + '】');
                                 $span.attr('data-key', toIndex);
+                                $li.attr('data-weight',to);
 
-                                
+
                             }
 
                         });

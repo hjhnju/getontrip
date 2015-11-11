@@ -234,7 +234,11 @@ $(document).ready(function() {
                     var action;
                     if ($(this).hasClass('publish')) {
                         if (!data.image) {
-                            toastr.warning('发布之前必须上传背景图片');
+                            toastr.warning('发布之前必须上传背景图片！');
+                            return;
+                        }
+                        if (!data.sights.length || !data.title || !data.author || !data.press || !data.url || !data.publish_time || !data.content_desc) {
+                            toastr.warning('发布之前请将信息补全！');
                             return;
                         }
                         action = 'PUBLISHED';
@@ -284,8 +288,8 @@ $(document).ready(function() {
                 //修改权重操作 
                 $('#editable button.weight').live('click', function(e) {
                     e.preventDefault();
-                    var nRow = $(this).parents('tr')[0];
-                    var data = oTable.api().row(nRow).data();
+                    /*var nRow = $(this).parents('tr')[0];
+                    var data = oTable.api().row(nRow).data();*/
                     if (!$('#form-sight').attr('data-sight_id')) {
                         toastr.warning('请先选择一个景点！');
                         $('#form-sight').focus();
@@ -294,8 +298,9 @@ $(document).ready(function() {
                     sight_name = $('#form-sight').val();
                     sight_id = $('#form-sight').attr('data-sight_id');
                     var params = {
-                        'sight_id': sight_id,
-                        'order': '`weight` asc'
+                        sight_id: sight_id,
+                        order: '`weight` asc',
+                        action: 'PUBLISHED'
                     };
                     //查询当前景点下的所有词条
                     $.ajax({
@@ -311,8 +316,9 @@ $(document).ready(function() {
                             var data = response.data.data;
                             var li = '';
                             var index = '';
+                            totalNum = data.length;
                             $.each(data, function(key, value) {
-                                li = li + '<li class="list-primary" data-id="' + value.id + '"><div class="task-title"><span class="key" data-key="' + (key + 1) + '">【' + (key + 1) + '】</span><span class="task-title-sp">' + value.title + '</span><span class="badge badge-sm label-info">' + sight_name + '</span></div></li>'
+                                li = li + '<li class="list-primary" data-id="' + value.id + '" data-weight="' + value.weight + '" data-key="' + (key + 1) + '"><div class="task-title"><span class="key" data-key="' + (key + 1) + '">【' + (key + 1) + '】</span><span class="task-title-sp">' + value.title + '</span><span class="badge badge-sm label-info">' + sight_name + '</span></div></li>'
                                 index = index + '<li>' + (key + 1) + '</li>';
                             });
 
@@ -321,14 +327,19 @@ $(document).ready(function() {
                             $("#sortable").sortable({
                                 //revert: true,
                                 start: function(d, li) {
-                                    oldNum = $(li.item).index() + 1
+                                    oldIndex = $(li.item).index() + 1;
+                                    oldNum = Number($('#sortable li[data-key="' + oldIndex + '"]').attr('data-weight'));
                                 },
                                 stop: function(d, li) {
-                                    newNum = $(li.item).index() + 1
+                                    newIndex = $(li.item).index() + 1;
+                                    newNum = Number($('#sortable li[data-key="' + newIndex + '"]').attr('data-weight'));
                                     if (oldNum === newNum) {
                                         return;
                                     }
-                                    changeWeight($(li.item).attr('data-id'), oldNum, newNum, sight_id);
+                                    if (oldIndex < newIndex) {
+                                        newNum++;
+                                    }
+                                    changeWeight($(li.item).attr('data-id'), oldNum, newNum, sight_id, oldIndex, newIndex);
                                 }
                             });
                             //弹出模态框
@@ -336,7 +347,7 @@ $(document).ready(function() {
                         }
                     });
 
-                    function changeWeight(id, from, to, sight_id) {
+                    function changeWeight(id, from, to, sight_id, fromIndex, toIndex) {
                         $.ajax({
                             "url": "/admin/bookapi/changeWeight",
                             "data": {
@@ -349,25 +360,45 @@ $(document).ready(function() {
                                 alert("服务器未正常响应，请重试");
                             },
                             "success": function(response) {
-                                //序号更新
-                                var $span = $('#sortable span[data-key="' + from + '"]');
+                                api.ajax.reload();
 
-                                if (from < to) {
-                                    for (var i = (from + 1); i <= to; i++) {
+                                //序号更新,权重更新
+                                var $span = $('#sortable span[data-key="' + fromIndex + '"]');
+                                var $li = $('#sortable li[data-key="' + fromIndex + '"]');
+                                if (fromIndex < toIndex) {
+                                    //从上往下的情况
+                                    //序号更新
+                                    for (var i = (fromIndex + 1); i <= toIndex; i++) {
                                         var $ospan = $('#sortable span[data-key="' + i + '"]').html('【' + (i - 1) + '】');
                                         $ospan.attr('data-key', i - 1);
                                     }
+                                    //权重更新
+                                    $("#sortable li").each(function() {
+                                        var weight =Number($(this).attr('data-weight'));
+                                        if (weight>to) {
+                                           $(this).attr('data-weight',(weight+1)); 
+                                        }
+                                    });
+                                    
                                 } else {
-                                    for (var i = (from - 1); i >= to; i--) {
+                                    //从下往上的情况
+                                    //序号更新
+                                    for (var i = (fromIndex - 1); i >= toIndex; i--) {
                                         var $ospan = $('#sortable span[data-key="' + i + '"]').html('【' + (i + 1) + '】');
                                         $ospan.attr('data-key', i + 1);
                                     }
+                                    //权重更新
+                                    $("#sortable li").each(function() {
+                                        var weight =$(this).attr('data-weight'); 
+                                        $(this).attr('data-weight',(weight+1));  
+                                    });
                                 }
                                 //最后处理移动的
-                                $span.html('【' + to + '】');
-                                $span.attr('data-key', to);
+                                $span.html('【' + toIndex + '】');
+                                $span.attr('data-key', toIndex);
+                                $li.attr('data-weight',to);
 
-                                api.ajax.reload();
+
                             }
 
                         });

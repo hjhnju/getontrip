@@ -10,12 +10,12 @@ class EditAction extends Yaf_Action_Abstract {
 
         $action = isset($_REQUEST['action'])?$_REQUEST['action']:'add';  
 
-        $postid = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+        $postid = isset($_REQUEST['id']) ? $_REQUEST['id'] : '0';
         if($postid==''){
             $this->getView()->assign('post', '');
+        }else{
+            $postInfo  = Book_Api::getBookInfo($postid); 
         }
-        $postInfo  = Book_Api::getBookInfo($postid); 
-
         $sightSelectedList=array();
         if(!empty($postInfo)){    
             //处理状态值

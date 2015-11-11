@@ -23,9 +23,17 @@ class IndexAction extends Yaf_Action_Abstract {
           $topicNum = Topic_Api::getTopicNum($arrInfo);
           $this->getView()->assign('topicNum', $topicNum); 
 
+          //查询已经开通的城市总数
+          $arrInfo = array(
+             'status'=>City_Type_Status::PUBLISHED
+          );
+          $cityNum = City_Api::getCityNum($arrInfo);
+          $this->getView()->assign('cityNum', $cityNum); 
+ 
+
           //查询用户总数
-         /* $sightNum = User_Api::getUserList($page,$pageSize,$arrParams = array());
-          $this->getView()->assign('sightNum', $sightNum); 
+         /* $userNum = User_Api::getUserList($page,$pageSize,$arrParams = array());
+          $this->getView()->assign('userNum', $userNum); 
 */
    }
 }

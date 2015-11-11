@@ -123,9 +123,10 @@ class Video_Logic_Video extends Base_Logic{
             $arrVideo = $objVideo->toArray();
             if(!empty($arrVideo)){
                 $temp['id']    = strval($arrVideo['id']);
-                $video = Video_Api::getVideoInfo($arrVideo['id']);
+                $video         = Video_Api::getVideoInfo($arrVideo['id']);
                 $temp['title'] = Base_Util_String::getHtmlEntity($video['title']);
                 $temp['image'] = Base_Image::getUrlByName($video['image']);
+                $temp['url']   = isset($video['url'])?trim($video['url']):'';
                 if($video['type'] == Video_Type_Type::ALBUM){
                     $temp['len'] = sprintf("合辑：共%d集",$video['len']);
                 }else{

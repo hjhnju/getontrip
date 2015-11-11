@@ -126,9 +126,9 @@ class Book_Logic_Book extends Base_Logic{
             $data = $objBook->toArray();
             if(!empty($data)){
                 $temp['id']           = strval($data['id']);
-                $temp['title']        = empty($data['title'])?'':"作者是：".Base_Util_String::getHtmlEntity($data['title']);
+                $temp['author']        = empty($data['author'])?'':"作者：".Base_Util_String::getHtmlEntity($data['author']);
                 $temp['image']        = Base_Image::getUrlByName($data['image']);
-                $temp['author']       = isset($data['author'])?trim($data['author']):'';
+                $temp['title']       = isset($data['title'])?trim($data['title']):'';
                 $temp['content_desc'] = Base_Util_String::getSubString($data['content_desc'], self::CONTENT_LEN);
                 $temp['url']          = Base_Config::getConfig('web')->root.'/api/book/detail?book='.$data['id'];
                 $arrRet[] = $temp;
@@ -342,7 +342,6 @@ class Book_Logic_Book extends Base_Logic{
                 }
                                          
             }
-            return $objBook->save();
         }
         
         $objBook   = new Book_Object_Book();

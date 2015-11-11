@@ -339,8 +339,10 @@ class Book_Logic_Book extends Base_Logic{
                 }else{
                     $objSightBook->weight = $this->getBookWeight($val['sight_id']);
                     $objSightBook->save();
-                }
-                                         
+                }                            
+            }
+            if($arrInfo['status'] == Book_Type_Status::BLACKLIST){
+                return $ret;
             }
         }
         

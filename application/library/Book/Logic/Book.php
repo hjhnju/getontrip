@@ -6,6 +6,8 @@ class Book_Logic_Book extends Base_Logic{
     
     const CONTENT_LEN = 100;
     
+    const DEFAULT_WEIGHT = 0;
+    
     protected $fields = array('title', 'author', 'press', 'content_desc', 'catalog', 'url', 'image', 'isbn', 'price_jd', 'price_mart', 'pages', 'status', 'create_time', 'update_time', 'create_user', 'update_user', 'publish_time');
     
     public function __construct(){
@@ -300,7 +302,7 @@ class Book_Logic_Book extends Base_Logic{
                 $objSightBook     = new Sight_Object_Book();
                 $objSightBook->sightId = $sightId;
                 $objSightBook->bookId  = $objBook->id;
-                $objSightBook->weight  = $this->getBookWeight($sightId);
+                $objSightBook->weight  = self::DEFAULT_WEIGHT;
                 $objSightBook->save();
             }                       
             $key += 1;
@@ -316,39 +318,29 @@ class Book_Logic_Book extends Base_Logic{
      */
     public function editBook($id,$arrInfo){
         $this->updateRedis($id);
-        if(isset($arrInfo['status'])&&($arrInfo['status'] == Book_Type_Status::BLACKLIST)){
+        if(isset($arrInfo['status'])){
             $arrSightIds = array();
             $weight      = array();
-            $objBook = new Book_Object_Book();
+            $objBook     = new Book_Object_Book();
             $objBook->fetch(array('id' => $id));
-            $objBook->status = Book_Type_Status::BLACKLIST;
-            $listSightBook = new Sight_List_Book();
+            $objBook->status = $arrInfo['status'];
+            $listSightBook   = new Sight_List_Book();
             $listSightBook->setFilter(array('book_id' => $id));
             $listSightBook->setPagesize(PHP_INT_MAX);
-            $arrSightBook  = $listSightBook->toArray();
+            $arrSightBook    = $listSightBook->toArray();
             foreach ($arrSightBook['list'] as $val){
                 $objSightBook = new Sight_Object_Book();
                 $objSightBook->fetch(array('id' => $val['id']));
                 
                 $redis = Base_Redis::getInstance();
-                $redis->hDel(Sight_Keys::getSightTongjiKey($val['sight_id']),Sight_Keys::BOOK);
-                
-                $weight[] = $objSightBook->weight;
-                $arrSightIds[] = $objSightBook->sightId;
-                $objSightBook->remove();                               
-            }
-            $arrSightIds = array_unique($arrSightIds);
-            foreach ($arrSightIds as $key => $id){
-                $listSightBook = new Sight_List_Book();
-                $listSightBook->setFilterString("`weight` >".$weight[$key]);
-                $listSightBook->setPagesize(PHP_INT_MAX);
-                $arrSightBook  = $listSightBook->toArray();
-                foreach ($arrSightBook['list'] as $val){
-                    $objSightBook = new Sight_Object_Video();
-                    $objSightBook->fetch(array('id' => $val['id']));
-                    $objSightBook->weight -= 1;
+                $redis->hDel(Sight_Keys::getSightTongjiKey($val['sight_id']),Sight_Keys::BOOK);                
+                if($arrInfo['status'] == Book_Type_Status::BLACKLIST){
+                    $ret   = $objSightBook->remove();
+                }else{
+                    $objSightBook->weight = $this->getBookWeight($val['sight_id']);
                     $objSightBook->save();
                 }
+                                         
             }
             return $objBook->save();
         }
@@ -523,6 +515,7 @@ class Book_Logic_Book extends Base_Logic{
         return $ret;
     }
     
+    //书籍发布时，其权重设置成发布的书籍中的最小
     public function getBookWeight($sightId){    
         $maxWeight  = 0;    
         $listSightBook = new Sight_List_Book();
@@ -530,6 +523,11 @@ class Book_Logic_Book extends Base_Logic{
         $listSightBook->setPagesize(PHP_INT_MAX);
         $arrSightBook  = $listSightBook->toArray();
         foreach ($arrSightBook['list'] as $val){
+            $objBook   = new Book_Object_Book();
+            $objBook->fetch(array('id' => $val['book_id']));
+            if($objBook->status !== Book_Type_Status::PUBLISHED){
+                continue;
+            }
             if($val['weight'] > $maxWeight){
                 $maxWeight = $val['weight'];
             }
@@ -716,10 +714,41 @@ class Book_Logic_Book extends Base_Logic{
      * 修改某景点下的书籍的权重
      * @param integer $sightId 景点ID
      * @param integer $id 书籍ID
-     * @param integer $to 需要排的位置
+     * @param integer $to 需要排的权重位置
      * @return boolean
      */
     public function changeWeight($sightId, $id, $to){
+        $strBookids = '';
+        $model = new BookModel();
+        $ret   = $model->getSightBook($sightId, Book_Type_Status::PUBLISHED);
+        $strBookids = implode(",",$ret);
+        
+        $objSightBook = new Sight_Object_Book();
+        $objSightBook->fetch(array('sight_id' => $sightId,'book_id' => $id));
+        $from       = $objSightBook->weight;
+        $objSightBook->weight = $to;        
+    
+        $listSightBook = new Sight_List_Book();
+        $filter ="`sight_id` =".$sightId." and `book_id` in (".$strBookids.") and `weight` >= $to and `weight` != $from";
+        $listSightBook->setFilterString($filter);       
+        $listSightBook->setPagesize(PHP_INT_MAX);
+        $arrSightBook = $listSightBook->toArray();
+        foreach ($arrSightBook['list'] as $key => $val){
+            $objTmpSightBook = new Sight_Object_Book();
+            $objTmpSightBook->fetch(array('id' => $val['id']));
+            $objTmpSightBook->weight += 1;
+            $objTmpSightBook->save();
+        }
+        $ret = $objSightBook->save();
+        return $ret;
+    }
+    
+    public function changeWeightOld($sightId, $id, $to){
+        $strBookids = '';
+        $model = new BookModel();
+        $ret   = $model->getSightBook($sightId, Book_Type_Status::PUBLISHED);
+        $strBookids = implode(",",$ret);
+    
         $objSightBook = new Sight_Object_Book();
         $objSightBook->fetch(array('sight_id' => $sightId,'book_id' => $id));
         $from       = $objSightBook->weight;
@@ -728,10 +757,11 @@ class Book_Logic_Book extends Base_Logic{
         $bAsc = ($to > $from)?1:0;
         $min  = min(array($from,$to));
         $max  = max(array($from,$to));
-        
+    
         $arrBookIds    = array();
         $listSightBook = new Sight_List_Book();
-        $listSightBook->setFilter(array('sight_id' => $sightId));        
+        $filter ="`sight_id` =".$sightId." and `book_id` in (".$strBookids.")";
+        $listSightBook->setFilterString($filter);
         $listSightBook->setPagesize(PHP_INT_MAX);
         $listSightBook->setOrder('weight asc');
         $arrSightBook = $listSightBook->toArray();

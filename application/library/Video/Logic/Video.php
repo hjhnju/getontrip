@@ -3,6 +3,8 @@ class Video_Logic_Video extends Base_Logic{
     
     const PAGE_SIZE = 20;
     
+    const DEFAULT_WEIGHT = 0;
+    
     protected $fields = array('sight_id', 'title', 'url', 'image', 'from', 'len', 'type', 'status', 'create_time', 'update_time', 'create_user', 'update_user');
     
     public function __construct(){
@@ -220,7 +222,7 @@ class Video_Logic_Video extends Base_Logic{
                 $objSightVideo = new Sight_Object_Video();
                 $objSightVideo->sightId = $sightId;
                 $objSightVideo->videoId = $objVideo->id;
-                $objSightVideo->weight  = $this->getAllVideoNum($sightId);
+                $objSightVideo->weight  = self::DEFAULT_WEIGHT;
                 $objSightVideo->save();
               
             }else{//删除上传了的图片，其它字段不改变
@@ -276,9 +278,13 @@ class Video_Logic_Video extends Base_Logic{
         $listSightVideo->setPagesize(PHP_INT_MAX);
         $arrSightVideo  = $listSightVideo->toArray();
         foreach ($arrSightVideo['list'] as $val){
-            if($val['weight'] > $maxWeight){
-                $maxWeight = $val['weight'];
-            }
+            $objVideo = new Video_Object_Video();
+            $objVideo->fetch(array('id' => $val['video_id']));
+            if($objVideo->status == Video_Type_Status::PUBLISHED){
+                if($val['weight'] > $maxWeight){
+                    $maxWeight = $val['weight'];
+                }
+            }            
         }
         return $maxWeight + 1;
     }
@@ -317,12 +323,12 @@ class Video_Logic_Video extends Base_Logic{
      */
     public function editVideo($id, $arrParam){
         $this->updateRedis($id);
-        if(isset($arrParam['status'])&&($arrParam['status'] == Video_Type_Status::BLACKLIST)){
+        if(isset($arrParam['status'])){
             $arrSightIds = array();
             $weight      = array();
             $objVideo = new Video_Object_Video();
             $objVideo->fetch(array('id' => $id));
-            $objVideo->status = Video_Type_Status::BLACKLIST;
+            $objVideo->status = $arrParam['status'];
             $listSightVideo = new Sight_List_Video();
             $listSightVideo->setFilter(array('video_id' => $id));
             $listSightVideo->setPagesize(PHP_INT_MAX);
@@ -330,24 +336,20 @@ class Video_Logic_Video extends Base_Logic{
             foreach ($arrSightVideo['list'] as $val){
                 $objSightVideo = new Sight_Object_Video();
                 $objSightVideo->fetch(array('id' => $val['id']));
-                $weight[] = $objSightVideo->weight;
-                $arrSightIds[] = $objSightVideo->sightId;
-                $objSightVideo->remove();
-            }
-            $arrSightIds = array_unique($arrSightIds);
-            foreach ($arrSightIds as $key => $id){
-                $listSightVideo = new Sight_List_Video();
-                $listSightVideo->setFilterString("`weight` >".$weight[$key]);
-                $listSightVideo->setPagesize(PHP_INT_MAX);
-                $arrSightVideo  = $listSightVideo->toArray();
-                foreach ($arrSightVideo['list'] as $val){
-                    $objSightVideo = new Sight_Object_Video();
-                    $objSightVideo->fetch(array('id' => $val['id']));
-                    $objSightVideo->weight -= 1;
+                
+                $redis = Base_Redis::getInstance();
+                $redis->hDel(Sight_Keys::getSightTongjiKey($val['sight_id']),Sight_Keys::VIDEO);
+                
+                if($arrParam['status'] == Video_Type_Status::BLACKLIST){
+                    $ret = $objSightVideo->remove();
+                }else{
+                    $objSightVideo->weight = $this->getAllVideoNum($val['sight_id']);
                     $objSightVideo->save();
                 }
             }
-            return $objVideo->save();
+            if($arrParam['status'] == Video_Type_Status::BLACKLIST){
+                return $ret;
+            }
         }
         
         $arrSight = array();
@@ -482,30 +484,28 @@ class Video_Logic_Video extends Base_Logic{
      * @return boolean
      */
     public function changeWeight($sightId,$id,$to){
+        $strVideoids = '';
+        $model = new VideoModel();
+        $ret   = $model->getSightVideo($sightId, Video_Type_Status::PUBLISHED);
+        $strVideoids = implode(",",$ret);
+        
         $objSightVideo = new Sight_Object_Video();
-        $objSightVideo->fetch(array('sight_id'=>$sightId,'video_id' => $id));
-        $from          = $objSightVideo->weight;
-        $objSightVideo->weight = $to;
+        $objSightVideo->fetch(array('sight_id' => $sightId,'video_id' => $id));
+        $from       = $objSightVideo->weight;
+        $objSightVideo->weight = $to;        
     
-        $bAsc = ($to > $from)?1:0;
-        $min  = min(array($from,$to));
-        $max  = max(array($from,$to));
         $listSightVideo = new Sight_List_Video();
+        $filter ="`sight_id` =".$sightId." and `video_id` in (".$strVideoids.") and `weight` >= $to and `weight` != $from";
+        $listSightVideo->setFilterString($filter);       
         $listSightVideo->setPagesize(PHP_INT_MAX);
-        $listSightVideo->setFilter(array('sight_id' => $sightId));
-        $listSightVideo->setOrder('weight asc');
         $arrSightVideo = $listSightVideo->toArray();
-        $arrSightVideo = array_slice($arrSightVideo['list'],$min-1+$bAsc,$max-$min);
-        $ret = $objSightVideo->save();
-        foreach ($arrSightVideo as $key => $val){
-            $objSightVideo->fetch(array('id' => $val['id']));
-            if($bAsc){
-                $objSightVideo->weight = $min + $key ;
-            }else{
-                $objSightVideo->weight = $max - $key;
-            }
-            $objSightVideo->save();
+        foreach ($arrSightVideo['list'] as $key => $val){
+            $objTmpSightVideo = new Sight_Object_Video();
+            $objTmpSightVideo->fetch(array('id' => $val['id']));
+            $objTmpSightVideo->weight += 1;
+            $objTmpSightVideo->save();
         }
+        $ret = $objSightVideo->save();
         return $ret;
     }
     

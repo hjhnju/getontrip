@@ -60,7 +60,7 @@ class Video_Logic_Video extends Base_Logic{
             if(!empty($arrParam)){
                 $filter = "1";
                 if(isset($arrParam['title'])){
-                    $filter = " and `title` like '".$arrParam['title']."%'";
+                    $filter .= " and `title` like '".$arrParam['title']."%'";
                     unset($arrParam['title']);
                 }
                 foreach ($arrParam as $key => $val){

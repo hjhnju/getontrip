@@ -158,6 +158,7 @@ $(document).ready(function() {
                 });
 
                 $("#upload-img").click(function(event) {
+                    imageHtml = $('.fileupload-preview').html();
                     $.ajaxFileUpload({
                         url: '/upload/pic?filename=' + $('#form-filename').val(),
                         secureuri: false,
@@ -165,7 +166,7 @@ $(document).ready(function() {
                         dataType: 'json',
                         success: function(res, status) {
                             $('#image').val(res.data.image);
-                            $('#imageView').html('<img src="/pic/' + res.data.image.getNewImgByImg(190, 80, 'f') + '"  alt=""/>');
+                            $('#imageView').html(imageHtml);
                             $('#imageView').removeClass('imageView');
                         },
                         error: function(data, status, e) {

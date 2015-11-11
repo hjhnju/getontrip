@@ -8,7 +8,7 @@
       </div>
       <div class="modal-body"> 
         <form class="cmxform form-horizontal tasi-form" id="Form" method="post" action="" novalidate="novalidate" >
-          <input type="hidden" name="filename" id="form-filename" value="{%if isset($post.formFilename)%}$formFilename{%/if%}"/>
+          <input type="hidden" name="filename" id="form-filename" value="{%if isset($formFilename)%}{%$formFilename%}{%/if%}"/>
            <div class="form-group"> 
                 <label for="" class="control-label col-lg-2">图片</label>
                 <div class="col-md-9">

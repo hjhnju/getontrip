@@ -31,7 +31,7 @@ $(document).ready(function() {
                             $('#imageView').html('<img src="/pic/' + res.data.image.getNewImgByImg(190, 80, 'f') + '"  alt=""/>');
                             $('#imageView').removeClass('imageView');
                             $('#crop-img').removeClass('hidden');
-                            localStorage.image = res.data.image;
+                            localStorage.videoimage = res.data.image;
                         },
                         error: function(data, status, e) {
                             alert(status.statusInfo);
@@ -41,7 +41,7 @@ $(document).ready(function() {
 
                 //确保图片上传后存上
                 $(window).bind('beforeunload', function() {
-                    if (localStorage.image) {
+                    if (localStorage.videoimage) {
                         return '等等!!你刚刚上传了图片，不点最下面的保存就丢了!';
                     }
                 });
@@ -84,6 +84,10 @@ $(document).ready(function() {
                     autoclose: true
                 });
 
+                $('#url').blur(function(event) {
+                    $('#view-link').attr('href',$(this).val());
+                });
+
                 //点击发布或者保存按钮
                 $('#Form button[type="submit"]').click(function(event) {
 
@@ -115,6 +119,10 @@ $(document).ready(function() {
                     $('#sight_alert span button').each(function() {
                         sight_id_array.push(Number($(this).attr('data-id')));
                     });
+                    if (!sight_id_array.length) {
+                        toastr.warning('景点不能为空');
+                        return false;
+                    }
                     param.sight_id = sight_id_array;
 
                     //param.type = Number(param.type);
@@ -139,7 +147,7 @@ $(document).ready(function() {
                         },
                         "success": function(response) {
                             if (response.status == 0) {
-                                localStorage.image = '';
+                                localStorage.videoimage = '';
                                 toastr.success('保存成功');
                                   if (url.indexOf('add') >= 0) {
                                     //resetForm();
@@ -159,10 +167,20 @@ $(document).ready(function() {
             // validate signup form on keyup and submit
             validate = $("#Form").validate({
                 rules: {
-                    title: "required"
+                    title: "required",
+                    url:'required',
+                    len:{
+                        required : function(){
+                            return (action === 'PUBLISHED')
+                        }
+                    }
                 },
                 messages: {
-                    title: "视频名称不能为空哦！"
+                    title: "视频名称不能为空哦！",
+                    url: "链接不能为空！",
+                    len:{
+                        required : '时长不能为空！'
+                    }
                 }
             });
 

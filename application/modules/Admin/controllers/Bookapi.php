@@ -20,11 +20,27 @@ class BookapiController extends Base_Controller_Api{
         $page=($start/$pageSize)+1;
          
         $arrInfo = isset($_REQUEST['params'])?$_REQUEST['params']: array(); 
+
+        if (isset($arrInfo['action'])) {
+            $arrInfo['status'] = $this->getStatusByActionStr($arrInfo['action']);
+        }
         
         $List = Book_Api::getBooks($page,$pageSize,$arrInfo);;
         
         foreach ($List['list'] as $key => $val){
-            $List['list'][$key]['statusName'] = Book_Type_Status::getTypeName($val["status"]); 
+            $item = $List['list'][$key];
+            $item['statusName'] = Book_Type_Status::getTypeName($val["status"]); 
+          
+            //若存在标签处理相关标签
+            $sightlist = $item['sights'];
+            for ($i=0; $i < count($sightlist); $i++) {  
+               if (isset($arrInfo['sight_id'])&&$arrInfo['sight_id']==$sightlist[$i]['id']) {
+                    $item['weight'] = $sightlist[$i]['weight'];
+               }
+            } 
+          
+            $List['list'][$key] = $item;
+            
         }
         $total = $List['total'];
         $retList['recordsTotal'] = $total;
@@ -72,7 +88,7 @@ class BookapiController extends Base_Controller_Api{
      */
     function saveAction(){
         $id =isset($_REQUEST['id'])?$_REQUEST['id']:'';
-         
+          
         if($id==''){
             return $this->ajaxError();
         }

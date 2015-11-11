@@ -184,6 +184,10 @@
                              toastr.warning('发布之前必须上传背景图片');
                              return;
                          }
+                        if (!data.sights.length||!data.title||!data.len||!data.url) {
+                            toastr.warning('发布之前请将信息补全！');
+                            return;
+                        }
                          action = 'PUBLISHED';
                      } else {
                          action = 'NOTPUBLISHED';
@@ -229,9 +233,9 @@
                  //修改权重操作 
                  $('#editable button.weight').live('click', function(e) {
                      e.preventDefault();
-                     var nRow = $(this).parents('tr')[0];
+                    /* var nRow = $(this).parents('tr')[0];
                      var data = oTable.api().row(nRow).data();
-
+*/
 
                      if (!$('#form-sight').attr('data-sight_id')) {
                          toastr.warning('请先选择一个景点！');
@@ -241,8 +245,9 @@
                      sight_name = $('#form-sight').val();
                      sight_id = $('#form-sight').attr('data-sight_id');
                      var params = {
-                         'sight_id': sight_id,
-                         'order': '`weight` asc'
+                         sight_id: sight_id,
+                         order: '`weight` asc',
+                         action : 'PUBLISHED'
                      };
                      //查询当前景点下的所有视频
                      $.ajax({
@@ -258,20 +263,23 @@
                              var data = response.data.data;
                              var li = '';
                              $.each(data, function(key, value) {
-                                 li = li + '<li class="list-primary" data-id="' + value.id + '"><div class="task-title"><span class="key" data-key="' + (key + 1) + '">【' + (key + 1) + '】</span><span class="task-title-sp">' + value.title + '</span><span class="badge badge-sm label-info">' + sight_name + '</span></div></li>'
+                                 li = li + '<li class="list-primary" data-id="' + value.id + '" data-weight="' + value.weight + '" data-key="' + (key + 1) + '"><div class="task-title"><span class="key" data-key="' + (key + 1) + '">【' + (key + 1) + '】</span><span class="task-title-sp">' + value.title + '</span><span class="badge badge-sm label-info">' + sight_name + '</span></div></li>'
                              });
                              $('#sortable').html(li);
                              $("#sortable").sortable({
                                  //revert: true,
                                  start: function(d, li) {
-                                     oldNum = $(li.item).index() + 1
+                                    oldIndex = $(li.item).index()+1; 
+                                    oldNum = Number($('#sortable li[data-key="' + oldIndex + '"]').attr('data-weight'));
                                  },
                                  stop: function(d, li) {
-                                     newNum = $(li.item).index() + 1
+                                      newIndex = $(li.item).index()+1; 
+                                    newNum = Number($('#sortable li[data-key="' + newIndex + '"]').attr('data-weight'));
+                                    
                                      if (oldNum === newNum) {
                                          return;
                                      }
-                                     changeWeight($(li.item).attr('data-id'), oldNum, newNum, sight_id);
+                                     changeWeight($(li.item).attr('data-id'), newNum, sight_id,oldIndex,newIndex);
                                  }
                              });
                              //弹出模态框
@@ -279,7 +287,7 @@
                          }
                      });
 
-                     function changeWeight(id, from, to, sight_id) {
+                     function changeWeight(id, to, sight_id,fromIndex,toIndex) {
                          $.ajax({
                              "url": "/admin/videoapi/changeWeight",
                              "data": {
@@ -294,23 +302,23 @@
                              "success": function(response) {
                                  api.ajax.reload();
 
-                                 //序号更新
-                                 var $span = $('#sortable span[data-key="' + from + '"]');
+                                //序号更新
+                                var $span = $('#sortable span[data-key="' + fromIndex + '"]');
 
-                                 if (from < to) {
-                                     for (var i = (from + 1); i <= to; i++) {
-                                         var $ospan = $('#sortable span[data-key="' + i + '"]').html('【' + (i - 1) + '】');
-                                         $ospan.attr('data-key', i - 1);
-                                     }
-                                 } else {
-                                     for (var i = (from - 1); i >= to; i--) {
-                                         var $ospan = $('#sortable span[data-key="' + i + '"]').html('【' + (i + 1) + '】');
-                                         $ospan.attr('data-key', i + 1);
-                                     }
-                                 }
-                                 //最后处理移动的
-                                 $span.html('【' + to + '】');
-                                 $span.attr('data-key', to);
+                                if (fromIndex < toIndex) {
+                                    for (var i = (fromIndex + 1); i <= toIndex; i++) {
+                                        var $ospan = $('#sortable span[data-key="' + i + '"]').html('【' + (i - 1) + '】');
+                                        $ospan.attr('data-key', i - 1);
+                                    }
+                                } else {
+                                    for (var i = (fromIndex - 1); i >= toIndex; i--) {
+                                        var $ospan = $('#sortable span[data-key="' + i + '"]').html('【' + (i + 1) + '】');
+                                        $ospan.attr('data-key', i + 1);
+                                    }
+                                }
+                                //最后处理移动的
+                                $span.html('【' + toIndex + '】');
+                                $span.attr('data-key', toIndex);
 
 
                              }

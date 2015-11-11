@@ -33,7 +33,7 @@ $(document).ready(function() {
                             $('#imageView').html('<img src="/pic/' + res.data.image.getNewImgByImg(190, 80, 'f') + '"  alt=""/>');
                             $('#imageView').removeClass('imageView');
                             $('#crop-img').removeClass('hidden');
-                            localStorage.image = res.data.image;
+                            localStorage.bookimage = res.data.image;
                         },
                         error: function(data, status, e) {
                             alert(status.statusInfo);
@@ -43,7 +43,7 @@ $(document).ready(function() {
 
                 //确保图片上传后存上
                 $(window).bind('beforeunload', function() {
-                    if (localStorage.image) {
+                    if (localStorage.bookimage) {
                         return '等等!!你刚刚上传了图片，不点最下面的保存就丢了!';
                     }
                 });
@@ -94,25 +94,33 @@ $(document).ready(function() {
                 $('#Form button[type="submit"]').click(function(event) {
 
                     action = $(this).attr('data-action');
-                    //先判断图片 
-                    if (action === 'PUBLISHED' && !$('#image').val()) {
-                        toastr.warning('发布之前必须上传图片');
-                        return false;
+                    if (action === 'PUBLISHED') {
+                        //先判断图片 
+                        if (!$('#image').val()) {
+                            toastr.warning('发布之前必须上传图片');
+                            return false;
+                        }
+                        if (!$("#summernote_content_desc").code()) {
+                            toastr.warning('内容摘要不能为空');
+                            return false;
+                        }
                     }
+
                 });
 
-            },init_summernote:function(){
+            },
+            init_summernote: function() {
                 //初始化内容摘要编辑器
                 $('#summernote_content_desc').summernote({
                     lang: "zh-CN",
                     height: 300,
-                    toolbar: [ 
-                        ['style', ['bold', 'clear']], 
+                    toolbar: [
+                        ['style', ['bold', 'clear']],
                         ['view', ['codeview']]
                     ],
                     onInit: function() {
                         $('#summernote_content_desc').code($('#content_desc-text').html());
-                    },  
+                    },
                     onChange: function(characters, editor, $editable) {
                         localStorage.content_desc = $('#summernote_content_desc').code();
                         if ($('#id').val()) {
@@ -130,13 +138,13 @@ $(document).ready(function() {
                 $('#summernote_catalog').summernote({
                     lang: "zh-CN",
                     height: 300,
-                    toolbar: [ 
-                        ['style', ['bold', 'clear']], 
+                    toolbar: [
+                        ['style', ['bold', 'clear']],
                         ['view', ['codeview']]
                     ],
                     onInit: function() {
                         $('#summernote_catalog').code($('#catalog-text').html());
-                    },  
+                    },
                     onChange: function(characters, editor, $editable) {
                         localStorage.catalog = $('#summernote_catalog').code();
                         if ($('#id').val()) {
@@ -168,14 +176,18 @@ $(document).ready(function() {
                     $('#sight_alert span button').each(function() {
                         sight_id_array.push(Number($(this).attr('data-id')));
                     });
+                    if (!sight_id_array.length) {
+                        toastr.warning('景点不能为空');
+                        return false;
+                    }
                     param.sight_id = sight_id_array;
                     param.content_desc = $("#summernote_content_desc").code();
                     param.catalog = $("#summernote_catalog").code();
 
-                    
+
                     param.action = action;
 
-                    
+
                     //按钮disabled
                     $('#Form button[type="submit"]').btnDisable();
                     $.ajax({
@@ -188,10 +200,11 @@ $(document).ready(function() {
                             $('#Form button[type="submit"]').btnEnable();
                         },
                         "success": function(response) {
-                            if (response.status == 0) { 
+                            if (response.status == 0) {
+                                localStorage.bookimage = '';
                                 localStorage.content_desc = '';
-                                localStorage.catalog='';
-                                toastr.success('保存成功'); 
+                                localStorage.catalog = '';
+                                toastr.success('保存成功');
                             } else {
                                 alert(response.statusInfo);
                             }
@@ -201,21 +214,50 @@ $(document).ready(function() {
 
                 }
             });
+
             // validate signup form on keyup and submit
             validate = $("#Form").validate({
                 rules: {
                     title: "required",
-                    isbn: {
-                        required: true
-                    } 
+                    author: {
+                        required: function() {
+                            return (action === 'PUBLISHED')
+                        }
+                    },
+                    press: {
+                        required: function() {
+                            return (action === 'PUBLISHED')
+                        }
+                    },
+                    url: {
+                        required: function() {
+                            return (action === 'PUBLISHED')
+                        }
+                    },
+                    publish_time: {
+                        required: function() {
+                            return (action === 'PUBLISHED')
+                        }
+                    }
                 },
                 messages: {
                     title: "书籍名称不能为空哦！",
-                    isbn: "ISBN不能为空！" 
+                    author: {
+                        required: "作者不能为空！"
+                    },
+                    press: {
+                        required: "出版社不能为空！"
+                    },
+                    url: {
+                        required: "链接不能为空！"
+                    },
+                    publish_time: {
+                        required: "出版时间不能为空！"
+                    }
                 }
             });
-
         }
+
         return {
             init: function() {
                 validations();

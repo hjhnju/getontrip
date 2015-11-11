@@ -56,6 +56,7 @@ class  TopicapiController extends Base_Controller_Api{
                     $item['sight_name']  = $sightArray[$sight_id];
                 }
                 $sightlist[$j] = $item;
+
             }
             $tmpList[$i]['sights'] = $sightlist;
             
@@ -98,9 +99,13 @@ class  TopicapiController extends Base_Controller_Api{
                 $tmpList[$i]['tagList']['generalTag'] = $generalTag; 
                 $tmpList[$i]['tagList']['classifyTag'] = $classifyTag; 
             }
+
+
+
             
-         }
-       
+          
+        }
+         
         $List['list']=$tmpList;
         
         $retList['recordsFiltered'] =$List['total'];

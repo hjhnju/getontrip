@@ -23,6 +23,10 @@ class VideoapiController extends Base_Controller_Api{
          
         
          $arrParam = isset($_REQUEST['params'])?$_REQUEST['params']:array();
+
+         if (isset($arrParam['action'])) {
+            $arrParam['status'] = $this->getStatusByActionStr($arrParam['action']);
+         }
         
          $List =Video_Api::getVideos($page,$pageSize,$arrParam);
         

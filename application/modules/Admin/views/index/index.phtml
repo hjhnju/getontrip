@@ -42,10 +42,32 @@
 			</div>
 			<!-- END PAGE HEADER-->
 			<!-- BEGIN DASHBOARD STATS -->  
-		    <div class="row state-overview"> 
+		    <div class="row state-overview">  
+            <div class="col-lg-3 col-sm-6">
+                <section class="panel">
+                    <div class="symbol blue">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="value">
+                        <h1 class=" count3" id="userNum"></h1>
+                        <p>用户数</p>
+                    </div>
+                </section>
+            </div>
             <div class="col-lg-3 col-sm-6">
                 <section class="panel">
                     <div class="symbol terques">
+                        <i class="fa fa-building-o"></i>
+                    </div>
+                    <div class="value">
+                        <h1 class="count4"  id="cityNum">{%$cityNum%}</h1>
+                        <p>城市数(已发布)</p>
+                    </div>
+                </section>
+            </div> 
+            <div class="col-lg-3 col-sm-6">
+                <section class="panel">
+                    <div class="symbol red">
                         <i class="fa fa-connectdevelop"></i>
                     </div>
                     <div class="value">
@@ -62,28 +84,6 @@
                     <div class="value">
                         <h1 class=" count3" id="sightNum">{%$sightNum%}</h1>
                         <p>总景点数(已发布)</p>
-                    </div>
-                </section>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <section class="panel">
-                    <div class="symbol red">
-                        <i class="fa fa-forumbee"></i>
-                    </div>
-                    <div class="value">
-                        <h1 class=" count4"></h1>
-                        <p>主题数(已发布)</p>
-                    </div>
-                </section>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <section class="panel">
-                    <div class="symbol blue">
-                        <i class="fa fa-user"></i>
-                    </div>
-                    <div class="value">
-                        <h1 class=" count3" id="sightNum"></h1>
-                        <p>用户数</p>
                     </div>
                 </section>
             </div>

@@ -362,7 +362,7 @@ $(document).ready(function() {
                             "success": function(response) {
                                 api.ajax.reload();
 
-                                //序号更新,权重更新
+                                //序号更新, 权重更新
                                 var $span = $('#sortable span[data-key="' + fromIndex + '"]');
                                 var $li = $('#sortable li[data-key="' + fromIndex + '"]');
                                 if (fromIndex < toIndex) {
@@ -371,32 +371,39 @@ $(document).ready(function() {
                                     for (var i = (fromIndex + 1); i <= toIndex; i++) {
                                         var $ospan = $('#sortable span[data-key="' + i + '"]').html('【' + (i - 1) + '】');
                                         $ospan.attr('data-key', i - 1);
+
+                                        var $oli = $('#sortable li[data-key="' + i + '"]');
+                                        $oli.attr('data-key', i - 1);
                                     }
                                     //权重更新
                                     $("#sortable li").each(function() {
-                                        var weight =Number($(this).attr('data-weight'));
-                                        if (weight>to) {
-                                           $(this).attr('data-weight',(weight+1)); 
+                                        var weight = Number($(this).attr('data-weight'));
+                                        if (weight >= to) {
+                                            $(this).attr('data-weight', (weight + 1));
                                         }
                                     });
-                                    
+
                                 } else {
                                     //从下往上的情况
                                     //序号更新
                                     for (var i = (fromIndex - 1); i >= toIndex; i--) {
                                         var $ospan = $('#sortable span[data-key="' + i + '"]').html('【' + (i + 1) + '】');
                                         $ospan.attr('data-key', i + 1);
+
+                                        var $oli = $('#sortable li[data-key="' + i + '"]');
+                                        $oli.attr('data-key', i + 1);
                                     }
                                     //权重更新
                                     $("#sortable li").each(function() {
-                                        var weight =$(this).attr('data-weight'); 
-                                        $(this).attr('data-weight',(weight+1));  
+                                        var weight = Number($(this).attr('data-weight'));
+                                        $(this).attr('data-weight', (weight + 1));
                                     });
                                 }
                                 //最后处理移动的
                                 $span.html('【' + toIndex + '】');
                                 $span.attr('data-key', toIndex);
-                                $li.attr('data-weight',to);
+                                $li.attr('data-key', toIndex);
+                                $li.attr('data-weight', to);
 
 
                             }

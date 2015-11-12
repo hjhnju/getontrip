@@ -200,6 +200,7 @@ $(document).ready(function() {
                             $('#Form button[type="submit"]').btnEnable();
                         },
                         "success": function(response) {
+                            $('#Form button[type="submit"]').btnEnable();
                             if (response.status == 0) {
                                 localStorage.bookimage = '';
                                 localStorage.content_desc = '';
@@ -208,7 +209,6 @@ $(document).ready(function() {
                             } else {
                                 alert(response.statusInfo);
                             }
-                            $('#Form button[type="submit"]').btnEnable();
                         }
                     });
 

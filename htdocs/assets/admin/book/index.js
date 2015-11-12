@@ -63,6 +63,13 @@ $(document).ready(function() {
                 }, {
                     "data": 'title'
                 }, {
+                     "data": function(e) {
+                         if (e.image) {
+                             return '<a href="/pic/' + e.image + '" target="_blank"><img alt="" src="' + e.image.getNewUrlByUrl(80, 22, 'f') + '"/></a>';
+                         }
+                         return '暂无';
+                     }
+                 }, {
                     "data": 'author'
                 }, {
                     "data": 'press'

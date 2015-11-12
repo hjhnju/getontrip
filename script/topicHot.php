@@ -117,8 +117,8 @@ function getHot($topic,$time,$type='LATE'){
     $listComment->setPage(1);
     $listComment->setPagesize(1);
     $arrComment = $listComment->toArray();
-    $commentTime     = isset($arrComment['list'][0])?$arrComment['list'][0]['create_time']:$publishTime;
-    
+    $commentTime     = isset($arrComment['list'][0])?$arrComment['list'][0]['create_time']:$publishTime;    
+
     $hot  = ($collectTopicNum + $commentNum + log10($topicUv+1) + 1)/((time()-$publishTime)/(3600*100)+(time()-$collectTime)/(3600*100)+(time()-$commentTime)/(3600*100)+1);
     return $hot;
 }

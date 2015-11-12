@@ -151,8 +151,7 @@ class Search_Logic_Search{
                     $arrTemp[$key]['num']  = trim($topic['total']);
                 }else{
                     $arrTemp[$key]['num']  = $logicSearchLabel->getLabeledNum($val['id']);
-                }
-               
+                }               
             }
             $arrRet['label'] = $arrTemp;
             if(empty($labelId)){
@@ -160,11 +159,11 @@ class Search_Logic_Search{
             }
         }
         $label = Tag_Api::getTagInfo($labelId);        
-        if($label['name'] == '热门内容'){
+        if(isset($label['name']) && ($label['name'] == '热门内容')){
             $listTopic = new Topic_List_Topic();
             $listTopic->setPage($page);
             $listTopic->setPagesize($pageSize);
-            $listTopic->setOrder('`hot1` desc');
+            $listTopic->setOrder('`hot3` desc, `create_time` desc');
             $listTopic->toArray();
             $arrData = $listTopic->toArray();
             foreach ($arrData['list'] as $key => $val){

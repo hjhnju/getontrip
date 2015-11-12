@@ -970,7 +970,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $listTopic->setFilter(array('status' => Topic_Type_Status::PUBLISHED));
         $listTopic->setPage($page);
         $listTopic->setPagesize($pageSize);
-        $listTopic->setOrder('`hot1` desc');
+        $listTopic->setOrder('`hot3` desc');
         return $listTopic->toArray();
     }
 }

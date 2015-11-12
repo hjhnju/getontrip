@@ -58,11 +58,7 @@ class ApiController extends Base_Controller_Api{
         if(empty($userId)){
             return $this->ajaxError(User_RetCode::SESSION_NOT_LOGIN,User_RetCode::getMsg(User_RetCode::SESSION_NOT_LOGIN));
         }
-        $type     = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
-        if(empty($type)){
-            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
-        }
-        $ret      = $this->logicUser->getUserInfo($userId, $type);
+        $ret      = $this->logicUser->getUserInfo($userId);
         $this->ajax($ret);
     }
     
@@ -70,7 +66,6 @@ class ApiController extends Base_Controller_Api{
      * 接口4：/api/user/addinfo
      * 用户信息添加接口
      * @param integer userid，用户ID
-     * @param integer type,第三方登录类型，1:qq,2:weixin,3:weibo
      * @param string  nick_name,昵称
      * @param string  image,图像
      * @param integer sex,性别: 0男性,1:女性,2表示还不确定
@@ -82,21 +77,17 @@ class ApiController extends Base_Controller_Api{
         if(empty($userId)){
             return $this->ajaxError(User_RetCode::SESSION_NOT_LOGIN,User_RetCode::getMsg(User_RetCode::SESSION_NOT_LOGIN));
         }
-        $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         $image      = isset($_REQUEST['image'])?trim($_REQUEST['image']):'';
         $name       = isset($_REQUEST['nick_name'])?trim($_REQUEST['nick_name']):'';
         $sex        = isset($_REQUEST['sex'])?intval($_REQUEST['sex']):'';
         $city       = isset($_REQUEST['city'])?trim($_REQUEST['city']):'';
-        if(empty($type)){
-            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
-        }
         $arrParam = array(
             'nick_name' => $name,
             'image'     => $image,
             'sex'       => $sex,
             'city'      => $city,
         );
-        $ret        = $this->logicUser->addUserInfo($userId, $type, $arrParam);
+        $ret        = $this->logicUser->addUserInfo($userId, $arrParam);
         return $this->ajax(strval($ret));
     }
     
@@ -115,20 +106,16 @@ class ApiController extends Base_Controller_Api{
         if(empty($userId)){
             return $this->ajaxError(User_RetCode::SESSION_NOT_LOGIN,User_RetCode::getMsg(User_RetCode::SESSION_NOT_LOGIN));
         }
-        $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         $name       = isset($_REQUEST['nick_name'])?trim($_REQUEST['nick_name']):'';
         $sex        = isset($_REQUEST['sex'])?intval($_REQUEST['sex']):'';
         $city       = isset($_REQUEST['city'])?trim($_REQUEST['city']):'';
         $file       = isset($_FILES['file'])?$_FILES['file']:'';
-        if(empty($type)){
-            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
-        }
         $arrParam = array(
             'nick_name' => $name,
             'sex'       => $sex,
             'city'      => $city,
         );
-        $ret        = $this->logicUser->editUserInfo($userId, $type, $arrParam, $file);
+        $ret        = $this->logicUser->editUserInfo($userId,$arrParam, $file);
         return $this->ajax(strval($ret));
     }
     

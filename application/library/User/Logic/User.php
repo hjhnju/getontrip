@@ -48,7 +48,7 @@ class User_Logic_User extends Base_Logic{
      * 获取用户信息
      * @return array
      */
-    public function getUserInfo($userId, $type){
+    public function getUserInfo($userId){
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId));
         $arrRet   =  $objUser->toArray();
@@ -71,9 +71,9 @@ class User_Logic_User extends Base_Logic{
      * @param array $arrParam
      * @return boolean
      */
-    public function editUserInfo($userId, $type, $arrParam, $file = ''){
+    public function editUserInfo($userId,$arrParam, $file = ''){
         $objUser  = new User_Object_User();
-        $objUser->fetch(array('id' => $userId,'type' => $type));
+        $objUser->fetch(array('id' => $userId));
         foreach ($arrParam as $key => $val){
             if(!empty($val)){
                 $key           = $this->getprop($key);                
@@ -114,9 +114,9 @@ class User_Logic_User extends Base_Logic{
      * @param array $arrParam
      * @return boolean
      */
-    public function addUserInfo($userId, $type, $arrParam){
+    public function addUserInfo($userId,$arrParam){
         $objUser  = new User_Object_User();
-        $objUser->fetch(array('id' => $userId,'type' => $type));
+        $objUser->fetch(array('id' => $userId));
         if(!empty($objUser->nickName) || !empty($objUser->image)){
             return false;
         }

@@ -68,12 +68,13 @@ foreach ($arrTopic as $topic){
     
     $objTopic        = new Topic_Object_Topic();
     $objTopic->fetch(array('id' => $topic));
-    $objTopic->hot1  = $hot1;
-    $objTopic->hot2  = $hot2;
-    $objTopic->hot3  = $hot3;
-    $objTopic->save();
+    if(!empty($objTopic->id)){
+        $objTopic->hot1  = $hot1;
+        $objTopic->hot2  = $hot2;
+        $objTopic->hot3  = $hot3;
+        $objTopic->save();
+    }
 }
-
 function getHot($topic,$time,$type='LATE'){
     $logicCollect = new Collect_Logic_Collect();
     $logicComment = new Comment_Logic_Comment();

@@ -147,7 +147,8 @@ class Search_Logic_Search{
                 $arrTemp[$key]['id']   = trim($val['id']);
                 $arrTemp[$key]['name'] = trim($val['name']);
                 if($arrTemp[$key]['name'] == '热门内容'){
-                    $topic = Topic_Api::getHotTopic(1, PHP_INT_MAX);
+                    //$topic = Topic_Api::getHotTopic(1, PHP_INT_MAX);
+                    $topic['total'] = "224";
                     $arrTemp[$key]['num']  = trim($topic['total']);
                 }else{
                     $arrTemp[$key]['num']  = $logicSearchLabel->getLabeledNum($val['id']);

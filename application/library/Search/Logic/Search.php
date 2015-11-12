@@ -131,10 +131,11 @@ class Search_Logic_Search{
      */
     public function label($labelId, $page, $pageSize){
         $arrRet    = array();
-        $arrData   = array();        
+        $arrData   = array(); 
+        $oss       = Oss_Adapter::getInstance();
         $arrRet['image']     = Base_Image::getUrlByName(Base_Config::getConfig('searchlabel')->image);
-        //$data                = file_get_contents(Base_Config::getConfig('web')->root.$arrRet['image']);
-        //$arrRet['image']    .= sprintf("?%s",md5(strlen($data)));
+        $sign                = $oss->getMetaLen(Base_Config::getConfig('searchlabel')->image);
+        $arrRet['image']    .= sprintf("?%s",md5($sign));
         if($page == 1){
             $listTag = new Tag_List_Tag();
             $listTag->setFilter(array('type' => Tag_Type_Tag::SEARCH));
@@ -147,9 +148,8 @@ class Search_Logic_Search{
                 $arrTemp[$key]['id']   = trim($val['id']);
                 $arrTemp[$key]['name'] = trim($val['name']);
                 if($arrTemp[$key]['name'] == '热门内容'){
-                    //$topic = Topic_Api::getHotTopic(1, PHP_INT_MAX);
-                    $topic['total'] = "224";
-                    $arrTemp[$key]['num']  = trim($topic['total']);
+                    $logicTopic            = new Topic_Logic_Topic();
+                    $arrTemp[$key]['num']  = strval($logicTopic->getHotTopicNum());
                 }else{
                     $arrTemp[$key]['num']  = $logicSearchLabel->getLabeledNum($val['id']);
                 }               

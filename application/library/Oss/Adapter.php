@@ -119,6 +119,17 @@ class Oss_Adapter {
         return null;
     }
     
+    public function getMetaLen($object){
+        $response = $this->obj->get_object_meta($this->bucket, $object);
+        if ($response->status == 200) {
+            $header = $response->header;
+            if(isset($header['content-length'])){
+                return $header['content-length'];
+            }            
+        }
+        return null;
+    }
+    
     /**
      * 删除Oss上文件对象
      * @param string $object

@@ -16,6 +16,9 @@ class Topic_Keys {
     //根据话题ID，缓存话题内容，不包含统计数据
     const REDIS_TOPIC_CONTENT = 'topic_%s';
     
+    //热门话题数缓存
+    const REDIS_HOT_TOPIC_NUM = 'hot_topic_num';
+    
     public static function getTopicVisitKey(){
         return self::REDIS_TOPIC_VISIT_KEY;
     }
@@ -38,5 +41,9 @@ class Topic_Keys {
     
     public static function getTopicContentKey($topicId){
         return sprintf(self::REDIS_TOPIC_CONTENT,$topicId);
+    }
+    
+    public static function  getHotTopicNumKey(){
+        return self::REDIS_HOT_TOPIC_NUM;
     }
 }

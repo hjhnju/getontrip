@@ -663,7 +663,7 @@ class Topic_Logic_Topic extends Base_Logic{
                 $listSightTag->setPagesize(PHP_INT_MAX);
                 $arrSightTag  = $listSightTag->toArray();
                 foreach ($arrSightTag['list'] as $data){
-                    $redis->hDel(Sight_Keys::getSightTongjiKey($data['sight_id']), Sight_Keys::TOPIC);
+                    $this->updateTopicRedis(self::ADD_TOPIC, $data['sight_id'], $objTopic->id);
                 }
             }
         }
@@ -923,10 +923,10 @@ class Topic_Logic_Topic extends Base_Logic{
      */
     public function updateTopicRedis($type,$sightId,$topicId){
         //让缓存话题数据失效
-        $redis = Base_Redis::getInstance();
-        
+        $redis = Base_Redis::getInstance();        
         $redis->delete(Sight_Keys::getSightTopicKey($sightId));
         $redis->hDel(Sight_Keys::getSightTongjiKey($sightId), Sight_Keys::TOPIC);
+        $redis->delete(Topic_Keys::getHotTopicNumKey());
     }
     
     public function getTopicNumByTag($tagId, $sightId){
@@ -972,5 +972,18 @@ class Topic_Logic_Topic extends Base_Logic{
         $listTopic->setPagesize($pageSize);
         $listTopic->setOrder('`hot3` desc');
         return $listTopic->toArray();
+    }
+    
+    public function getHotTopicNum(){
+        $redis = Base_Redis::getInstance();
+        $count = $redis->get(Topic_Keys::getHotTopicNumKey());
+        if(!empty($count)){
+            return $count;
+        }
+        $listTopic = new Topic_List_Topic();
+        $listTopic->setFilter(array('status' => Topic_Type_Status::PUBLISHED));
+        $count     = $listTopic->getTotal();
+        $redis->set(Topic_Keys::getHotTopicNumKey(),$count);
+        return $count;
     }
 }

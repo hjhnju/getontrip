@@ -88,8 +88,8 @@ class Search_Logic_Label extends Base_Logic{
             }
             $List['list'][$index]['type'] = $data['type'];
             if($val['name'] == '热门内容'){
-                $topic = Topic_Api::getHotTopic(1, PHP_INT_MAX);
-                $List['list'][$index]['obj_num'] = $topic['total'];
+                $logicTopic = new Topic_Logic_Topic();
+                $List['list'][$index]['obj_num'] = $logicTopic->getHotTopicNum();
             }else{
                 $List['list'][$index]['obj_num'] = count($arrObjInfo);
             }

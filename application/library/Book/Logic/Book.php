@@ -54,7 +54,7 @@ class Book_Logic_Book extends Base_Logic{
                     $arrBook['list'][] = $arrTmpBook['id'];
                 }
             }          
-           $arrBook['page'] = $page;
+            $arrBook['page'] = $page;
             $arrBook['pagesize'] = $pageSize;
             $arrBook['pageall'] = ceil(count($arrBook['list'])/$pageSize);
             $arrBook['total'] = count($arrBook['list']);

@@ -99,6 +99,11 @@ class Book_Logic_Book extends Base_Logic{
                 $temp['weight'] = $data['weight']; 
                 $arrRet['list'][$key]['sights'][] = $temp;
             }
+            if(empty($arrRet['list'][$key]['content_desc'])){
+                $arrRet['list'][$key]['has_content'] = true;
+            }else{
+                $arrRet['list'][$key]['has_content'] = false;
+            }
             unset($arrRet['list'][$key]['content_desc']);
             unset($arrRet['list'][$key]['catalog']);
         }

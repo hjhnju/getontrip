@@ -237,7 +237,7 @@ $(document).ready(function() {
                             toastr.warning('发布之前必须上传背景图片！');
                             return;
                         }
-                        if (!data.sights.length || !data.title || !data.author || !data.press || !data.url || !data.publish_time || !data.content_desc) {
+                        if (!data.sights.length || !data.title || !data.author || !data.press || !data.url || !data.publish_time || !data.has_content) {
                             toastr.warning('发布之前请将信息补全！');
                             return;
                         }

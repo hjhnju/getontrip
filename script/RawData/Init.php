@@ -61,21 +61,26 @@ if($type == 'Wiki' || $type == 'All'){
         }
     }
 }elseif($type == 'Video'){
-    //删除视频
-     $listVideo = new Video_List_Video();
-     if($sightId !== -1){
-         $listVideo->setFilter(array('sight_id' => $sightId));
-     }
-     $listVideo->setPagesize(PHP_INT_MAX);
-     $arrVideo = $listVideo->toArray();
-     foreach ($arrVideo['list'] as $val){
-         if(!empty($val['image'])){
-             $ret = $logic->delPic($val['image']);
-         }
-         $objVideo = new Video_Object_Video();
-         $objVideo->fetch(array('id' => $val['id']));
-         $objVideo->remove();
-     }
+     //删除视频
+    $listSightVideo = new Sight_List_Video();
+    if($sightId !== -1){
+        $listSightVideo->setFilter(array('sight_id' => $sightId));
+    }
+    $listSightVideo->setPagesize(PHP_INT_MAX);
+    $arrSightVideo  = $listSightVideo->toArray();
+    foreach ($arrSightVideo['list'] as $data){
+        $objSightVideo = new Sight_Object_Video();
+        $objSightVideo->fetch(array('id' => $data['id']));
+        $videoId = $objSightVideo->videoId;
+        $objSightVideo->remove();
+    
+        $objVideo = new Video_Object_Video();
+        $objVideo->fetch(array('id' => $videoId));
+        if(!empty($val['image'])){
+            $ret = $logic->delPic($val['image']);
+        }
+        $objVideo->remove();
+    }
 }else{
      //删除书籍
     $listSightBook = new Sight_List_Book();

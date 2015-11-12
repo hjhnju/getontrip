@@ -31,6 +31,9 @@ class ApiController extends Base_Controller_Api {
         $arrRet['cityid'] = strval($sight['city_id']);
         $arrRet['name']   = $sight['name'];
         $arrRet['image']  = Base_Image::getUrlByName($sight['image']);
+        $logicCollect     = new Collect_Logic_Collect();
+        $ret              = $logicCollect->checkCollect(Collect_Type::SIGHT, $sightId);
+        $arrRet['isfav']  = $ret?"1":"0";
         $arrRet['tags']   = $logic->getTagsBySight($sightId);
         $this->ajax($arrRet);
     }

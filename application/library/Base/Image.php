@@ -109,7 +109,8 @@ class Base_Image {
         }
         $imgParams = Base_Image::getImgParams($oldname);
         
-        $wholeUrl=Base_Image::getWholeUrlByName($oldname);
+        //$wholeUrl=Base_Image::getWholeUrlByName($oldname);
+        $wholeUrl = Base_Config::getConfig('web')->root.$oldname;
          
         $imagick = new Base_Image_Imagick();
         $image = $imagick->open($wholeUrl);

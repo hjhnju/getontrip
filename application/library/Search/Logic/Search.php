@@ -133,8 +133,8 @@ class Search_Logic_Search{
         $arrRet    = array();
         $arrData   = array();        
         $arrRet['image']     = Base_Image::getUrlByName(Base_Config::getConfig('searchlabel')->image);
-        $data                = file_get_contents(Base_Config::getConfig('web')->root.$arrRet['image']);
-        $arrRet['image']    .= sprintf("?%s",md5(strlen($data)));
+        //$data                = file_get_contents(Base_Config::getConfig('web')->root.$arrRet['image']);
+        //$arrRet['image']    .= sprintf("?%s",md5(strlen($data)));
         if($page == 1){
             $listTag = new Tag_List_Tag();
             $listTag->setFilter(array('type' => Tag_Type_Tag::SEARCH));

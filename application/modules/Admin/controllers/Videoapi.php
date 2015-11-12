@@ -31,13 +31,18 @@ class VideoapiController extends Base_Controller_Api{
          $List =Video_Api::getVideos($page,$pageSize,$arrParam);
         
          $tmpList = $List['list'];
-         for($i=0; $i<count($tmpList); $i++) {  
-             
+         for($i=0; $i<count($tmpList); $i++) {   
             //处理状态
-             $tmpList[$i]['typeName']   = Video_Type_Type::getTypeName($tmpList[$i]["type"]);
-             $tmpList[$i]['statusName'] = Video_Type_Status::getTypeName($tmpList[$i]["status"]);
+            $tmpList[$i]['typeName']   = Video_Type_Type::getTypeName($tmpList[$i]["type"]);
+            $tmpList[$i]['statusName'] = Video_Type_Status::getTypeName($tmpList[$i]["status"]);
              
-            
+            //若查询参数包含景点id  处理景点权重
+            $sightlist = $tmpList[$i]['sights'];
+            for ($j=0; $j < count($sightlist); $j++) {  
+               if (isset($arrParam['sight_id'])&&$arrParam['sight_id']==$sightlist[$j]['id']) {
+                    $tmpList[$i]['weight'] = $sightlist[$j]['weight'];
+               }
+            }  
          }
          $List['list']=$tmpList;
 

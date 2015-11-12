@@ -32,7 +32,7 @@ class BookapiController extends Base_Controller_Api{
             $item = $List['list'][$key];
             $item['statusName'] = Book_Type_Status::getTypeName($val["status"]); 
           
-            //若存在标签处理相关标签
+            //若查询参数包含景点id  处理景点权重
             $sightlist = $item['sights'];
             for ($i=0; $i < count($sightlist); $i++) {  
                if (isset($arrInfo['sight_id'])&&$arrInfo['sight_id']==$sightlist[$i]['id']) {

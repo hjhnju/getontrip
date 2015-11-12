@@ -146,6 +146,7 @@ $(document).ready(function() {
                             $('#Form button[type="submit"]').btnEnable();
                         },
                         "success": function(response) {
+                            $('#Form button[type="submit"]').btnEnable();
                             if (response.status == 0) {
                                 localStorage.videoimage = '';
                                 toastr.success('保存成功');
@@ -158,7 +159,6 @@ $(document).ready(function() {
                             } else {
                                 alert(response.statusInfo);
                             }
-                            $('#Form button[type="submit"]').btnEnable();
                         }
                     });
 

@@ -62,7 +62,7 @@ class CityModel extends BaseModel{
         $filter = $filterInfo . $filterMeta . " city_meta.`cityid` = 0 AND city_meta.`provinceid` != 0";
         $sql  = 'SELECT count(*) FROM `city` right join `city_meta` ON city_meta.`id` = city.`id` where '.$filter;
         if(!empty($str)){
-            $sql .= " and city_meta.`name` like '".$str."%'";
+            $sql .= " and city_meta.`name` like '".addslashes($str)."%'";
         }
         try {
             $data = $this->db->fetchOne($sql);
@@ -92,7 +92,7 @@ class CityModel extends BaseModel{
             }
         }
         $filter = $filterInfo . $filterMeta . " city_meta.`cityid` = 0 AND city_meta.`provinceid` != 0 and ";
-        $filter .= "city_meta.`cityid` = 0 and city_meta.`provinceid` != 0 and city_meta.`name` like '".$str."%'";
+        $filter .= "city_meta.`cityid` = 0 and city_meta.`provinceid` != 0 and city_meta.`name` like '".addslashes($str)."%'";
         $sql  = 'SELECT * FROM `city` right join `city_meta` ON city.`id` = city_meta.`id` where '.$filter." limit $from,$pageSize";
         try {
             $data = $this->db->fetchAll($sql);

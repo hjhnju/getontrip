@@ -1,7 +1,7 @@
 #!/bin/sh
-offline=(123.57.46.229)
+offline=(10.173.13.95)
 
-online=(123.57.67.165 123.57.39.40 182.92.101.94)
+online=(10.252.34.151 10.165.112.153 10.171.116.218)
 
 entity=(city sight content topic book wiki video)
 

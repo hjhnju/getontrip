@@ -77,7 +77,7 @@ class User_Logic_User extends Base_Logic{
         foreach ($arrParam as $key => $val){
             if(!empty($val)){
                 $key           = $this->getprop($key);                
-                $objUser->$key = $val;
+                $objUser->$key = trim($val);
             }            
         }
         if(!empty($file)){            
@@ -126,7 +126,7 @@ class User_Logic_User extends Base_Logic{
                 if($key == 'image'){
                     $objUser->$key = $this->uploadPic($val);
                 }else{
-                    $objUser->$key = $val;
+                    $objUser->$key = trim($val);
                 }
             }
         }

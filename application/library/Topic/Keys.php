@@ -9,6 +9,8 @@ class Topic_Keys {
     
     const REDIS_LATE_KEY  = '%s_late_%s';
     
+    const REDIS_LATE_MINUTE_KEY = '%s_late_minute_%s';
+    
     const REDIS_TOTAL_KEY    = '%s_total';
 
     //根据话题ID，缓存话题内容，不包含统计数据
@@ -24,6 +26,10 @@ class Topic_Keys {
     
     public static function getLateKey($id,$during){
         return sprintf(self::REDIS_LATE_KEY,$id,$during);
+    }
+    
+    public static function getLateMinuteKey($id,$during){
+        return sprintf(self::REDIS_LATE_MINUTE_KEY,$id,$during);
     }
     
     public static function getTotalKey($id){

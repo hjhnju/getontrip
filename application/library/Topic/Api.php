@@ -86,4 +86,15 @@ class Topic_Api{
         $logic = new Topic_Logic_Topic();
         return $logic->getTopicNum($arrInfo);
     }
+    
+    /**
+     * 接口7：Topic_Api::getHotTopic($page,$pageSize)
+     * 获取热门话题
+     * @param integer $page
+     * @param integer $pageSize
+     */
+    public static function getHotTopic($page,$pageSize){
+        $logic = new Topic_Logic_Topic();
+        return $logic->getAllHotTopic($page,$pageSize);
+    }
 }

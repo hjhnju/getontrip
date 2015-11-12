@@ -13,6 +13,8 @@ class Collect_Keys {
     
     const REDIS_TOTAL_KEY        = '%s_total';
     
+    const REDIS_LATE_MINUTE_KEY  = '%s_late_minute_%s';
+    
     const TOPIC     = 4;
     
     const SIGHT     = 2;
@@ -39,6 +41,10 @@ class Collect_Keys {
     
     public static function getLateKeyName($id,$during){
         return sprintf(self::REDIS_LATE_KEY,$id,$during);
+    }
+    
+    public static function getLateMinuteKeyName($id,$during){
+        return sprintf(self::REDIS_LATE_MINUTE_KEY,$id,$during);
     }
     
     public static function getTotalKeyName($id){

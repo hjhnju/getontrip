@@ -104,15 +104,14 @@ class Msg_Logic_Msg {
         $arrObjs = $objsMsg->toArray();
         foreach ($arrObjs['list'] as $key => $val){
             if(!empty($val['attach'])){
-                $arrObjs['list'][$key]['attach'] = json_decode($val['attach'],true);
-                foreach ($arrObjs['list'][$key]['attach'] as $index => $data){
-                    $arrObjs['list'][$key]['attach'][$index] = strval($data);
-                }
+                $tempData = json_decode($val['attach'],true);
+                $arrObjs['list'][$key]['topicId'] = strval($tempData['topicId']);
+                unset($arrObjs['list'][$key]['attach']);
             }else{
-                $arrObjs['list'][$key]['attach'] = '';
+                unset($arrObjs['list'][$key]['attach']);
             }           
             $arrObjs['list'][$key]['mid']   = strval($val['mid']);
-            $arrObjs['list'][$key]['type']   = strval($val['type']);
+            $arrObjs['list'][$key]['type']  = strval($val['type']);
             $arrObjs['list'][$key]['image'] = Base_Image::getUrlByName($val['image']);
             $arrObjs['list'][$key]['create_time'] = Base_Util_String::getTimeAgoString($val['create_time']);
             if($val['type'] == Msg_Type_Type::REPLY){

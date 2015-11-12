@@ -26,7 +26,7 @@ class Topic_Object_Topic extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'title', 'subtitle', 'content', 'desc', 'image', 'create_user', 'update_user', 'from', 'url', 'status', 'x', 'y', 'hot1', 'hot2', 'hot3', 'create_time', 'update_time', 'from_detail');
+    protected $fields = array('id', 'title', 'subtitle', 'content', 'desc', 'image', 'create_user', 'update_user', 'from', 'url', 'status', 'x', 'y', 'create_time', 'update_time', 'hot1', 'hot2', 'hot3', 'from_detail');
 
     /**
      * 字段与属性隐射关系
@@ -46,11 +46,11 @@ class Topic_Object_Topic extends Base_Object {
         'status'      => 'status',
         'x'           => 'x',
         'y'           => 'y',
+        'create_time' => 'createTime',
+        'update_time' => 'updateTime',
         'hot1'        => 'hot1',
         'hot2'        => 'hot2',
         'hot3'        => 'hot3',
-        'create_time' => 'createTime',
-        'update_time' => 'updateTime',
         'from_detail' => 'fromDetail',
     );
 
@@ -64,9 +64,6 @@ class Topic_Object_Topic extends Base_Object {
         'update_user' => 1,
         'from'        => 1,
         'status'      => 1,
-        'hot1'        => 1,
-        'hot2'        => 1,
-        'hot3'        => 1,
         'create_time' => 1,
         'update_time' => 1,
     );
@@ -158,24 +155,6 @@ class Topic_Object_Topic extends Base_Object {
     public $y;
 
     /**
-     * 话题热度:7天
-     * @var integer
-     */
-    public $hot1;
-
-    /**
-     * 话题热度:30天
-     * @var integer
-     */
-    public $hot2;
-
-    /**
-     * 话题热度:xxx天，供扩展
-     * @var integer
-     */
-    public $hot3;
-
-    /**
      * 创建时间
      * @var integer
      */
@@ -186,6 +165,24 @@ class Topic_Object_Topic extends Base_Object {
      * @var integer
      */
     public $updateTime;
+
+    /**
+     * 话题热度:7天
+     * @var 
+     */
+    public $hot1;
+
+    /**
+     * 话题热度:30天
+     * @var 
+     */
+    public $hot2;
+
+    /**
+     * 话题热度:60分钟
+     * @var 
+     */
+    public $hot3;
 
     /**
      * 来源的详细描述

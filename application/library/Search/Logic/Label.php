@@ -62,7 +62,7 @@ class Search_Logic_Label extends Base_Logic{
      * @param array $arrInfo
      * @return array
      */
-    public function listLabel($page, $pageSize, $arrInfo = array()){
+    public function listLabel($page, $pageSize, $arrInfo = array()){    
         $arrInfo = array_merge($arrInfo,array('type' => Tag_Type_Tag::SEARCH));
         $List    = Tag_Api::getTagList($page, $pageSize, $arrInfo);
         foreach ($List['list'] as $index => $val){
@@ -87,7 +87,12 @@ class Search_Logic_Label extends Base_Logic{
                 $List['list'][$index]['typename'] = '';
             }
             $List['list'][$index]['type'] = $data['type'];
-            $List['list'][$index]['obj_num'] = count($arrObjInfo);
+            if($val['name'] == '热门内容'){
+                $topic = Topic_Api::getHotTopic(1, PHP_INT_MAX);
+                $List['list'][$index]['obj_num'] = $topic['total'];
+            }else{
+                $List['list'][$index]['obj_num'] = count($arrObjInfo);
+            }
             $List['list'][$index]['objs']    = $arrObjInfo; 
         }
         return $List;
@@ -100,6 +105,27 @@ class Search_Logic_Label extends Base_Logic{
      * @param integer $pageSize,标签对应对象数据的页面大小
      */
     public function getLabel($labelId, $page, $pageSize){
+        $tag = Tag_Api::getTagInfo($labelId);
+        if($tag['name'] == '热门内容'){
+            $arrData = Topic_Api::getHotTopic($page, $pageSize);
+            foreach ($arrData['list'] as $index => $val){
+                $temp['id']   = $labelId;
+                $temp['typename'] = '话题';
+                $temp['type']     = Search_Type_Label::TOPIC;
+                $temp['name']     = $tag['name'];
+                $temp['label_id']   = $labelId;
+                $temp['obj']   = $val['title'];
+                $temp['obj_id']   = $val['id'];
+                $temp['weight']   = $val['hot1'];
+                $temp['create_time'] = $val['create_time'];
+                $temp['update_time'] = $val['update_time'];
+                $temp['create_user'] = $val['create_user'];
+                $temp['update_user'] = $val['update_user'];
+                $arrData['list'][$index] = $temp;
+            }
+            return $arrData;
+        }
+        
         $objTag = new Tag_Object_Tag();
         $objTag->fetch(array('id' => $labelId));  
         $arrTag = $objTag->toArray(); 

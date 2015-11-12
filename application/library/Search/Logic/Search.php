@@ -133,6 +133,8 @@ class Search_Logic_Search{
         $arrRet    = array();
         $arrData   = array();        
         $arrRet['image']     = Base_Image::getUrlByName(Base_Config::getConfig('searchlabel')->image);
+        $data                = file_get_contents(Base_Config::getConfig('web')->root.$arrRet['image']);
+        $arrRet['image']    .= sprintf("?%s",md5(strlen($data)));
         if($page == 1){
             $listTag = new Tag_List_Tag();
             $listTag->setFilter(array('type' => Tag_Type_Tag::SEARCH));
@@ -150,7 +152,47 @@ class Search_Logic_Search{
             if(empty($labelId)){
                 $labelId     = $arrTemp[0]['id'];
             }
-        }        
+        }
+        $label = Tag_Api::getTagInfo($labelId);        
+        if($label['name'] == '热门内容'){
+            $listTopic = new Topic_List_Topic();
+            $listTopic->setPage($page);
+            $listTopic->setPagesize($pageSize);
+            $listTopic->setOrder('`hot1` desc');
+            $listTopic->toArray();
+            $arrData = $listTopic->toArray();
+            foreach ($arrData['list'] as $key => $val){
+                $topicId       = $val['id'];
+                $arrTopic      = $this->logicTopic->getTopicById($topicId);
+                $temp['id']    = strval($topicId);
+                $temp['type']  = strval(Search_Type_Label::TOPIC);
+                $temp['title'] = $arrTopic['title'];
+                $temp['image'] = isset($arrTopic['image'])?Base_Image::getUrlByName($arrTopic['image']):'';
+                $logicTag      = new Tag_Logic_Tag();
+                $tags          = $logicTag->getTopicTags($topicId);
+                $sight         = '';
+                $arrSight = $this->logicSight->getSightByTopic($topicId);
+                if(!empty($arrSight['list'])){
+                    $sightId   = $arrSight['list'][0]['sight_id'];
+                    $arrSight  = Sight_Api::getSightById($sightId);
+                    $sight     = $arrSight['name'];
+                }
+                if(empty($sight)){
+                    $temp['sighttag'] = isset($tags[0])?trim($tags[0]):'';
+                }else{
+                    $temp['sighttag'] = $sight.'·'.(isset($tags[0])?trim($tags[0]):'');
+                }
+        
+                $visit_num           = $this->logicTopic->getTotalTopicVistPv($topicId);
+                $collect             = $this->logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $topicId);
+                $temp['visitnum']    =  $visit_num;
+                $temp['collectnum']  =  $collect;
+                $ret[] = $temp;
+            }
+            $arrRet['content']   = $ret;
+            return $arrRet;
+        }
+        
         $listLabel = new Search_List_Label();
         $listLabel->setFilter(array('label_id' => $labelId));
         $listLabel->setPage($page);

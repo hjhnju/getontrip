@@ -198,20 +198,28 @@ class Collect_Logic_Collect{
     }
     
     /**
-     * 获取最近一个月的收藏量
+     * 获取最近的收藏量
      * @param unknown $type
      * @param unknown $objId
      */
-    public function getLateCollectNum($type,$objId,$periods=''){
+    public function getLateCollectNum($type,$objId,$periods='',$dateType= 'DAY'){
         $redis = Base_Redis::getInstance();
         $count = 0;
         $end = time();
         if(empty($periods)){
             $start = 0;
         }else{
-            $start = strtotime($periods.' days ago');
+            if($dateType == 'DAY'){
+                $start = strtotime($periods.' days ago');
+            }else{
+                $start = time() - 60*$periods;
+            }
         }
-        $ret = $redis->hGet(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateKeyName($objId,$periods));
+        if($dateType == 'DAY'){
+            $ret = $redis->hGet(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateKeyName($objId,$periods));
+        }else{
+            $ret = $redis->hGet(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateMinuteKeyName($objId,$periods));
+        }
         if(!empty($ret)){
             $count = $ret;
         }else{
@@ -221,7 +229,12 @@ class Collect_Logic_Collect{
             $list->setFilterString($filter);
             $arrRet = $list->toArray();
             $count  = $arrRet['total'];
-            $redis->hSet(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateKeyName($objId,$periods),$count);
+            if($dateType == 'DAY'){
+                $redis->hSet(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateKeyName($objId,$periods),$count);
+            }else{
+                $redis->hSet(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateMinuteKeyName($objId,$periods),$count);
+            }
+            
         }        
         return $count;
     }

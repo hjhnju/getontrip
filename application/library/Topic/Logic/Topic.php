@@ -248,10 +248,15 @@ class Topic_Logic_Topic extends Base_Logic{
      * @param string $during
      * @return integer
      */
-    public function getLateTopicVistUv($topicId,$during){
+    public function getLateTopicVistUv($topicId,$during,$dateType = 'DAY'){
         $redis   = Base_Redis::getInstance();
-        $from    = strtotime($during." days ago");
-        $ret = $redis->hGet(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateKey($topicId,$during));
+        if( $dateType == 'DAY'){
+            $from    = strtotime($during." days ago");
+            $ret = $redis->hGet(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateKey($topicId,$during));
+        }else{
+            $from    = time() - 60*$during;
+            $ret = $redis->hGet(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateMinuteKey($topicId,$during));
+        }        
         if(!empty($ret)){
             return $ret;
         }
@@ -267,7 +272,11 @@ class Topic_Logic_Topic extends Base_Logic{
                 $arrTotal[] = $val['user'];
             }
         }
-        $redis->hSet(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateKey($topicId,$during),count($arrTotal));
+        if( $dateType == 'DAY'){
+            $redis->hSet(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateKey($topicId,$during),count($arrTotal));
+        }else{
+            $redis->hSet(Topic_Keys::getTopicVisitKey(),Topic_Keys::getLateMinuteKey($topicId,$during),count($arrTotal));
+        }
         return count($arrTotal);
     }
     
@@ -954,5 +963,14 @@ class Topic_Logic_Topic extends Base_Logic{
              }
         }
         return $total;
+    }
+    
+    public function getAllHotTopic($page,$pageSize){
+        $listTopic = new Topic_List_Topic();
+        $listTopic->setFilter(array('status' => Topic_Type_Status::PUBLISHED));
+        $listTopic->setPage($page);
+        $listTopic->setPagesize($pageSize);
+        $listTopic->setOrder('`hot1` desc');
+        return $listTopic->toArray();
     }
 }

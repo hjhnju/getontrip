@@ -185,23 +185,35 @@ class Comment_Logic_Comment  extends Base_Logic{
      * @param string  $during
      * @return integer
      */
-    public function getLateCommentNum($objId,$during='',$type = Comment_Type_Type::TOPIC){
+    public function getLateCommentNum($objId,$during='',$type = Comment_Type_Type::TOPIC,$dateType = 'DAY'){
         if(empty($during)){
             $from = 0;
         }else{
-            $from = strtotime($during.' days ago');
+            if($dateType == 'DAY'){
+                $from = strtotime($during.' days ago');
+            }else{
+                $from = time() - 60*$during;
+            }
         }
         $redis = Base_Redis::getInstance();
-        $ret = $redis->hGet(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objId,$during));
+        if($dateType == 'DAY'){
+            $ret = $redis->hGet(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objId,$during));
+        }else{
+            $ret = $redis->hGet(Comment_Keys::getCommentKey(),Comment_Keys::getLateMinuteKey($objId,$during));
+        }
         if(!empty($ret)){
             return $ret;
         }
         $list   = new Comment_List_Comment();
-        $filter = "`obj_id` = $objId and `create_time` >= $during and `up_id` = 0 and `type` = ".$type;
+        $filter = "`obj_id` = $objId and `create_time` >= $from and `up_id` = 0 and `type` = ".$type;
         $list->setPagesize(PHP_INT_MAX);
         $list->setFilterString($filter);
         $arrRet = $list->toArray();
-        $redis->hSet(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objId,$during),$arrRet['total']);
+        if($dateType == 'DAY'){           
+            $redis->hSet(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objId,$during),$arrRet['total']);
+        }else{            
+            $redis->hSet(Comment_Keys::getCommentKey(),Comment_Keys::getLateMinuteKey($objId,$during),$arrRet['total']);
+        }
         return $arrRet['total'];
     }
     

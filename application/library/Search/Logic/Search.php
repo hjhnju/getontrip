@@ -8,6 +8,8 @@ class Search_Logic_Search{
     
     const SEARCH_LABEL_NUM = 8;
     
+    const HOT_TOPIC_NUM    = 30;
+    
     protected $logicCity;
     
     protected $logicSight;
@@ -148,8 +150,7 @@ class Search_Logic_Search{
                 $arrTemp[$key]['id']   = trim($val['id']);
                 $arrTemp[$key]['name'] = trim($val['name']);
                 if($arrTemp[$key]['name'] == '热门内容'){
-                    $logicTopic            = new Topic_Logic_Topic();
-                    $arrTemp[$key]['num']  = strval($logicTopic->getHotTopicNum());
+                    $arrTemp[$key]['num']  = strval(self::HOT_TOPIC_NUM);
                 }else{
                     $arrTemp[$key]['num']  = $logicSearchLabel->getLabeledNum($val['id']);
                 }               
@@ -166,7 +167,12 @@ class Search_Logic_Search{
             $listTopic->setPagesize($pageSize);
             $listTopic->setOrder('`hot3` desc, `create_time` desc');
             $listTopic->toArray();
-            $arrData = $listTopic->toArray();
+            if($page >= self::HOT_TOPIC_NUM/$pageSize){
+                $arrData = array('list' => array());
+                $ret     = array();
+            }else{
+                $arrData = $listTopic->toArray();
+            }
             foreach ($arrData['list'] as $key => $val){
                 $topicId       = $val['id'];
                 $arrTopic      = $this->logicTopic->getTopicById($topicId);

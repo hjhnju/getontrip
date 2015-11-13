@@ -326,6 +326,7 @@ class Video_Logic_Video extends Base_Logic{
         if(isset($arrParam['status'])){
             $arrSightIds = array();
             $weight      = array();
+            $ret         = true;
             $objVideo = new Video_Object_Video();
             $objVideo->fetch(array('id' => $id));
             $objVideo->status = $arrParam['status'];
@@ -348,7 +349,7 @@ class Video_Logic_Video extends Base_Logic{
                 }
             }
             if($arrParam['status'] == Video_Type_Status::BLACKLIST){
-                return $ret;
+                return $objVideo->save();
             }
         }
         

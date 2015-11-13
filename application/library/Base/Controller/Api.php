@@ -12,7 +12,7 @@ class Base_Controller_Api extends Base_Controller_Abstract {
         parent::init();
 
         Yaf_Dispatcher::getInstance()->disableView();
-
+        $this->setBrowserCache();
         //统一验证csrf token
         $token     = isset($_REQUEST['token']) ? trim($_REQUEST['token']) : '';
         $bCheck    = $this->checkToken($token);

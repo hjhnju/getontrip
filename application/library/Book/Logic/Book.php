@@ -345,7 +345,7 @@ class Book_Logic_Book extends Base_Logic{
                 }                            
             }
             if($arrInfo['status'] == Book_Type_Status::BLACKLIST){
-                return $ret;
+                return $objBook->save();
             }
         }
         

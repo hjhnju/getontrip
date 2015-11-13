@@ -172,7 +172,7 @@ class Search_Logic_Search{
                 $arrTopic      = $this->logicTopic->getTopicById($topicId);
                 $temp['id']    = strval($topicId);
                 $temp['type']  = strval(Search_Type_Label::TOPIC);
-                $temp['title'] = $arrTopic['title'];
+                $temp['name'] = $arrTopic['title'];
                 $temp['image'] = isset($arrTopic['image'])?Base_Image::getUrlByName($arrTopic['image']):'';
                 $logicTag      = new Tag_Logic_Tag();
                 $tags          = $logicTag->getTopicTags($topicId);
@@ -184,15 +184,17 @@ class Search_Logic_Search{
                     $sight     = $arrSight['name'];
                 }
                 if(empty($sight)){
-                    $temp['sighttag'] = isset($tags[0])?trim($tags[0]):'';
+                    $temp['param1'] = isset($tags[0])?trim($tags[0]):'';
+                }elseif(isset($tags[0])){       
+                    $temp['param1'] = $sight.'·'.trim($tags[0]);
                 }else{
-                    $temp['sighttag'] = $sight.'·'.(isset($tags[0])?trim($tags[0]):'');
+                    $temp['param1'] = $sight;
                 }
         
-                $visit_num           = $this->logicTopic->getTotalTopicVistPv($topicId);
-                $collect             = $this->logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $topicId);
-                $temp['visitnum']    =  $visit_num;
-                $temp['collectnum']  =  $collect;
+                $visit_num       = $this->logicTopic->getTotalTopicVistPv($topicId);
+                $collect         = $this->logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $topicId);
+                $temp['param2']  =  $visit_num;
+                $temp['param3']  =  $collect;
                 $ret[] = $temp;
             }
             $arrRet['content']   = $ret;

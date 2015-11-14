@@ -190,6 +190,9 @@ class Search_Logic_Search{
                     $arrSight  = Sight_Api::getSightById($sightId);
                     $sight     = $arrSight['name'];
                 }
+                if(isset($tags[0])){
+                    $tags[0] = str_replace("其他", "", $tags[0]);
+                }
                 if(empty($sight)){
                     $temp['param1'] = isset($tags[0])?trim($tags[0]):'';
                 }elseif(isset($tags[0])){       

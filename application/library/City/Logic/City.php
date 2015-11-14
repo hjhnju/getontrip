@@ -92,9 +92,9 @@ class City_Logic_City{
                 if($objCity->status == City_Type_Status::PUBLISHED){
                     $val['id']         = strval($val['id']);
                     $val['pinYinHead'] = strtolower(Base_Util_String::pinyin_first($val['name']));
-                    $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
-                    $topicNum          = $this->getTopicNum($val['id']);
-                    $val['desc']       = sprintf("%d个景点，%d篇内容",$sightNum,$topicNum);
+                    //$sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
+                    //$topicNum          = $this->getTopicNum($val['id']);
+                    //$val['desc']       = sprintf("%d个景点，%d篇内容",$sightNum,$topicNum);
                     $tempCity[] = $val;
                 }
             }
@@ -278,11 +278,11 @@ class City_Logic_City{
             array('id' =>'1058','name'=>'杭州','pinyin' => 'hangzhou', 'pinYinHead' => 'hz'),
             array('id' =>'972', 'name'=>'苏州','pinyin' => 'suzhou', 'pinYinHead' => 'sz'),
         );
-        foreach ($arrHotCity as $key => $val){
+        /*foreach ($arrHotCity as $key => $val){
             $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
             $topicNum          = $this->getTopicNum($val['id']);
             $arrHotCity[$key]['desc']       = sprintf("%d个景点，%d篇内容",$sightNum,$topicNum);
-        }
+        }*/
 
         return $arrHotCity;
     }
@@ -398,6 +398,7 @@ class City_Logic_City{
         $listProvince = new City_List_Meta();
         $listProvince->setFilter(array('provinceid' => 0));
         $listProvince->setFields(array('id','name'));
+        $listProvince->setOrder('`id` asc');
         $listProvince->setPagesize(PHP_INT_MAX);
         $arrRet   =  $listProvince->toArray();
         foreach ($arrRet['list'] as $key => $val){

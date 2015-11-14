@@ -202,7 +202,6 @@ class Base_Controller_Abstract extends Yaf_Controller_Abstract
     
     public function ajax($arrData = array(), $errorMsg = '', $status = 0){
         header("Content-Type: application/json; charset=UTF-8");
-
         $arrRtInfo = array();
         $arrRtInfo['status'] = $status;
         $arrRtInfo['statusInfo'] = $errorMsg;

@@ -46,25 +46,26 @@ class City_Logic_City{
         $listSight  = new Sight_List_Sight();
         $listSight->setFields(array('id','name','image'));
         $listSight->setFilter(array('city_id' => $cityId,'status' => Sight_Type_Status::PUBLISHED));
+        $listSight->setOrder('`id` asc');
         $listSight->setPage($page);
         $listSight->setPagesize($pageSize);
         $arrSight     = $listSight->toArray();
         $arrSight     = $arrSight['list'];
         $logicCollect = new Collect_Logic_Collect();
         foreach ($arrSight as $key => $val){            
-            $ret    = $redis->sMembers(Sight_Keys::getSightTopicKey($val['id']));
+            /*$ret    = $redis->sMembers(Sight_Keys::getSightTopicKey($val['id']));
             $hot    = 0;
             foreach ($ret as $topicId){
                 $hot += $logicTopic->getTopicHotDegree($topicId, self::HOTPERIOD);
             }
-            $arrHot[] = $hot;     
+            $arrHot[] = $hot;     */
             $topic_num     = $logicSight->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
             $arrSight[$key]['id']        = strval($val['id']);
             $arrSight[$key]['image']     = Base_Image::getUrlByName($val['image']);
             $arrSight[$key]['topics']    = sprintf("共%s个话题",$topic_num);
             $arrSight[$key]['collected'] = strval($logicCollect->checkCollect(Collect_Type::SIGHT, $val['id']));
         }
-        array_multisort($arrHot, SORT_DESC , $arrSight);
+        //array_multisort($arrHot, SORT_DESC , $arrSight);
         return $arrSight;
     }
     

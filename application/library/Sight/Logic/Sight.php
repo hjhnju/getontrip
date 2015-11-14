@@ -99,6 +99,7 @@ class Sight_Logic_Sight extends Base_Logic{
         if(!empty($cityId)){
             $listSight->setFilter(array('city_id' => $cityId));
         }        
+        $listSight->setOrder('`id` asc');
         $listSight->setPage($page);
         $listSight->setPagesize($pageSize);
         $arrRet  = $listSight->toArray();  

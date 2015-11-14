@@ -92,7 +92,8 @@ class Home_Logic_List{
      */
     public function getHomeData($cityId){
         //城市信息
-        $tmpCity   = City_Api::getCityById($cityId);
+        $tmpCity      = City_Api::getCityById($cityId);
+        $cityTopicNum = 0;
         $collected = $this->_logicCollect->checkCollect(Collect_Type::CITY, $cityId);
         $arrCity = array(
             'id'        => isset($tmpCity['id'])?strval($tmpCity['id']):'',
@@ -114,8 +115,10 @@ class Home_Logic_List{
             $temp['image'] = isset($val['image'])?Base_Image::getUrlByName($val['image']):'';
                       
             $topic_num     = $this->_logicSight->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
+            $cityTopicNum += $topic_num;
             $collect       = $this->_logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $val['id']);
-            $temp['desc']  = sprintf("%d个内容|%d人收藏",$topic_num,$collect);
+            $temp['content']  = sprintf("%d个内容",$topic_num);
+            $temp['collect']  = sprintf("%d人收藏",$collect);
             
             $arrSight[] = $temp;
         }
@@ -125,15 +128,13 @@ class Home_Logic_List{
         $arrTopic  = $cityTopic->getHotTopic($cityId);
         
         //获取城市话题页数
-        $logicCity = new City_Logic_City();
-        $topicNum  = $logicCity->getTopicNum($cityId);
-        $topicNum  = ceil($topicNum/self::PAGE_SIZE);
+        $pageNum   = ceil($cityTopicNum/self::PAGE_SIZE);
         
         $arrRet = array(
             'city'  => $arrCity,
             'sight' => $arrSight,
             'topic' => $arrTopic,
-            'page_num' => strval($topicNum),
+            'page_num' => strval($pageNum),
         );
         return $arrRet;
     }

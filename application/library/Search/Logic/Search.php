@@ -164,6 +164,7 @@ class Search_Logic_Search{
         if(isset($label['name']) && ($label['name'] == '热门内容')){
             $listTopic = new Topic_List_Topic();
             $listTopic->setPage($page);
+            $listTopic->setFilter(array('status' => Topic_Type_Status::PUBLISHED));
             $listTopic->setPagesize($pageSize);
             $listTopic->setOrder('`hot3` desc, `create_time` desc');
             $listTopic->toArray();

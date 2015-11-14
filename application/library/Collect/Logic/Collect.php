@@ -171,6 +171,9 @@ class Collect_Logic_Collect{
                     $temp['author'] = $objBook->author;
                     $temp['image']  = Base_Image::getUrlByName($objBook->image);
                     $temp['collect']= strval($this->getTotalCollectNum(Collect_Type::BOOK, $val['obj_id']));
+                    //内容访问数
+                    $logicVisit = new Tongji_Logic_Visit();
+                    $temp['visit']  = strval($logicVisit->getVisitCount(Collect_Type::BOOK, $val['obj_id']));
                     $temp['type']   = strval(Collect_Type::BOOK);
                     $arrRet[]       = $temp;
                 }

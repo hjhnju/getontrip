@@ -62,7 +62,7 @@ class City_Logic_City{
             $topic_num     = $logicSight->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
             $arrSight[$key]['id']        = strval($val['id']);
             $arrSight[$key]['image']     = Base_Image::getUrlByName($val['image']);
-            $arrSight[$key]['topics']    = sprintf("共%s个话题",$topic_num);
+            $arrSight[$key]['topics']    = sprintf("%s个内容",$topic_num);
             $arrSight[$key]['collected'] = strval($logicCollect->checkCollect(Collect_Type::SIGHT, $val['id']));
         }
         //array_multisort($arrHot, SORT_DESC , $arrSight);

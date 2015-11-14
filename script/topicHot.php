@@ -120,6 +120,6 @@ function getHot($topic,$time,$type='LATE'){
     $arrComment = $listComment->toArray();
     $commentTime     = isset($arrComment['list'][0])?$arrComment['list'][0]['create_time']:$publishTime;    
 
-    $hot  = ($collectTopicNum + $commentNum + log10($topicUv+1) + 1)/((time()-$publishTime)/(3600*100)+(time()-$collectTime)/(3600*100)+(time()-$commentTime)/(3600*100)+1);
+    $hot  = ($collectTopicNum + $commentNum + 4*log10($topicUv+1) + 1)/((time()-$publishTime)/(3600*100)+(time()-$collectTime)/(3600*100)+(time()-$commentTime)/(3600*100)+1);
     return $hot;
 }

@@ -117,8 +117,8 @@ class User_Logic_User extends Base_Logic{
     public function addUserInfo($userId,$arrParam){
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId));
-        if(!empty($objUser->nickName) || !empty($objUser->image)){
-            return false;
+        if(isset($objUser->image) && !empty($objUser->image)){
+            $this->delPic($objUser->image);
         }
         foreach ($arrParam as $key => $val){
             if(!empty($val)){

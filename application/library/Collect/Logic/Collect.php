@@ -107,7 +107,8 @@ class Collect_Logic_Collect{
                     }
                     $temp['name']     = isset($sight['name'])?$sight['name']:'';
                     $temp['image']    = isset($sight['image'])?Base_Image::getUrlByName($sight['image']):'';
-                    $temp['topicNum'] = sprintf("共%d个话题",$logicSight->getTopicNum($val['obj_id']));
+                    $temp['content']  = sprintf("共%d个内容",$logicSight->getTopicNum($val['obj_id']));
+                    $temp['collect']  = sprintf("共%d人收藏",$this->getTotalCollectNum(Collect_Type::SIGHT, $val['obj_id']));
                     $arrRet[]         = $temp;
                 }
                 break;
@@ -118,9 +119,9 @@ class Collect_Logic_Collect{
                     $city             = $logicCity->getCityById($val['obj_id']);
                     $temp['image']    = isset($city['image'])?Base_Image::getUrlByName($city['image']):'';
                     $temp['name']     = str_replace("市","",$city['name']);
-                    $temp['topicNum'] = sprintf("共%d个话题",$logicCity->getTopicNum($val['obj_id']));
-                    //$temp['collect'] = strval($this->getTotalCollectNum(Collect_Type::CITY, $val['obj_id']));
-                    $arrRet[]        = $temp;
+                    $temp['content']  = sprintf("共%d个内容",$logicCity->getTopicNum($val['obj_id']));
+                    $temp['collect']  = sprintf("共%d人收藏",$this->getTotalCollectNum(Collect_Type::CITY, $val['obj_id']));
+                    $arrRet[]         = $temp;
                 }
                 break;
             case Collect_Type::COTENT:

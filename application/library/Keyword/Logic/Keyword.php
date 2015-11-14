@@ -372,7 +372,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
                 $name = html_entity_decode($ret->innertext)."\r\n";
                 $arrItems[] = array(
                     'name' => $name,
-                    'url'  => $wikiUrl.$url,
+                    'url'  => $url,
                 );
                 if(count($arrItems) >= self::WIKI_CATALOG_NUM){
                     break;
@@ -386,7 +386,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
                 $name = html_entity_decode($ret->innertext)."\r\n";
                 $arrItems[] = array(
                     'name' => $name,
-                    'url'  => $wikiUrl.$url,
+                    'url'  => $url,
                 );
                 if(count($arrItems) >= self::WIKI_CATALOG_NUM){
                     break;

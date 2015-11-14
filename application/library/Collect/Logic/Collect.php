@@ -107,8 +107,8 @@ class Collect_Logic_Collect{
                     }
                     $temp['name']     = isset($sight['name'])?$sight['name']:'';
                     $temp['image']    = isset($sight['image'])?Base_Image::getUrlByName($sight['image']):'';
-                    $temp['content']  = sprintf("共%d个内容",$logicSight->getTopicNum($val['obj_id']));
-                    $temp['collect']  = sprintf("共%d人收藏",$this->getTotalCollectNum(Collect_Type::SIGHT, $val['obj_id']));
+                    $temp['content']  = sprintf("%d个内容",$logicSight->getTopicNum($val['obj_id']));
+                    $temp['collect']  = sprintf("%d人收藏",$this->getTotalCollectNum(Collect_Type::SIGHT, $val['obj_id']));
                     $arrRet[]         = $temp;
                 }
                 break;
@@ -119,8 +119,8 @@ class Collect_Logic_Collect{
                     $city             = $logicCity->getCityById($val['obj_id']);
                     $temp['image']    = isset($city['image'])?Base_Image::getUrlByName($city['image']):'';
                     $temp['name']     = str_replace("市","",$city['name']);
-                    $temp['content']  = sprintf("共%d个内容",$logicCity->getTopicNum($val['obj_id']));
-                    $temp['collect']  = sprintf("共%d人收藏",$this->getTotalCollectNum(Collect_Type::CITY, $val['obj_id']));
+                    $temp['content']  = sprintf("%d个内容",$logicCity->getTopicNum($val['obj_id']));
+                    $temp['collect']  = sprintf("%d人收藏",$this->getTotalCollectNum(Collect_Type::CITY, $val['obj_id']));
                     $arrRet[]         = $temp;
                 }
                 break;
@@ -145,8 +145,11 @@ class Collect_Logic_Collect{
                     $temp['image']      = Base_Image::getUrlByName($topic['image']);
                     $temp['subtitle']   = trim($topic['subtitle']);
                     $temp['title']      = trim($topic['title']);
-                    //话题收藏数
+                    //内容收藏数
                     $temp['collect']    = strval($this->getTotalCollectNum(Collect_Type::TOPIC, $val['obj_id']));
+                    //内容访问数
+                    $logicVisit = new Tongji_Logic_Visit();                    
+                    $temp['visit']      = strval($logicVisit->getVisitCount(Collect_Type::TOPIC, $val['obj_id']));
                     $temp['type']       = strval(Collect_Type::TOPIC);
                     $arrRet[]           = $temp;
                 }

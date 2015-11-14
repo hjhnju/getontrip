@@ -203,8 +203,8 @@ class Search_Logic_Search{
         
                 $visit_num       = $this->logicTopic->getTotalTopicVistPv($topicId);
                 $collect         = $this->logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $topicId);
-                $temp['param2']  =  $visit_num;
-                $temp['param3']  =  $collect;
+                $temp['param2']  =  $collect;
+                $temp['param3']  =  $visit_num;
                 $ret[] = $temp;
             }
             $arrRet['content']   = $ret;

@@ -147,9 +147,8 @@ class Collect_Logic_Collect{
                     $temp['title']      = trim($topic['title']);
                     //内容收藏数
                     $temp['collect']    = strval($this->getTotalCollectNum(Collect_Type::TOPIC, $val['obj_id']));
-                    //内容访问数
-                    $logicVisit = new Tongji_Logic_Visit();                    
-                    $temp['visit']      = strval($logicVisit->getVisitCount(Collect_Type::TOPIC, $val['obj_id']));
+                    //内容访问数     
+                    $temp['visit']      = strval($logicTopic->getTotalTopicVistPv($val['obj_id']));
                     $temp['type']       = strval(Collect_Type::TOPIC);
                     $arrRet[]           = $temp;
                 }

@@ -296,7 +296,9 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $arrCatalog = $listKeywordCatalog->toArray();
             //$arrLen     = array();
             foreach ($arrCatalog['list'] as $index => $data){
-                $arrCatalog['list'][$index]['name'] = Base_Util_String::trimall($data['name']);
+                $arrCatalog['list'][$index]['name']    = Base_Util_String::trimall($data['name']);
+                $arrCatalog['list'][$index]['section'] = $data['url'];
+                unset($arrCatalog['list'][$index]['url']);
                 //$arrLen[] = strlen($data['name']);
             }
             //array_multisort($arrLen, SORT_DESC , $arrCatalog['list']);

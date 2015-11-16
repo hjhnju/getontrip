@@ -241,7 +241,7 @@ class Book_Logic_Book extends Base_Logic{
             $temp[$key]['press']        = isset($detail['publishers'])?$detail['publishers']:$press;
             $temp[$key]['publish_time'] = isset($detail['publish_time'])?$detail['publish_time']:$pubdate;            
             
-            if(empty($image)){
+            if(empty($image)||strstr($image,"book-default-large")){
                 $image = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['imagePaths'][0];
                 $image = $image['bigpath'];
             }
@@ -626,7 +626,7 @@ class Book_Logic_Book extends Base_Logic{
             $temp['press']        = isset($detail['publishers'])?$detail['publishers']:$press;
             $temp['publish_time'] = isset($detail['publish_time'])?$detail['publish_time']:$pubdate;
              
-            if(empty($image)){
+            if(empty($image) || strstr($image,"book-default-large")){
                 $image = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['imagePaths'][0];
                 $image = $image['bigpath'];
             }

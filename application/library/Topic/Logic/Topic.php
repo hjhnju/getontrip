@@ -145,8 +145,12 @@ class Topic_Logic_Topic extends Base_Logic{
         if(empty($sightId)){
             $logic    = new Sight_Logic_Sight();
             $arrSight = $logic->getSightByTopic($topicId);
-            if(!empty($arrSight['list'])){
-                $sightId = $arrSight['list'][0]['sight_id'];
+            foreach($arrSight['list'] as $val){
+                $sight   = new Sight_Object_Sight();
+                $sight->fetch(array('id' => $val['sight_id']));
+                if($sight->status == Sight_Type_Status::PUBLISHED){
+                    $sightId = $val['sight_id'];
+                }
             }
         }
                 

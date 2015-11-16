@@ -12,6 +12,7 @@ class Base_Controller_Page extends Base_Controller_Abstract {
         parent::init();
 
         $this->getView()->assign('webroot', $this->webroot);
+        $this->getView()->assign('stroot',Base_Config::getConfig('web')->stroot);
         $feversion = Base_Config::getConfig('web')->version;
         $this->getView()->assign('feroot', Base_Config::getConfig('web')->stroot . '/v1/'. $feversion . '/asset');
         $this->getView()->assign('tongji', Base_Config::getConfig('web')->tongji);

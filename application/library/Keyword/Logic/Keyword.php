@@ -295,6 +295,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
         foreach ($arrRet['list'] as $key => $val){
             $arrRet['list'][$key]['id']      = strval($val['id']);
             $arrRet['list'][$key]['content'] = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['content']));
+            $arrRet['list'][$key]['url']      = trim($val['url']);
             $listKeywordCatalog = new Keyword_List_Catalog();
             $listKeywordCatalog->setFields(array('name','url'));
             $listKeywordCatalog->setFilter(array('keyword_id' => $val['id']));

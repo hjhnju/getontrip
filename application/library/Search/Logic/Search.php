@@ -70,14 +70,15 @@ class Search_Logic_Search{
                         $arrRet['data'][$key]['image'] = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
                     }elseif($val['search_type'] == 'book'){                       
                         $book = Book_Api::getBookInfo($val['id']);
+                        $arrRet['data'][$key]['url']   = isset($book['url'])?trim($book['url']):'';
                         $arrRet['data'][$key]['image'] = isset($book['image'])?Base_Image::getUrlByName($book['image']):'';
                     }elseif($val['search_type'] == 'video'){
                         $video = Video_Api::getVideoInfo($val['id']);
-                        $arrRet['data'][$key]['url']   = isset($video['url'])?$video['url']:'';
+                        $arrRet['data'][$key]['url']   = isset($video['url'])?trim($video['url']):'';
                         $arrRet['data'][$key]['image'] = isset($video['image'])?Base_Image::getUrlByName($video['image']):'';
                     }else{
                         $keyword = Keyword_Api::queryById($val['id']);
-                        $arrRet['data'][$key]['url'] = isset($keyword['url'])?$keyword['url']:'';
+                        $arrRet['data'][$key]['url'] = isset($keyword['url'])?trim($keyword['url']):'';
                         $arrRet['data'][$key]['image'] = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
                     }
                     $arrRet['data'][$key]['title']   = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['title']));
@@ -89,11 +90,22 @@ class Search_Logic_Search{
                 $arrSight    = $this->logicSight->search($query, $page, $pageSize);
                 $arrContent = Base_Search::Search('content', $query, $page, $pageSize, array('id','unique_id','search_type','title','content'));
                 
-                $arrTopic    = $this->logicTopic->searchTopic($query, $page, 2);
+                $arrTopic    = $this->logicTopic->searchTopic($query, $page, $pageSize);
                 $arrVideo    = $this->logicVideo->search($query, $page, 1);
                 $arrBook     = $this->logicBook->search($query, $page, 1);
-                if(($arrTopic['num'] >= 2)&&(!empty($arrBook['num']))&&(!empty($arrVideo['num']))){
-                    $arrContent['data'] = array_merge($arrTopic['data'],$arrBook['data'],$arrVideo['data']);
+                if($arrTopic['num'] >= 2){
+                    if(empty($arrVideo['num']) && empty($arrBook['num'])){
+                        $arrContent['data'] = $arrTopic['data'];
+                    }elseif(empty($arrVideo['num'])){
+                        $arrTopic['data']   = array_slice($arrTopic['data'], 0,3);
+                        $arrContent['data'] = array_merge($arrTopic['data'],$arrBook['data']);
+                    }elseif(empty($arrBook['num'])){
+                        $arrTopic['data']   = array_slice($arrTopic['data'], 0,3);
+                        $arrContent['data'] = array_merge($arrTopic['data'],$arrVideo['data']);
+                    }else{
+                        $arrTopic['data']   = array_slice($arrTopic['data'], 0,2);
+                        $arrContent['data'] = array_merge($arrTopic['data'],$arrBook['data'],$arrVideo['data']);
+                    }
                 }
                 foreach ($arrContent['data'] as $key => $val){
                     if($val['search_type'] == 'topic'){
@@ -101,10 +113,11 @@ class Search_Logic_Search{
                         $arrContent['data'][$key]['image'] = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
                     }elseif($val['search_type'] == 'book'){                       
                         $book = Book_Api::getBookInfo($val['id']);
+                        $arrContent['data'][$key]['url']   = isset($book['url'])?trim($book['url']):'';
                         $arrContent['data'][$key]['image'] = isset($book['image'])?Base_Image::getUrlByName($book['image']):'';
                     }elseif($val['search_type'] == 'video'){
                         $video = Video_Api::getVideoInfo($val['id']);
-                        $arrContent['data'][$key]['url']   = isset($video['url'])?$video['url']:'';
+                        $arrContent['data'][$key]['url']   = isset($video['url'])?trim($video['url']):'';
                         $arrContent['data'][$key]['image'] = isset($video['image'])?Base_Image::getUrlByName($video['image']):'';
                     }else{
                         $keyword = Keyword_Api::queryById($val['id']);

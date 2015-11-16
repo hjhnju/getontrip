@@ -7376,7 +7376,7 @@
             var langInfo = options.langInfo;
 
             //01. create Editor
-            var $editor = $('<div class="note-editor"></div>');
+            var $editor = $('<div class="note-editor " data-id="'+$holder.attr('id')+'"></div>');
             if (options.width) {
                 $editor.width(options.width);
             }
@@ -7388,7 +7388,7 @@
 
             //03. create Editable
             var isContentEditable = !$holder.is(':disabled');
-            var $editable = $('<div class="note-editable" contentEditable="' + isContentEditable + '"></div>')
+            var $editable = $('<div class="note-editable" data-id="'+$holder.attr('id')+'" contentEditable="' + isContentEditable + '"></div>')
                 .prependTo($editor);
             if (options.height) {
                 $editable.height(options.height);

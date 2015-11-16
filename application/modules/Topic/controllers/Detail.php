@@ -19,14 +19,21 @@ class DetailController extends Base_Controller_Page {
        $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0;
        $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
        $sightId   = isset($_REQUEST['sightId'])?trim($_REQUEST['sightId']):''; 
-        
+       
+       if(empty($postid)){
+            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
+       }
+
        $logic      = new Topic_Logic_Topic();
        $postInfo    = $logic->getTopicDetail($postid,$sightId); 
        //$postInfo = Topic_Api::getTopicById($postid);
        if(!isset($postInfo['id'])){
           $this->getView()->assign('post', array()); 
        }else{ 
-        
+          //增加访问统计
+          $logicVisit = new Tongji_Logic_Visit();
+          $logicVisit->addVisit(Tongji_Type_Visit::TOPIC,$postid);
+
            //处理来源 
           /* $sourceInfo = Source_Api::getSourceInfo($postInfo['from']);
            $postInfo['from_name'] = $sourceInfo['name'];*/

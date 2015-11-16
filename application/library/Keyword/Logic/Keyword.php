@@ -52,7 +52,10 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $obj    = new Keyword_Object_Keyword();
         foreach ($arrInfo as $key => $val){
             if(in_array($key,$this->_fields)){  
-                $key = $this->getprop($key);              
+                $key = $this->getprop($key); 
+                if('url' == $key){
+                    $val = urldecode($val);
+                }             
                 $obj->$key = $val;
                 $bCheck    = true;
             }
@@ -85,7 +88,10 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $obj->fetch(array('id' => $id));
         foreach ($arrInfo as $key => $val){
             if(in_array($key,$this->_fields)){  
-                $key = $this->getprop($key);              
+                $key = $this->getprop($key);  
+                if('url' == $key){
+                    $val = urldecode($val);
+                }            
                 $obj->$key = $val;
                 $bCheck    = true;
             }

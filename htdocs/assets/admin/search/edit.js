@@ -4,13 +4,17 @@
   author:fyy
  */
 
-
+function change(type) {
+            location.href = "/admin/search/edit?type=" + type;
+        }
 
 $(document).ready(function() {
+	
     var Edit = function() {
 
         var validate = null;
         var action = '';
+        
         /**
          * 绑定事件
          *  

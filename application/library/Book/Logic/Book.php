@@ -241,7 +241,7 @@ class Book_Logic_Book extends Base_Logic{
             $temp[$key]['press']        = isset($detail['publishers'])?$detail['publishers']:$press;
             $temp[$key]['publish_time'] = isset($detail['publish_time'])?$detail['publish_time']:$pubdate;            
             
-            if(empty($image)){
+            if(empty($image)||strstr($image,"book-default-large")){
                 $image = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['imagePaths'][0];
                 $image = $image['bigpath'];
             }
@@ -345,7 +345,7 @@ class Book_Logic_Book extends Base_Logic{
                 }                            
             }
             if($arrInfo['status'] == Book_Type_Status::BLACKLIST){
-                return $ret;
+                return $objBook->save();
             }
         }
         
@@ -370,7 +370,7 @@ class Book_Logic_Book extends Base_Logic{
         foreach ($arrInfo as $key => $val){
             if(in_array($key,$this->fields)){
                 $key = $this->getprop($key);
-                if(($key == 'image') && ($objBook->image !== $val)){
+                if(($key == 'image') && ($objBook->image !== $val) && (!empty($objBook->image))){
                     $this->delPic($objBook->image);
                 }
                 $objBook->$key = $val;
@@ -500,6 +500,7 @@ class Book_Logic_Book extends Base_Logic{
         $arrBook  = $arrBook['data'];
         foreach ($arrBook as $key => $val){
             $book = $this->getBookById($val['id']);
+            $arrBook[$key]['url']   = trim($book['url']);
             $arrBook[$key]['image'] = $book['image'];
             $arrBook[$key]['search_type'] = 'book';
         }
@@ -625,7 +626,7 @@ class Book_Logic_Book extends Base_Logic{
             $temp['press']        = isset($detail['publishers'])?$detail['publishers']:$press;
             $temp['publish_time'] = isset($detail['publish_time'])?$detail['publish_time']:$pubdate;
              
-            if(empty($image)){
+            if(empty($image) || strstr($image,"book-default-large")){
                 $image = $temparr['jingdong_ware_product_detail_search_list_get_responce']['productDetailList']['imagePaths'][0];
                 $image = $image['bigpath'];
             }

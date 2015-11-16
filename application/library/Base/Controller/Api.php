@@ -12,7 +12,7 @@ class Base_Controller_Api extends Base_Controller_Abstract {
         parent::init();
 
         Yaf_Dispatcher::getInstance()->disableView();
-
+        //$this->setBrowserCache("aaa");
         //统一验证csrf token
         $token     = isset($_REQUEST['token']) ? trim($_REQUEST['token']) : '';
         $bCheck    = $this->checkToken($token);
@@ -49,8 +49,14 @@ class Base_Controller_Api extends Base_Controller_Abstract {
     }
    
     public function ajax($arrData = array(), $errorMsg = '', $status = 0){
+        /*@$md5 = md5(json_encode($arrData));
+        $this->setBrowserCache($md5,0);
+        if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && ($md5 == $_SERVER['HTTP_IF_NONE_MATCH'])){
+            @header("Content-Type: application/json; charset=UTF-8" , true, 304);
+        }else{
+            @header("Content-Type: application/json; charset=UTF-8");            
+        }*/
         @header("Content-Type: application/json; charset=UTF-8");
-
         $arrRtInfo = array();
         $arrRtInfo['status'] = $status;
         $arrRtInfo['statusInfo'] = $errorMsg;

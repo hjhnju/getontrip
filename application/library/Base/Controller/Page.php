@@ -12,6 +12,7 @@ class Base_Controller_Page extends Base_Controller_Abstract {
         parent::init();
 
         $this->getView()->assign('webroot', $this->webroot);
+        $this->getView()->assign('stroot',Base_Config::getConfig('web')->stroot);
         $feversion = Base_Config::getConfig('web')->version;
         $this->getView()->assign('feroot', Base_Config::getConfig('web')->stroot . '/v1/'. $feversion . '/asset');
         $this->getView()->assign('tongji', Base_Config::getConfig('web')->tongji);
@@ -34,20 +35,5 @@ class Base_Controller_Page extends Base_Controller_Abstract {
     public function redirect($url){
         parent::redirect($url);
         exit;
-    }
-
-    /**
-     * 设置在浏览器端的缓存时间
-     * @param number $lifetime
-     */
-    public function setBrowserCache($md5 = null, $lifetime = 3600) {
-        $ts = gmdate("D, d M Y H:i:s", time() + $lifetime) . " GMT";
-        header("Expires: $ts");
-        header("Pragma: cache");
-        header("Cache-Control: max-age=$lifetime");
-        if(!is_null($md5)){
-            header("ETag: $md5");
-        }
-        return true;
     }
 }

@@ -8,6 +8,8 @@ class Search_Logic_Search{
     
     const SEARCH_LABEL_NUM = 8;
     
+    const HOT_TOPIC_NUM    = 30;
+    
     protected $logicCity;
     
     protected $logicSight;
@@ -68,14 +70,15 @@ class Search_Logic_Search{
                         $arrRet['data'][$key]['image'] = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
                     }elseif($val['search_type'] == 'book'){                       
                         $book = Book_Api::getBookInfo($val['id']);
+                        $arrRet['data'][$key]['url']   = isset($book['url'])?trim($book['url']):'';
                         $arrRet['data'][$key]['image'] = isset($book['image'])?Base_Image::getUrlByName($book['image']):'';
                     }elseif($val['search_type'] == 'video'){
                         $video = Video_Api::getVideoInfo($val['id']);
-                        $arrRet['data'][$key]['url']   = isset($video['url'])?$video['url']:'';
+                        $arrRet['data'][$key]['url']   = isset($video['url'])?trim($video['url']):'';
                         $arrRet['data'][$key]['image'] = isset($video['image'])?Base_Image::getUrlByName($video['image']):'';
                     }else{
                         $keyword = Keyword_Api::queryById($val['id']);
-                        $arrRet['data'][$key]['url'] = isset($keyword['url'])?$keyword['url']:'';
+                        $arrRet['data'][$key]['url'] = isset($keyword['url'])?trim($keyword['url']):'';
                         $arrRet['data'][$key]['image'] = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
                     }
                     $arrRet['data'][$key]['title']   = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['title']));
@@ -87,11 +90,22 @@ class Search_Logic_Search{
                 $arrSight    = $this->logicSight->search($query, $page, $pageSize);
                 $arrContent = Base_Search::Search('content', $query, $page, $pageSize, array('id','unique_id','search_type','title','content'));
                 
-                $arrTopic    = $this->logicTopic->searchTopic($query, $page, 2);
+                $arrTopic    = $this->logicTopic->searchTopic($query, $page, $pageSize);
                 $arrVideo    = $this->logicVideo->search($query, $page, 1);
                 $arrBook     = $this->logicBook->search($query, $page, 1);
-                if(($arrTopic['num'] >= 2)&&(!empty($arrBook['num']))&&(!empty($arrVideo['num']))){
-                    $arrContent['data'] = array_merge($arrTopic['data'],$arrBook['data'],$arrVideo['data']);
+                if($arrTopic['num'] >= 2){
+                    if(empty($arrVideo['num']) && empty($arrBook['num'])){
+                        $arrContent['data'] = $arrTopic['data'];
+                    }elseif(empty($arrVideo['num'])){
+                        $arrTopic['data']   = array_slice($arrTopic['data'], 0,3);
+                        $arrContent['data'] = array_merge($arrTopic['data'],$arrBook['data']);
+                    }elseif(empty($arrBook['num'])){
+                        $arrTopic['data']   = array_slice($arrTopic['data'], 0,3);
+                        $arrContent['data'] = array_merge($arrTopic['data'],$arrVideo['data']);
+                    }else{
+                        $arrTopic['data']   = array_slice($arrTopic['data'], 0,2);
+                        $arrContent['data'] = array_merge($arrTopic['data'],$arrBook['data'],$arrVideo['data']);
+                    }
                 }
                 foreach ($arrContent['data'] as $key => $val){
                     if($val['search_type'] == 'topic'){
@@ -99,10 +113,11 @@ class Search_Logic_Search{
                         $arrContent['data'][$key]['image'] = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
                     }elseif($val['search_type'] == 'book'){                       
                         $book = Book_Api::getBookInfo($val['id']);
+                        $arrContent['data'][$key]['url']   = isset($book['url'])?trim($book['url']):'';
                         $arrContent['data'][$key]['image'] = isset($book['image'])?Base_Image::getUrlByName($book['image']):'';
                     }elseif($val['search_type'] == 'video'){
                         $video = Video_Api::getVideoInfo($val['id']);
-                        $arrContent['data'][$key]['url']   = isset($video['url'])?$video['url']:'';
+                        $arrContent['data'][$key]['url']   = isset($video['url'])?trim($video['url']):'';
                         $arrContent['data'][$key]['image'] = isset($video['image'])?Base_Image::getUrlByName($video['image']):'';
                     }else{
                         $keyword = Keyword_Api::queryById($val['id']);
@@ -148,8 +163,7 @@ class Search_Logic_Search{
                 $arrTemp[$key]['id']   = trim($val['id']);
                 $arrTemp[$key]['name'] = trim($val['name']);
                 if($arrTemp[$key]['name'] == '热门内容'){
-                    $logicTopic            = new Topic_Logic_Topic();
-                    $arrTemp[$key]['num']  = strval($logicTopic->getHotTopicNum());
+                    $arrTemp[$key]['num']  = strval(self::HOT_TOPIC_NUM);
                 }else{
                     $arrTemp[$key]['num']  = $logicSearchLabel->getLabeledNum($val['id']);
                 }               
@@ -163,16 +177,22 @@ class Search_Logic_Search{
         if(isset($label['name']) && ($label['name'] == '热门内容')){
             $listTopic = new Topic_List_Topic();
             $listTopic->setPage($page);
+            $listTopic->setFilter(array('status' => Topic_Type_Status::PUBLISHED));
             $listTopic->setPagesize($pageSize);
             $listTopic->setOrder('`hot3` desc, `create_time` desc');
             $listTopic->toArray();
-            $arrData = $listTopic->toArray();
+            if($page >= self::HOT_TOPIC_NUM/$pageSize){
+                $arrData = array('list' => array());
+                $ret     = array();
+            }else{
+                $arrData = $listTopic->toArray();
+            }
             foreach ($arrData['list'] as $key => $val){
                 $topicId       = $val['id'];
                 $arrTopic      = $this->logicTopic->getTopicById($topicId);
                 $temp['id']    = strval($topicId);
                 $temp['type']  = strval(Search_Type_Label::TOPIC);
-                $temp['title'] = $arrTopic['title'];
+                $temp['name'] = $arrTopic['title'];
                 $temp['image'] = isset($arrTopic['image'])?Base_Image::getUrlByName($arrTopic['image']):'';
                 $logicTag      = new Tag_Logic_Tag();
                 $tags          = $logicTag->getTopicTags($topicId);
@@ -183,16 +203,21 @@ class Search_Logic_Search{
                     $arrSight  = Sight_Api::getSightById($sightId);
                     $sight     = $arrSight['name'];
                 }
+                if(isset($tags[0])){
+                    $tags[0] = str_replace("其他", "", $tags[0]);
+                }
                 if(empty($sight)){
-                    $temp['sighttag'] = isset($tags[0])?trim($tags[0]):'';
+                    $temp['param1'] = isset($tags[0])?trim($tags[0]):'';
+                }elseif(isset($tags[0])){       
+                    $temp['param1'] = $sight.'·'.trim($tags[0]);
                 }else{
-                    $temp['sighttag'] = $sight.'·'.(isset($tags[0])?trim($tags[0]):'');
+                    $temp['param1'] = $sight;
                 }
         
-                $visit_num           = $this->logicTopic->getTotalTopicVistPv($topicId);
-                $collect             = $this->logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $topicId);
-                $temp['visitnum']    =  $visit_num;
-                $temp['collectnum']  =  $collect;
+                $visit_num       = $this->logicTopic->getTotalTopicVistPv($topicId);
+                $collect         = $this->logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $topicId);
+                $temp['param2']  =  $collect;
+                $temp['param3']  =  $visit_num;
                 $ret[] = $temp;
             }
             $arrRet['content']   = $ret;

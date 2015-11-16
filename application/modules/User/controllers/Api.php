@@ -88,7 +88,10 @@ class ApiController extends Base_Controller_Api{
             'city'      => $city,
         );
         $ret        = $this->logicUser->addUserInfo($userId, $arrParam);
-        return $this->ajax(strval($ret));
+        if(!$ret){
+            return $this->ajaxError(User_RetCode::UNKNOWN_ERROR,User_RetCode::getMsg(User_RetCode::UNKNOWN_ERROR));
+        }
+        return $this->ajax();
     }
     
     /**
@@ -124,6 +127,8 @@ class ApiController extends Base_Controller_Api{
      * 检查用户是否登录
      */
     public function checkLoginAction(){
+        
+        
         $ret = User_Api::getCurrentUser();
         return $this->ajax(strval($ret));
     }

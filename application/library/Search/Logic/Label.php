@@ -86,7 +86,7 @@ class Search_Logic_Label extends Base_Logic{
             }else{
                 $List['list'][$index]['typename'] = '';
             }
-            $List['list'][$index]['type'] = $data['type'];
+            $List['list'][$index]['type'] = isset($data['type'])?$data['type']:'';
             if($val['name'] == '热门内容'){
                 $logicTopic = new Topic_Logic_Topic();
                 $List['list'][$index]['obj_num'] = $logicTopic->getHotTopicNum();

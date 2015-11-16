@@ -46,25 +46,26 @@ class City_Logic_City{
         $listSight  = new Sight_List_Sight();
         $listSight->setFields(array('id','name','image'));
         $listSight->setFilter(array('city_id' => $cityId,'status' => Sight_Type_Status::PUBLISHED));
+        $listSight->setOrder('`id` asc');
         $listSight->setPage($page);
         $listSight->setPagesize($pageSize);
         $arrSight     = $listSight->toArray();
         $arrSight     = $arrSight['list'];
         $logicCollect = new Collect_Logic_Collect();
         foreach ($arrSight as $key => $val){            
-            $ret    = $redis->sMembers(Sight_Keys::getSightTopicKey($val['id']));
+            /*$ret    = $redis->sMembers(Sight_Keys::getSightTopicKey($val['id']));
             $hot    = 0;
             foreach ($ret as $topicId){
                 $hot += $logicTopic->getTopicHotDegree($topicId, self::HOTPERIOD);
             }
-            $arrHot[] = $hot;     
+            $arrHot[] = $hot;     */
             $topic_num     = $logicSight->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
             $arrSight[$key]['id']        = strval($val['id']);
             $arrSight[$key]['image']     = Base_Image::getUrlByName($val['image']);
-            $arrSight[$key]['topics']    = sprintf("共%s个话题",$topic_num);
+            $arrSight[$key]['topics']    = sprintf("%s个内容",$topic_num);
             $arrSight[$key]['collected'] = strval($logicCollect->checkCollect(Collect_Type::SIGHT, $val['id']));
         }
-        array_multisort($arrHot, SORT_DESC , $arrSight);
+        //array_multisort($arrHot, SORT_DESC , $arrSight);
         return $arrSight;
     }
     
@@ -77,6 +78,7 @@ class City_Logic_City{
         $arrRet['hot'] = $this->getHotCity();
         $arrLeters     = range('A','Z');
         $objCity       = new City_Object_City();
+        $logicSight    = new Sight_Logic_Sight();
         foreach($arrLeters as $char){
             $strFilter = "`cityid` = 0 and `provinceid` != 0";
             $listCity = new City_List_Meta();
@@ -91,6 +93,9 @@ class City_Logic_City{
                 if($objCity->status == City_Type_Status::PUBLISHED){
                     $val['id']         = strval($val['id']);
                     $val['pinYinHead'] = strtolower(Base_Util_String::pinyin_first($val['name']));
+                    //$sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
+                    //$topicNum          = $this->getTopicNum($val['id']);
+                    //$val['desc']       = sprintf("%d个景点，%d篇内容",$sightNum,$topicNum);
                     $tempCity[] = $val;
                 }
             }
@@ -264,6 +269,7 @@ class City_Logic_City{
      * @return array
      */
     public function getHotCity(){
+        $logicSight = new Sight_Logic_Sight();
         $arrHotCity = array(
             array('id' =>'2',   'name'=>'北京','pinyin' => 'beijing', 'pinYinHead' => 'bj'),
             array('id' =>'41',  'name'=>'上海','pinyin' => 'shanghai', 'pinYinHead' => 'sh'),
@@ -273,6 +279,12 @@ class City_Logic_City{
             array('id' =>'1058','name'=>'杭州','pinyin' => 'hangzhou', 'pinYinHead' => 'hz'),
             array('id' =>'972', 'name'=>'苏州','pinyin' => 'suzhou', 'pinYinHead' => 'sz'),
         );
+        /*foreach ($arrHotCity as $key => $val){
+            $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
+            $topicNum          = $this->getTopicNum($val['id']);
+            $arrHotCity[$key]['desc']       = sprintf("%d个景点，%d篇内容",$sightNum,$topicNum);
+        }*/
+
         return $arrHotCity;
     }
     
@@ -387,6 +399,7 @@ class City_Logic_City{
         $listProvince = new City_List_Meta();
         $listProvince->setFilter(array('provinceid' => 0));
         $listProvince->setFields(array('id','name'));
+        $listProvince->setOrder('`id` asc');
         $listProvince->setPagesize(PHP_INT_MAX);
         $arrRet   =  $listProvince->toArray();
         foreach ($arrRet['list'] as $key => $val){

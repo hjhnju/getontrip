@@ -52,7 +52,10 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $obj    = new Keyword_Object_Keyword();
         foreach ($arrInfo as $key => $val){
             if(in_array($key,$this->_fields)){  
-                $key = $this->getprop($key);              
+                $key = $this->getprop($key); 
+                if('url' == $key){
+                    $val = urldecode($val);
+                }             
                 $obj->$key = $val;
                 $bCheck    = true;
             }
@@ -85,7 +88,10 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $obj->fetch(array('id' => $id));
         foreach ($arrInfo as $key => $val){
             if(in_array($key,$this->_fields)){  
-                $key = $this->getprop($key);              
+                $key = $this->getprop($key);  
+                if('url' == $key){
+                    $val = urldecode($val);
+                }            
                 $obj->$key = $val;
                 $bCheck    = true;
             }
@@ -289,6 +295,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
         foreach ($arrRet['list'] as $key => $val){
             $arrRet['list'][$key]['id']      = strval($val['id']);
             $arrRet['list'][$key]['content'] = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['content']));
+            $arrRet['list'][$key]['url']      = trim($val['url']);
             $listKeywordCatalog = new Keyword_List_Catalog();
             $listKeywordCatalog->setFields(array('name','url'));
             $listKeywordCatalog->setFilter(array('keyword_id' => $val['id']));
@@ -296,7 +303,9 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $arrCatalog = $listKeywordCatalog->toArray();
             //$arrLen     = array();
             foreach ($arrCatalog['list'] as $index => $data){
-                $arrCatalog['list'][$index]['name'] = Base_Util_String::trimall($data['name']);
+                $arrCatalog['list'][$index]['name']    = Base_Util_String::trimall($data['name']);
+                $arrCatalog['list'][$index]['section'] = $data['url'];
+                unset($arrCatalog['list'][$index]['url']);
                 //$arrLen[] = strlen($data['name']);
             }
             //array_multisort($arrLen, SORT_DESC , $arrCatalog['list']);
@@ -372,7 +381,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
                 $name = html_entity_decode($ret->innertext)."\r\n";
                 $arrItems[] = array(
                     'name' => $name,
-                    'url'  => $wikiUrl.$url,
+                    'url'  => $url,
                 );
                 if(count($arrItems) >= self::WIKI_CATALOG_NUM){
                     break;
@@ -386,7 +395,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
                 $name = html_entity_decode($ret->innertext)."\r\n";
                 $arrItems[] = array(
                     'name' => $name,
-                    'url'  => $wikiUrl.$url,
+                    'url'  => $url,
                 );
                 if(count($arrItems) >= self::WIKI_CATALOG_NUM){
                     break;

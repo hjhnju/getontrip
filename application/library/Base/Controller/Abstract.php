@@ -59,6 +59,21 @@ class Base_Controller_Abstract extends Yaf_Controller_Abstract
     }
     
     /**
+     * 设置在浏览器端的缓存时间
+     * @param number $lifetime
+     */
+    public function setBrowserCache($md5 = null, $lifetime = 3600) {
+        $ts = gmdate("D, d M Y H:i:s", time() + $lifetime) . " GMT";
+        header("Expires: $ts");
+        header("Pragma: cache");
+        header("Cache-Control: max-age=$lifetime");
+        if(!is_null($md5)){
+            header("ETag: $md5");
+        }
+        return true;
+    }
+    
+    /**
      * 检测token
      * @param string $token
      * @return boolean
@@ -187,7 +202,6 @@ class Base_Controller_Abstract extends Yaf_Controller_Abstract
     
     public function ajax($arrData = array(), $errorMsg = '', $status = 0){
         header("Content-Type: application/json; charset=UTF-8");
-
         $arrRtInfo = array();
         $arrRtInfo['status'] = $status;
         $arrRtInfo['statusInfo'] = $errorMsg;

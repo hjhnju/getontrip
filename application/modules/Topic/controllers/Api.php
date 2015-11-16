@@ -28,6 +28,11 @@ class ApiController extends Base_Controller_Api {
         }        
         $logic      = new Topic_Logic_Topic();
         $ret        = $logic->getTopicDetail($topicId,$sightId);
+        
+        //增加访问统计
+        $logicVist          = new Tongji_Logic_Visit();
+        $logicVist->addVisit( Tongji_Type_Visit::TOPIC, $topicId);
+        
         unset($ret['content']);  
         $this->ajaxDecode($ret);
     }  

@@ -171,9 +171,6 @@ class Topic_Logic_Topic extends Base_Logic{
        
         //$arrRet['desc']      = Base_Util_String::getSubString($arrRet['content'], 30);
         
-        $logicVist          = new Tongji_Logic_Visit();
-        $logicVist->addVisit( Tongji_Type_Visit::TOPIC, $topicId);
-        
         //话题来源
         $logicSource     = new Source_Logic_Source();
         if(empty($objTopic->fromDetail)){

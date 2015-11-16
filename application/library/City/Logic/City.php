@@ -294,7 +294,6 @@ class City_Logic_City{
      * @return integer
      */
     public function getCityIdByName($strName){
-        $cityId     = 2;
         $city       = $this->queryCityPrefix($strName, 1, 1);
         if(!empty($city['list'])){
             $cityId     = $city['list'][0]['id'];

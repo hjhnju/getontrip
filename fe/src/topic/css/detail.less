@@ -21,9 +21,9 @@
         left: 0;
         bottom: 10px;
         width: 100%;
-        font-size: 20px;
+        font-size: 24px;
         vertical-align: middle;
-        padding: 0 15px;
+        padding: 0 20px;
         line-height: 1.2;
         .title {
             color: #fff;
@@ -46,21 +46,28 @@
     width: 100%;
     float: none;
     line-height: 30px;
-    padding: 0 40px;
     img {
         width: 100%;
         height: 200px;
+        margin-top: 8px;
     }
     .main-content-inner {
-        margin: 10px 10px 0px;
+        margin: 14px 20px 0px;
         &.rich-text {
             text-align: left;
-            font-size: 16px;
-            line-height: 30px;
+            font-size: 19px;
+            line-height: 28px;
+            color: #3e3e3e;
             p {
                 text-align: justify;
-                margin-top: 8px;
-                line-height: 2em;
+                margin-top: 10px;
+                color: #3e3e3e;
+                &.imagedesc {
+                    font-size: 12px;
+                    color: #696969;
+                    line-height: 18px;
+                    text-align: left;
+                }
             }
             .table {
                 width: 100%;
@@ -98,177 +105,122 @@
         }
     }
     .text-from {
-        margin: 50px 10px 40px;
+        margin: 50px 20px 40px;
         text-align: center;
         font-size: 10px;
+        color: #696969;
     }
 }
 
-.main-wrap {
-    max-width: 640px;
-    min-width: 300px;
-    margin: 0 auto;
-}
-
-.content-wrap {
+//header
+.header-for-mobile {
+    height: 62px;
     overflow: hidden;
-}
-
-.logo-title,
-.logo-title:hover {
-    color: #fff;
-    font-size: 30px;
-    padding-left: 20px;
-}
-
-.web-logo {
-    width: 126px;
-    height: 42px;
-    background-image: url('/img/Web_Logo.png');
-    background-repeat: no-repeat;
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.global-header {
-    width: 100%;
-    top: 0;
-    z-index: 9990;
-    height: 60px;
-    background-color: #009dd7;
-    color: #FaFcFe;
-}
-
-.global-header .title {
-    font-size: 24px;
-    font-weight: 100;
-    margin: 0 0 0 63px;
-}
-
-.global-header .main-wrap {
-    height: 60px;
-    position: relative;
-    line-height: 60px;
-}
-
-.download-banner-v2 {
-    position: fixed;
-    bottom: 0;
-    z-index: 3;
-    display: none;
-    width: 100%;
-    height: 60px;
-    background-color: rgba(0, 0, 0, .7);
-    color: #fff;
-    -webkit-transition: opacity .3s ease-out;
-    transition: opacity .3s ease-out;
-}
-
-.download-banner-v2.hide {
-    opacity: 0;
-}
-
-.download-banner-v2 .close {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 21px;
-    height: 21px;
-    padding: 19px 12px 20px;
-    background-image: url(/img/download_banner/close.png);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 21px;
-    opacity: 1;
-}
-
-.download-banner-v2 .icon {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 46px;
-    width: 41px;
-    height: 41px;
-    margin: auto;
-    background-image: url(/img/download_banner/app-icon.png);
-    background-position: center;
-    background-size: 41px;
-}
-
-.download-banner-v2 .title,
-.download-banner-v2 .describe {
-    margin-left: 97px;
-    margin-right: 84px;
     line-height: 1;
+    background: #fff;
 }
 
-.download-banner-v2 .title {
-    margin-top: 12px;
-    margin-bottom: 0;
-    font-size: 19px;
-}
-
-.download-banner-v2 .describe {
-    margin-top: 4px;
+.header-for-mobile-btn {
+    float: right;
+    margin-top: 17px;
+    border-radius: 3px;
+    background-color: #57c200;
+    padding: 8px 9px;
+    color: #fff;
     font-size: 12px;
 }
 
-.download-banner-v2 .download-btn {
-    position: absolute;
-    top: 0;
-    right: 10px;
-    bottom: 0;
-    width: 74px;
-    height: 23px;
-    padding-top: 10px;
-    margin: auto;
-    font-size: 13px;
-    line-height: 1;
-    text-align: center;
-    text-decoration: none;
-    color: #fff;
-    background-color: #58af08;
-    border: 0;
-    border-radius: 4px;
+.header-for-mobile-logo-img {
+    float: left;
+    margin-top: 7px;
+    width: 48px;
+    height: 48px;
 }
 
-.sprite-ico-Header_Logo2x {
-    position: absolute;
-    bottom: 0;
+.header-for-mobile-download-link,
+.header-for-mobile-download-link:active,
+.header-for-mobile-download-link:visited,
+.header-for-mobile-download-link:hover {
+    display: block;
+    padding: 0 10px 0 16px;
+    text-decoration: none;
 }
 
-.button {
-    display: inline-block;
-    height: 36px;
-    line-height: 36px;
-    width: 120px;
-    background-color: #1cade9;
-    margin: 0 5px;
-    color: white;
-    text-decoration: none;
-    text-align: center;
-    border-radius: 4px;
-    font-size: 14px;
-    &:hover {
-        background: #1cade9;
-        text-decoration: none;
-        -webkit-tap-highlight-color: transparent;
-        color: #fff;
+.header-for-mobile-title {
+    display: block;
+    font-size: 18px;
+    color: #000;
+    padding: 12px 0 8px;
+    margin-left: 58px;
+}
+
+.header-for-mobile-meta {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    padding: 0 0 12px;
+    margin-left: 58px;
+}
+
+@media (max-width: 320px) {
+    .bg-img .title-box {
+        padding: 0px 14px;
+    }
+    .main-content .main-content-inner {
+        margin: 14px 14px 0;
+    }
+    .main-content .main-content-inner.rich-text {
+        font-size: 16px;
+        line-height: 26px;
+    }
+    .header-for-mobile {
+        height: 60px;
+    }
+    .header-for-mobile-btn {
+        padding: 6px 8px;
+    }
+    .header-for-mobile-logo-img {
+        width: 40px;
+        height: 40px;
+        margin-top: 10px;
+    }
+    .header-for-mobile-title {
+        margin-left: 48px;
+        padding: 6px 0px 2px 0px;
+    }
+    .header-for-mobile-meta {
+        margin-left: 48px;
+        line-height: 14px;
     }
 }
 
-html.no-touch .button:hover {
-    background-color: #1fb3f0;
+@media (min-width: 480px) {
+    .main-wrap {
+        max-width: 640px;
+        min-width: 300px;
+        margin: 0 auto;
+    }
+    .content-wrap {
+        overflow: hidden;
+    }
 }
 
-.button i {
-    margin-right: 10px;
-}
-
-.button span {
-    vertical-align: -2px;
-}
-
-.download {
-    float: right;
+@media (min-width: 640px) {
+    .header-for-mobile {
+        max-width: 640px;
+        min-width: 300px;
+        margin: 0 auto;
+    }
+    .header-for-mobile-download-link {
+        padding: 0 10px 0 0;
+        text-decoration: none;
+    }
+    .header-for-mobile-download-link,
+    .header-for-mobile-download-link:active,
+    .header-for-mobile-download-link:visited,
+    .header-for-mobile-download-link:hover {
+        display: block;
+        padding: 0 10px 0 0;
+        text-decoration: none;
+    }
 }

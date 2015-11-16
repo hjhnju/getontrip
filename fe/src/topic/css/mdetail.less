@@ -53,6 +53,10 @@
     }
     .main-content-inner {
         margin: 14px 20px 0px;
+        &.isapp {
+    margin: 14px 20pt 0px;
+}
+
         &.rich-text {
             text-align: left;
             font-size: 19px;
@@ -167,7 +171,7 @@
         padding: 0px 14px;
     }
     .main-content .main-content-inner {
-        margin: 14px 14px 0;
+        margin: 14px 20pt 0;
     }
     .main-content .main-content-inner.rich-text {
         font-size: 16px;
@@ -199,6 +203,9 @@
         max-width: 640px;
         min-width: 300px;
         margin: 0 auto;
+        &.isapp {
+            max-width: inherit;
+        }
     }
     .content-wrap {
         overflow: hidden;

@@ -21,10 +21,7 @@ class DetailController extends Base_Controller_Page {
        if(empty($postid)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
        }
-        
-       //增加访问统计
-       $logicVisit = new Tongji_Logic_Visit();
-       $logicVisit->addVisit(Tongji_Type_Visit::BOOK,$postid);
+         
         
        $logic    = new Book_Logic_Book();
        $postInfo      = $logic->getBookById($postid); 
@@ -32,7 +29,9 @@ class DetailController extends Base_Controller_Page {
        if(!isset($postInfo['id'])){
           $this->getView()->assign('post', array()); 
        }else{ 
-        
+           //增加访问统计
+          $logicVisit = new Tongji_Logic_Visit();
+          $logicVisit->addVisit(Tongji_Type_Visit::BOOK,$postid);
            
            //处理背景图片
            /*if(!empty($postInfo["image"])){
@@ -50,9 +49,11 @@ class DetailController extends Base_Controller_Page {
        
        //判断是否来自移动端
        $isMobile = Base_Util_Mobile::isMobile();
-       //判断是否来自app
-        
        $this->getView()->assign('isMobile', $isMobile); 
+       //判断是否来自app 
+       $isapp = isset($_REQUEST['isapp'])?$_REQUEST['isapp'] : 0; 
+       $this->getView()->assign('isapp', $isapp);  
+        
          
     }
      

@@ -1,10 +1,10 @@
 {%extends file="../../../views/common/page.phtml"%}
 {%block name="link"%}
-{%if $isMobile%}{%else%}{%/if%} 
+{%if $isMobile%}
 <link rel="stylesheet" type="text/css" href="{%$feroot%}/topic/css/mdetail.css" />
-
-<!-- <link rel="stylesheet" type="text/css" href="{%$feroot%}/topic/css/detail.css" /> -->
-
+{%else%}
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/topic/css/detail.css" />
+{%/if%} 
  
 {%/block%} 
 {%block name="content"%}
@@ -36,10 +36,10 @@
     
   </div>
 {%/if%}  
-<div class="container main-wrap content-wrap"> 
+<div class="container main-wrap content-wrap{%if $isapp eq 1%} isapp{%/if%}"> 
  {%if isset($post.id)%}  
     {%if $isapp eq 0%}  
-      <div class="bg-img" id="bg-img" style="background-image:url('{%$feroot%}/common/img/imgloading.png'); " data-webroot="{%$webroot%}" data-image="{%$post.image%}{%if empty($post.image)==0%}{%$post.image%}{%/if%}">  
+      <div class="bg-img" id="bg-img" style="background-image:url('{%$feroot%}/common/img/imgloading.png'); "  data-stroot="{%$stroot%}"  data-image="{%if empty($post.image)==0%}{%$post.image%}{%/if%}">  
       <div class="title-box">
           <div class="title">
             {%if empty($post.title)==0%}{%$post.title%}{%/if%} 
@@ -53,7 +53,7 @@
     </div> 
    {%/if%}
   <div class="main-content">
-    <div class="main-content-inner rich-text">
+    <div class="main-content-inner rich-text{%if $isapp eq 1%} isapp{%/if%}">
        {%if empty($post.title)==0%}{%$post.content%}{%/if%}
     </div>
     <div class="text-from">

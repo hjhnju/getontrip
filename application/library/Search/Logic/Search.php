@@ -181,14 +181,12 @@ class Search_Logic_Search{
             $listTopic = new Topic_List_Topic();
             $listTopic->setPage($page);
             $listTopic->setFilter(array('status' => Topic_Type_Status::PUBLISHED));
-            $listTopic->setPagesize($pageSize);
+            $listTopic->setPagesize(self::HOT_TOPIC_NUM);
             $listTopic->setOrder('`hot3` desc, `create_time` desc');
-            $listTopic->toArray();
-            if($page >= self::HOT_TOPIC_NUM/$pageSize){
-                $arrData = array('list' => array());
-                $ret     = array();
-            }else{
-                $arrData = $listTopic->toArray();
+            $arrData = $listTopic->toArray();
+            $arrData['list'] = array_slice($arrData['list'],($page-1)*$pageSize,$pageSize);
+            if(empty($arrData['list'])){
+                return $arrData['list'];
             }
             foreach ($arrData['list'] as $key => $val){
                 $topicId       = $val['id'];

@@ -209,8 +209,8 @@ class User_Logic_User extends Base_Logic{
         $objUser = new User_Object_User();
         $objUser->deviceId = isset($_COOKIE[User_Keys::getDeviceIdKey()])?trim($_COOKIE[User_Keys::getDeviceIdKey()]):'';
         $objUser->save();        
-        $user   = Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY, $objUser->id);
-        setcookie(User_Keys::getCurrentUserKey(),urlencode($user));
+        //$user   = Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY, $objUser->id);
+        //setcookie(User_Keys::getCurrentUserKey(),urlencode($user));
         return $objUser->id;
     }
 }

@@ -83,12 +83,12 @@ class Base_Controller_Abstract extends Yaf_Controller_Abstract
             return false;
         }
         $len       = strlen($token);
-        $secretVal = substr($token,0,32);
-        $time      = substr($token,32,$len);
+        $secretVal = substr($token,0,64);
+        $time      = substr($token,64,$len);
         $secretKey = Base_Config::getConfig('app')->secret;
         if(time() - $time >= 60){
             return false;
-        }elseif(md5($secretKey.$time) == $secretVal){
+        }elseif(hash("sha256",$secretKey.$time) == $secretVal){
             return true;
         }
         return false;

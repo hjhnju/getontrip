@@ -138,6 +138,9 @@ class Search_Logic_Search{
                 break;
         }
         $this->logicHotWord->addSearchWord($query);
+        if(!empty($type)){
+            return $arrRet['data'];
+        }
         return $arrRet;
     }
     

@@ -28,7 +28,7 @@ class Tag_Logic_Relation extends Base_Logic{
                     continue;
                 }
                 $tmp['id']   = strval($key);
-                $tmp['type'] = strval(Tag_Type_Tag::TOP_CLASS);
+                //$tmp['type'] = strval(Tag_Type_Tag::TOP_CLASS);
                 $tmp['name'] = trim($tag['name']);
                 $arrRet[]  = $tmp;
             }

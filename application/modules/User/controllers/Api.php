@@ -31,9 +31,12 @@ class ApiController extends Base_Controller_Api{
         $openId   = isset($_REQUEST['openId'])?trim($_REQUEST['openId']):'';
         $type     = isset($_REQUEST['type'])?intval($_REQUEST['type']):'';
         if(empty($openId) || empty($type)){
-            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
+            return $this->ajaxError(User_RetCode::PARAM_ERROR,User_RetCode::getMsg(User_RetCode::PARAM_ERROR));
         }
-        $ret = $this->logicLogin->setLogin($openId,$type);
+        $ret      = $this->logicLogin->setLogin($openId,$type);
+        if($ret){
+            return $this->ajaxError($ret,User_RetCode::getMsg($ret));
+        }
         return $this->ajax($ret);
     }
 
@@ -119,17 +122,6 @@ class ApiController extends Base_Controller_Api{
             'city'      => $city,
         );
         $ret        = $this->logicUser->editUserInfo($userId,$arrParam, $file);
-        return $this->ajax(strval($ret));
-    }
-    
-    /**
-     * 接口6：/api/user/checkLogin
-     * 检查用户是否登录
-     */
-    public function checkLoginAction(){
-        
-        
-        $ret = User_Api::getCurrentUser();
         return $this->ajax(strval($ret));
     }
 }

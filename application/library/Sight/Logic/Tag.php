@@ -14,22 +14,28 @@ class Sight_Logic_Tag extends Base_Logic{
     const HIDE_TAG = -1;
     
     /**
+     * 1 话题的显示标签
+     * @var integer
+     */
+    const TOPIPC   = 1;
+    
+    /**
      * 10 景观标签
      * @var integer
      */
-    const LANDSCAPE = 10;
+    const LANDSCAPE = 2;
     
     /**
      * 11 书籍标签
      * @var integer
      */
-    const BOOK      = 11;
+    const BOOK      = 3;
     
     /**
      * 12 视频标签
      * @var integer
      */
-    const VIDEO     = 12;
+    const VIDEO     = 4;
         
     
     const STR_LANDSCAPE = 'landscape';
@@ -77,7 +83,6 @@ class Sight_Logic_Tag extends Base_Logic{
                 $tag  = $this->_logicTag->getTagByName($val);
                 
                 $temp['id']     = strval($tag['id']);
-                $temp['type']   = strval($tag['type']);
                 $temp['name']   = $val;
                 if(!empty($temp)){
                     $num = $this->_modelTopic->getTopicNumByTag($tag['id'], $sightId);
@@ -107,10 +112,9 @@ class Sight_Logic_Tag extends Base_Logic{
             }
             $temp['id']   = trim($val['tag_id']);
             $tag  = $this->_logicTag->getTagById($val['tag_id']);
-            $temp['type'] = strval(Tag_Type_Tag::GENERAL);
             $temp['name'] = trim($tag['name']);
             
-            $arrCommonTag[] =       $temp;
+            $arrCommonTag[] =   $temp;
         }
         
         //判断有无视频,书籍,而增加相应标签      
@@ -127,6 +131,11 @@ class Sight_Logic_Tag extends Base_Logic{
             $arrCommonTag[] = array('id' => strval(self::STR_VIDEO),'type' => strval(self::VIDEO), 'name' => '视频');
         }        
         $arrCommonTag = array_merge($arrTopTag,$arrCommonTag);
+        foreach ($arrCommonTag as $key => $val){
+            if(!isset($val['type'])){
+                $arrCommonTag[$key]['type'] = strval(self::TOPIPC);
+            }
+        }
         
         /*foreach ($arrCommonTag as $index => $tag){
             $data = $tag['id'].",".$tag['type'].",".$tag['name'];

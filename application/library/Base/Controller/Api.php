@@ -12,11 +12,14 @@ class Base_Controller_Api extends Base_Controller_Abstract {
         parent::init();
 
         Yaf_Dispatcher::getInstance()->disableView();
-        //$this->setBrowserCache("aaa");
-        //统一验证csrf token
+        $arrUrl    = explode("/",$_SERVER['REQUEST_URI']);
+        if(strtolower($arrUrl[1]) == "admin"){
+            return;
+        }
+        //统一验证token      
         $token     = isset($_REQUEST['token']) ? trim($_REQUEST['token']) : '';
         $bCheck    = $this->checkToken($token);
-        $bCheck    = true;
+        //$bCheck    = true;
         if(!$bCheck){
             Base_Log::warn(array(
                 'msg'        => 'Csrf token invalid', 
@@ -24,8 +27,8 @@ class Base_Controller_Api extends Base_Controller_Abstract {
             ));
             @header("Content-Type: application/json; charset=UTF-8");
             $arrRtInfo = array();
-            $arrRtInfo['status'] = Base_RetCode::CSRFTOKEN_INVALID;
-            $arrRtInfo['statusInfo'] = Base_RetCode::getMsg(Base_RetCode::CSRFTOKEN_INVALID);
+            $arrRtInfo['status'] = Base_RetCode::TOKEN_INVALID;
+            $arrRtInfo['statusInfo'] = Base_RetCode::getMsg(Base_RetCode::TOKEN_INVALID);
             $arrRtInfo['data'] = array();
             $output = json_encode($arrRtInfo);
             echo $output;
@@ -47,15 +50,16 @@ class Base_Controller_Api extends Base_Controller_Abstract {
         $param   = $request->getParams();
         return $param['version'];
     }
-   
-    public function ajax($arrData = array(), $errorMsg = '', $status = 0){
-        /*@$md5 = md5(json_encode($arrData));
+    
+    public function addCache($arrData){
+        @$md5 = md5(json_encode($arrData));
         $this->setBrowserCache($md5,0);
         if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && ($md5 == $_SERVER['HTTP_IF_NONE_MATCH'])){
             @header("Content-Type: application/json; charset=UTF-8" , true, 304);
-        }else{
-            @header("Content-Type: application/json; charset=UTF-8");            
-        }*/
+        }
+    }
+   
+    public function ajax($arrData = array(), $errorMsg = '', $status = 0){
         @header("Content-Type: application/json; charset=UTF-8");
         $arrRtInfo = array();
         $arrRtInfo['status'] = $status;

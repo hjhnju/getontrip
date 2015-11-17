@@ -18,14 +18,14 @@ class Base_Controller_Page extends Base_Controller_Abstract {
         $this->getView()->assign('tongji', Base_Config::getConfig('web')->tongji);
 
         //set csrf token
-        $token = Yaf_Session::getInstance()->get(Base_Keys::getCsrfTokenKey());
+        /*$token = Yaf_Session::getInstance()->get(Base_Keys::getCsrfTokenKey());
         if(empty($token)){
             $token = time() . mt_rand(10000, 99999);
             $ret   = Yaf_Session::getInstance()->set(Base_Keys::getCsrfTokenKey(), $token);
             //防止错误时验证无法访问
             $token = $ret ? $token : '';
         }
-        $this->getView()->assign('token', $token);
+        $this->getView()->assign('token', $token);*/
     }
 
     protected function isAjax(){

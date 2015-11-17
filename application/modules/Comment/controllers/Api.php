@@ -11,7 +11,7 @@ class ApiController extends Base_Controller_Api {
     protected $logicUser;
     
     public function init() {
-        $this->setNeedLogin(true);
+        $this->setNeedLogin(false);
         parent::init();        
     }
     

@@ -1,5 +1,6 @@
 {%extends file="common/page.phtml"%}
 {%block name="script"%}
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/home/css/index.css" /> 
 <script>
     require(['home/index'], function (main) {
         main.init();
@@ -8,5 +9,27 @@
 {%/block%}
 
 {%block name="content"%}
-首页
+ <div class="tuzhi container {%if $isMobile%}mobile{%/if%} ">
+     <div class="tuzhi_img abs" id="tuzhi_img_box">
+         <!-- <img src="{%$feroot%}/home/img/tuzhi_index.png" alt="" class="click-through abs">     -->
+     </div>
+     <div class="tuzhi_box centered" id="tuzhi_box">
+        <div class="download rel">
+            <a class="apple_logo abs"></a>
+            <!-- <div class="hy abs"></div> -->
+            <div class="erweima abs"></div>
+            <!-- <div class="more_than abs"></div> -->
+        </div>
+         <div class="ours abs" id="ours">
+            <div class="slogan abs">了解旅行中的历史、文化、科学等知识</div> 
+            <div class="logo abs">
+               <!--  <span>途知</span>
+               <span>深度旅行</span> -->
+            </div>
+            <div class="phone1 abs"></div>
+            <div class="phone2 abs"></div>
+            <div class="phone3"></div>
+         </div> 
+     </div> 
+ </div>
 {%/block%}

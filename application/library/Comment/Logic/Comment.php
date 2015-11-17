@@ -201,7 +201,7 @@ class Comment_Logic_Comment  extends Base_Logic{
         }else{
             $ret = $redis->hGet(Comment_Keys::getCommentKey(),Comment_Keys::getLateMinuteKey($objId,$during));
         }
-        if(!empty($ret)){
+        if(false !== $ret){
             return $ret;
         }
         $list   = new Comment_List_Comment();
@@ -226,7 +226,7 @@ class Comment_Logic_Comment  extends Base_Logic{
     public function getTotalCommentNum($objId,$type = Comment_Type_Type::TOPIC){        
         $redis = Base_Redis::getInstance();
         $ret   = $redis->hGet(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($objId));
-        if(!empty($ret)){
+        if(false !== $ret){
             return $ret;
         }
         $list   = new Comment_List_Comment();

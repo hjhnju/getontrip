@@ -27,8 +27,7 @@ class ApiController extends Base_Controller_Api {
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }        
         $logic      = new Topic_Logic_Topic();
-        $ret        = $logic->getTopicDetail($topicId,$sightId);
-        
+        $ret        = $logic->getTopicDetail($topicId,$sightId);        
         unset($ret['content']);  
         $this->ajaxDecode($ret);
     }  

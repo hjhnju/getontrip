@@ -30,7 +30,7 @@ $(document).ready(function() {
                 },
                 "columnDefs": [],
                 "columns": [{
-                    "data": 'word'
+                    "data": 'query'
                 }, {
                     "data": function(e) {
                         if (e.status == 1) {
@@ -43,6 +43,8 @@ $(document).ready(function() {
                             return '未知状态';
                         }
                     }
+                },{
+                    "data": 'num'
                 }, {
                     "data": function(e) {
                         return '<button class="btn btn-primary btn-xs status" data-action="AUDITPASS"  title="通过审核" data-toggle="tooltip" >通过审核</button>' + '<button class="btn btn-danger btn-xs status" data-action="AUDITFAILED" title="未通过审核" data-toggle="tooltip" >未通过审核</button>';
@@ -78,7 +80,7 @@ $(document).ready(function() {
                     var data = oTable.api().row(nRow).data();
                     var change = new Remoter('/admin/searchapi/changeWordStatus');
                     change.remote({
-                        word: data.word,
+                        word: data.query,
                         action: $(this).attr('data-action')
                     });
                     change.on('success', function(data) {

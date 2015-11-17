@@ -10,13 +10,13 @@ class User_RetCode extends Base_RetCode{
     
     const SIGN_OUT_FIAL    = 1026; //登出失败    
     
+    
     /* 消息函数
      * @var array
      */
-    protected static $_arrErrMap = array(     
+    protected static $_arrErrMap = array(    
         self::LOGIN_FAIL          => '登录失败',
-        self::SIGN_OUT_FIAL       => '登出失败', 
-        self::NOT_LOGIN           => '未登录',      
+        self::SIGN_OUT_FIAL       => '登出失败',      
     );
 
 }

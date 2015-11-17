@@ -10,8 +10,10 @@ class Base_RetCode {
     const SUCCESS           = 0;//成功
 
     const NEED_PICTURE      = 101; //需要图片验证码
-    const CSRFTOKEN_INVALID = 102; //CSRF验证不通过
+    const TOKEN_INVALID     = 102; //token验证不通过
 
+    const NEED_INFO         = 103  ;  //需要补全用户信息
+    
     //前端跳转
     const NEED_REDIRECT     = 302;
 
@@ -38,6 +40,7 @@ class Base_RetCode {
     protected static $_arrErrMap = array(
         self::SUCCESS           => '成功',
         self::UNKNOWN_ERROR     => '未知错误',
+        self::NEED_INFO         => '需要补全用户信息',
 
         self::SESSION_INVALID   => '会话无效',
         self::SESSION_DENY      => '非法请求',
@@ -49,7 +52,7 @@ class Base_RetCode {
         self::DATA_NULL         => '数据为空',
         self::SERVICE_DEGRADED  => '服务降级',
         self::NEED_PICTURE      => '需要图片验证码',
-        self::CSRFTOKEN_INVALID => '会话token实效，请重新刷新页面',
+        self::TOKEN_INVALID     => '会话token实效，请重新刷新页面',
 
         self::NEED_REDIRECT     => '前端跳转',
         self::LOCK_ERROR        => '加锁失败',

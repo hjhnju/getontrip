@@ -25,10 +25,6 @@ class ApiController extends Base_Controller_Api {
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         
-        //增加访问统计
-        $logicVisit = new Tongji_Logic_Visit();
-        $logicVisit->addVisit(Tongji_Type_Visit::BOOK,$bookId);
-        
         $logic    = new Book_Logic_Book();
         $ret      = $logic->getBookById($bookId);  
         $this->ajaxDecode($ret);

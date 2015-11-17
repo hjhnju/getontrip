@@ -88,6 +88,9 @@ class Base_Search {
         curl_close($ch);
         
         $arrRet = json_decode($ret,true);
+        if(!isset($arrRet['response']['docs'])){
+            return array('num' => 0,'data' => array());
+        }
         
         foreach ($arrRet['response']['docs'] as $key => $val){
             if($type == 'content'){

@@ -11,9 +11,10 @@ if(isset($argv[2])){
 }
 switch ($type){
     case 'HOUR':
+        $time = time() - 3600;
         $listCollect = new Collect_List_Collect();
         $filter      = '';
-        $listCollect->setFilterString("`type` =".Collect_Type::TOPIC); 
+        $listCollect->setFilterString("`type` =".Collect_Type::TOPIC." and create_time >=".$time); 
         $listCollect->setPagesize(PHP_INT_MAX);
         $arrCollect  = $listCollect->toArray();
         foreach ($arrCollect['list'] as $val){
@@ -22,7 +23,7 @@ switch ($type){
         
         $listComment = new Comment_List_Comment();
         $filter      = '';
-        $listComment->setFilterString("`type` =".Comment_Type_Type::TOPIC);
+        $listComment->setFilterString("`type` =".Comment_Type_Type::TOPIC." and create_time >=".$time);
         $listComment->setPagesize(PHP_INT_MAX);
         $arrComment  = $listComment->toArray();
         foreach ($arrComment['list'] as $val){
@@ -30,9 +31,10 @@ switch ($type){
         }
         break;
     case 'DAY':
+        $time        = time() - 7*24*3600;
         $listCollect = new Collect_List_Collect();
         $filter      = '';
-        $listCollect->setFilterString("`type` =".Collect_Type::TOPIC);
+        $listCollect->setFilterString("`type` =".Collect_Type::TOPIC." and create_time >=".$time);
         $listCollect->setPagesize(PHP_INT_MAX);
         $arrCollect  = $listCollect->toArray();
         foreach ($arrCollect['list'] as $val){
@@ -41,7 +43,7 @@ switch ($type){
         
         $listComment = new Comment_List_Comment();
         $filter      = '';
-        $listComment->setFilterString("`type` =".Comment_Type_Type::TOPIC);
+        $listComment->setFilterString("`type` =".Comment_Type_Type::TOPIC." and create_time >=".$time);
         $listComment->setPagesize(PHP_INT_MAX);
         $arrComment  = $listComment->toArray();
         foreach ($arrComment['list'] as $val){
@@ -49,7 +51,7 @@ switch ($type){
         }
         
         $listVisit = new Tongji_List_Visit();
-        $filter    = "`type` =".Tongji_Type_Visit::TOPIC;
+        $filter    = "`type` =".Tongji_Type_Visit::TOPIC." and create_time >=".$time;
         $listVisit->setFilterString($filter);
         $listVisit->setPagesize(PHP_INT_MAX);
         $arrVisit  = $listVisit->toArray();

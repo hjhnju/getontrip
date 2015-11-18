@@ -163,8 +163,9 @@ class Search_Logic_Search{
             $logicSearchLabel = new Search_Logic_Label();
             $arrTemp          = array();
             foreach ($arrTag['list'] as $key => $val){
-                $arrTemp[$key]['id']   = trim($val['id']);
-                $arrTemp[$key]['name'] = trim($val['name']);
+                $arrTemp[$key]['id']    = trim($val['id']);
+                $arrTemp[$key]['order'] = trim($val['weight']);
+                $arrTemp[$key]['name']  = trim($val['name']);
                 if($arrTemp[$key]['name'] == '热门内容'){
                     $arrTemp[$key]['num']  = strval(self::HOT_TOPIC_NUM);
                 }else{
@@ -173,10 +174,13 @@ class Search_Logic_Search{
             }
             $arrRet['label'] = $arrTemp;
             if(empty($labelId)){
-                $labelId     = $arrTemp[0]['id'];
+                $labelId     = 1;
             }
         }
-        $label = Tag_Api::getTagInfo($labelId);        
+        $objLabel = new Tag_Object_Tag();
+        $objLabel->fetch(array('type' => Tag_Type_Tag::SEARCH,'weight' => $labelId));
+        $label    = Tag_Api::getTagInfo($objLabel->id);  
+        $labelId  = $objLabel->id;
         if(isset($label['name']) && ($label['name'] == '热门内容')){
             $listTopic = new Topic_List_Topic();
             $listTopic->setPage($page);

@@ -430,7 +430,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
         foreach ($arrItems as $id => $item){
             $objKeywordCatalog            = new Keyword_Object_Catalog();
             $objKeywordCatalog->name      = $item['name'];
-            $objKeywordCatalog->url       = $item['url'];
+            $objKeywordCatalog->url       = trim($item['url']);
             $objKeywordCatalog->keywordId = $objKeyword->id;
             $objKeywordCatalog->save();
         }

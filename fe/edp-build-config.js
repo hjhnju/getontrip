@@ -7,18 +7,20 @@ var time = ''
     + date.getFullYear()
     + ('' + (date.getMonth() + 101)).substr(1)
     + ('' + (date.getDate() + 100)).substr(1);
-
+time='20150812';
 exports.output = path.resolve( __dirname, '../htdocs/v1', time + 'x2' );
 
 exports.getProcessors = function () {
     var lessProcessor = new LessCompiler({
         files: [
+            'src/home/css/index.less',
             'src/topic/css/detail.less',
             'src/topic/css/mdetail.less'
         ]
     });
     var cssProcessor = new CssCompressor({
         files: [
+            'src/home/css/index.less', 
              'src/topic/css/detail.less',
              'src/topic/css/mdetail.less'
         ]
@@ -34,7 +36,7 @@ exports.getProcessors = function () {
         ]
     });
     var jsProcessor = new JsCompressor({
-        files: [
+        files: [ 
             'src/home/index.js',
             'src/topic/detail.js'
         ]

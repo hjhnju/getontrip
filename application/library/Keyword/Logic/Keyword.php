@@ -304,7 +304,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
             //$arrLen     = array();
             foreach ($arrCatalog['list'] as $index => $data){
                 $arrCatalog['list'][$index]['name']    = Base_Util_String::trimall($data['name']);
-                $arrCatalog['list'][$index]['section'] = $data['url'];
+                $arrCatalog['list'][$index]['section'] = trim($data['url']);
                 unset($arrCatalog['list'][$index]['url']);
                 //$arrLen[] = strlen($data['name']);
             }

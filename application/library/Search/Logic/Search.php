@@ -219,7 +219,7 @@ class Search_Logic_Search{
                     $temp['param1'] = $sight;
                 }
         
-                $visit_num       = $this->logicTopic->getTotalTopicVistPv($topicId);
+                $visit_num       = $this->logicTopic->getTotalTopicVistUv($topicId);
                 $collect         = $this->logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $topicId);
                 $temp['param2']  =  $collect;
                 $temp['param3']  =  $visit_num;

@@ -322,8 +322,8 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrRet = $list->toArray();
         $arrTotal = array();
         foreach($arrRet['list'] as $val){
-            if(!in_array($val,$arrTotal)){
-                $arrTotal[] = $val;
+            if(!in_array($val['user'],$arrTotal)){
+                $arrTotal[] = $val['user'];
             }
         }
         $redis->hSet(Topic_Keys::getTopicVisitKey(),Topic_Keys::getTotalKey($topicId),count($arrTotal));

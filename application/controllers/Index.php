@@ -10,7 +10,7 @@ class IndexController extends Base_Controller_Page {
     }
     public function indexAction() {
     	 //判断是否来自移动端
-       $isMobile = Base_Util_Mobile::isMobile(); 
-       $this->getView()->assign('isMobile', $isMobile); 
+      /* $isMobile = Base_Util_Mobile::isMobile(); 
+       $this->getView()->assign('isMobile', $isMobile); */
     }
 }

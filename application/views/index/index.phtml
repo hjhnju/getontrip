@@ -6,6 +6,13 @@
         main.init();
     }); 
 </script>
+<style type="text/css" media="screen">
+ 
+    .mobile .ours{
+        height: initial;
+    }
+
+</style>
 {%/block%}
 
 {%block name="content"%}
@@ -15,20 +22,34 @@
      </div>
      <div class="tuzhi_box centered" id="tuzhi_box">
         <div class="download rel">
-            <a class="apple_logo abs"></a>
+            <a class="apple_logo"><img src="{%$feroot%}/home/img/apple.png" alt="" class="slogan_img"></a>
             <!-- <div class="hy abs"></div> -->
-            <div class="erweima abs"></div>
+            <div class="erweima "><img src="{%$feroot%}/home/img/erweima.png" alt="" class="slogan_img"></div>
             <!-- <div class="more_than abs"></div> -->
         </div>
          <div class="ours abs" id="ours">
-            <div class="slogan abs">了解旅行中的历史、文化、科学等知识</div> 
-            <div class="logo abs">
-               <!--  <span>途知</span>
-               <span>深度旅行</span> -->
-            </div>
-            <div class="phone1 abs"></div>
-            <div class="phone2 abs"></div>
-            <div class="phone3"></div>
+             
+                 <div class="slogan abs">
+                    <img src="{%$feroot%}/home/img/map-marker.png" alt="" class="slogan_img">
+                    了解旅行中的历史、文化、科学等知识
+                 </div> 
+                <div class="logo abs">
+                    <!-- <div class="logo_img"></div> -->
+                    <img src="{%$feroot%}/home/img/app-logo.png" alt="" class="logo_img">
+                    <div class="logo_text">
+                        <span class="app_name">途知</span>
+                        <span class="app_slogan">深度旅行</span> 
+                    </div> 
+                </div>
+                <div class="phone1 abs">
+                    <img src="{%$feroot%}/home/img/phone1.png" alt="" class="logo_img">
+                </div>
+                <div class="phone2 abs">
+                     <img src="{%$feroot%}/home/img/phone2.png" alt="" class="">  
+                </div> 
+                <div class="phone3"></div>
+         
+           
          </div> 
      </div> 
  </div>

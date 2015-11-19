@@ -374,6 +374,9 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $content = $html->find('div[class="lemmaWgt-lemmaSummary lemmaWgt-lemmaSummary-light"]',0);
             if(empty($content)){
                 $content = $html->find('div.lemma-summary div.para',0);
+                if(empty($content)){
+                    $content = $html->find('div.para',0);
+                }
                 $content     = strip_tags($content->innertext);
             }
             foreach($html->find('li[class="level1"]') as $e){

@@ -47,6 +47,7 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
                    $img->src = $url['path'];
                 }  
              }
+             $img->removeAttribute('style');
          } 
         $this->imgUrlArray = $imgUrlArray;
         $this->imgDomArray = $imgDomArray;
@@ -162,7 +163,7 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
             //定义默认占位图片
             $img->src = $web->stroot . '/v1/' . $web->version . '/asset/common/img/imgloading.png'; 
             $img->setAttribute('data-actualsrc',$web->stroot . $oldSrc);  
-            
+            $img->removeAttribute('style');
           } 
         $content = $this->objDom->__toString();
         return $content;

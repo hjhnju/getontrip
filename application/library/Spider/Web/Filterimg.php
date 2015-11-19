@@ -35,12 +35,17 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
             $isUploaded=$this->isUploaded($oldSrc);
             if(!$isUploaded){
                 //去掉url 后面的参数
-                $src= preg_replace("/\?(.)*/", '', $oldSrc);
+                $oldSrc= preg_replace("/\?(.)*/", '', $oldSrc);
                 $img->src = $src;
                 array_push($imgUrlArray, $src);
                 array_push($imgDomArray, $img);  
                
             }else{ 
+                if ($this->isOurUrl($oldSrc)) {
+                    //上传过，且携带URL
+                   $url=parse_url($oldSrc); 
+                   $img->src = $url['path'];
+                }  
              }
          } 
         $this->imgUrlArray = $imgUrlArray;

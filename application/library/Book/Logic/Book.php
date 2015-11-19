@@ -490,6 +490,11 @@ class Book_Logic_Book extends Base_Logic{
             $arrBook['image']        = isset($arrBook['image'])?Base_Image::getUrlByName($arrBook['image']):'';
             $logicCollect            = new Collect_Logic_Collect();
             $arrBook['collected']    = strval($logicCollect->checkCollect(Collect_Type::BOOK, $bookId));
+            
+            $arrBook['buyurl']       = $arrBook['url'];
+            $arrBook['shareurl']     = Base_Config::getConfig('web')->root.'/book/detail?id='.$bookId;
+            $arrBook['url']          = $arrBook['shareurl']."&isapp=1";
+            
         }
         return $arrBook;
     }

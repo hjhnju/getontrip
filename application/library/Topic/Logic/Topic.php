@@ -166,7 +166,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrRet['subtitle']    = Base_Util_String::trimall($arrRet['subtitle']);
         $arrRet['title']       = Base_Util_String::trimall($arrRet['title']);
         $arrRet['content']     = trim($arrRet['content']);
-        $arrRet['shareurl']    = Base_Config::getConfig('web')->root.'/topic/detail?&id='.$topicId;;
+        $arrRet['shareurl']    = Base_Config::getConfig('web')->root.'/topic/detail?id='.$topicId;
         $arrRet['contenturl']  = $arrRet['shareurl'].'&isapp=1';
        
         //$arrRet['desc']      = Base_Util_String::getSubString($arrRet['content'], 30);
@@ -322,8 +322,8 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrRet = $list->toArray();
         $arrTotal = array();
         foreach($arrRet['list'] as $val){
-            if(!in_array($val,$arrTotal)){
-                $arrTotal[] = $val;
+            if(!in_array($val['user'],$arrTotal)){
+                $arrTotal[] = $val['user'];
             }
         }
         $redis->hSet(Topic_Keys::getTopicVisitKey(),Topic_Keys::getTotalKey($topicId),count($arrTotal));

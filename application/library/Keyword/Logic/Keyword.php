@@ -299,12 +299,13 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $listKeywordCatalog = new Keyword_List_Catalog();
             $listKeywordCatalog->setFields(array('name','url'));
             $listKeywordCatalog->setFilter(array('keyword_id' => $val['id']));
+            $listKeywordCatalog->setOrder('`id` asc');
             $listKeywordCatalog->setPagesize(self::WIKI_CATALOG_NUM);
             $arrCatalog = $listKeywordCatalog->toArray();
             //$arrLen     = array();
             foreach ($arrCatalog['list'] as $index => $data){
                 $arrCatalog['list'][$index]['name']    = Base_Util_String::trimall($data['name']);
-                $arrCatalog['list'][$index]['section'] = $data['url'];
+                $arrCatalog['list'][$index]['section'] = trim($data['url']);
                 unset($arrCatalog['list'][$index]['url']);
                 //$arrLen[] = strlen($data['name']);
             }
@@ -430,7 +431,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
         foreach ($arrItems as $id => $item){
             $objKeywordCatalog            = new Keyword_Object_Catalog();
             $objKeywordCatalog->name      = $item['name'];
-            $objKeywordCatalog->url       = $item['url'];
+            $objKeywordCatalog->url       = trim($item['url']);
             $objKeywordCatalog->keywordId = $objKeyword->id;
             $objKeywordCatalog->save();
         }

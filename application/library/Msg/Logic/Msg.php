@@ -98,7 +98,7 @@ class Msg_Logic_Msg {
         }else{
             $objsMsg->setFilter(array('status'=>$intType,'receiver' => $toId));
         }
-        $objsMsg->setFields(array('mid','title','content','image','attach','create_time','type'));
+        $objsMsg->setFields(array('mid','title','sender','content','image','attach','create_time','type'));
         $objsMsg->setPage($intPage);
         $objsMsg->setPagesize($intPageSize);
         $arrObjs = $objsMsg->toArray();
@@ -113,15 +113,16 @@ class Msg_Logic_Msg {
             $arrObjs['list'][$key]['mid']   = strval($val['mid']);
             $arrObjs['list'][$key]['type']  = strval($val['type']);
             $arrObjs['list'][$key]['image'] = Base_Image::getUrlByName($val['image']);
+            $objUser = new User_Object_User();
+            $objUser->fetch(array('id' => $val['sender']));
             $arrObjs['list'][$key]['create_time'] = Base_Util_String::getTimeAgoString($val['create_time']);
             if($val['type'] == Msg_Type_Type::REPLY){
-                sscanf($val['content'],Msg_Type_Type::$_arrMsgMap[Msg_Type_Type::REPLY]['content'],$name);
-                $objUser = new User_Object_User();
-                $objUser->fetch(array('nick_name' => $name));
-                $arrObjs['list'][$key]['avatar'] = Base_Image::getUrlByName($objUser->image);
+                $arrObjs['list'][$key]['content'] = $objUser->nickName." ".$val['content'];               
+                $arrObjs['list'][$key]['avatar']  = Base_Image::getUrlByName($objUser->image);
             }else{
                 $arrObjs['list'][$key]['avatar'] = '';
             }
+            unset($arrObjs['list'][$key]['sender']);
         }
         return $arrObjs['list'];
     }
@@ -222,8 +223,7 @@ class Msg_Logic_Msg {
             $objMsg->type      = $intType;
             $objMsg->image     = $image;
             $logicUser         = new User_Logic_User();
-            $userName          = $logicUser->getUserName($arrParam['user_id']);
-            $strContent        = vsprintf(Msg_Type_Type::$_arrMsgMap[$intType]['content'],$userName);
+            $strContent        = Msg_Type_Type::$_arrMsgMap[$intType]['content'];
             //unset($arrParam['user_id']);
             $objMsg->attach    = json_encode($arrParam);
             $objMsg->title     = '';

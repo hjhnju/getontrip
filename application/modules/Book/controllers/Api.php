@@ -26,7 +26,8 @@ class ApiController extends Base_Controller_Api {
         }
         
         $logic    = new Book_Logic_Book();
-        $ret      = $logic->getBookById($bookId);  
+        $ret      = $logic->getBookById($bookId); 
+        unset($ret['content_desc']); 
         $this->ajaxDecode($ret);
     }
 }

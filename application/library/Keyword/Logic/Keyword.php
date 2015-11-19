@@ -299,6 +299,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $listKeywordCatalog = new Keyword_List_Catalog();
             $listKeywordCatalog->setFields(array('name','url'));
             $listKeywordCatalog->setFilter(array('keyword_id' => $val['id']));
+            $listKeywordCatalog->setOrder('`id` asc');
             $listKeywordCatalog->setPagesize(self::WIKI_CATALOG_NUM);
             $arrCatalog = $listKeywordCatalog->toArray();
             //$arrLen     = array();

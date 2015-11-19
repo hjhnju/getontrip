@@ -5968,38 +5968,64 @@ define('home/index', [
 ], function (require) {
     var $ = require('jquery');
     require('common/imgSize');
-    var rate = 650 / 1300;
-    var $imgBox = $('#tuzhi_img_box');
-    var $img = $imgBox.find('img');
+    var winRate = 650 / 1300;
     var $main = $('#main-wraper');
     var $tuzhiBox = $('#tuzhi_box');
-    var $ourBox = $('#ours');
-    var mainHeight = $main.height();
-    var mainWigth = $main.width();
+    var $ours = $('#ours');
+    var $oursBox = $('#oursBox');
+    var $download = $('.download');
+    var oldWidth, oldHeight = 0;
+    var mainWidth = $main.width();
     function init() {
-        Fun.changeSize();
         bindEvents.init();
     }
     var Fun = {
             columns: 6,
-            changeSize: function () {
+            init: function () {
+                mainWidth = $main.width();
                 mainHeight = $main.height();
-                mainWigth = $main.width();
-                var mainRate = mainHeight / mainWigth;
-                var boxwidth = $imgBox.width();
-                var imgright = boxwidth > 768 ? boxwidth - 1300 : boxwidth - 1200;
-                var imgWidth = boxwidth > 1300 ? boxwidth : 1300;
-                var boxHeight = mainRate > 1 ? mainHeight : 650;
-                $imgBox.css({ 'height': boxHeight + 'px' });
+                $tuzhiBox.css({ 'width': Fun.getTuzhiBoxWidth() + 'px' });
+                if (!this.isMobile()) {
+                    $ours.css({
+                        'width': Fun.getTuzhiBoxWidth() + 'px',
+                        'height': mainHeight * (300 / 650) + 'px'
+                    });
+                } else {
+                    $ours.css({ 'width': Fun.getTuzhiBoxWidth() + 'px' });
+                }
+            },
+            changeSize: function () {
+                mainWidth = $main.width();
+                mainHeight = $main.height();
+                mainRate = mainHeight / mainWidth;
+                tuzhiBoxWidht = $tuzhiBox.width();
                 Fun.setBackgroundImageCSS($('.tuzhi'));
-                $tuzhiBox.css({ 'width': this.showWideVersion() ? this.getGridWidth(mainWigth) : mainWigth });
-                $ourBox.css({ 'width': this.showWideVersion() ? this.getGridWidth(mainWigth) : mainWigth });
+                $tuzhiBox.css({ 'width': this.getTuzhiBoxWidth() + 'px' });
+                $ours.css({
+                    'width': this.getTuzhiBoxWidth() + 'px',
+                    'height': mainHeight * (300 / 650) + 'px'
+                });
+                if (this.showWideVersion()) {
+                    this.setDownloadCSS();
+                    this.setWideOursBoxCSS();
+                } else {
+                    $slogan = $('#ours .slogan');
+                    $phone3 = $('#ours .phone3');
+                    this.setOursBoxCSS();
+                }
+            },
+            isMobile: function () {
+                return $('.tuzhi').hasClass('mobile');
             },
             showWideVersion: function () {
-                return mainWigth > 768;
+                return mainWidth > 768;
             },
             getGridWidth: function (e) {
                 return this.getSizeOfColumns(e, this.columns);
+            },
+            getTuzhiBoxWidth: function () {
+                var rate = 750 / 1300;
+                return this.showWideVersion() ? mainWidth * rate : mainWidth;
             },
             getSizeOfColumns: function (e, t) {
                 if (0 === t)
@@ -6028,6 +6054,78 @@ define('home/index', [
                     !e.hasClass('mobile') ? e.addClass('mobile') : null;
                 }
             },
+            setOursBoxCSS: function () {
+                var scale = 'scale(' + this.getPhoneScale() + ')';
+            },
+            setWideOursBoxCSS: function () {
+                $phone1 = $('#ours .phone1');
+                $phone2 = $('#ours .phone2');
+                $logo = $('#ours .logo');
+                $slogan = $('#ours .slogan');
+                var phone1Rate = 166 / 750;
+                var phone2Rate = 145 / 750;
+                var sloganRate = 300 / 750;
+                var logoRate = 200 / 750;
+                var topRate = 260 / 650;
+                $ours.css({ 'top': mainHeight * topRate + 'px' });
+                oldWidth = $logo.width();
+                oldHeight = $logo.height();
+                $logo.css({
+                    'width': tuzhiBoxWidht * logoRate + 'px',
+                    'height': oldHeight * (tuzhiBoxWidht * logoRate / oldWidth) + 'px'
+                });
+                oldWidth = $slogan.width();
+                oldHeight = $slogan.height();
+                $slogan.css({
+                    'width': tuzhiBoxWidht * sloganRate + 'px',
+                    'height': oldHeight * (tuzhiBoxWidht * sloganRate / oldWidth) + 'px',
+                    'line-height': oldHeight * (tuzhiBoxWidht * sloganRate / oldWidth) + 'px',
+                    'font-size': oldHeight * (tuzhiBoxWidht * sloganRate / oldWidth) * (16 / 30) + 'px'
+                });
+                oldWidth = $phone2.width();
+                oldHeight = $phone2.height();
+                $phone2.css({
+                    'width': tuzhiBoxWidht * phone2Rate + 'px',
+                    'height': oldHeight * (tuzhiBoxWidht * phone2Rate / oldWidth) + 'px'
+                });
+                oldWidth = $phone1.width();
+                oldHeight = $phone1.height();
+                $phone1.css({
+                    'width': tuzhiBoxWidht * phone1Rate + 'px',
+                    'height': oldHeight * (tuzhiBoxWidht * phone1Rate / oldWidth) + 'px',
+                    'right': $phone2.width() + 40 + 'px'
+                });
+            },
+            setDownloadCSS: function () {
+                var $erweima = $('.download .erweima');
+                var $apple_logo = $('.download .apple_logo');
+                var downloadRate = 100 / 750;
+                oldWidth = $apple_logo.width();
+                oldHeight = $apple_logo.height();
+                $apple_logo.css({
+                    'width': tuzhiBoxWidht * downloadRate + 'px',
+                    'height': oldHeight * (tuzhiBoxWidht * downloadRate / oldWidth) + 'px'
+                });
+                $erweima.css({
+                    'height': tuzhiBoxWidht * downloadRate + 'px',
+                    'width': tuzhiBoxWidht * downloadRate + 'px',
+                    'top': $apple_logo.height() + 10 + 'px'
+                });
+                $download.css({ 'height': $apple_logo.height() + $erweima.height() + 10 + 'px' });
+            },
+            getHeroHeight: function () {
+                return Math.max(490, mainHeight);
+            },
+            getBackgroundImageHeight: function () {
+                return this.getHeroHeight();
+            },
+            scaleWidth: function () {
+                return this.linear(320, 0.6, 750, 1)(mainWidth);
+            },
+            getPhoneScale: function () {
+                var e = this.scaleWidth(), t = this.linear(500, 0.5, 975, 1)(this.getBackgroundImageHeight());
+                return Math.min(t, e);
+            },
             linear: function (e, t, r, o) {
                 return function (i) {
                     return t + (o - t) * (Fun.constrain(i, e, r) - e) / (r - e);
@@ -6045,8 +6143,9 @@ define('home/index', [
         };
     var bindEvents = {
             init: function () {
+                Fun.init();
                 window.onresize = function () {
-                    Fun.changeSize();
+                    Fun.init();
                 };
             }
         };

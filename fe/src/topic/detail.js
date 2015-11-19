@@ -9,7 +9,7 @@ define(function(require) {
     var $ = require('jquery');
     require('common/extra/jquery.lazyload');
     require('common/imgSize');
-
+   // require('common/extra/jquery.nicescroll.min');
     var rate = 93 / 133;
 
     function init() {
@@ -39,7 +39,17 @@ define(function(require) {
             threshold: 400,
             container: '.rich-text'
         });
-
+        
+       /*    $("html").niceScroll({
+                styler: "fb",
+                cursorcolor: "#e8403f",
+                cursorwidth: '6',
+                cursorborderradius: '10px',
+                background: '#fff',
+                spacebarenabled: false,
+                cursorborder: '',
+                zindex: '1000'
+            });*/
     }
     return {
         init: init

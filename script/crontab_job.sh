@@ -10,7 +10,7 @@ if [ $1 = "online" ];then
     do
         for action in ${entity[@]};
         do
-            curl http://$ip:8983/solr/$action/dataimport?clean=true&command=delta-import
+            curl http://$ip:8983/solr/$action/dataimport
         done
     done
 else
@@ -18,7 +18,7 @@ else
     do
         for action in ${entity[@]};
         do
-            curl http://$ip:8983/solr/$action/dataimport?clean=true&command=delta-import
+            curl http://$ip:8983/solr/$action/dataimport
         done
     done
 fi

@@ -125,8 +125,9 @@ define('common/extra/jquery.lazyload', [
                                 var width = $container.width();//容器的宽度
                                 //如果真实的宽度大于浏览器的宽度就按照容器的宽度显示
                                 if (realWidth >= width) {
+                                    $self.attr("src", original+'@f'+width+'w'); 
                                     $(self).css("width", width + "px").css("height", (realHeight/realWidth)*width + 'px');
-                                } else { //如果小于容器的宽度按照原尺寸显示
+                                } else { //如果小于容器的宽度按照原尺寸显示 
                                     $(self).css("width", realWidth + 'px').css("height", realHeight + 'px');
                                 }
                             } else {

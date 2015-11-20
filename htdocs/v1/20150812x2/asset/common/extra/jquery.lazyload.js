@@ -79,6 +79,7 @@ define('common/extra/jquery.lazyload', [
                             var realHeight = this.height;
                             var width = $container.width();
                             if (realWidth >= width) {
+                                $self.attr('src', original + '@f' + width + 'w');
                                 $(self).css('width', width + 'px').css('height', realHeight / realWidth * width + 'px');
                             } else {
                                 $(self).css('width', realWidth + 'px').css('height', realHeight + 'px');

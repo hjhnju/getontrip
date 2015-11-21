@@ -89,7 +89,7 @@ class TopicModel extends BaseModel{
         $arrTopicIds = array();
         $strTopicIds = '';
         if(!empty($ret)){
-            //return json_decode($ret,true);
+            return json_decode($ret,true);
         }
         $sql_general = "SELECT distinct(a.id) FROM `topic` a, `topic_tag`  b, `sight_tag` c ,`sight` d WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.tag_id = c.tag_id and c.sight_id = d.id  and d.city_id = $cityId";
         $sql_normal  = "SELECT distinct(a.id) FROM `topic`  a, `sight_topic` b ,`sight` c WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.sight_id = c.id and c.city_id = $cityId";
@@ -115,7 +115,7 @@ class TopicModel extends BaseModel{
             Base_Log::error($ex->getMessage());
             return array();
         }      
-        //$redis->setex(City_Keys::getCityTopicKey($cityId, $page),self::REDIS_TIMEOUT,json_encode($data));
+        $redis->setex(City_Keys::getCityTopicKey($cityId, $page),self::REDIS_TIMEOUT,json_encode($data));
         return $data;
     }
     

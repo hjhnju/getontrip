@@ -64,10 +64,8 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $obj->weight = $this->getKeywordWeight($arrInfo['sight_id']);
             $ret = $obj->save();            
             if(isset($arrInfo['status']) && $arrInfo['status'] == Keyword_Type_Status::PUBLISHED){
-                $url  = Base_Config::getConfig('web')->root."/InitData?sightId=".$obj->id."&type=Wiki";
-                $http = Base_Network_Http::instance()->url($url);
-                $http->timeout(1);
-                $http->exec();
+                $logicWiki = new Keyword_Logic_Keyword();
+                $logicWiki->getKeywordSource($obj->id,Keyword_Type_Status::PUBLISHED);
             }
         }
         if($ret){
@@ -99,10 +97,8 @@ class Keyword_Logic_Keyword extends Base_Logic{
         if($bCheck){
             $ret =  $obj->save();
             if(isset($arrInfo['status']) && (intval($arrInfo['status']) == Keyword_Type_Status::PUBLISHED)){
-                $url  = Base_Config::getConfig('web')->root."/InitData?sightId=".$id."&type=Wiki";               
-                $http = Base_Network_Http::instance()->url($url);
-                //$http->timeout(1);
-                $http->exec();
+                $logicWiki = new Keyword_Logic_Keyword();
+                $logicWiki->getKeywordSource($id,Keyword_Type_Status::PUBLISHED);
             }
         }
         if($ret){

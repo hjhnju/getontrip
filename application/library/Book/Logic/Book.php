@@ -135,7 +135,7 @@ class Book_Logic_Book extends Base_Logic{
                 $temp['image']        = Base_Image::getUrlByName($data['image']);
                 $temp['title']       = isset($data['title'])?trim($data['title']):'';
                 $temp['content_desc'] = Base_Util_String::getSubString($data['content_desc'], self::CONTENT_LEN);
-                $temp['url']          = Base_Config::getConfig('web')->root.'/api/book/detail?book='.$data['id'];
+                $temp['url']          = Base_Config::getConfig('web')->root.'/book/detail?book='.$data['id'];
                 $arrRet[] = $temp;
             }
         }

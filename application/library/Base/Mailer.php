@@ -50,12 +50,12 @@ class Base_Mailer {
         $this->mail->Host       = 'smtp.exmail.qq.com';      // Specify main and backup SMTP servers
         $this->mail->SMTPAuth   = true;                      // Enable SMTP authentication
         $this->mail->Username   = 'noreply@xingjiaodai.com'; // SMTP username
-        $this->mail->Password   = 'XjdNoreply@2014';         // SMTP password
+        $this->mail->Password   = 'GetOnTrip123';         // SMTP password
         $this->mail->SMTPSecure = 'ssl';                     // Enable TLS encryption, `ssl` also accepted
         $this->mail->Port       = 465;                       // TCP port to connect to
 
         $this->mail->From     = 'noreply@xingjiaodai.com';
-        $this->mail->FromName = '兴教贷';
+        $this->mail->FromName = '途知';
         // $this->mail->addAddress('joe@example.net', 'Joe User');     // Add a recipient
         $this->mail->addAddress($to);               // Name is optional
         // $this->mail->addReplyTo('info@example.com', 'Information');

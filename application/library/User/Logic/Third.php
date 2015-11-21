@@ -25,7 +25,7 @@ class User_Logic_Third {
      * 设置用户的登陆状态
      * @return integer
      */ 
-    public function setLogin($openId,$type){
+    public function setThirdLogin($openId,$type){
         $ret      = User_RetCode::SUCCESS;
         $userid   = '';
         $objLogin = new User_Object_Third(); 
@@ -49,6 +49,28 @@ class User_Logic_Third {
         }
         Yaf_Session::getInstance()->set(User_Keys::getLoginUserKey(), $userid);
         return $ret;           
+    }
+    
+    public function setNormalLogin($email,$passwd){
+        $ret = User_Logic_Validate::check(User_Logic_Validate::REG_EMAIL, $email);
+        if(!$ret){
+            return User_RetCode::EMAIL_FORMAT_WRONG;
+        }
+        $ret = User_Logic_Validate::check(User_Logic_Validate::REG_PASSWD, $passwd);
+        if(!$ret){
+            return User_RetCode::PASSWD_FORMAT_WRONG;
+        }
+        $ret     = User_RetCode::SUCCESS;
+        $objUser = new User_Object_User();
+        $passwd  = Base_Util_Secure::encrypt($passwd);
+        $objUser->fetch(array('email' => $email));
+        if(empty($objUser->passwd)){
+            return User_RetCode::EMAIL_WRONG;
+        }elseif($objUser->passwd !== $passwd){
+            return User_RetCode::PASSWD_WORNG;
+        }
+        Yaf_Session::getInstance()->set(User_Keys::getLoginUserKey(), $objUser->id);
+        return $ret;
     }
     
     /**

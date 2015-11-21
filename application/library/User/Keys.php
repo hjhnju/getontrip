@@ -16,6 +16,8 @@ class User_Keys {
     const ACCESS_TOKEN_KEY        = 'user_openid_%s';
     
     const OPEN_INFO_KEY           = 'openinfo_%s_%s';
+    
+    const SMS_CODE_KEY            = 'smscode_%s_%s';
    
 
     public static function getOpenidKey(){
@@ -48,5 +50,9 @@ class User_Keys {
     
     public static function getDeviceIdKey(){
         return self::COOKIE_DEVICEID_KEY;
+    }
+    
+    public static function getSmsCodeKey($strPhone, $strType){
+        return sprintf(self::SMS_CODE_KEY, $strPhone, $strType);
     }
 }

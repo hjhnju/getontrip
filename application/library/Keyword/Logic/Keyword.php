@@ -101,7 +101,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
             if(isset($arrInfo['status']) && (intval($arrInfo['status']) == Keyword_Type_Status::PUBLISHED)){
                 $url  = Base_Config::getConfig('web')->root."/InitData?sightId=".$id."&type=Wiki";               
                 $http = Base_Network_Http::instance()->url($url);
-                $http->timeout(1);
+                //$http->timeout(1);
                 $http->exec();
             }
         }

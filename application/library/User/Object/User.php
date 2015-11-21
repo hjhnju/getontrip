@@ -26,7 +26,7 @@ class User_Object_User extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'device_id', 'nick_name', 'city', 'image', 'sex', 'accept_pic', 'accept_msg', 'create_time', 'update_time');
+    protected $fields = array('id', 'device_id', 'nick_name', 'city', 'image', 'sex', 'accept_pic', 'accept_msg', 'create_time', 'update_time', 'email', 'passwd');
 
     /**
      * 字段与属性隐射关系
@@ -43,6 +43,8 @@ class User_Object_User extends Base_Object {
         'accept_msg'  => 'acceptMsg',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
+        'email'       => 'email',
+        'passwd'      => 'passwd',
     );
 
     /**
@@ -125,5 +127,17 @@ class User_Object_User extends Base_Object {
      * @var integer
      */
     public $updateTime;
+
+    /**
+     * 用户邮箱
+     * @var string
+     */
+    public $email;
+
+    /**
+     * 用户密码
+     * @var string
+     */
+    public $passwd;
 
 }

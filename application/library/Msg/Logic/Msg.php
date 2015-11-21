@@ -113,10 +113,10 @@ class Msg_Logic_Msg {
             $arrObjs['list'][$key]['mid']   = strval($val['mid']);
             $arrObjs['list'][$key]['type']  = strval($val['type']);
             $arrObjs['list'][$key]['image'] = Base_Image::getUrlByName($val['image']);
-            $objUser = new User_Object_User();
-            $objUser->fetch(array('id' => $val['sender']));
             $arrObjs['list'][$key]['create_time'] = Base_Util_String::getTimeAgoString($val['create_time']);
             if($val['type'] == Msg_Type_Type::REPLY){
+                $objUser = new User_Object_User();
+                $objUser->fetch(array('id' => $val['sender']));                
                 $arrObjs['list'][$key]['content'] = $objUser->nickName." ".$val['content'];               
                 $arrObjs['list'][$key]['avatar']  = Base_Image::getUrlByName($objUser->image);
             }else{

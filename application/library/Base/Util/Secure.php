@@ -162,6 +162,32 @@ class Base_Util_Secure {
     }  
     
     /**
+     * 用户ID的乱序
+     * @param unknown $intUserId
+     * @return number
+     */
+    public static function encryptUserId($intUserId){
+        $strRet    = '';
+        $arrChange = array(
+            0 => 2,
+            1 => 7,
+            2 => 5,
+            3 => 8,
+            4 => 1,
+            5 => 3,
+            6 => 9,
+            7 => 4,
+            8 => 0,
+            9 => 6,
+        );
+        $strUserId = strval($intUserId);
+        for($i=0;$i<strlen($strUserId);$i++){
+            $strRet .= $arrChange[$strUserId[$i]];
+        }
+        return intval($strRet);
+    }
+    
+    /**
      * 隐藏资料中间的详细信息
      * 会得到类似于 学校 => 学***校 的转换结果
      * @param string $str

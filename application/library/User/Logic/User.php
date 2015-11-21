@@ -76,7 +76,7 @@ class User_Logic_User extends Base_Logic{
         $objUser->fetch(array('id' => $userId));
         foreach ($arrParam as $key => $val){
             if(!empty($val)){
-                $key           = $this->getprop($key);                
+                $key           = $this->getprop($key);     
                 $objUser->$key = trim($val);
             }            
         }
@@ -125,6 +125,13 @@ class User_Logic_User extends Base_Logic{
                 $key           = $this->getprop($key);
                 if($key == 'image'){
                     $objUser->$key = $this->uploadPic($val);
+                }elseif($key == 'nickName'){
+                    if($this->checkName($val)){
+                        $logicRegist = new User_Logic_Regist();
+                        $objUser->nickName = $logicRegist->changeUserName($val);
+                    }else{
+                        $objUser->nickName = $val;
+                    }                    
                 }else{
                     $objUser->$key = trim($val);
                 }
@@ -212,5 +219,54 @@ class User_Logic_User extends Base_Logic{
         //$user   = Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY, $objUser->id);
         //setcookie(User_Keys::getCurrentUserKey(),urlencode($user));
         return $objUser->id;
+    }
+    
+    private function makeRand($length="6"){//密码生成函数
+        $str1    = "abcdefghijklmnopqrstuvwxyz";
+        $str2    = "0123456789";
+        $result = "";
+        for($i=0;$i<$length/2;$i++){
+            $num[$i] = rand(0,25);
+            $result .= $str1[$num[$i]];
+        }
+        for($i=0;$i<$length/2;$i++){
+            $num[$i] = rand(0,9);
+            $result .= $str2[$num[$i]];
+        }
+        return $result;
+    }
+    
+    public function checkName($strName){
+        $objUser = new User_Object_User();
+        $objUser->fetch(array('nick_name' => $strName));
+        if(!empty($objUser->id)){
+            return true;
+        }
+        return false;
+    }
+    
+    public function sendEmail($email){
+        $ret = User_Logic_Validate::check(User_Logic_Validate::REG_EMAIL, $email);
+        if(!$ret){
+            return User_RetCode::EMAIL_FORMAT_WRONG;
+        }      
+        $objUser = new User_Object_User();
+        $objUser->fetch(array('email' => $email));
+        if(empty($objUser->passwd)){
+            return User_RetCode::EMAIL_WRONG;
+        }
+        $passwd    = $this->makeRand();
+        $objUser->passwd = Base_Util_Secure::encrypt($passwd);
+        $objUser->save();
+        ////发送一封邮件到email代表的邮箱中
+        $to = strval($email);
+        $subject = '重置邮箱密码';
+        $body = "亲爱的%s，您好，你的邮箱密码被重置为%s，您可以用这个密码直接登录途知。<br><br>途知";
+        $body = sprintf($body,$objUser->nickName,$passwd);
+        $ret  = Base_Mailer::getInstance()->send($to, $subject, $body);
+        if($ret){
+            return User_RetCode::SUCCESS;
+        }
+        return User_RetCode::UNKNOWN_ERROR;
     }
 }

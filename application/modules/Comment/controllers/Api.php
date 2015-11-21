@@ -37,7 +37,7 @@ class ApiController extends Base_Controller_Api {
         $logic      = new Comment_Logic_Comment();
         $userId     = User_Api::getCurrentUser();
         if(empty($userId)){
-            return $this->ajaxError(Comment_RetCode::USER_NOT_INT,User_RetCode::getMsg(Comment_RetCode::USER_NOT_INT));
+            return $this->ajaxError(Comment_RetCode::SESSION_NOT_LOGIN,User_RetCode::getMsg(Comment_RetCode::SESSION_NOT_LOGIN));
         }
         $ret        = $logic->addComment($topicId,$upId,$userId,$toUserId,$content,$type);
         $this->ajax(strval($ret));

@@ -42,4 +42,23 @@ class ApiController extends Base_Controller_Api {
         $this->ajax($ret);
     }
     
+   /**
+    * 接口3：/api/1.0/advise/report
+    * 举报
+    * @param integer commentid，评论ID
+    * @return json
+    */
+    public function reportAction(){
+        $commentId = isset($_REQUEST['commentid'])?intval($_REQUEST['commentid']):'';
+        $type      = isset($_REQUEST['type'])?intval($_REQUEST['type']):Report_Type_Type::COMMENT;
+        if(empty($commentId)){
+            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
+        }
+        $logic = new Report_Logic_Report();
+        $ret   = $logic->add($commentId, $this->userid, $type);
+        if($ret){
+            return $this->ajax();
+        }
+        return $this->ajaxError();
+    }    
 }

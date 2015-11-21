@@ -330,9 +330,13 @@ class City_Logic_City{
             
             $logicSight             = new Sight_Logic_Sight();
             $sightIds = $logicSight->getSightByTopic($val['id']);
-            $sightId  = $sightIds['list'][0]['sight_id'];
-            $sight    = $logicSight->getSightById($sightId);
-            $arrRet[$key]['sight']  = trim($sight['name']);
+            if(isset($sightIds['list'][0])){
+                $sightId  = $sightIds['list'][0]['sight_id'];
+                $sight    = $logicSight->getSightById($sightId);
+                $arrRet[$key]['sight']  = trim($sight['name']);
+            }else{
+                $arrRet[$key]['sight']  = "";
+            }
             
             $logicTag  = new Tag_Logic_Tag();
             $arrTags   = $logicTag->getTopicTags($val['id']);

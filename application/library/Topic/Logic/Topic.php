@@ -793,7 +793,7 @@ class Topic_Logic_Topic extends Base_Logic{
      * @return array
      */
     public function searchTopic($query,$page,$pageSize){
-        $arrTopic  = Base_Search::Search('topic', $query, $page, $pageSize, array('id'));
+        $arrTopic  = Base_Search::Search('topic', $query, $page, $pageSize, array('id','title'));
         $num       = $arrTopic['num'];
         $arrTopic  = $arrTopic['data'];
         foreach ($arrTopic as $key => $val){

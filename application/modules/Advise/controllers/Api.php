@@ -57,8 +57,8 @@ class ApiController extends Base_Controller_Api {
         $logic = new Report_Logic_Report();
         $ret   = $logic->add($commentId, $this->userid, $type);
         if($ret){
-            return $this->ajax();
+            return $this->ajaxError($ret,Advise_RetCode::getMsg($ret));
         }
-        return $this->ajaxError();
+        return $this->ajax();
     }    
 }

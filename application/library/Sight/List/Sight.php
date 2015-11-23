@@ -20,7 +20,7 @@ class Sight_List_Sight extends Base_List {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'image', 'describe', 'level', 'city_id', 'status', 'x', 'y', 'create_user', 'update_user', 'create_time', 'update_time');
+    protected $fields = array('id', 'name', 'image', 'describe', 'level', 'city_id', 'status', 'x', 'y', 'create_user', 'update_user', 'create_time', 'update_time', 'hot1', 'hot2', 'hot3');
 
     /**
      * 整数类型的字段

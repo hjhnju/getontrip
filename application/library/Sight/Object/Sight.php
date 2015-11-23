@@ -26,7 +26,7 @@ class Sight_Object_Sight extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'image', 'describe', 'level', 'city_id', 'status', 'x', 'y', 'create_user', 'update_user', 'create_time', 'update_time');
+    protected $fields = array('id', 'name', 'image', 'describe', 'level', 'city_id', 'status', 'x', 'y', 'create_user', 'update_user', 'create_time', 'update_time', 'hot1', 'hot2', 'hot3');
 
     /**
      * 字段与属性隐射关系
@@ -46,6 +46,9 @@ class Sight_Object_Sight extends Base_Object {
         'update_user' => 'updateUser',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
+        'hot1'        => 'hot1',
+        'hot2'        => 'hot2',
+        'hot3'        => 'hot3',
     );
 
     /**
@@ -147,5 +150,23 @@ class Sight_Object_Sight extends Base_Object {
      * @var integer
      */
     public $updateTime;
+
+    /**
+     * 景点热度:7天
+     * @var 
+     */
+    public $hot1;
+
+    /**
+     * 景点热度:历史
+     * @var 
+     */
+    public $hot2;
+
+    /**
+     * 景点热度:60分钟
+     * @var 
+     */
+    public $hot3;
 
 }

@@ -16,11 +16,9 @@ foreach ($arrSight['list'] as $sight){
     $objSight        = new Sight_Object_Sight();
     $objSight->fetch(array('id' => $sight['id']));
     if(!empty($objSight->id)){
-        $time            = $objSight->updateTime;
         $objSight->hot1  = $hot1;
         $objSight->hot2  = $hot2;
         $objSight->hot3  = $hot3;
-        $objSight->updateTime = $time;
         $objSight->save();
     }
 }
@@ -51,7 +49,7 @@ function getHot($sight,$time,$type='LATE'){
     //发布时间
     $objSight        = new Sight_Object_Sight();
     $objSight->fetch(array('id' => $sight));
-    $publishTime     = $objTopic->updateTime;
+    $publishTime     = $objSight->updateTime;
     
     //最近收藏时间
     $listCollect     = new Collect_List_Collect();

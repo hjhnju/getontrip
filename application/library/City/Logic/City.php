@@ -38,34 +38,26 @@ class City_Logic_City{
      * @return array
      */
     public function getCityDetail($cityId,$page,$pageSize){
-        $arrHot     = array();
         $logicTopic = new Topic_Logic_Topic();
-        $logicSight    = new Sight_Logic_Sight();
+        $logicSight = new Sight_Logic_Sight();
         $redis      = Base_Redis::getInstance();
         $ret        = City_Api::getCityById($cityId);
         $listSight  = new Sight_List_Sight();
         $listSight->setFields(array('id','name','image'));
         $listSight->setFilter(array('city_id' => $cityId,'status' => Sight_Type_Status::PUBLISHED));
-        $listSight->setOrder('`id` asc');
+        $listSight->setOrder('`hot2` desc');
         $listSight->setPage($page);
         $listSight->setPagesize($pageSize);
         $arrSight     = $listSight->toArray();
         $arrSight     = $arrSight['list'];
         $logicCollect = new Collect_Logic_Collect();
-        foreach ($arrSight as $key => $val){            
-            /*$ret    = $redis->sMembers(Sight_Keys::getSightTopicKey($val['id']));
-            $hot    = 0;
-            foreach ($ret as $topicId){
-                $hot += $logicTopic->getTopicHotDegree($topicId, self::HOTPERIOD);
-            }
-            $arrHot[] = $hot;     */
+        foreach ($arrSight as $key => $val){       
             $topic_num     = $logicSight->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
             $arrSight[$key]['id']        = strval($val['id']);
             $arrSight[$key]['image']     = Base_Image::getUrlByName($val['image']);
             $arrSight[$key]['topics']    = sprintf("%s个内容",$topic_num);
             $arrSight[$key]['collected'] = strval($logicCollect->checkCollect(Collect_Type::SIGHT, $val['id']));
         }
-        //array_multisort($arrHot, SORT_DESC , $arrSight);
         return $arrSight;
     }
     

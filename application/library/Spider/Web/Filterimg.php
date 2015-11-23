@@ -40,9 +40,9 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
                 array_push($imgUrlArray, $src);
                 array_push($imgDomArray, $img);  
                
-            }else{ 
+            }else{  
                 if ($this->isOurUrl($oldSrc)) {
-                    //上传过，且携带URL
+                    //上传过，且携带host 去掉host
                    $url=parse_url($oldSrc); 
                    $img->src = $url['path'];
                 }  
@@ -197,7 +197,10 @@ class Spider_Web_Filterimg extends Spider_Web_Base{
     /*
      是否是本站图片
      */
-    public function isOurUrl($str){
+    public function isOurUrl($str){ 
+        if (!$this->isUrl($str)) {
+            return false;
+        }
         $ourUrl=parse_url(Base_Config::getConfig('web')->root);
         $url=parse_url($str);
         return $ourUrl['host']==$url['host'];

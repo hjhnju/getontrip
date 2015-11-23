@@ -5452,8 +5452,8 @@
 
         //新增方法1 去掉样式
         var filterContent = function(html) {
-            var pattern = /style=\"(.*?)\"/gi; //去掉样式 
-            //var pattern2 = /data-(.*?)=\"(.*?)\"/gi; //去掉多余的属性
+            var pattern1 = /style=\"(.*?)\"/gi; //去掉样式 
+            var pattern2 = /data-(.*?)=\"(.*?)\"/gi; //去掉多余的属性
             //var pattern3 = /class=\"(.*?)\"/gi; //去掉class样式 
             //var pattern4 = /id=\"(.*?)\"/gi; //去掉id属性 
             //var pattern5 = /\<p(.*?)\>/gi;//去掉p多余的属性
@@ -5461,7 +5461,8 @@
             var pattern7 = /font/gi; //font替换为span
             var pattern8 = /<\/?[span|strong](.*?)>/gi; //去掉span
             var pattern9 = /<p(.*?)>/gi; //去掉p所有的属性
-            return html.replace(pattern, '').replace('blockquote', 'p').replace(pattern6, 'p').replace(pattern7, 'span').replace(pattern8, '').replace(pattern9, '<p>');
+
+            return html.replace(pattern1, '').replace(pattern2, '').replace('blockquote', 'p').replace(pattern6, 'p').replace(pattern7, 'span').replace(pattern8, '').replace(pattern9, '<p>');
 
         }
     };

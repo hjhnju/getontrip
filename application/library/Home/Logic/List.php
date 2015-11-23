@@ -115,7 +115,7 @@ class Home_Logic_List{
             $temp['image'] = isset($val['image'])?Base_Image::getUrlByName($val['image']):'';
                       
             $topic_num     = $this->_logicSight->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
-            $cityTopicNum += $topic_num;
+
             $collect       = $this->_logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $val['id']);
             $temp['content']  = sprintf("%d个内容",$topic_num);
             $temp['collect']  = sprintf("%d人收藏",$collect);
@@ -128,7 +128,9 @@ class Home_Logic_List{
         $arrTopic  = $cityTopic->getHotTopic($cityId);
         
         //获取城市话题页数
-        $pageNum   = ceil($cityTopicNum/self::PAGE_SIZE);
+        $model        = new TopicModel();
+        $cityTopicNum = $model->getCityTopicNum($cityId);
+        $pageNum      = ceil($cityTopicNum/self::PAGE_SIZE);
         
         $arrRet = array(
             'city'  => $arrCity,

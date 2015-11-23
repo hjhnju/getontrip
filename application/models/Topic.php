@@ -119,6 +119,25 @@ class TopicModel extends BaseModel{
         return $data;
     }
     
+    public function getCityTopicNum($cityId){
+        $arrTopicIds = array();
+        $sql_general = "SELECT distinct(a.id) FROM `topic` a, `topic_tag`  b, `sight_tag` c ,`sight` d WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.tag_id = c.tag_id and c.sight_id = d.id  and d.city_id = $cityId";
+        $sql_normal  = "SELECT distinct(a.id) FROM `topic`  a, `sight_topic` b ,`sight` c WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.sight_id = c.id and c.city_id = $cityId";
+        $data = $this->db->fetchAll($sql_general);
+        foreach ($data as $val){
+            if(!in_array($val,$arrTopicIds)){
+                $arrTopicIds[] = $val['id'];
+            }
+        }
+        $data = $this->db->fetchAll($sql_normal);
+        foreach ($data as $val){
+            if(!in_array($val,$arrTopicIds)){
+                $arrTopicIds[] = $val['id'];
+            }
+        }
+        return count($arrTopicIds);
+    }
+    
     
     /**
      * 供需要进行缓存的话题详情接口使用

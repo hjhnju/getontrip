@@ -266,7 +266,7 @@ class Base_Extract {
      * @return string
      */
     public function dataClean($content,$bSourceOther=true,$imageName='src'){    
-        $content = preg_replace( '/<br\/>/is', '<br>', $content );
+        $content = preg_replace( '/<br(\s)*\/(\s)*>/is', '<br>', $content );
         if(strstr($content,"<br>") && !strstr($content,"<p>")){
             $content = '<p>'.$content.'</p>';
         }
@@ -291,7 +291,7 @@ class Base_Extract {
         
         $content = preg_replace( '/(<p>){2,}/i', '<p>', $content );
         $content = preg_replace( '/(<\/p>){2,}/i', '</p>', $content );
-        $content = preg_replace( '/(<p><\/p>){2,}/i', '<p></p>', $content );     
+        $content = preg_replace( '/(<p><\/p>){1,}/i', '', $content );     
         
         $num = preg_match_all('/img.*?'.$imageName.'=\"(.*?)\".*?>/si',$content,$match);
         for($i=0;$i<$num;$i++){
@@ -315,7 +315,7 @@ class Base_Extract {
      * @param string $content
      */
     public function dataUpdate($content){
-        $content = preg_replace( '/<br\/>/is', '<br>', $content );
+        $content = preg_replace( '/<br(\s)*\/(\s)*>/is', '<br>', $content );
         if(strstr($content,"<br>") && !strstr($content,"<p>")){
             $content = '<p>'.$content.'</p>';
         }
@@ -341,7 +341,7 @@ class Base_Extract {
         }
         $content = preg_replace( '/(<p>){2,}/i', '<p>', $content );
         $content = preg_replace( '/(<\/p>){2,}/i', '</p>', $content );
-        $content = preg_replace( '/(<p><\/p>){2,}/i', '<p></p>', $content );        
+        $content = preg_replace( '/(<p><\/p>){1,}/i', '', $content );        
         return $content;
     }
 }

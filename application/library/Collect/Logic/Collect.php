@@ -176,6 +176,29 @@ class Collect_Logic_Collect{
                     $temp['type']   = strval(Collect_Type::BOOK);
                     $arrRet[]       = $temp;
                 }
+                //收藏内容中包含视频
+                $listCollect = new Collect_List_Collect();
+                $listCollect->setFilter(array(
+                    'type'    => Collect_Type::VIDEO,
+                    'user_id' => $user_id,
+                ));
+                $listCollect->setPage($page);
+                $listCollect->setPagesize($pageSize);
+                $arrVideo = $listCollect->toArray();
+                $temp    = array();
+                foreach ($arrVideo['list'] as $val){
+                    $objVideo = new Video_Object_Video();
+                    $objVideo->fetch(array('id' => $val['obj_id']));
+                    $temp['id']     = strval($val['obj_id']);
+                    $temp['title']  = $objVideo->title;
+                    $temp['image']  = Base_Image::getUrlByName($objVideo->image);
+                    $temp['collect']= strval($this->getTotalCollectNum(Collect_Type::VIDEO, $val['obj_id']));
+                    //内容访问数
+                    $logicVisit = new Tongji_Logic_Visit();
+                    $temp['visit']  = strval($logicVisit->getVisitCount(Collect_Type::VIDEO, $val['obj_id']));
+                    $temp['type']   = strval(Collect_Type::VIDEO);
+                    $arrRet[]       = $temp;
+                }
                 break;
             default:
                 break;                

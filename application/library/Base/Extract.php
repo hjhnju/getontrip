@@ -122,7 +122,7 @@ class Base_Extract {
         $content = preg_replace( $pattern, $replacement, $content );
         
         $pattern = '/&nbsp;/';
-        $replacement = "";
+        $replacement = " ";
         $content = preg_replace( $pattern, $replacement, $content );
         
         // 5. HTML TAGs

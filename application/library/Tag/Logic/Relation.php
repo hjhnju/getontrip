@@ -8,16 +8,29 @@ class Tag_Logic_Relation extends Base_Logic{
     }
     
     public function groupByTop($arrTags){
-        $arrTemp   = array();
+        //一级分类标签按历史、文化、科学、艺术排序
+        if(ENVIRON == 'dev'){
+            $arrTemp   = array(
+                '75' => 0,
+                '11' => 0,
+                '74' => 0,
+                '83' => 0,              
+            );
+        }else{
+            $arrTemp   = array(
+                '75' => 0,
+                '11' => 0,
+                '74' => 0,
+                '83' => 0,              
+            );
+        }
         $arrRet    = array();
         $limit_num = Base_Config::getConfig('showtag')->firstnum;
         foreach ($arrTags as $tag){
             $objTagRelation = new Tag_Object_Relation();
-            $objTagRelation->fetch(array('classifytag_id' => $tag));            
-            if(isset($arrRet[$objTagRelation->toptagId])){
+            $objTagRelation->fetch(array('classifytag_id' => $tag));
+            if(!empty($objTagRelation->toptagId)){
                 $arrTemp[$objTagRelation->toptagId] += 1;
-            }else{
-                $arrTemp[$objTagRelation->toptagId]  = 1;
             }
         }
         foreach ($arrTemp as $key => $val){
@@ -28,7 +41,6 @@ class Tag_Logic_Relation extends Base_Logic{
                     continue;
                 }
                 $tmp['id']   = strval($key);
-                //$tmp['type'] = strval(Tag_Type_Tag::TOP_CLASS);
                 $tmp['name'] = trim($tag['name']);
                 $arrRet[]  = $tmp;
             }

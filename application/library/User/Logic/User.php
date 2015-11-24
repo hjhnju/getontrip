@@ -75,7 +75,7 @@ class User_Logic_User extends Base_Logic{
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId));
         foreach ($arrParam as $key => $val){
-            if(!empty($val)){
+            if($val !== "-1"){
                 $key           = $this->getprop($key);     
                 $objUser->$key = trim($val);
             }            

@@ -137,9 +137,9 @@ class ApiController extends Base_Controller_Api{
         if(empty($userId)){
             return $this->ajaxError(User_RetCode::SESSION_NOT_LOGIN,User_RetCode::getMsg(User_RetCode::SESSION_NOT_LOGIN));
         }
-        $name       = isset($_REQUEST['nick_name'])?trim($_REQUEST['nick_name']):'';
-        $sex        = isset($_REQUEST['sex'])?intval($_REQUEST['sex']):'';
-        $city       = isset($_REQUEST['city'])?trim($_REQUEST['city']):'';
+        $name       = isset($_REQUEST['nick_name'])?trim($_REQUEST['nick_name']):'-1';
+        $sex        = isset($_REQUEST['sex'])?intval($_REQUEST['sex']):'-1';
+        $city       = isset($_REQUEST['city'])?trim($_REQUEST['city']):'-1';
         $file       = isset($_FILES['file'])?$_FILES['file']:'';
         $arrParam = array(
             'nick_name' => $name,

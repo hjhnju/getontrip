@@ -129,6 +129,7 @@ input::-ms-reveal{display:none}
 .bg-img{position:relative;z-index:2;width:100%;height:266px;background-repeat:no-repeat;background-size:cover;-moz-background-size:cover;-webkit-background-size:cover;background-position:center center}
 .bg-img .title-box{color:#fff;position:absolute;z-index:100;text-align:center;left:0;bottom:10px;width:100%;font-size:24px;vertical-align:middle;padding:0 20px;line-height:1.2}
 .bg-img .title-box .title{color:#fff;text-align:left;line-height:30px}
+.bg-img .title-box .title .title-detail{display:block;font-size:12px;line-height:20px}
 .bg-img .title-box .like{text-align:left;font-size:12px;line-height:30px}
 .bg-img img{width:100%;height:268px}
 .main-content{width:100%;float:none;line-height:30px}
@@ -142,6 +143,7 @@ input::-ms-reveal{display:none}
 .main-content .main-content-inner.rich-text .table>tbody>tr>td,.main-content .main-content-inner.rich-text .table>tbody>tr>th,.main-content .main-content-inner.rich-text .table>tfoot>tr>td,.main-content .main-content-inner.rich-text .table>tfoot>tr>th,.main-content .main-content-inner.rich-text .table>thead>tr>td,.main-content .main-content-inner.rich-text .table>thead>tr>th{padding:8px;line-height:1.42857143;vertical-align:middle;border-top:1px solid #ddd}
 .main-content .main-content-inner.rich-text .table-bordered>tbody>tr>td,.main-content .main-content-inner.rich-text .table-bordered>tbody>tr>th,.main-content .main-content-inner.rich-text .table-bordered>tfoot>tr>td,.main-content .main-content-inner.rich-text .table-bordered>tfoot>tr>th,.main-content .main-content-inner.rich-text .table-bordered>thead>tr>td,.main-content .main-content-inner.rich-text .table-bordered>thead>tr>th{border:1px solid #ddd}
 .main-content .main-content-inner.book-rich-text{text-align:left;font-size:16px;line-height:28px;color:#111}
+.main-content .main-content-inner.book-rich-text p{text-align:justify;margin-top:10px;color:#3e3e3e}
 .main-content .text-from{margin:50px 20px 40px;text-align:center;font-size:10px;color:#696969}
 .header-for-mobile{height:62px;overflow:hidden;line-height:1;background:#fff}
 .header-for-mobile-btn{float:right;margin-top:17px;border-radius:3px;background-color:#57c200;padding:8px 9px;color:#fff;font-size:12px}

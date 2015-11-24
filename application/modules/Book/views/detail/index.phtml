@@ -28,7 +28,10 @@
       <div class="bg-img" id="bg-img" style="background-image:url('{%$feroot%}/common/img/imgloading.png'); " data-webroot="{%$webroot%}" data-stroot="{%$stroot%}" data-image="{%$post.image%}">  
       <div class="title-box">
           <div class="title">
-            {%if empty($post.title)==0%}{%$post.title%}{%/if%} 
+            {%if empty($post.title)==0%}{%$post.title%}{%/if%}
+            <span class="title-detail">
+              {%$post.author%}&nbsp;/&nbsp;{%$post.press%}&nbsp;/&nbsp;{%$post.publish_time%}&nbsp;/&nbsp;ISBN:{%$post.isbn%} 
+            </span> 
           </div>
           
        </div> 

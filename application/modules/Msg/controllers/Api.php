@@ -6,7 +6,7 @@
  */
 class ApiController extends Base_Controller_Api {
     
-    const PAGESIZE = 2;
+    const PAGESIZE = 6;
     
     public function init() {
         $this->setNeedLogin(true);
@@ -29,7 +29,7 @@ class ApiController extends Base_Controller_Api {
     }  
     
     /**
-     * 接口2：/api/msg/read
+     * 接口2：/api/1.0/msg/read
      * 阅读消息
      * @param integer mid，消息ID
      * @return json
@@ -43,4 +43,23 @@ class ApiController extends Base_Controller_Api {
         $ret   = $logic->setRead($mid);
         return $this->ajax(strval($ret));
     }
+    
+    /**
+     * 接口3:/api/1.0/msg/del
+     * 消息删除接口
+     * @param integer mid,消息ID
+     * @return json
+     */
+    public function delAction(){
+        $mid   = isset($_REQUEST['mid'])?trim($_REQUEST['mid']):'';
+        if(empty($mid)){
+            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
+        }
+        $logic = new Msg_Logic_Msg();
+        $ret   = $logic->del($mid);
+        if($ret){
+            return $this->ajax();
+        }
+        return $this->ajaxError();
+    } 
 }

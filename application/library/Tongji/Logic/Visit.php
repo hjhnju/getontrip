@@ -17,6 +17,8 @@ class Tongji_Logic_Visit{
             $type = Tongji_Type_Visit::TOPIC;
         }elseif($type == Collect_Type::BOOK){
             $type = Tongji_Type_Visit::BOOK;
+        }elseif($type == Collect_Type::VIDEO){
+            $type = Tongji_Type_Visit::VIDEO;
         }
         $listVisit = new Tongji_List_Visit();
         $listVisit->setFilter(array('type' => $type, 'obj_id' => $objId));

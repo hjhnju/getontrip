@@ -176,6 +176,43 @@ class Base_Util_String {
 	    return $arrRet;
 	}
 	
+	public static function ChineseAnalyzerAll($str){
+	    //词性数组，只取数组中给出的词性的词，词性含义详见：http://bbs.xunsearch.com/showthread.php?tid=1235
+	    $arrSpecial = array('奥林匹克');
+	    $arrRet     = array();
+	     
+	    foreach ($arrSpecial as $data){
+	        $beforLen = strlen($str);
+	        $str      = str_replace($data, "", $str);
+	        if($beforLen > strlen($str)){
+	            $arrRet[]  = $data;
+	        }
+	    }
+
+	    $so         = scws_new();
+	    $len        = mb_strlen($str);
+	    for ($i=0;$i<ceil($len/100);$i++){
+	        $temp = mb_substr($str, $i*100,100);
+	        $so->send_text($temp);
+	        $so->set_multi(true);
+	        $tmp = $so->get_result();
+	        foreach ($tmp as $val){
+	            if($val['attr'] !== 'un'){
+	                $arrRet[] = $val['word'];
+	            }
+	        }
+	    }
+	    $so->close();
+	    if(count($arrRet) == 1){
+	        $arrRet = array();
+	        $len = mb_strlen($str);
+	        for($i=0;$i<$len;$i++){
+	            $arrRet[] = mb_substr($str,$i,1);
+	        }
+	    }
+	    return $arrRet;
+	}
+	
 	protected function getfirstchar($s0){
 	    $fchar = ord($s0{0});
 	    if($fchar >= ord("A") and $fchar <= ord("z") )return strtoupper($s0{0});

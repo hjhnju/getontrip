@@ -135,6 +135,8 @@ class Video_Logic_Video extends Base_Logic{
                     $temp['len'] = sprintf("时长：%s",$video['len']);
                 }
                 $temp['type']    = strval($video['type']);
+                $logicCollect    = new Collect_Logic_Collect();
+                $temp['collected'] = strval($logicCollect->checkCollect(Collect_Type::VIDEO, $arrVideo['id']));
                 $arrRet[] = $temp;
             }
         }

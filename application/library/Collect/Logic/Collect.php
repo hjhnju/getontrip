@@ -193,6 +193,7 @@ class Collect_Logic_Collect{
                     $temp['title']  = $objVideo->title;
                     $temp['image']  = Base_Image::getUrlByName($objVideo->image);
                     $temp['collect']= strval($this->getTotalCollectNum(Collect_Type::VIDEO, $val['obj_id']));
+                    $temp['url']    = Base_Config::getConfig('web')->root.'/video/detail?id='.$temp['id'];
                     //内容访问数
                     $logicVisit = new Tongji_Logic_Visit();
                     $temp['visit']  = strval($logicVisit->getVisitCount(Collect_Type::VIDEO, $val['obj_id']));

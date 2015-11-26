@@ -501,7 +501,7 @@ class Book_Logic_Book extends Base_Logic{
     }
     
     public function search($query, $page, $pageSize){
-        $arrBook  = Base_Search::Search('book', $query, $page, $pageSize, array('id'));
+        $arrBook  = Base_Search::Search('book', $query, $page, $pageSize, array('id','title'));
         $num      = $arrBook['num'];
         $arrBook  = $arrBook['data'];
         foreach ($arrBook as $key => $val){

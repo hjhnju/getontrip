@@ -21,7 +21,7 @@ class EditAction extends Yaf_Action_Abstract {
         $generalTag = Tag_Api::getTagList(1, PHP_INT_MAX, array('type' => Tag_Type_Tag::GENERAL));
         $generalTag = $generalTag['list'];   
 
-        $postid   = isset($_REQUEST['id']) ? $_REQUEST['id'] : '0';
+        $postid   = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
         $postInfo = array();
         if($postid==''){
             $this->getView()->assign('post', '');

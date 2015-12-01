@@ -255,12 +255,12 @@ $(document).ready(function() {
                 //搜索事件
                 $('#search-btn').click(function(event) {
                     //$("#Form").submit();
-                    var query = setQuery();
+                    var query = $('#query').val();
                     for (var i = 0; i < site_array_weixin.length; i++) {
                         window.open(sogou + '?type=2&query=' + query, "_blank");
                     };
                     for (var i = 0; i < site_array_site.length; i++) {
-                        window.open(baidu + '?tn=baidu&wd=site:' + site_array_site[i] + ' ' + query + '-(日游)', "_blank");
+                        window.open(baidu + '?tn=baidu&wd=site:' + site_array_site[i] + ' ' + query + '', "_blank");
                     };
                 });
 
@@ -269,10 +269,10 @@ $(document).ready(function() {
                 //点击创建话题
                 $('#addTopic-btn').click(function(event) {
                     var sight = $('#sight_id').val();
-                    if (!sight) {
+                /*    if (!sight) {
                         toastr.warning('请选择一个景点！');
                         return false;
-                    }
+                    }*/
                     var url = $('#url').val();
                     if (!url) {
                         toastr.warning('请填写原文链接！');
@@ -355,7 +355,7 @@ $(document).ready(function() {
                 $('#Type').val('baidu');
                 $('#query').attr('name', 'wd');
                 //$('#from_name').attr('data-url')?site='site:'+$('#from_name').attr('data-url')+' ':'';
-                $('#query').val(query + '-(日游)');
+                $('#query').val(query + '');
 
                 /*if ($('#query').val().getBytes() > 76) {
                     alert('请控制关键词在38个汉字以内(一个汉字相当于两个字母或数字)');

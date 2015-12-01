@@ -10,11 +10,18 @@ class Praise_Logic_Praise extends Base_Logic{
      */
     public function addPraise($type, $user_id, $obj_id){
         $obj         = new Praise_Object_Praise();
+        $obj->fetch(array('type' => $type,'user_id' => $user_id,'obj_id' => $obj_id));
+        if(!empty($obj->id)){
+            return Praise_RetCode::HAS_PRAISED;
+        }
         $obj->type   = $type;
         $obj->objId  = $obj_id;
         $obj->userId = $user_id;
         $ret         = $obj->save();
-        return $ret;
+        if($ret){
+            return Praise_RetCode::SUCCESS;
+        }
+        return Praise_RetCode::UNKNOWN_ERROR;
     }
     
     /**

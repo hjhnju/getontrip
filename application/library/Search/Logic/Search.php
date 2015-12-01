@@ -18,6 +18,8 @@ class Search_Logic_Search{
     
     protected $logicComment;
     
+    protected $logicPraise;
+    
     protected $logicCollect;
     
     protected $logicBook;
@@ -39,6 +41,7 @@ class Search_Logic_Search{
         $this->logicKeyword = new Keyword_Logic_Keyword();
         $this->logicComment = new Comment_Logic_Comment();
         $this->logicHotWord = new Search_Logic_Word();
+        $this->logicPraise  = new Praise_Logic_Praise();
     }
     
     /**
@@ -220,8 +223,11 @@ class Search_Logic_Search{
                 }
         
                 $visit_num       = $this->logicTopic->getTotalTopicVistUv($topicId);
-                $collect         = $this->logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $topicId);
-                $temp['param2']  =  $collect;
+                //$collect         = $this->logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $topicId);
+                
+                $praiseNum       = $this->logicPraise->getPraiseNum($topicId);
+                
+                $temp['param2']  =  $praiseNum;
                 $temp['param3']  =  $visit_num;
                 $ret[] = $temp;
             }

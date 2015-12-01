@@ -64,4 +64,29 @@ class ApiController extends Base_Controller_Api {
         $ret        = $logic->getCommentList($topicId, $page, $pageSize, $type);
         $this->ajax($ret['list']);
     }
+    
+    /**
+     * 接口3：/api/1.0/comment/del
+     * 删除评论
+     * @param integer  id,评论ID
+     * @param integer type,评论类型,1:话题,2:书籍,3:视频,4:百科
+     * @return json
+     */
+    public function delAction(){
+        $commentId  = isset($_REQUEST['id'])?intval($_REQUEST['id']):'';
+        $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):Comment_Type_Type::TOPIC;
+        $userId     = User_Api::getCurrentUser();
+        if(empty($userId)){
+            return $this->ajaxError(Comment_RetCode::SESSION_NOT_LOGIN,User_RetCode::getMsg(Comment_RetCode::SESSION_NOT_LOGIN));
+        }
+        if(empty($commentId)){
+            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
+        }
+        $logic      = new Comment_Logic_Comment();
+        $ret        = $logic->delComment($commentId,$userId);
+        if($ret){
+            return $this->ajax();
+        }
+        return $this->ajaxError();
+    }
 }

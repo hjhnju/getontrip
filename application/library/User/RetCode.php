@@ -20,6 +20,8 @@ class User_RetCode extends Base_RetCode{
     
     const EMAIL_EXSIT         = 1031; //邮箱已被注册
     
+    const USERNAME_EXIST      = 1032; //用户名已存在
+    
     /* 消息函数
      * @var array
      */
@@ -31,6 +33,7 @@ class User_RetCode extends Base_RetCode{
         self::PASSWD_WORNG        => '密码错误',
         self::PASSWD_FORMAT_WRONG => '密码格式错误',  
         self::EMAIL_EXSIT         => '邮箱已被注册',
+        self::USERNAME_EXIST      => '用户名已存在',
     );
 
 }

@@ -142,16 +142,23 @@ class Topic_Logic_Topic extends Base_Logic{
             return $arrRet;
         }
         $arrRet['sight'] = '';
-        if(empty($sightId)){
-            $logic    = new Sight_Logic_Sight();
-            $arrSight = $logic->getSightByTopic($topicId);
-            foreach($arrSight['list'] as $val){
-                $sight   = new Sight_Object_Sight();
-                $sight->fetch(array('id' => $val['sight_id']));
-                if($sight->status == Sight_Type_Status::PUBLISHED){
-                    $sightId = $val['sight_id'];
-                }
+        $arrRet['arrsights'] = array();
+        
+        $logic = new Sight_Logic_Sight();
+        $arrSight = $logic->getSightByTopic($topicId);
+        foreach($arrSight['list'] as $val){
+            $sight   = new Sight_Object_Sight();
+            $sight->fetch(array('id' => $val['sight_id']));
+            if($sight->status == Sight_Type_Status::PUBLISHED){
+                $temp['id']    = strval($val['sight_id']);
+                $sight         = Sight_Api::getSightById($val['sight_id']);
+                $temp['name']  = $sight['name'];
+                $arrRet['arrsights'][] = $temp;
             }
+        }
+        
+        if(empty($sightId)){
+            $sightId = isset($arrRet['arrsights'][0]['id'])?($arrRet['arrsights'][0]['id']):'';
         }
                 
         if(!empty($sightId)){
@@ -199,6 +206,23 @@ class Topic_Logic_Topic extends Base_Logic{
         if(!empty($arrRet['tags'])){
             $tag = str_replace("其他", "", $arrRet['tags'][0]);
             $arrRet['tags'] = array($tag);
+            foreach ($arrRet['tags'] as $tagName){
+                $tag = $logicTag->getTagByName($tagName);
+                if($tag['type'] == Tag_Type_Tag::GENERAL){
+                    $listSightTag = new Sight_List_Tag();
+                    $listSightTag->setFilter(array('tag_id' => $tag['id']));
+                    $listSightTag->setPagesize(PHP_INT_MAX);
+                    $arrSightTag  = $listSightTag->toArray();
+                    foreach ($arrSightTag['list'] as $sight){
+                        $temp['id']    = strval($sight['sight_id']);
+                        $sight         = Sight_Api::getSightById($sight['sight_id']);
+                        $temp['name']  = isset($sight['name'])?$sight['name']:'';
+                        if(!empty($temp['name'])){
+                            $arrRet['arrsights'][] = $temp;
+                        }
+                    }
+                }
+            }
         }
         
         //这里需要更新一下热度

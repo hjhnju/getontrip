@@ -242,9 +242,16 @@ class Comment_Logic_Comment  extends Base_Logic{
      * @param integer $id
      * @return boolean
      */
-    public function  delComment($id){
+    public function  delComment($id,$userId = ''){
         $objComment = new Comment_Object_Comment();
-        $objComment->fetch(array('id' => $id));
+        if(empty($userId)){
+            $objComment->fetch(array('id' => $id));
+        }else{
+            $objComment->fetch(array('id' => $id,'from_user_id' => $userId));
+        }
+        if(empty($objComment->id)){
+            return false;
+        }
         $redis = Base_Redis::getInstance();
         $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objComment->objId, '*'));
         $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($objComment->objId));

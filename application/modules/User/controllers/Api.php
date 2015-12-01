@@ -137,17 +137,27 @@ class ApiController extends Base_Controller_Api{
         if(empty($userId)){
             return $this->ajaxError(User_RetCode::SESSION_NOT_LOGIN,User_RetCode::getMsg(User_RetCode::SESSION_NOT_LOGIN));
         }
-        $name       = isset($_REQUEST['nick_name'])?trim($_REQUEST['nick_name']):'-1';
-        $sex        = isset($_REQUEST['sex'])?intval($_REQUEST['sex']):'-1';
-        $city       = isset($_REQUEST['city'])?trim($_REQUEST['city']):'-1';
+        $name       = isset($_REQUEST['nick_name'])?trim($_REQUEST['nick_name']):'';
+        $sex        = isset($_REQUEST['sex'])?trim($_REQUEST['sex']):'';
+        $city       = isset($_REQUEST['city'])?trim($_REQUEST['city']):'';
         $file       = isset($_FILES['file'])?$_FILES['file']:'';
+        if(!empty($name)){
+            $logicUser = new User_Logic_User();
+            $ret = $logicUser->checkName($name);
+            if($ret){
+                return $this->ajaxError(User_RetCode::USERNAME_EXIST,User_RetCode::getMsg(User_RetCode::USERNAME_EXIST));
+            }
+        }
         $arrParam = array(
             'nick_name' => $name,
             'sex'       => $sex,
             'city'      => $city,
         );
         $ret        = $this->logicUser->editUserInfo($userId,$arrParam, $file);
-        return $this->ajax(strval($ret));
+        if($ret){
+            return $this->ajax();
+        }
+        return $this->ajaxError();
     }
     
     /**

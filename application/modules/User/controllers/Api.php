@@ -141,13 +141,13 @@ class ApiController extends Base_Controller_Api{
         $sex        = isset($_REQUEST['sex'])?trim($_REQUEST['sex']):'';
         $city       = isset($_REQUEST['city'])?trim($_REQUEST['city']):'';
         $file       = isset($_FILES['file'])?$_FILES['file']:'';
-        if(!empty($name)){
+        /*if(!empty($name)){
             $logicUser = new User_Logic_User();
             $ret = $logicUser->checkName($name);
             if($ret){
                 return $this->ajaxError(User_RetCode::USERNAME_EXIST,User_RetCode::getMsg(User_RetCode::USERNAME_EXIST));
             }
-        }
+        }*/
         $arrParam = array(
             'nick_name' => $name,
             'sex'       => $sex,

@@ -73,6 +73,7 @@ class Sight_Logic_Meta extends Base_Logic{
         $arrParam   = array();
         $arrParam = array_merge($arrParam,$arrInfo);
         $filter = '';
+        
         if(!empty($arrParam)){
             if(isset($arrParam['name'])){
                 $filter = "`name` like '%".$arrParam['name']."%'  and "; 

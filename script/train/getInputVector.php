@@ -34,6 +34,9 @@ foreach ($arrSight as $sight){
     $arrSightTopic  = $listSightTopic->toArray();
     foreach ($arrSightTopic['list'] as $val){
         $objTopic   = new Topic_Object_Topic();
+        if($objTopic->status !== Topic_Type_Status::PUBLISHED){
+            continue;
+        }
         $objTopic->fetch(array('id' => $val['topic_id']));
         $str        = '';
         foreach ($arrSight as $temp){
@@ -66,6 +69,9 @@ foreach ($arrSight as $sight){
         foreach ($arrTopicTag['list'] as $topictag){
             $objTopic   = new Topic_Object_Topic();
             $objTopic->fetch(array('id' => $topictag['topic_id']));
+            if($objTopic->status !== Topic_Type_Status::PUBLISHED){
+                continue;
+            }
             $str        = '';
             foreach ($arrSight as $temp){
                 $tmpid         = '';

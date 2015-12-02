@@ -57,7 +57,10 @@ foreach ($arrSight as $sight){
                     }
                 }
             }
-            fwrite($fp,$str."\r\n");
+            if(!empty($str)){
+                $str = $id."\t".$str."\r\n";
+            }
+            fwrite($fp,$str);
         }
     }
     
@@ -65,7 +68,7 @@ foreach ($arrSight as $sight){
     $objSightMeta = new Sight_Object_Meta();
     $objSightMeta->fetch(array('id' => $sightId));
     if(!empty($objSightMeta->describe)){
-        $str = $id.":1\r\n";
+        $str = $id."\t".$id.":1\r\n";
         fwrite($fp, $str);
     }    
     

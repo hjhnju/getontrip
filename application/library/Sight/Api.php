@@ -166,4 +166,53 @@ class Sight_Api{
         $logicSight = new Sight_Logic_Sight();
         return $logicSight->publishSight($sightId, $bDoPublish);
     }
+
+    /**
+     * 接口15：Sight_Api::getSightByMetaId($metaId)
+     * 根据MetaId获取景点元数据
+     * @param integer $metaId 
+     * @return array
+     */
+    public static function getSightByMetaId($metaId){
+        $logicSight = new Sight_Logic_Meta();
+        return $logicSight->getSightByMetaId($metaId);
+    }
+
+
+    /**
+     * 接口16：querySightMetaByPrefix($query,$page,$pageSize)
+     * 根据景点名称模糊查询景点元数据
+     * @param string $query
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function querySightMetaByPrefix($query,$page,$pageSize){
+        $logicSight = new Sight_Logic_Meta();
+        return $logicSight->querySightMetaByPrefix($query, $page, $pageSize);
+    }
+
+    /**
+     * 接口17：Sight_Api::searchMeta($arrInfo,$page,$pageSize)
+     * 对景点中的标题内容进行模糊查询
+     * @param string $arrInfo
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public static function searchMeta($arrInfo,$page,$pageSize){
+        $logicSight = new Sight_Logic_Meta();
+        return $logicSight->searchMeta($arrInfo, $page, $pageSize);
+    }
+
+    /**
+     * 接口18：Sight_Api::getSightByMetaName($metaName)
+     * 根据MetaId获取景点元数据
+     * @param integer $metaName 
+     * @return array
+     */
+    public static function getSightByMetaName($metaName){
+        $logicSight = new Sight_Logic_Meta();
+        return $logicSight->getSightByMetaName($metaName);
+    }
 }

@@ -29,6 +29,9 @@ foreach ($arrSight as $sight){
                 }
             }
         }
+        if(!empty($str)){
+            $str = $id."\t".$str."\r\n";
+        }
         fwrite($fp,$str."\r\n");
     }
     

@@ -16,7 +16,7 @@ foreach ($arrSightMeta['list'] as $index => $val){
     $sightNames = $val['name'];
     $objSight   = new Sight_Object_Sight();
     $objSight->fetch(array('id' => $val['id']));
-    if(!empty($objSight->name)){
+    if(!empty($objSight->name) && ($sightNames !== $objSight->name)){
         $sightNames .=",".$objSight->name;
     }
     $str = sprintf("%d\t%d\t%s\r\n",$index+1, $val['id'],$sightNames);

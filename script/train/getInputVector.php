@@ -5,8 +5,6 @@ $fp         = fopen(WORK_PATH.INPUT_VECTOR,"w");
 $id         = '';
 $sightId    = '';
 $sightNames = '';
-$listTopic = new Topic_List_Topic();
-echo $listTopic->getTotal();;die;
 foreach ($arrSight as $sight){
     sscanf($sight,"%s\t%s\t%[^\r]",$id,$sightId,$sightNames);
     

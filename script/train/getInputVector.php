@@ -5,18 +5,29 @@ $fp         = fopen(WORK_PATH.INPUT_VECTOR,"w");
 $id         = '';
 $sightId    = '';
 $sightNames = '';
+
+//要依次加载话题ID与内容全局ID的映射
+$arrTopic = file(WORK_PATH.INDEX_TOPIC);
+$arrTopicIds = array();
+foreach ($arrTopic as $val){
+    $tmp   = explode(":",$val);
+    $index = trim($tmp[1]);
+    $arrTopicIds[$index]= $tmp[0];
+}
+
+//要依次加载话题ID与内容全局ID的映射
+$arrDesc = file(WORK_PATH.INDEX_SIGHT_DESC);
+$arrDescIds = array();
+foreach ($arrDesc as $val){
+    $tmp = explode(":",$val);
+    $index = trim($tmp[1]);
+    $arrDescIds[$index] = $tmp[0];
+}
+
 foreach ($arrSight as $sight){
     sscanf($sight,"%s\t%s\t%[^\r]",$id,$sightId,$sightNames);
     
     //对于每个景点，依次取出其话题，描述，百科的内容生成向量
-    //要依次加载话题ID与内容全局ID的映射
-    $arrTopic = file(WORK_PATH.INDEX_TOPIC);
-    $arrTopicIds = array();
-    foreach ($arrTopic as $val){
-        $tmp = explode(":",$val);
-        $arrTopicIds[$tmp[1]] = $tmp[0];
-    }
-    
     $listSightTopic = new Sight_List_Topic();
     $listSightTopic->setFilter(array('sight_id' => $sightId));
     $listSightTopic->setPagesize(PHP_INT_MAX);
@@ -75,15 +86,7 @@ foreach ($arrSight as $sight){
         }
     }
     
-    //描述对应的向量
-    //要依次加载话题ID与内容全局ID的映射
-    unset($arrTopicIds,$arrTopic);
-    $arrDesc = file(WORK_PATH.INDEX_SIGHT_DESC);
-    $arrDescIds = array();
-    foreach ($arrDesc as $val){
-        $tmp = explode(":",$val);
-        $arrDescIds[$tmp[1]] = $tmp[0];
-    }
+    //描述对应的向量    
     $objSightMeta = new Sight_Object_Meta();
     $objSightMeta->fetch(array('id' => $sightId));
     if(!empty($objSightMeta->describe)){

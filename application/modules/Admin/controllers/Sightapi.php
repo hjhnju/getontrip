@@ -310,7 +310,27 @@ class  SightapiController extends Base_Controller_Api{
         }
         return $this->ajaxError('401','裁剪图片错误');  
     }
+    
+    /**
+     * 获取景点元数据 列表
+     */
+    public function metaListAction(){  
 
+        //第一条数据的起始位置，比如0代表第一条数据
+        $start=isset($_REQUEST['start'])?$_REQUEST['start']:0;  
+        $pageSize=isset($_REQUEST['length'])?$_REQUEST['length']:20; 
+        $page=($start/$pageSize)+1; 
+        $arrInfo =isset($_REQUEST['params'])?$_REQUEST['params']:array(); 
+
+        
+
+        $List = Sight_Api::searchMeta($arrInfo,$page,$pageSize);
+
+        $retList['recordsFiltered'] =$List['total'];
+        $retList['recordsTotal'] = $List['total']; 
+        $retList['data'] =$List['list']; 
+        return $this->ajax($retList);
+    }
 
     /**
      * 获取保存的状态
@@ -331,4 +351,6 @@ class  SightapiController extends Base_Controller_Api{
        } 
        return   $status;
     }
+
+
 }

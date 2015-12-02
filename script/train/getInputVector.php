@@ -31,8 +31,8 @@ foreach ($arrSight as $sight){
         }
         if(!empty($str)){
             $str = $id."\t".$str."\r\n";
+            fwrite($fp,$str."\r\n");
         }
-        fwrite($fp,$str."\r\n");
     }
     
     $listSightTag = new Sight_List_Tag();
@@ -62,8 +62,8 @@ foreach ($arrSight as $sight){
             }
             if(!empty($str)){
                 $str = $id."\t".$str."\r\n";
-            }
-            fwrite($fp,$str);
+                fwrite($fp,$str);
+            }            
         }
     }
     

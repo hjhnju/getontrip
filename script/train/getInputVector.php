@@ -33,11 +33,11 @@ foreach ($arrSight as $sight){
     $listSightTopic->setPagesize(PHP_INT_MAX);
     $arrSightTopic  = $listSightTopic->toArray();
     foreach ($arrSightTopic['list'] as $val){
-        $objTopic   = new Topic_Object_Topic();
+        $objTopic   = new Topic_Object_Topic();        
+        $objTopic->fetch(array('id' => $val['topic_id']));
         if($objTopic->status !== Topic_Type_Status::PUBLISHED){
             continue;
         }
-        $objTopic->fetch(array('id' => $val['topic_id']));
         $str        = '';
         foreach ($arrSight as $temp){
             $tmpid         = '';
@@ -86,7 +86,7 @@ foreach ($arrSight as $sight){
                 }
             }
             if(!empty($str)){
-                $str = sprintf("%s\t%s\t%s\r\n",$arrTopicIds[$val['topic_id']],$id,$str);
+                $str = sprintf("%s\t%s\t%s\r\n",$arrTopicIds[$topictag['topic_id']],$id,$str);
                 fwrite($fp,$str);
             }           
         }

@@ -253,8 +253,8 @@ class Comment_Logic_Comment  extends Base_Logic{
             return false;
         }
         $redis = Base_Redis::getInstance();
-        $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objComment->objId, '*'));
-        $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($objComment->objId));
+        $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objComment->id, '*'));
+        $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($objComment->id));
         $objComment->status = Comment_Type_Status::DELETED;
         return $objComment->save();
     }

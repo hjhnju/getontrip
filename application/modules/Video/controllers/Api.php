@@ -24,8 +24,12 @@ class ApiController extends Base_Controller_Api {
         }
         $objVideo    = new Video_Object_Video();
         $objVideo->fetch(array('id' => $id));
+        if(empty($objVideo->id)){
+            return $this->ajaxError();
+        }
         $logicCollect = new Collect_Logic_Collect();
         $ret = $logicCollect->checkCollect(Collect_Type::VIDEO, $id);
+        $arrVideo['id']          = strval($objVideo->id);
         $arrVideo['collected']    = strval($ret);
         $this->ajax($arrVideo);
     }

@@ -966,6 +966,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $redis->delete(Sight_Keys::getSightTopicKey($sightId));
         $redis->hDel(Sight_Keys::getSightTongjiKey($sightId), Sight_Keys::TOPIC);
         $redis->delete(Topic_Keys::getHotTopicNumKey());
+        $redis->delete(Topic_Keys::getTopicContentKey($topicId));
     }
     
     public function getTopicNumByTag($tagId, $sightId){

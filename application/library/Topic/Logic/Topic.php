@@ -82,6 +82,11 @@ class Topic_Logic_Topic extends Base_Logic{
             $logicCollect              = new Collect_Logic_Collect();
             $arrRet[$key]['collect']   = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $val['id']));
             
+            //话题点赞数
+            $logicPraise              = new Praise_Logic_Praise();
+            $arrRet[$key]['praise']  = $logicPraise->getPraiseNum($val['id']);
+             
+            
             //话题来源
             //$logicSource = new Source_Logic_Source();         
             //$arrRet[$key]['from']      = $logicSource->getSourceName($topicDetail['from']);
@@ -117,6 +122,10 @@ class Topic_Logic_Topic extends Base_Logic{
 
             $arrRet[$key]['visit']   = $this->getTotalTopicVistPv($val['id'], $period);
             $arrRet[$key]['collect'] = strval($logicCollect->getTotalCollectNum(Collect_Keys::TOPIC, $val['id']));
+            
+            //话题点赞数
+            $logicPraise              = new Praise_Logic_Praise();
+            $arrRet[$key]['praise']  = $logicPraise->getPraiseNum($val['id']);
             
             //话题来源
             //$logicSource             = new Source_Logic_Source();
@@ -809,7 +818,7 @@ class Topic_Logic_Topic extends Base_Logic{
                        $this->updateTopicRedis(self::ADD_TOPIC, $sight, $topicId);
                     }                    
                 }
-            }
+            }            
         }
         return $ret;
     }
@@ -957,6 +966,8 @@ class Topic_Logic_Topic extends Base_Logic{
         $redis->delete(Sight_Keys::getSightTopicKey($sightId));
         $redis->hDel(Sight_Keys::getSightTongjiKey($sightId), Sight_Keys::TOPIC);
         $redis->delete(Topic_Keys::getHotTopicNumKey());
+        $redis->delete(Topic_Keys::getTopicContentKey($topicId));
+        $redis->delete(Sight_Keys::getSightTopicKey($sightId));
     }
     
     public function getTopicNumByTag($tagId, $sightId){

@@ -88,6 +88,18 @@ class Search_Logic_Search{
                     $arrRet['data'][$key]['content'] = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['content']));
                 }
                 break;
+            case Search_Type_Search::TOPIC:
+                $arrRet    = $this->logicTopic->searchTopic($query, $page, $pageSize);
+                break;
+            case Search_Type_Search::BOOK:
+                $arrRet     = $this->logicBook->search($query, $page, $pageSize);                
+                break;
+            case Search_Type_Search::VIDEO:
+                $arrRet    = $this->logicVideo->search($query, $page, $pageSize);
+                break;
+            case Search_Type_Search::WIKI:
+                $arrRet     = $this->logicKeyword->search($query, $page, $pageSize);
+                break;
             default :
                 $arrCity     = $this->logicCity->search($query, $page, $pageSize);
                 $arrSight    = $this->logicSight->search($query, $page, $pageSize);

@@ -67,7 +67,7 @@ class Base_Search {
         if($type == 'content' || $type == 'topic' || $type == 'book' || $type == 'video'){
             $url   .= '&hl=true&hl.fl=title'.urlencode(',')."content";
         }else{
-            $url   .= '&hl=true&hl.fl=name';
+            $url   .= '&hl=true&hl.fl=name'.urlencode(',')."content";
         }        
         if(self::HIGHT_LIGHT){
             $url .='&hl.fragsize=17&hl.simple.pre='.urlencode('<b>').'&hl.simple.post='.urlencode('</b>');
@@ -106,7 +106,10 @@ class Base_Search {
                 $arrRet['response']['docs'][$key]['title']    = isset($arrRet['highlighting'][$val['id']]['title'][0])?$arrRet['highlighting'][$val['id']]['title'][0]:$val['title'][0];
                 $arrRet['response']['docs'][$key]['content']  = isset($arrRet['highlighting'][$val['id']]['content'][0])?$arrRet['highlighting'][$val['id']]['content'][0]:$val['content'][0];
             }else{
+                $val['name'][0]   = isset($val['name'][0])?$val['name'][0]:'';
+                $val['content'][0] = isset($val['content'][0])?$val['content'][0]:'';
                 $arrRet['response']['docs'][$key]['name']  = isset($arrRet['highlighting'][$val['id']]['name'][0])?$arrRet['highlighting'][$val['id']]['name'][0]:'';
+                $arrRet['response']['docs'][$key]['content']  = isset($arrRet['highlighting'][$val['id']]['content'][0])?$arrRet['highlighting'][$val['id']]['content'][0]:$val['content'][0];
             }          
         }
         return array('num' => strval($arrRet['response']['numFound']),'data' => $arrRet['response']['docs']);

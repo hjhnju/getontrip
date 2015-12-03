@@ -127,6 +127,7 @@ class Collect_Logic_Collect{
             case Collect_Type::COTENT:
                 $listCollect = new Collect_List_Collect();
                 $logicTopic  = new Topic_Logic_Topic();
+                $logicPraise = new Praise_Logic_Praise();
                 $strFilter   = "`user_id` =".$user_id." and `type` !=".Collect_Type::SIGHT." and `type` !=".Collect_Type::CITY;
                 $listCollect->setFilterString($strFilter);
                 $listCollect->setPage($page);
@@ -146,6 +147,8 @@ class Collect_Logic_Collect{
                             $temp['title']      = trim($topic['title']);
                             //内容收藏数
                             $temp['collect']    = strval($this->getTotalCollectNum(Collect_Type::TOPIC, $val['obj_id']));
+                            
+                            $temp['praise']    = strval($logicPraise->getPraiseNum($val['obj_id']));
                             //内容访问数
                             $temp['visit']      = strval($logicTopic->getTotalTopicVistPv($val['obj_id']));
                             $temp['type']       = strval(Collect_Type::TOPIC);

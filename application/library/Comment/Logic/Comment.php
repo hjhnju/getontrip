@@ -231,7 +231,7 @@ class Comment_Logic_Comment  extends Base_Logic{
         }
         $list   = new Comment_List_Comment();
         $list->setPagesize(PHP_INT_MAX);
-        $list->setFilterString("`obj_id` = ".$objId." and `up_id` = 0 and `type` = ".$type." and status` !=".Comment_Type_Status::DELETED);
+        $list->setFilterString("`obj_id` = ".$objId." and `up_id` = 0 and `type` = ".$type." and `status` !=".Comment_Type_Status::DELETED);
         $arrRet = $list->toArray();
         $redis->hSet(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($objId),$arrRet['total']);
         return $arrRet['total'];

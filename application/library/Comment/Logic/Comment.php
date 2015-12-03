@@ -205,7 +205,7 @@ class Comment_Logic_Comment  extends Base_Logic{
             return $ret;
         }
         $list   = new Comment_List_Comment();
-        $filter = "`obj_id` = $objId and `create_time` >= $from and `up_id` = 0 and `type` = ".$type;
+        $filter = "`obj_id` = $objId and `create_time` >= $from and `up_id` = 0 and `type` = ".$type." and `status` !=".Comment_Type_Status::DELETED;
         $list->setPagesize(PHP_INT_MAX);
         $list->setFilterString($filter);
         $arrRet = $list->toArray();
@@ -231,7 +231,7 @@ class Comment_Logic_Comment  extends Base_Logic{
         }
         $list   = new Comment_List_Comment();
         $list->setPagesize(PHP_INT_MAX);
-        $list->setFilter(array('obj_id' => $objId,'up_id' => 0,'type' => $type));
+        $list->setFilterString("`obj_id` = ".$objId." and `up_id` = 0 and `type` = ".$type." and status` !=".Comment_Type_Status::DELETED);
         $arrRet = $list->toArray();
         $redis->hSet(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($objId),$arrRet['total']);
         return $arrRet['total'];
@@ -253,8 +253,8 @@ class Comment_Logic_Comment  extends Base_Logic{
             return false;
         }
         $redis = Base_Redis::getInstance();
-        $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objComment->id, '*'));
-        $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($objComment->id));
+        $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objComment->objId, '*'));
+        $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($objComment->objId));
         $objComment->status = Comment_Type_Status::DELETED;
         return $objComment->save();
     }

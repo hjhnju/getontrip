@@ -818,7 +818,7 @@ class Topic_Logic_Topic extends Base_Logic{
                        $this->updateTopicRedis(self::ADD_TOPIC, $sight, $topicId);
                     }                    
                 }
-            }
+            }            
         }
         return $ret;
     }
@@ -967,6 +967,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $redis->hDel(Sight_Keys::getSightTongjiKey($sightId), Sight_Keys::TOPIC);
         $redis->delete(Topic_Keys::getHotTopicNumKey());
         $redis->delete(Topic_Keys::getTopicContentKey($topicId));
+        $redis->delete(Sight_Keys::getSightTopicKey($sightId));
     }
     
     public function getTopicNumByTag($tagId, $sightId){

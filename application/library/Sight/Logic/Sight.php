@@ -314,8 +314,7 @@ class Sight_Logic_Sight extends Base_Logic{
         }
         if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
             $data = $this->modelSight->query(array('name' => $arrInfo['name']), 1, 1);
-            $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
-            $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
+            $url  = Base_Config::getConfig('web')->root."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
             $http = Base_Network_Http::instance()->url($url);
             $http->timeout(1);
             $http->exec();
@@ -359,8 +358,7 @@ class Sight_Logic_Sight extends Base_Logic{
         $ret = $objSight->save();
         if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
             $data = $this->modelSight->query(array('id' => $sightId), 1, 1);
-            $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
-            $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
+            $url  = Base_Config::getConfig('web')->root."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
             $http = Base_Network_Http::instance()->url($url);
             $http->timeout(1);
             $http->exec();
@@ -380,8 +378,7 @@ class Sight_Logic_Sight extends Base_Logic{
         $ret = $objSight->save();
         if($ret && $bDoPublish){
             $data = $this->modelSight->query(array('id' => $sightId), 1, 1);
-            $conf = new Yaf_Config_INI(CONF_PATH. "/application.ini", ENVIRON);
-            $url  = $_SERVER["HTTP_HOST"]."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
+            $url  = Base_Config::getConfig('web')->root."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
             $http = Base_Network_Http::instance()->url($url);
             $http->timeout(1);
             $http->exec();

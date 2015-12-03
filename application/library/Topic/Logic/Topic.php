@@ -82,6 +82,11 @@ class Topic_Logic_Topic extends Base_Logic{
             $logicCollect              = new Collect_Logic_Collect();
             $arrRet[$key]['collect']   = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $val['id']));
             
+            //话题点赞数
+            $logicPraise              = new Praise_Logic_Praise();
+            $arrRet[$key]['praise']  = $logicPraise->getPraiseNum($val['id']);
+             
+            
             //话题来源
             //$logicSource = new Source_Logic_Source();         
             //$arrRet[$key]['from']      = $logicSource->getSourceName($topicDetail['from']);
@@ -117,6 +122,10 @@ class Topic_Logic_Topic extends Base_Logic{
 
             $arrRet[$key]['visit']   = $this->getTotalTopicVistPv($val['id'], $period);
             $arrRet[$key]['collect'] = strval($logicCollect->getTotalCollectNum(Collect_Keys::TOPIC, $val['id']));
+            
+            //话题点赞数
+            $logicPraise              = new Praise_Logic_Praise();
+            $arrRet[$key]['praise']  = $logicPraise->getPraiseNum($val['id']);
             
             //话题来源
             //$logicSource             = new Source_Logic_Source();

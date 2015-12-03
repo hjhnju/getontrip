@@ -133,8 +133,9 @@ class Collect_Logic_Collect{
                 $listCollect->setPagesize($pageSize);
                 $arrCollect  = $listCollect->toArray();
                 foreach ($arrCollect['list'] as $val){
+                    $temp = array();
                     switch($val['type']){
-                        case Collect_Type::TOPIC:
+                        case Collect_Type::TOPIC:                            
                             $temp['id']         = strval($val['obj_id']);
                             $topic              = $logicTopic->getTopicById($val['obj_id']);
                             if(empty($topic['title'])){

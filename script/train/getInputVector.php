@@ -48,6 +48,7 @@ foreach ($arrSight as $sight){
             foreach ($arrTemp as $data){
                 if(strstr($objTopic->title,$data) !== false){
                     $str .= $tmpid.":1\t";
+                    break; 
                 }
             }
         }
@@ -82,6 +83,7 @@ foreach ($arrSight as $sight){
                 foreach ($arrTemp as $data){
                     if(strstr($objTopic->title,$data) !== false){
                         $str .= $tmpid.":1\t";
+                        break;
                     }
                 }
             }

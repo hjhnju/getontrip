@@ -64,3 +64,6 @@ foreach ($arrSightMeta['list'] as $index => $val){
     fputs($fp,$str);
 }
 fclose($fp);*/
+
+//创建字符集索引
+

@@ -239,8 +239,8 @@ class Search_Logic_Search{
                 
                 $praiseNum       = $this->logicPraise->getPraiseNum($topicId);
                 
-                $temp['param2']  =  $praiseNum;
-                $temp['param3']  =  $visit_num;
+                $temp['param2']  =  strval($praiseNum);
+                $temp['param3']  =  strval($visit_num);
                 $ret[] = $temp;
             }
             $arrRet['content']   = $ret;

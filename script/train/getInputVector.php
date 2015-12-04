@@ -97,10 +97,10 @@ foreach ($arrSight as $sight){
     //描述对应的向量    
     $objSightMeta = new Sight_Object_Meta();
     $objSightMeta->fetch(array('id' => $sightId));
-    if(!empty($objSightMeta->describe)){
+    //if(!empty($objSightMeta->describe)){
         $str = sprintf("%s\t%s\t%s:1\r\n",$arrDescIds[$sightId],$id,$id);
         fwrite($fp, $str);
-    }    
+    //}    
     
     //百科对应的向量
 }

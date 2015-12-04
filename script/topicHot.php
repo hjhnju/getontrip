@@ -89,7 +89,7 @@ function getHot($topic,$time,$type='LATE'){
     
     $objTopic        = new Topic_Object_Topic();
     $objTopic->fetch(array('id' => $topic));
-    $publishTime     = $objTopic->updateTime;
+    $publishTime     = $objTopic->createTime - FROM_TIME;
     
     //最近收藏时间
     $listCollect     = new Collect_List_Collect();
@@ -99,7 +99,7 @@ function getHot($topic,$time,$type='LATE'){
     $listCollect->setPage(1);
     $listCollect->setPagesize(1);
     $arrCollect = $listCollect->toArray();
-    $collectTime     = isset($arrCollect['list'][0])?$arrCollect['list'][0]['create_time']-FROM_TIME:0;
+    $collectTime     = isset($arrCollect['list'][0])?$arrCollect['list'][0]['create_time']-FROM_TIME:$publishTime;
     
     //最近评论时间
     $listComment     = new Comment_List_Comment();
@@ -109,7 +109,7 @@ function getHot($topic,$time,$type='LATE'){
     $listComment->setPage(1);
     $listComment->setPagesize(1);
     $arrComment = $listComment->toArray();
-    $commentTime     = isset($arrComment['list'][0])?$arrComment['list'][0]['create_time']-FROM_TIME:0; 
+    $commentTime     = isset($arrComment['list'][0])?$arrComment['list'][0]['create_time']-FROM_TIME:$publishTime; 
 
     //最近点赞时间
     $listPraise     = new Praise_List_Praise();
@@ -119,8 +119,8 @@ function getHot($topic,$time,$type='LATE'){
     $listPraise->setPage(1);
     $listPraise->setPagesize(1);
     $arrPraise = $listPraise->toArray();
-    $praiseTime     = isset($arrPraise['list'][0])?$arrPraise['list'][0]['create_time']-FROM_TIME:0;
+    $praiseTime     = isset($arrPraise['list'][0])?$arrPraise['list'][0]['create_time']-FROM_TIME:$publishTime;
 
-    $hot  = ($praiseNum + $collectTopicNum + $commentNum + 4*log10($topicUv+1) + 1)*(($publishTime+$collectTime+$commentTime+$praiseTime)/(3600*200)+1);
+    $hot  = ($praiseNum + $collectTopicNum + $commentNum + 4*log10($topicUv+1) + 1.0)*(($publishTime+$collectTime+$commentTime+$praiseTime)/(3600*200.0)+1.0);
     return $hot;
 }

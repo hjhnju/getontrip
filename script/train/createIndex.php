@@ -8,6 +8,7 @@ if(!is_dir(WORK_PATH)){
 
 //创建景点索引文件
 $fp = fopen(WORK_PATH.INDEX_SIGHT, "w");
+$fp_label = fopen(WORK_PATH.INDEX_LABEL, "w");
 $listSightMeta = new Sight_List_Meta();
 $listSightMeta->setPagesize(PHP_INT_MAX);
 $listSightMeta->setOrder('`id` asc');
@@ -21,8 +22,11 @@ foreach ($arrSightMeta['list'] as $index => $val){
     }
     $str = sprintf("%d\t%d\t%s\r\n",$index+1, $val['id'],$sightNames);
     fputs($fp,$str);
+    $str = sprintf("%d\t%d\t%s\r\n",$index, $val['id'],$sightNames);
+    fputs($fp_label,$str);
 }
 fclose($fp);
+fclose($fp_label);
 unset($arrSightMeta);
 
 //创建话题索引文件

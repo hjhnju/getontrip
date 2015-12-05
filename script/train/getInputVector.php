@@ -64,7 +64,8 @@ foreach ($arrSight as $sight){
         }
         
         $arrVec        = array();
-        $objTopic->content = preg_replace( '/<.*?>/s', "", $objTopic->content);
+        $objTopic->content  = preg_replace( '/<.*?>/s', "", $objTopic->content);
+        $objTopic->content .= $objTopic->title;
         $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($objTopic->content);
         $arrTopicVoc = array_unique($arrTopicVoc);
         foreach ($arrTopicVoc as $data){
@@ -114,7 +115,8 @@ foreach ($arrSight as $sight){
             }
             
             $arrVec        = array();
-            $objTopic->content = preg_replace( '/<.*?>/s', "", $objTopic->content);
+            $objTopic->content  = preg_replace( '/<.*?>/s', "", $objTopic->content);
+            $objTopic->content .= $objTopic->title;
             $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($objTopic->content);
             $arrTopicVoc = array_unique($arrTopicVoc);
             foreach ($arrTopicVoc as $data){

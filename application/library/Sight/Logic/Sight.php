@@ -316,7 +316,7 @@ class Sight_Logic_Sight extends Base_Logic{
             $data = $this->modelSight->query(array('name' => $arrInfo['name']), 1, 1);
             $url  = Base_Config::getConfig('web')->root."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
             $http = Base_Network_Http::instance()->url($url);
-            $http->timeout(1);
+            $http->timeout(5);
             $http->exec();
         }
         return $ret; 
@@ -360,7 +360,7 @@ class Sight_Logic_Sight extends Base_Logic{
             $data = $this->modelSight->query(array('id' => $sightId), 1, 1);
             $url  = Base_Config::getConfig('web')->root."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
             $http = Base_Network_Http::instance()->url($url);
-            $http->timeout(1);
+            $http->timeout(5);
             $http->exec();
         }
         return $ret;
@@ -380,7 +380,7 @@ class Sight_Logic_Sight extends Base_Logic{
             $data = $this->modelSight->query(array('id' => $sightId), 1, 1);
             $url  = Base_Config::getConfig('web')->root."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
             $http = Base_Network_Http::instance()->url($url);
-            $http->timeout(1);
+            $http->timeout(5);
             $http->exec();
         }
         return $ret;

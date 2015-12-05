@@ -201,7 +201,7 @@ class Search_Logic_Search{
             $listTopic->setPage($page);
             $listTopic->setFilter(array('status' => Topic_Type_Status::PUBLISHED));
             $listTopic->setPagesize(self::HOT_TOPIC_NUM);
-            $listTopic->setOrder('`hot2` desc, `create_time` desc');
+            $listTopic->setOrder('`hot3` desc, `create_time` desc');
             $arrData = $listTopic->toArray();
             $arrData['list'] = array_slice($arrData['list'],($page-1)*$pageSize,$pageSize);
             if(empty($arrData['list'])){

@@ -8,5 +8,6 @@ const INDEX_TOPIC      = "topic_index";
 const INDEX_SIGHT_WIKI = "wiki_index";
 const INDEX_SIGHT_DESC = "desc_index";
 const INDEX_VOC        = "voc_index";
-const INPUT_VECTOR     = "input_vector";
+const TITLE_VECTOR     = "title_vector";
 const VOC_VECTOR       = "voc_vector";
+const INPUT_VECTOR     = "input_vector";

@@ -1,7 +1,7 @@
 <?php
 /**
  * 景点库 数据表 列表类
- * @author fanyy
+ * @author huwei
  */
 class Sight_List_Meta extends Base_List {
     /**
@@ -20,7 +20,7 @@ class Sight_List_Meta extends Base_List {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'level', 'image', 'describe', 'impression', 'address', 'type', 'continent', 'country', 'province', 'city', 'region', 'is_china', 'x', 'y', 'url', 'status', 'sight_id', 'create_time', 'update_time');
+    protected $fields = array('id', 'name', 'level', 'image', 'describe', 'impression', 'address', 'type', 'continent', 'country', 'province', 'city', 'region', 'is_china', 'x', 'y', 'url', 'status', 'weight', 'city_id', 'create_time', 'update_time');
 
     /**
      * 整数类型的字段
@@ -30,6 +30,8 @@ class Sight_List_Meta extends Base_List {
         'id'          => 1,
         'is_china'    => 1,
         'status'      => 1,
+        'weight'      => 1,
+        'city_id'     => 1,
         'create_time' => 1,
         'update_time' => 1,
     );

@@ -1,7 +1,7 @@
 <?php
 /**
  * 景点库 数据表
- * @author fanyy
+ * @author huwei
  */
 class Sight_Object_Meta extends Base_Object {
     /**
@@ -26,7 +26,7 @@ class Sight_Object_Meta extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'level', 'image', 'describe', 'impression', 'address', 'type', 'continent', 'country', 'province', 'city', 'region', 'is_china', 'x', 'y', 'url', 'status', 'sight_id', 'create_time', 'update_time');
+    protected $fields = array('id', 'name', 'level', 'image', 'describe', 'impression', 'address', 'type', 'continent', 'country', 'province', 'city', 'region', 'is_china', 'x', 'y', 'url', 'status', 'weight', 'city_id', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -51,7 +51,8 @@ class Sight_Object_Meta extends Base_Object {
         'y'           => 'y',
         'url'         => 'url',
         'status'      => 'status',
-        'sight_id'    => 'sightId',
+        'weight'      => 'weight',
+        'city_id'     => 'cityId',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
     );
@@ -64,6 +65,8 @@ class Sight_Object_Meta extends Base_Object {
         'id'          => 1,
         'is_china'    => 1,
         'status'      => 1,
+        'weight'      => 1,
+        'city_id'     => 1,
         'create_time' => 1,
         'update_time' => 1,
     );
@@ -185,10 +188,16 @@ class Sight_Object_Meta extends Base_Object {
     public $status;
 
     /**
-     * sight表对应的景点ID
-     * @var string
+     * 权重值
+     * @var integer
      */
-    public $sightId;
+    public $weight;
+
+    /**
+     * city_meta表对应的城市ID
+     * @var integer
+     */
+    public $cityId;
 
     /**
      * 景点创建时间

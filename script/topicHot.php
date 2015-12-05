@@ -38,7 +38,7 @@ foreach ($arrPraise['list'] as $val){
 }
 
 $listTopic = new Topic_List_Topic();
-$listTopic->setFilterString("`status` =".Topic_Type_Status::PUBLISHED." and create_time >=".$time);   
+$listTopic->setFilterString("`status` =".Topic_Type_Status::PUBLISHED." and create_time >=".$time); 
 $listTopic->setPagesize(PHP_INT_MAX);
 $arrTopic  = $listTopic->toArray();
 foreach ($arrTopic['list'] as $val){
@@ -46,9 +46,9 @@ foreach ($arrTopic['list'] as $val){
 }
 $arrTopicIds = array_unique($arrTopicIds);
 foreach ($arrTopicIds as $topic){       
-    $hot1  = getHot($topic,7*24*60,0);   
-    $hot2  = getHot($topic,time(),0.08);
-    $hot3  = getHot($topic,15,1);
+    $hot1  = getHot($topic,0);   
+    $hot2  = getHot($topic,0.08);
+    $hot3  = getHot($topic,1);
     
     $objTopic        = new Topic_Object_Topic();
     $objTopic->fetch(array('id' => $topic));
@@ -61,7 +61,7 @@ foreach ($arrTopicIds as $topic){
 }
 
 
-function getHot($topic,$time,$during){
+function getHot($topic,$during){
     $logicCollect = new Collect_Logic_Collect();
     $logicComment = new Comment_Logic_Comment();
     $logicTopic   = new Topic_Logic_Topic();
@@ -78,7 +78,7 @@ function getHot($topic,$time,$during){
     
     //最近收藏时间
     $listCollect     = new Collect_List_Collect();
-    $filter          = "`create_time` >=".time() - $time*60 ." and `obj_id`=".$topic." and `type`=".Collect_Type::TOPIC;
+    $filter          = "`obj_id`=".$topic." and `type`=".Collect_Type::TOPIC;
     $listCollect->setFilterString($filter);
     $listCollect->setOrder('`create_time` desc');
     $listCollect->setPage(1);
@@ -88,7 +88,7 @@ function getHot($topic,$time,$during){
     
     //最近评论时间
     $listComment     = new Comment_List_Comment();
-    $filter          = "`create_time` >=".time() - $time*60 ." and `obj_id`=".$topic." and `type`=".Comment_Type_Type::TOPIC;
+    $filter          = "`obj_id`=".$topic." and `type`=".Comment_Type_Type::TOPIC;
     $listComment->setFilterString($filter);
     $listComment->setOrder('`create_time` desc');
     $listComment->setPage(1);
@@ -98,7 +98,7 @@ function getHot($topic,$time,$during){
 
     //最近点赞时间
     $listPraise     = new Praise_List_Praise();
-    $filter         = "`create_time` >=".time() - $time*60 ." and `obj_id`=".$topic." and `type`=".Praise_Type_Type::TOPIC;
+    $filter         = "`obj_id`=".$topic." and `type`=".Praise_Type_Type::TOPIC;
     $listPraise->setFilterString($filter);
     $listPraise->setOrder('`create_time` desc');
     $listPraise->setPage(1);

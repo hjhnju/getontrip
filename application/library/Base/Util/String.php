@@ -194,7 +194,7 @@ class Base_Util_String {
 	    for ($i=0;$i<ceil($len/100);$i++){
 	        $temp = mb_substr($str, $i*100,100);
 	        $so->send_text($temp);
-	        $so->set_multi(true);
+	        //$so->set_multi(true);
 	        $tmp = $so->get_result();
 	        foreach ($tmp as $val){
 	            if(($val['attr'] !== 'un') &&(strstr($val['attr'],'n') !== false)){

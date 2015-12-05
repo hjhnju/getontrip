@@ -46,17 +46,20 @@ foreach ($arrSight as $sight){
         if($objTopic->status !== Topic_Type_Status::PUBLISHED){
             continue;
         }
-        $str        = '';
+        $arrVec        = array();
+        $objTopic->content = preg_replace( '/<.*?>/s', "", $objTopic->content);
         $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($objTopic->content);
         $arrTopicVoc = array_unique($arrTopicVoc);
         foreach ($arrTopicVoc as $data){
-                $ret =  array_search($data,$arrVocs);
-                if($ret !== false){
-                    $str .= $ret+1 . ":1\t";
-                }
+            $ret =  array_search($data,$arrVocs);
+            if($ret !== false){
+                $arrVec[] = $ret + 1;
+            }
         }
-        if(!empty($str)){
-            $str = sprintf("%s\t%s\t%s\r\n",$arrTopicIds[$val['topic_id']],$id,$str);
+        if(!empty($arrVec)){
+            sort($arrVec);
+            $str = implode(":1\t",$arrVec);
+            $str = sprintf("%s\t%s\t%s:1\r\n",$arrTopicIds[$val['topic_id']],$id,$str);
             fwrite($fp,$str);
         }
     }
@@ -76,19 +79,22 @@ foreach ($arrSight as $sight){
             if($objTopic->status !== Topic_Type_Status::PUBLISHED){
                 continue;
             }
-            $str        = '';
+            $arrVec        = array();
+            $objTopic->content = preg_replace( '/<.*?>/s', "", $objTopic->content);
             $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($objTopic->content);
             $arrTopicVoc = array_unique($arrTopicVoc);
             foreach ($arrTopicVoc as $data){
                 $ret =  array_search($data,$arrVocs);
                 if($ret !== false){
-                    $str .= $ret+1 . ":1\t";
+                    $arrVec[] = $ret + 1;
                 }
             }
-            if(!empty($str)){
-                $str = sprintf("%s\t%s\t%s\r\n",$arrTopicIds[$topictag['topic_id']],$id,$str);
+            if(!empty($arrVec)){
+                sort($arrVec);
+                $str = implode(":1\t",$arrVec);
+                $str = sprintf("%s\t%s\t%s:1\r\n",$arrTopicIds[$topictag['topic_id']],$id,$str);
                 fwrite($fp,$str);
-            }           
+            }          
         }
     }
     
@@ -96,17 +102,20 @@ foreach ($arrSight as $sight){
     $objSightMeta = new Sight_Object_Meta();
     $objSightMeta->fetch(array('id' => $sightId));
     if(!empty($objSightMeta->describe)){
-        $str        = '';
+        $arrVec        = array();
+        $objSightMeta->describe = preg_replace( '/<.*?>/s', "", $objSightMeta->describe);
         $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($objSightMeta->describe);
         $arrTopicVoc = array_unique($arrTopicVoc);
         foreach ($arrTopicVoc as $data){
             $ret =  array_search($data,$arrVocs);
             if($ret !== false){
-                $str .= $ret+1 . ":1\t";
+                $arrVec[] = $ret + 1;
             }
         }
-        if(!empty($str)){
-            $str = sprintf("%s\t%s\t%s\r\n",$arrDescIds[$sightId],$id,$str);
+        if(!empty($arrVec)){
+            sort($arrVec);
+            $str = implode(":1\t",$arrVec);
+            $str = sprintf("%s\t%s\t%s:1\r\n",$arrDescIds[$sightId],$id,$str);
             fwrite($fp,$str);
         }
     }    

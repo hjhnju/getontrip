@@ -11,7 +11,7 @@ foreach ($arrCity['list'] as $val){
 
 //景点相关字符集合
 $listSight = new Sight_List_Meta();
-$listSight->setPagesize(1000);
+$listSight->setPagesize(PHP_INT_MAX);
 $arrSight  = $listSight->toArray();
 foreach ($arrSight['list'] as $val){
     $objSight = new Sight_Object_Sight();

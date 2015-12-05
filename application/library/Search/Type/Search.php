@@ -23,6 +23,30 @@ class Search_Type_Search extends Base_Type {
      * @var integer
      */
     const CONTENT = 3;
+    
+    /**
+     * 4 话题搜索
+     * @var integer
+     */
+    const TOPIC   = 4;
+    
+    /**
+     * 5 书籍搜索
+     * @var integer
+     */
+    const BOOK    = 5;
+    
+    /**
+     * 6 视频搜索
+     * @var integer
+     */
+    const VIDEO   = 6;
+    
+    /**
+     * 7 景观搜索
+     * @var integer
+     */
+    const WIKI    = 7;
    
     /**
      * 状态名

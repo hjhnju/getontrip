@@ -235,6 +235,7 @@ class Video_Logic_Video extends Base_Logic{
         }
         if(empty($count)){
             Base_Log::error('sight '.$sightId.' can not get aqiyi videos!');
+            return 0;
         }
         $html->clear();
         return $arrData;

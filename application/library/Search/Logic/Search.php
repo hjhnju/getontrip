@@ -18,6 +18,8 @@ class Search_Logic_Search{
     
     protected $logicComment;
     
+    protected $logicPraise;
+    
     protected $logicCollect;
     
     protected $logicBook;
@@ -39,6 +41,7 @@ class Search_Logic_Search{
         $this->logicKeyword = new Keyword_Logic_Keyword();
         $this->logicComment = new Comment_Logic_Comment();
         $this->logicHotWord = new Search_Logic_Word();
+        $this->logicPraise  = new Praise_Logic_Praise();
     }
     
     /**
@@ -84,6 +87,18 @@ class Search_Logic_Search{
                     $arrRet['data'][$key]['title']   = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['title']));
                     $arrRet['data'][$key]['content'] = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['content']));
                 }
+                break;
+            case Search_Type_Search::TOPIC:
+                $arrRet    = $this->logicTopic->searchTopic($query, $page, $pageSize);
+                break;
+            case Search_Type_Search::BOOK:
+                $arrRet     = $this->logicBook->search($query, $page, $pageSize);                
+                break;
+            case Search_Type_Search::VIDEO:
+                $arrRet    = $this->logicVideo->search($query, $page, $pageSize);
+                break;
+            case Search_Type_Search::WIKI:
+                $arrRet     = $this->logicKeyword->search($query, $page, $pageSize);
                 break;
             default :
                 $arrCity     = $this->logicCity->search($query, $page, $pageSize);
@@ -186,7 +201,7 @@ class Search_Logic_Search{
             $listTopic->setPage($page);
             $listTopic->setFilter(array('status' => Topic_Type_Status::PUBLISHED));
             $listTopic->setPagesize(self::HOT_TOPIC_NUM);
-            $listTopic->setOrder('`hot3` desc, `create_time` desc');
+            $listTopic->setOrder('`hot2` desc, `create_time` desc');
             $arrData = $listTopic->toArray();
             $arrData['list'] = array_slice($arrData['list'],($page-1)*$pageSize,$pageSize);
             if(empty($arrData['list'])){
@@ -220,9 +235,12 @@ class Search_Logic_Search{
                 }
         
                 $visit_num       = $this->logicTopic->getTotalTopicVistUv($topicId);
-                $collect         = $this->logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $topicId);
-                $temp['param2']  =  $collect;
-                $temp['param3']  =  $visit_num;
+                //$collect         = $this->logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $topicId);
+                
+                $praiseNum       = $this->logicPraise->getPraiseNum($topicId);
+                
+                $temp['param2']  =  strval($praiseNum);
+                $temp['param3']  =  strval($visit_num);
                 $ret[] = $temp;
             }
             $arrRet['content']   = $ret;

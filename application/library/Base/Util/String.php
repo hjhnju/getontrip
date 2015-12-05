@@ -197,19 +197,12 @@ class Base_Util_String {
 	        $so->set_multi(true);
 	        $tmp = $so->get_result();
 	        foreach ($tmp as $val){
-	            if($val['attr'] !== 'un'){
+	            if(($val['attr'] !== 'un') &&(strstr($val['attr'],'n') !== false)){
 	                $arrRet[] = $val['word'];
 	            }
 	        }
 	    }
 	    $so->close();
-	    if(count($arrRet) == 1){
-	        $arrRet = array();
-	        $len = mb_strlen($str);
-	        for($i=0;$i<$len;$i++){
-	            $arrRet[] = mb_substr($str,$i,1);
-	        }
-	    }
 	    return $arrRet;
 	}
 	

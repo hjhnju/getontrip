@@ -3,8 +3,8 @@ $host      = 'xingjiaodai.mysql.rds.aliyuncs.com';
 $user      = 'xingjiaodai';
 $pass      = 'xingjiaodai';
 $dbname    = 'getontrip';
-$tb_pre    = 'location';
-$save_path = '/home/work/user/huwei/getontrip/application/library/Location';
+$tb_pre    = 'praise';
+$save_path = '/home/work/user/huwei/getontrip/application/library/Praise';
 $author    = 'huwei';
 
 if(!file_exists($save_path)){

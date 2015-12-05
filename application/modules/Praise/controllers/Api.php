@@ -6,8 +6,6 @@
  */
 class ApiController extends Base_Controller_Api {
     
-    const PAGESIZE = 6;
-    
     protected $logic;
     
     public function init() {
@@ -19,7 +17,7 @@ class ApiController extends Base_Controller_Api {
     /**
      * 接口1：/api/1.0/praise/add
      * 点赞接口
-     * @param integer type,1:话题
+     * @param integer type,1:话题,2:书籍,3:视频
      * @param integer objid，收藏对象的ID
      * @return json
      */
@@ -32,15 +30,15 @@ class ApiController extends Base_Controller_Api {
         }
         $ret = $this->logic->addPraise($type, $this->userid, $obj_id);
         if($ret){
-            return $this->ajax();
+            return $this->ajaxError($ret,Praise_RetCode::getMsg($ret));
         }
-        return $this->ajaxError();
+        return $this->ajax();
     } 
     
     /**
      * 接口2：/api/1.0/praise/del
      * 取消点赞接口
-     * @param integer type,2：景点；3:城市,4:话题,5:书籍
+     * @param integer type,1:话题,2:书籍,3:视频
      * @param integer objid，收藏对象的ID
      * @return json
      */

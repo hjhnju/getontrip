@@ -82,6 +82,11 @@ class Topic_Logic_Topic extends Base_Logic{
             $logicCollect              = new Collect_Logic_Collect();
             $arrRet[$key]['collect']   = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $val['id']));
             
+            //话题点赞数
+            $logicPraise              = new Praise_Logic_Praise();
+            $arrRet[$key]['praise']  = $logicPraise->getPraiseNum($val['id']);
+             
+            
             //话题来源
             //$logicSource = new Source_Logic_Source();         
             //$arrRet[$key]['from']      = $logicSource->getSourceName($topicDetail['from']);
@@ -117,6 +122,10 @@ class Topic_Logic_Topic extends Base_Logic{
 
             $arrRet[$key]['visit']   = $this->getTotalTopicVistPv($val['id'], $period);
             $arrRet[$key]['collect'] = strval($logicCollect->getTotalCollectNum(Collect_Keys::TOPIC, $val['id']));
+            
+            //话题点赞数
+            $logicPraise              = new Praise_Logic_Praise();
+            $arrRet[$key]['praise']  = $logicPraise->getPraiseNum($val['id']);
             
             //话题来源
             //$logicSource             = new Source_Logic_Source();
@@ -196,6 +205,11 @@ class Topic_Logic_Topic extends Base_Logic{
         $arrRet['collect']   = strval($logicCollect->getTotalCollectNum(Collect_Type::TOPIC, $arrRet['id']));
         $arrRet['collected'] = strval($logicCollect->checkCollect(Collect_Type::TOPIC, $arrRet['id']));
         
+        //话题点赞情况
+        $logicPraise          = new Praise_Logic_Praise();
+        $arrRet['praised']    = strval($logicPraise->checkPraise(Praise_Type_Type::TOPIC, $topicId));
+        $arrRet['praiseNum']  = strval($logicPraise->getPraiseNum($topicId));
+        
         //添加redis中话题访问次数统计，直接让其失效，下次从数据库中获取
         $redis = Base_Redis::getInstance();
         $redis->hDel(Topic_Keys::getTopicVisitKey(),Topic_Keys::getTotalKey($topicId));
@@ -204,8 +218,6 @@ class Topic_Logic_Topic extends Base_Logic{
         $logicTag = new Tag_Logic_Tag();
         $arrRet['tags'] = $logicTag->getTopicTags($topicId);
         if(!empty($arrRet['tags'])){
-            $tag = str_replace("其他", "", $arrRet['tags'][0]);
-            $arrRet['tags'] = array($tag);
             foreach ($arrRet['tags'] as $tagName){
                 $tag = $logicTag->getTagByName($tagName);
                 if($tag['type'] == Tag_Type_Tag::GENERAL){
@@ -217,12 +229,14 @@ class Topic_Logic_Topic extends Base_Logic{
                         $temp['id']    = strval($sight['sight_id']);
                         $sight         = Sight_Api::getSightById($sight['sight_id']);
                         $temp['name']  = isset($sight['name'])?$sight['name']:'';
-                        if(!empty($temp['name'])){
+                        if(!empty($temp['name']) && ($sight['status'] == Sight_Type_Status::PUBLISHED)){
                             $arrRet['arrsights'][] = $temp;
                         }
                     }
                 }
             }
+            $tag = str_replace("其他", "", $arrRet['tags'][0]);
+            $arrRet['tags'] = array($tag);
         }
         
         //这里需要更新一下热度
@@ -704,6 +718,7 @@ class Topic_Logic_Topic extends Base_Logic{
                 }                
             }
         }
+        $redis->delete(Topic_Keys::getHotTopicNumKey());
         return $objTopic->id;        
     }
     
@@ -804,8 +819,10 @@ class Topic_Logic_Topic extends Base_Logic{
                        $this->updateTopicRedis(self::ADD_TOPIC, $sight, $topicId);
                     }                    
                 }
-            }
+            }            
         }
+        $redis->delete(Topic_Keys::getHotTopicNumKey());
+        $redis->delete(Topic_Keys::getTopicContentKey($topicId));
         return $ret;
     }
     
@@ -951,7 +968,6 @@ class Topic_Logic_Topic extends Base_Logic{
         $redis = Base_Redis::getInstance();        
         $redis->delete(Sight_Keys::getSightTopicKey($sightId));
         $redis->hDel(Sight_Keys::getSightTongjiKey($sightId), Sight_Keys::TOPIC);
-        $redis->delete(Topic_Keys::getHotTopicNumKey());
     }
     
     public function getTopicNumByTag($tagId, $sightId){

@@ -236,7 +236,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
         foreach ($arrKeyword as $key => $val){
             $keyword = $this->getKeywordByInfo($val['id']);
             $arrKeyword[$key]['name']  = empty($val['name'])?trim($keyword['name']):$val['name'];
-            $arrKeyword[$key]['desc']  = trim($keyword['content']);
+            $arrKeyword[$key]['desc']  = trim($val['content']);
             $arrKeyword[$key]['desc']  = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($arrKeyword[$key]['desc']));
             $arrKeyword[$key]['url']   = trim($keyword['url']);
             $arrKeyword[$key]['image'] = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';

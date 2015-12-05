@@ -125,80 +125,66 @@ class Collect_Logic_Collect{
                 }
                 break;
             case Collect_Type::COTENT:
-                //内容中包含书籍
                 $listCollect = new Collect_List_Collect();
                 $logicTopic  = new Topic_Logic_Topic();
-                $listCollect->setFilter(array(
-                    'type'    => Collect_Type::TOPIC,
-                    'user_id' => $user_id,
-                ));
+                $logicPraise = new Praise_Logic_Praise();
+                $strFilter   = "`user_id` =".$user_id." and `type` !=".Collect_Type::SIGHT." and `type` !=".Collect_Type::CITY;
+                $listCollect->setFilterString($strFilter);
                 $listCollect->setPage($page);
                 $listCollect->setPagesize($pageSize);
-                $arrCollect = $listCollect->toArray();
-                $temp    = array();
+                $arrCollect  = $listCollect->toArray();
                 foreach ($arrCollect['list'] as $val){
-                    $temp['id']         = strval($val['obj_id']);
-                    $topic              = $logicTopic->getTopicById($val['obj_id']);
-                    if(empty($topic['title'])){
-                        continue;
+                    $temp = array();
+                    switch($val['type']){
+                        case Collect_Type::TOPIC:                            
+                            $temp['id']         = strval($val['obj_id']);
+                            $topic              = $logicTopic->getTopicById($val['obj_id']);
+                            if(empty($topic['title'])){
+                                continue;
+                            }
+                            $temp['image']      = Base_Image::getUrlByName($topic['image']);
+                            $temp['subtitle']   = trim($topic['subtitle']);
+                            $temp['title']      = trim($topic['title']);
+                            //内容收藏数
+                            $temp['collect']    = strval($this->getTotalCollectNum(Collect_Type::TOPIC, $val['obj_id']));
+                            
+                            $temp['praise']    = strval($logicPraise->getPraiseNum($val['obj_id']));
+                            //内容访问数
+                            $temp['visit']      = strval($logicTopic->getTotalTopicVistPv($val['obj_id']));
+                            $temp['type']       = strval(Collect_Type::TOPIC);
+                            $arrRet[]           = $temp;
+                            break;
+                        case Collect_Type::BOOK:
+                            $objBook = new Book_Object_Book();
+                            $objBook->fetch(array('id' => $val['obj_id']));
+                            $temp['id']     = strval($val['obj_id']);
+                            $temp['title']  = $objBook->title;
+                            $temp['author'] = $objBook->author;
+                            $temp['image']  = Base_Image::getUrlByName($objBook->image);
+                            $temp['collect']= strval($this->getTotalCollectNum(Collect_Type::BOOK, $val['obj_id']));
+                            //内容访问数
+                            $logicVisit = new Tongji_Logic_Visit();
+                            $temp['visit']  = strval($logicVisit->getVisitCount(Collect_Type::BOOK, $val['obj_id']));
+                            $temp['type']   = strval(Collect_Type::BOOK);
+                            $arrRet[]       = $temp;
+                            break;
+                        case Collect_Type::VIDEO:
+                            $objVideo = new Video_Object_Video();
+                            $objVideo->fetch(array('id' => $val['obj_id']));
+                            $temp['id']     = strval($val['obj_id']);
+                            $temp['title']  = $objVideo->title;
+                            $temp['image']  = Base_Image::getUrlByName($objVideo->image);
+                            $temp['collect']= strval($this->getTotalCollectNum(Collect_Type::VIDEO, $val['obj_id']));
+                            $temp['url']    = Base_Config::getConfig('web')->root.'/video/detail?id='.$temp['id'];
+                            //内容访问数
+                            $logicVisit = new Tongji_Logic_Visit();
+                            $temp['visit']  = strval($logicVisit->getVisitCount(Collect_Type::VIDEO, $val['obj_id']));
+                            $temp['type']   = strval(Collect_Type::VIDEO);
+                            $arrRet[]       = $temp;
+                            break;
+                        default:
+                            break;
                     }
-                    $temp['image']      = Base_Image::getUrlByName($topic['image']);
-                    $temp['subtitle']   = trim($topic['subtitle']);
-                    $temp['title']      = trim($topic['title']);
-                    //内容收藏数
-                    $temp['collect']    = strval($this->getTotalCollectNum(Collect_Type::TOPIC, $val['obj_id']));
-                    //内容访问数     
-                    $temp['visit']      = strval($logicTopic->getTotalTopicVistPv($val['obj_id']));
-                    $temp['type']       = strval(Collect_Type::TOPIC);
-                    $arrRet[]           = $temp;
-                }
-                //内容中包含书籍
-                $listCollect = new Collect_List_Collect();
-                $listCollect->setFilter(array(
-                    'type'    => Collect_Type::BOOK,
-                    'user_id' => $user_id,
-                ));
-                $listCollect->setPage($page);
-                $listCollect->setPagesize($pageSize);
-                $arrBook = $listCollect->toArray();
-                $temp    = array();
-                foreach ($arrBook['list'] as $val){
-                    $objBook = new Book_Object_Book();
-                    $objBook->fetch(array('id' => $val['obj_id']));
-                    $temp['id']     = strval($val['obj_id']);
-                    $temp['title']  = $objBook->title;
-                    $temp['author'] = $objBook->author;
-                    $temp['image']  = Base_Image::getUrlByName($objBook->image);
-                    $temp['collect']= strval($this->getTotalCollectNum(Collect_Type::BOOK, $val['obj_id']));
-                    //内容访问数
-                    $logicVisit = new Tongji_Logic_Visit();
-                    $temp['visit']  = strval($logicVisit->getVisitCount(Collect_Type::BOOK, $val['obj_id']));
-                    $temp['type']   = strval(Collect_Type::BOOK);
-                    $arrRet[]       = $temp;
-                }
-                //收藏内容中包含视频
-                $listCollect = new Collect_List_Collect();
-                $listCollect->setFilter(array(
-                    'type'    => Collect_Type::VIDEO,
-                    'user_id' => $user_id,
-                ));
-                $listCollect->setPage($page);
-                $listCollect->setPagesize($pageSize);
-                $arrVideo = $listCollect->toArray();
-                $temp    = array();
-                foreach ($arrVideo['list'] as $val){
-                    $objVideo = new Video_Object_Video();
-                    $objVideo->fetch(array('id' => $val['obj_id']));
-                    $temp['id']     = strval($val['obj_id']);
-                    $temp['title']  = $objVideo->title;
-                    $temp['image']  = Base_Image::getUrlByName($objVideo->image);
-                    $temp['collect']= strval($this->getTotalCollectNum(Collect_Type::VIDEO, $val['obj_id']));
-                    $temp['url']    = Base_Config::getConfig('web')->root.'/video/detail?id='.$temp['id'];
-                    //内容访问数
-                    $logicVisit = new Tongji_Logic_Visit();
-                    $temp['visit']  = strval($logicVisit->getVisitCount(Collect_Type::VIDEO, $val['obj_id']));
-                    $temp['type']   = strval(Collect_Type::VIDEO);
-                    $arrRet[]       = $temp;
                 }
                 break;
             default:

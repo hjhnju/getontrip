@@ -195,6 +195,7 @@ class Book_Logic_Book extends Base_Logic{
         }
         if(empty($arrIds)){
             Base_Log::error('sight '.$sightId.' can not get jd books!');
+            return 0;
         }
         $key        = 0;
         foreach ($arrIds as $val){
@@ -491,6 +492,11 @@ class Book_Logic_Book extends Base_Logic{
             $arrBook['image']        = isset($arrBook['image'])?Base_Image::getUrlByName($arrBook['image']):'';
             $logicCollect            = new Collect_Logic_Collect();
             $arrBook['collected']    = strval($logicCollect->checkCollect(Collect_Type::BOOK, $bookId));
+            
+            //话题点赞情况
+            $logicPraise             = new Praise_Logic_Praise();
+            $arrBook['praised']      = strval($logicPraise->checkPraise(Praise_Type_Type::BOOK, $bookId));
+            $arrBook['praiseNum']    = strval($logicPraise->getPraiseNum($bookId, Praise_Type_Type::BOOK));
             
             $arrBook['buyurl']       = $arrBook['url'];
             $arrBook['shareurl']     = Base_Config::getConfig('web')->root.'/book/detail?id='.$bookId;

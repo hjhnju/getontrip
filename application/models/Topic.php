@@ -105,6 +105,7 @@ class TopicModel extends BaseModel{
                 $arrTopicIds[] = $val['id'];
             } 
         }
+        $arrTopicIds = array_unique($arrTopicIds);
         $strTopicIds = implode(",",$arrTopicIds);
         $from = ($page-1)*$pageSize;
         $sql = "SELECT id FROM `topic` where `id` in (".$strTopicIds.") ORDER BY hot2 desc, update_time desc limit $from,$pageSize";            
@@ -135,6 +136,7 @@ class TopicModel extends BaseModel{
                 $arrTopicIds[] = $val['id'];
             }
         }
+        $arrTopicIds = array_unique($arrTopicIds);
         return count($arrTopicIds);
     }
     

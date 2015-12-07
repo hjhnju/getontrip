@@ -67,7 +67,7 @@ ITEM_PIPELINES = {
 }
 
 LOG_LEVEL = 'INFO'
-LOG_FILE = 'yunyueduLog.txt' 
+LOG_FILE = 'ceshiLog.txt' 
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html

@@ -2,7 +2,7 @@
 require_once "config.php";
 $arrSight   = file(WORK_PATH.INDEX_SIGHT);
 define("SIGHT_COUNT", count($arrSight));
-//$arrSight   = array_slice($arrSight,0,1000);
+$arrSight   = array_slice($arrSight,0,1000);
 $fp         = fopen(WORK_PATH.INPUT_VECTOR,"w");
 $id         = '';
 $sightId    = '';
@@ -11,8 +11,8 @@ $sightNames = '';
 //要依次加载话题ID与内容全局ID的映射
 $arrVoc = file(WORK_PATH.INDEX_VOC);
 $arrVocs = array();
-foreach ($arrVoc as $val){
-    $tmp      = explode(":",$val);
+foreach ($arrVoc as $val){    
+    $tmp      = explode("\t",$val);
     $arrVocs[]= trim($tmp[1]);
 }
 
@@ -20,7 +20,7 @@ foreach ($arrVoc as $val){
 $arrTopic = file(WORK_PATH.INDEX_TOPIC);
 $arrTopicIds = array();
 foreach ($arrTopic as $val){
-    $tmp   = explode(":",$val);
+    $tmp   = explode("\t",$val);
     $index = trim($tmp[1]);
     $arrTopicIds[$index]= $tmp[0];
 }
@@ -29,14 +29,13 @@ foreach ($arrTopic as $val){
 $arrDesc = file(WORK_PATH.INDEX_SIGHT_DESC);
 $arrDescIds = array();
 foreach ($arrDesc as $val){
-    $tmp = explode(":",$val);
+    $tmp = explode("\t",$val);
     $index = trim($tmp[1]);
     $arrDescIds[$index] = $tmp[0];
 }
 
 foreach ($arrSight as $sight){
-    sscanf($sight,"%s\t%s\t%[^\r]",$id,$sightId,$sightNames);
-    
+    sscanf($sight,"%d\t%d:%s",$id,$sightId,$sightNames);
     //对于每个景点，依次取出其话题，描述，百科的内容生成向量
     $listSightTopic = new Sight_List_Topic();
     $listSightTopic->setFilter(array('sight_id' => $sightId));
@@ -56,7 +55,7 @@ foreach ($arrSight as $sight){
             $tmpid         = '';
             $tmpsightId    = '';
             $tmpsightNames = '';
-            sscanf($temp,"%s\t%s\t%[^\r]",$tmpid,$tmpsightId,$tmpsightNames);
+            sscanf($temp,"%d\t%d\t:%s",$tmpid,$tmpsightId,$tmpsightNames);
             $arrTemp = explode(",",$tmpsightNames);
             foreach ($arrTemp as $data){
                 if(strstr($objTopic->title,$data) !== false){
@@ -110,7 +109,7 @@ foreach ($arrSight as $sight){
                 $tmpid         = '';
                 $tmpsightId    = '';
                 $tmpsightNames = '';
-                sscanf($temp,"%s\t%s\t%[^\r]",$tmpid,$tmpsightId,$tmpsightNames);
+                sscanf($temp,"%d\t%d\t:%s",$tmpid,$tmpsightId,$tmpsightNames);
                 $arrTemp = explode(",",$tmpsightNames);
                 foreach ($arrTemp as $data){
                     if(strstr($objTopic->title,$data) !== false){

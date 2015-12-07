@@ -25,7 +25,7 @@ foreach ($arrDesc as $val){
 }
 
 foreach ($arrSight as $sight){
-    sscanf($sight,"%s\t%s\t%[^\r]",$id,$sightId,$sightNames);
+    sscanf($sight,"%d\t%[^:]:%[^\r]",$id,$sightId,$sightNames);
     
     //对于每个景点，依次取出其话题，描述，百科的内容生成向量
     $listSightTopic = new Sight_List_Topic();

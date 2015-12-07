@@ -20,9 +20,9 @@ foreach ($arrSightMeta['list'] as $index => $val){
     if(!empty($objSight->name) && ($sightNames !== $objSight->name)){
         $sightNames .=",".trim($objSight->name);
     }
-    $str = sprintf("%d\t%d\t%s\r\n",$index+1, $val['id'],$sightNames);
+    $str = sprintf("%d\t%d:%s\r\n",$index+1, $val['id'],$sightNames);
     fputs($fp,$str);
-    $str = sprintf("%d\t%d\t%s\r\n",$index, $val['id'],$sightNames);
+    $str = sprintf("%d\t%d:%s\r\n",$index, $val['id'],$sightNames);
     fputs($fp_label,$str);
 }
 fclose($fp);
@@ -37,7 +37,7 @@ $listTopic->setFilter(array('status' => Topic_Type_Status::PUBLISHED));
 $listTopic->setOrder('`id` asc');
 $arrTopic  = $listTopic->toArray();
 foreach ($arrTopic['list'] as $index => $val){
-    $str = sprintf("%d:%d\r\n",$index + 1, $val['id']);
+    $str = sprintf("%d\t%d\r\n",$index + 1, $val['id']);
     fputs($fp,$str);
 }
 $total_topic = $listTopic->getTotal();
@@ -53,7 +53,7 @@ $arrSightMeta  = $listSightMeta->toArray();
 foreach ($arrSightMeta['list'] as $index => $val){
     //if(!empty($val['describe'])){
         $total_desc += 1;
-        $str = sprintf("%d:%d\r\n",$total_topic + $index + 1, $val['id']);
+        $str = sprintf("%d\t%d\r\n",$total_topic + $index + 1, $val['id']);
         fputs($fp,$str);
     //}
 }

@@ -32,7 +32,7 @@ foreach ($arrSight['list'] as $val){
 
 $fp = fopen(WORK_PATH.INDEX_VOC, "w");
 foreach ($arrRet as $index => $val){
-    $str = sprintf("%d:%s\r\n",$index + SIGHT_COUNT + 1 , trim($val));
+    $str = sprintf("%d\t%s\r\n",$index + SIGHT_COUNT + 1 , trim($val));
     fputs($fp,$str);
 }
 fclose($fp);

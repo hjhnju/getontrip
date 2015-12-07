@@ -10,7 +10,7 @@ $sightNames = '';
 $arrVoc = file(WORK_PATH.INDEX_VOC);
 $arrVocs = array();
 foreach ($arrVoc as $val){
-    $tmp      = explode(":",$val);
+    $tmp      = explode("\t",$val);
     $arrVocs[]= trim($tmp[1]);
 }
 
@@ -18,7 +18,7 @@ foreach ($arrVoc as $val){
 $arrTopic = file(WORK_PATH.INDEX_TOPIC);
 $arrTopicIds = array();
 foreach ($arrTopic as $val){
-    $tmp   = explode(":",$val);
+    $tmp   = explode("\t",$val);
     $index = trim($tmp[1]);
     $arrTopicIds[$index]= $tmp[0];
 }
@@ -27,13 +27,13 @@ foreach ($arrTopic as $val){
 $arrDesc = file(WORK_PATH.INDEX_SIGHT_DESC);
 $arrDescIds = array();
 foreach ($arrDesc as $val){
-    $tmp = explode(":",$val);
+    $tmp = explode("\t",$val);
     $index = trim($tmp[1]);
     $arrDescIds[$index] = $tmp[0];
 }
 
 foreach ($arrSight as $sight){
-    sscanf($sight,"%s\t%s\t%[^\r]",$id,$sightId,$sightNames);
+    sscanf($sight,"%d\t%d\t:%s",$id,$sightId,$sightNames);
     
     //对于每个景点，依次取出其话题，描述，百科的内容生成向量
     $listSightTopic = new Sight_List_Topic();

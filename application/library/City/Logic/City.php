@@ -110,7 +110,13 @@ class City_Logic_City{
         if(!empty($ret)){
             $objCity->fetch(array('id' => $ret['pid']));
             $ret['pidname'] = $objCity->name;
-            
+
+            $objCity->fetch(array('id' => $ret['continentid']));
+            $ret['continentname'] = $objCity->name;
+
+            $objCity->fetch(array('id' => $ret['countryid']));
+            $ret['countryname'] = $objCity->name;
+
             $objCityInfo = new City_Object_City();
             $objCityInfo->fetch(array('id' => $ret['id']));
             $arrRet      = $objCityInfo->toArray();
@@ -164,7 +170,8 @@ class City_Logic_City{
         $arrRet['pageall'] = ceil($arrRet['total'] / $pageSize);
         $arrRet['page']  = $page;
         $arrRet['pagesize'] = $pageSize;
-        $arrRet['list']  = $modelCity->queryCity($arrInfo, $page, $pageSize);
+        
+        $arrRet['list']  = $modelCity->queryCity($arrInfo, $page, $pageSize); 
         foreach ($arrRet['list'] as $key => $val){
             $ret  = $this->getCityById($val['id']);
             $arrRet['list'][$key]['x']       = isset($ret['x'])?$ret['x']:'';
@@ -172,6 +179,8 @@ class City_Logic_City{
             $arrRet['list'][$key]['image']   = isset($ret['image'])?$ret['image']:'';
             $arrRet['list'][$key]['status']  = isset($ret['status'])?$ret['status']:'';
             $arrRet['list'][$key]['pidname'] = $ret['pidname'];
+            $arrRet['list'][$key]['countryname'] = $ret['countryname'];
+            $arrRet['list'][$key]['continentname'] = $ret['continentname'];
         }
         return $arrRet;
     }
@@ -228,7 +237,28 @@ class City_Logic_City{
      */
     public function queryProvincePrefix($str,$page,$pageSize){
         $listCity = new City_List_Meta();
-        $strFileter = "`provinceid` = 0 and name like '".$str."%'";
+        $strFileter = "`provinceid` = 0 and `continentid` != 0 and `countryid` != 0 and  name like '".$str."%'";
+        $listCity->setFilterString("$strFileter");
+        $listCity->setPage($page);
+        $listCity->setPagesize($pageSize);
+        $arrCity = $listCity->toArray();
+        foreach ($arrCity['list'] as $key => $val){
+            $city = City_Api::getCityById($val['id']);
+            $arrCity['list'][$key]['pidname'] = $city['name'];
+        }
+        return $arrCity;
+    }
+
+    /**
+     * 国家名前缀模糊查询
+     * @param string $str
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function queryCountryPrefix($str,$page,$pageSize){
+        $listCity = new City_List_Meta();
+        $strFileter = "`countryid` = 0 and `continentid` != 0 and  name like '".$str."%'";
         $listCity->setFilterString("$strFileter");
         $listCity->setPage($page);
         $listCity->setPagesize($pageSize);
@@ -415,5 +445,40 @@ class City_Logic_City{
             $listCity->setFilter($arrInfo);
         }
         return $listCity->getTotal();
+    }
+
+
+    /**
+     * 根据条件获取city_meta对象
+     * @param string $arrInfo
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function getCityMeta($arrInfo){  
+        $objMeta = new City_Object_Meta();
+        $arrParam   = array();
+        $arrParam = array_merge($arrParam,$arrInfo);  
+        $objMeta->fetch($arrParam);
+        $ret = $objMeta->toArray();
+        if(!empty($ret)){
+             
+        }
+        return $ret;
+    }
+
+
+    /**
+     * 添加新的城市
+     * @param array $arrInfo : array('name' => 'xxx','cityid' => 'xxx')
+     * @return boolean
+     */
+    public function addCityMeta($arrInfo){
+        $objCity = new City_Object_Meta();
+        foreach ($arrInfo as $key => $val){
+            $objCity->$key = $val;
+        }
+        $ret = $objCity->save();
+        return $objCity->id;
     }
 }

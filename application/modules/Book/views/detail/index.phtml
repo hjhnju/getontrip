@@ -22,7 +22,7 @@
     </div> 
   </div>
 {%/if%}  
-<div class="container main-wrap content-wrap{%if $isapp eq 1%} isapp{%/if%}"> 
+<div class="container main-wrap content-wrap{%if $isapp eq 1%} isapp-book{%/if%}"> 
  {%if isset($post.id)%}  
     {%if $isapp eq 0%}  
       <div class="bg-img" id="bg-img" style="background-image:url('{%$feroot%}/common/img/imgloading.png'); " data-webroot="{%$webroot%}" data-stroot="{%$stroot%}" data-image="{%$post.image%}">  

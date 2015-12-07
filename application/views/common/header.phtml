@@ -8,7 +8,14 @@
     <meta content="black" name="apple-mobile-web-app-status-bar-style" />
     <meta name="format-detection" content="telephone=no, email=no">
     {%/if%}
-    <title>途知</title>
+    
+    <title>
+         {%if $title%}
+         {%$title%}
+         {%else%}  
+              途知          
+         {%/if%} 
+    </title>
     <!--[if lt IE 7]>
     <script>
         // window.location.href = '{%$webroot%}/static/ieup/index.html';

@@ -25,11 +25,18 @@
         vertical-align: middle;
         padding: 0 20px;
         line-height: 1.2;
+        &.ismobile {
+            padding: 0 13pt;
+            .title {
+                /* font-size: 24pt;
+               line-height: 32pt; */
+            }
+        }
         .title {
             color: #fff;
             text-align: left;
             line-height: 30px;
-            .title-detail{
+            .title-detail {
                 display: block;
                 font-size: 12px;
                 line-height: 20px;
@@ -51,6 +58,7 @@
     width: 100%;
     float: none;
     line-height: 30px;
+    font-weight: lighter;
     img {
         width: 100%;
         height: 200px;
@@ -58,18 +66,16 @@
     }
     .main-content-inner {
         margin: 14px 20px 0px;
-        &.isapp {
-            margin: 14px 20pt 0px;
-        }
+        font-weight: lighter;
         &.rich-text {
             text-align: justify;
             font-size: 19px;
             line-height: 28px;
-            color: #3e3e3e;
+            color: #1c1c1c;
             p {
                 text-align: justify;
                 margin-top: 10px;
-                color: #3e3e3e;
+                color: #1c1c1c;
                 &.imagedesc {
                     font-size: 12px;
                     color: #696969;
@@ -116,8 +122,36 @@
             p {
                 text-align: justify;
                 margin-top: 10px;
-                color: #3e3e3e; 
+                color: #3e3e3e;
             }
+        }
+        &.isapp,
+        &.ismobile {
+            margin: 14pt 13pt 0px;
+            text-align: justify;
+            font-size: 18px;
+            line-height: 29px;
+            letter-spacing: 1px;
+            color: #1c1c1c;
+            p {
+                text-align: justify;
+                margin-top: 24pt;
+                color: #1c1c1c;
+                &.imagedesc {
+                    margin-top: 20pt;
+                    font-size: 12px;
+                    color: #696969;
+                    line-height: 14px;
+                    letter-spacing: 1px;
+                    text-align: left;
+                }
+                &:first-child {
+                    margin-top: 14pt;
+                }
+            }
+        }
+        &.isapp-book {
+            margin: 14pt 9pt 0px;
         }
     }
     .text-from {
@@ -125,6 +159,14 @@
         text-align: center;
         font-size: 10px;
         color: #696969;
+        &.isapp,
+        &.ismobile {
+            margin: 39pt 0;
+            margin: 39pt 13pt;
+            opacity: .4;
+            font-size: 10pt;
+            line-height: 20px;
+        }
     }
 }
 

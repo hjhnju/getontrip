@@ -178,27 +178,14 @@ class Base_Util_String {
 	
 	public static function ChineseAnalyzerAll($str){
 	    //词性数组，只取数组中给出的词性的词，词性含义详见：http://bbs.xunsearch.com/showthread.php?tid=1235
-	    $arrSpecial = array('奥林匹克');
 	    $arrRet     = array();
-	     
-	    foreach ($arrSpecial as $data){
-	        $beforLen = strlen($str);
-	        $str      = str_replace($data, "", $str);
-	        if($beforLen > strlen($str)){
-	            $arrRet[]  = $data;
-	        }
-	    }
-
 	    $so         = scws_new();
-	    $len        = mb_strlen($str);
-	    for ($i=0;$i<ceil($len/100);$i++){
-	        $temp = mb_substr($str, $i*100,100);
-	        $so->send_text($temp);
-	        //$so->set_multi(true);
-	        $tmp = $so->get_result();
-	        foreach ($tmp as $val){
-	            if(($val['attr'] !== 'un') &&(strstr($val['attr'],'n') !== false)){
-	                $arrRet[] = $val['word'];
+	    $so->send_text($str);
+	    $so->set_multi(true);
+	    while ($res = $so->get_result()){
+	        foreach ($res as $val){
+	            if($val['attr'] == 'i' || (($val['attr'] !== 'un') &&(strstr($val['attr'],'n') !== false))){
+	                $arrRet[] = $val['word'];	                
 	            }
 	        }
 	    }

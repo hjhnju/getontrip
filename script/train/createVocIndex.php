@@ -21,7 +21,9 @@ foreach ($arrSight['list'] as $val){
     $objSight->fetch(array('id' => $val['id']));
     if(!empty($objSight->name)){
         $arrRet = array_merge($arrRet,Base_Util_String::ChineseAnalyzerAll($objSight->name));
-        $arrRet = array_merge($arrRet,Base_Util_String::ChineseAnalyzerAll($objSight->describe));
+        if(!empty($objSight->describe)){
+            $arrRet = array_merge($arrRet,Base_Util_String::ChineseAnalyzerAll($objSight->describe));
+        }
     }
     $arrRet = array_merge($arrRet,Base_Util_String::ChineseAnalyzerAll($val['name']));
     $arrRet = array_merge($arrRet,Base_Util_String::ChineseAnalyzerAll($val['describe']));

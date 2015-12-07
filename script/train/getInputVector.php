@@ -43,6 +43,9 @@ foreach ($arrSight as $sight){
     $listSightTopic->setPagesize(PHP_INT_MAX);
     $arrSightTopic  = $listSightTopic->toArray();
     foreach ($arrSightTopic['list'] as $val){
+        if(!isset($arrTopicIds[$val['topic_id']])){
+            continue;
+        }
         $objTopic   = new Topic_Object_Topic();        
         $objTopic->fetch(array('id' => $val['topic_id']));
         if($objTopic->status !== Topic_Type_Status::PUBLISHED){
@@ -94,6 +97,9 @@ foreach ($arrSight as $sight){
         $listTopicTag->setPagesize(PHP_INT_MAX);
         $arrTopicTag  = $listTopicTag->toArray();
         foreach ($arrTopicTag['list'] as $topictag){
+            if(!isset($arrTopicIds[$topictag['topic_id']])){
+                continue;
+            }
             $objTopic   = new Topic_Object_Topic();
             $objTopic->fetch(array('id' => $topictag['topic_id']));
             if($objTopic->status !== Topic_Type_Status::PUBLISHED){

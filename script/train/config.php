@@ -10,4 +10,4 @@ const INDEX_SIGHT_DESC = "content_desc_index";
 const INDEX_VOC        = "feature_voc_index";
 const TITLE_VECTOR     = "title_vector";
 const VOC_VECTOR       = "voc_vector";
-const INPUT_VECTOR     = "input_vector";
+const INPUT_VECTOR     = "model_vector";

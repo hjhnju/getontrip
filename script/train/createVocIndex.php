@@ -14,7 +14,7 @@ foreach ($arrCity['list'] as $val){
 
 //景点相关字符集合
 $listSight = new Sight_List_Meta();
-$listSight->setFilterString("level !=''");
+$listSight->setFilterString("level !='' and is_china = 1");
 $listSight->setPagesize(PHP_INT_MAX);
 $arrSight  = $listSight->toArray();
 foreach ($arrSight['list'] as $val){

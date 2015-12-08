@@ -6,11 +6,11 @@ if(!is_dir(WORK_PATH)){
     mkdir(WORK_PATH);
 }
 
-//创建景点索引文件
+//创建景点索引文件:国内
 $fp = fopen(WORK_PATH.INDEX_SIGHT, "w");
 $fp_label = fopen(WORK_PATH.INDEX_LABEL, "w");
 $listSightMeta = new Sight_List_Meta();
-$listSightMeta->setFilterString("level !=''");
+$listSightMeta->setFilterString("level !='' and is_china = 1");
 $listSightMeta->setPagesize(PHP_INT_MAX);
 $listSightMeta->setOrder('`id` asc');
 $arrSightMeta  = $listSightMeta->toArray();
@@ -48,7 +48,7 @@ unset($arrTopic);
 //创建景点描述索引文件
 $fp = fopen(WORK_PATH.INDEX_SIGHT_DESC, "w");
 $listSightMeta = new Sight_List_Meta();
-$listSightMeta->setFilterString("level !=''");
+$listSightMeta->setFilterString("level !='' and is_china = 1");
 $listSightMeta->setPagesize(PHP_INT_MAX);
 $listSightMeta->setOrder('`id` asc');
 $arrSightMeta  = $listSightMeta->toArray();

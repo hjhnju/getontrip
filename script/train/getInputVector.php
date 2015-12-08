@@ -2,7 +2,6 @@
 require_once "config.php";
 $arrSight   = file(WORK_PATH.INDEX_SIGHT);
 define("SIGHT_COUNT", count($arrSight));
-$arrSight   = array_slice($arrSight,0,1000);
 $fp         = fopen(WORK_PATH.INPUT_VECTOR,"w");
 $id         = '';
 $sightId    = '';

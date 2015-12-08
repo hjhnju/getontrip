@@ -1,6 +1,7 @@
 <?php
 require_once "config.php";
 $arrSight   = file(WORK_PATH.INDEX_SIGHT);
+define("SIGHT_COUNT", count($arrSight));
 $fp         = fopen(WORK_PATH.DESC_VECTOR,"w");
 $id         = '';
 $sightId    = '';
@@ -46,7 +47,7 @@ foreach ($arrSight as $sight){
         foreach ($arrTopicVoc as $data){
             $ret =  array_search($data,$arrVocs);
             if($ret !== false){
-                $arrVec[] = $ret + 1;
+                $arrVec[] = $ret + 1 + SIGHT_COUNT;
             }
         }
         if(!empty($arrVec)){

@@ -1,10 +1,15 @@
 <?php
 require_once "config.php";
+
 const PRE_TOPIC = "topic_";
 
 const PRE_DESC  = "desc_";
 
 const PRE_WIKI  = "wiki_";
+
+if(!is_dir(DATA_PATH)){
+    mkdir(DATA_PATH);  
+}
 
 $fp_label = fopen(WORK_PATH.INDEX_LABEL,"w");
 
@@ -45,10 +50,10 @@ foreach ($arrSight['list'] as $index => $sight){
     if(!empty($strBuffer)){
         $index = $index + 1;
         
-        $str = sprintf("%d\tsight:%d\r\n",$index,$sight['id']);
+        $str = sprintf("%d\tsight:%d\tname:%s\r\n",$index,$sight['id'],$sight['name']);
         fwrite($fp_label, $str);
         
-        $fp_sight = fopen(WORK_PATH."$index","w");
+        $fp_sight = fopen(DATA_PATH."$index","w");
         fwrite($fp_sight, $strBuffer);
         fclose($fp_sight);
     } 
@@ -84,10 +89,10 @@ foreach ($arrTag['list'] as $key => $tag){
     if(!empty($strBuffer)){
         $key = $index + $key + 1;
     
-        $str = sprintf("%d\ttag:%d\r\n",$key,$tag['id']);
+        $str = sprintf("%d\ttag:%d\tname:%s\r\n",$key,$tag['id'],$tag['name']);
         fwrite($fp_label, $str);
     
-        $fp_sight = fopen(WORK_PATH."$key","w");
+        $fp_sight = fopen(DATA_PATH."$key","w");
         fwrite($fp_sight, $strBuffer);
         fclose($fp_sight);
     }

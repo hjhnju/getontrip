@@ -184,8 +184,10 @@ class Base_Util_String {
 	    $so->set_multi(true);
 	    while ($res = $so->get_result()){
 	        foreach ($res as $val){
-	            if($val['attr'] == 'i' || (($val['attr'] !== 'un') &&(strstr($val['attr'],'n') !== false))){
-	                $arrRet[] = $val['word'];	                
+	            if($val['attr'] == 'i' || (($val['attr'] !== 'un') && ($val['attr'] !== 'en') &&(strstr($val['attr'],'n') !== false))){
+	                if(strlen($val['word']) != 3){
+	                    $arrRet[] = $val['word'];
+	                }	                	                
 	            }
 	        }
 	    }

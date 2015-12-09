@@ -26,7 +26,8 @@ foreach ($arrSight['list'] as $index => $sight){
     foreach ($arrSightTopic['list'] as $sightTopic){
         $objTopic = new Topic_Object_Topic();
         $objTopic->fetch(array('id' => $sightTopic['topic_id']));
-        $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($objTopic->content.$objTopic->title.$objTopic->subtitle);
+        $content = preg_replace( '/<.*?>/s', "", $objTopic->content.$objTopic->title.$objTopic->subtitle);
+        $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($objTopic->content);
         if(!empty($arrTopicVoc)){
             $strTopicVoc = implode("\t",$arrTopicVoc);
             $strBuffer .= sprintf(PRE_TOPIC."%d\t%s\r\n",$objTopic->id,$strTopicVoc);
@@ -71,7 +72,8 @@ foreach ($arrTag as $key => $tag){
     foreach ($arrTagTopic['list'] as $tagTopic){
         $objTopic = new Topic_Object_Topic();
         $objTopic->fetch(array('id' => $tagTopic['topic_id']));
-        $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($objTopic->content.$objTopic->title.$objTopic->subtitle);
+        $content = preg_replace( '/<.*?>/s', "", $objTopic->content.$objTopic->title.$objTopic->subtitle);
+        $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($objTopic->content);
         if(!empty($arrTopicVoc)){
             $strTopicVoc = implode("\t",$arrTopicVoc);
             $strBuffer .= sprintf(PRE_TOPIC."%d\t%s\r\n",$objTopic->id,$strTopicVoc);

@@ -164,20 +164,10 @@ class Topic_Logic_Topic extends Base_Logic{
                 $temp['name']  = $sight['name'];
                 $arrRet['arrsights'][] = $temp;
             }
-        }
-        
-        if(empty($sightId)){
-            $sightId = isset($arrRet['arrsights'][0]['id'])?($arrRet['arrsights'][0]['id']):'';
-        }
-                
-        if(!empty($sightId)){
-            $arrSight         = Sight_Api::getSightById($sightId);           
-            $arrRet['sight']  = $arrSight['name'];           
-        }
+        }        
         
         $logicComment          = new Comment_Logic_Comment();
         $arrRet['id']          = strval($arrRet['id']);
-        $arrRet['sightid']     = strval($sightId);
         $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
         $arrRet['subtitle']    = Base_Util_String::trimall($arrRet['subtitle']);
         $arrRet['title']       = Base_Util_String::trimall($arrRet['title']);
@@ -238,6 +228,16 @@ class Topic_Logic_Topic extends Base_Logic{
             $tag = str_replace("其他", "", $arrRet['tags'][0]);
             $arrRet['tags'] = array($tag);
         }
+        
+        if(empty($sightId)){
+            $sightId = isset($arrRet['arrsights'][0]['id'])?($arrRet['arrsights'][0]['id']):'';
+        }
+        
+        if(!empty($sightId)){
+            $arrSight         = Sight_Api::getSightById($sightId);
+            $arrRet['sight']  = $arrSight['name'];
+        }
+        $arrRet['sightid']     = strval($sightId);
         
         //这里需要更新一下热度
         return $arrRet;

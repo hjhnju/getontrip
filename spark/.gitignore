@@ -1,4 +1,7 @@
+data/
 target/
 /bin/
 .DS_Store
 .idea/
+derby.log
+metastore_db/

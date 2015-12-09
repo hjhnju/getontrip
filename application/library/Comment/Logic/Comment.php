@@ -42,6 +42,7 @@ class Comment_Logic_Comment  extends Base_Logic{
         $objComment->toUserId   = $toUserId;
         $objComment->objId      = $objId;
         $objComment->content    = $content;
+        $objComment->type       = $type;
         $objComment->status     = Comment_Type_Status::PUBLISHED;
         $ret = $objComment->save();
         
@@ -60,6 +61,16 @@ class Comment_Logic_Comment  extends Base_Logic{
         $redis = Base_Redis::getInstance();
         $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objId, '*'));
         $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($objId));
+        
+        //记一条业务日志
+        $arrLog = array(
+            'type'     => 'comment-add',
+            'uid'      => $userId,
+            'obj_id'   => $objComment->id,
+            'obj_type' => $type,
+        );
+        Base_Log::NOTICE($arrLog);
+        
         return $ret;
     }
     
@@ -252,6 +263,16 @@ class Comment_Logic_Comment  extends Base_Logic{
         if(empty($objComment->id)){
             return false;
         }
+        
+        //记一条业务日志
+        $arrLog = array(
+            'type'     => 'comment-del',
+            'uid'      => $userId,
+            'obj_id'   => $id,
+            'obj_type' => Comment_Type_Type::TOPIC,
+        );
+        Base_Log::NOTICE($arrLog);
+        
         $redis = Base_Redis::getInstance();
         $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objComment->objId, '*'));
         $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($objComment->objId));

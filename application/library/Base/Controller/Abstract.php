@@ -32,12 +32,12 @@ class Base_Controller_Abstract extends Yaf_Controller_Abstract
 
         $this->webroot = Base_Config::getConfig('web')->root;
         $this->objUser = new stdClass();       
-        
-        $this->baselog();
+                
         //未登录自动跳转
         $logicUser = new User_Logic_Third();
         $this->userid = $logicUser->checkLogin();
         $arrRequest   = explode("/",$_SERVER['REQUEST_URI']);
+        $this->baselog();
         //后台不在这里进行未登录处理,而是在Base_Controller_Admin中处理
         if(isset($arrRequest[1]) && ($arrRequest[1] == 'admin')){
             return ;
@@ -118,7 +118,7 @@ class Base_Controller_Abstract extends Yaf_Controller_Abstract
             'module'     => $this->getRequest()->getModuleName(),
             'controller' => $this->getRequest()->getControllerName(),
             'action'     => $this->getRequest()->getActionName(),
-            'userid'     => $userid,
+            'userid'     => $this->userid,
         );
         $logParams = array_merge($logParams, $this->addBaseLogs);
         Base_Log::notice($logParams);

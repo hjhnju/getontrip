@@ -51,6 +51,48 @@ class Praise_Logic_Praise extends Base_Logic{
     }
     
     /**
+     * 获取最近的收藏量
+     * @param unknown $type
+     * @param unknown $objId
+     */
+    public function getLatePraiseNum($type,$objId,$periods='',$dateType= 'DAY'){
+        $redis = Base_Redis::getInstance();
+        $count = 0;
+        $end = time();
+        if(empty($periods)){
+            $start = 0;
+        }else{
+            if($dateType == 'DAY'){
+                $start = strtotime($periods.' days ago');
+            }else{
+                $start = time() - 60*$periods;
+            }
+        }
+        if($dateType == 'DAY'){
+            $ret = $redis->hGet(Praise_Keys::getTopicInfoKey(),Praise_Keys::getLateKeyName($objId,$periods));
+        }else{
+            $ret = $redis->hGet(Praise_Keys::getTopicInfoKey(),Praise_Keys::getLateMinuteKeyName($objId,$periods));
+        }
+        if(!empty($ret)){
+            $count = $ret;
+        }else{
+            $list = new Praise_List_Praise();
+            $filter = "`type` = $type and `obj_id` = $objId and `create_time` >= ".$start;
+            $list->setPagesize(PHP_INT_MAX);
+            $list->setFilterString($filter);
+            $arrRet = $list->toArray();
+            $count  = $arrRet['total'];
+            if($dateType == 'DAY'){
+                $redis->hSet(Praise_Keys::getTopicInfoKey(),Praise_Keys::getLateKeyName($objId,$periods),$count);
+            }else{
+                $redis->hSet(Praise_Keys::getTopicInfoKey(),Praise_Keys::getLateMinuteKeyName($objId,$periods),$count);
+            }
+    
+        }
+        return $count;
+    }
+    
+    /**
      * 检测用户是否收藏过
      * @param integer $type
      * @param integer $obj_id

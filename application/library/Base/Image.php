@@ -109,10 +109,13 @@ class Base_Image {
         }
         $imgParams = Base_Image::getImgParams($oldname);
         
-        $wholeUrl=Base_Image::getWholeUrlByName($oldname);
+        //$wholeUrl=Base_Image::getWholeUrlByName($oldname);
+        
+        $oss = Oss_Adapter::getInstance();
          
         $imagick = new Base_Image_Imagick();
-        $image = $imagick->open($wholeUrl);
+        //$image = $imagick->open($wholeUrl);
+        $image   = $imagick->read($oss->getContent($oldname));
         //裁剪 
         $imagick->crop($x, $y, $width, $height); 
         //获取图片的二进制信息

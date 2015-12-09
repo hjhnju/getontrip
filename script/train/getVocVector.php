@@ -1,8 +1,7 @@
 <?php
 require_once "config.php";
 $arrSight   = file(WORK_PATH.INDEX_SIGHT);
-define("SIGHT_COUNT", count($arrSight));
-$fp         = fopen(WORK_PATH.INPUT_VECTOR,"w");
+$fp         = fopen(WORK_PATH.VOC_VECTOR,"w");
 $id         = '';
 $sightId    = '';
 $sightNames = '';
@@ -10,7 +9,7 @@ $sightNames = '';
 //要依次加载话题ID与内容全局ID的映射
 $arrVoc = file(WORK_PATH.INDEX_VOC);
 $arrVocs = array();
-foreach ($arrVoc as $val){    
+foreach ($arrVoc as $val){
     $tmp      = explode("\t",$val);
     $arrVocs[]= trim($tmp[1]);
 }
@@ -34,7 +33,8 @@ foreach ($arrDesc as $val){
 }
 
 foreach ($arrSight as $sight){
-    sscanf($sight,"%d\t%d:%s",$id,$sightId,$sightNames);
+    sscanf($sight,"%d\t%d\t:%s",$id,$sightId,$sightNames);
+    
     //对于每个景点，依次取出其话题，描述，百科的内容生成向量
     $listSightTopic = new Sight_List_Topic();
     $listSightTopic->setFilter(array('sight_id' => $sightId));
@@ -49,21 +49,6 @@ foreach ($arrSight as $sight){
         if($objTopic->status !== Topic_Type_Status::PUBLISHED){
             continue;
         }
-        $str        = '';
-        foreach ($arrSight as $temp){
-            $tmpid         = '';
-            $tmpsightId    = '';
-            $tmpsightNames = '';
-            sscanf($temp,"%d\t%d\t:%s",$tmpid,$tmpsightId,$tmpsightNames);
-            $arrTemp = explode(",",$tmpsightNames);
-            foreach ($arrTemp as $data){
-                if(strstr($objTopic->title,$data) !== false){
-                    $str .= $tmpid.":1\t";
-                    break; 
-                }
-            }
-        }
-        
         $arrVec        = array();
         $objTopic->content  = preg_replace( '/<.*?>/s', "", $objTopic->content);
         $objTopic->content .= $objTopic->title;
@@ -72,16 +57,14 @@ foreach ($arrSight as $sight){
         foreach ($arrTopicVoc as $data){
             $ret =  array_search($data,$arrVocs);
             if($ret !== false){
-                $arrVec[] = $ret + 1 + SIGHT_COUNT;
+                $arrVec[] = $ret + 1;
             }
         }
         if(!empty($arrVec)){
             sort($arrVec);
-            $str .= implode(":1\t",$arrVec);
-            if(!empty($str)){
-                $str = sprintf("%s\t%s\t%s:1\r\n",$arrTopicIds[$val['topic_id']],$id,$str);
-                fwrite($fp,$str);
-            }
+            $str = implode(":1\t",$arrVec);
+            $str = sprintf("%s\t%s\t%s:1\r\n",$arrTopicIds[$val['topic_id']],$id,$str);
+            fwrite($fp,$str);
         }
     }
     
@@ -103,21 +86,6 @@ foreach ($arrSight as $sight){
             if($objTopic->status !== Topic_Type_Status::PUBLISHED){
                 continue;
             }
-            $str        = '';
-            foreach ($arrSight as $temp){
-                $tmpid         = '';
-                $tmpsightId    = '';
-                $tmpsightNames = '';
-                sscanf($temp,"%d\t%d\t:%s",$tmpid,$tmpsightId,$tmpsightNames);
-                $arrTemp = explode(",",$tmpsightNames);
-                foreach ($arrTemp as $data){
-                    if(strstr($objTopic->title,$data) !== false){
-                        $str .= $tmpid.":1\t";
-                        break;
-                    }
-                }
-            }
-            
             $arrVec        = array();
             $objTopic->content  = preg_replace( '/<.*?>/s', "", $objTopic->content);
             $objTopic->content .= $objTopic->title;
@@ -126,43 +94,39 @@ foreach ($arrSight as $sight){
             foreach ($arrTopicVoc as $data){
                 $ret =  array_search($data,$arrVocs);
                 if($ret !== false){
-                    $arrVec[] = $ret + 1 + SIGHT_COUNT;
+                    $arrVec[] = $ret + 1;
                 }
             }
             if(!empty($arrVec)){
                 sort($arrVec);
-                $str .= implode(":1\t",$arrVec);
-                if(!empty($str)){
+                $str = implode(":1\t",$arrVec);
                 $str = sprintf("%s\t%s\t%s:1\r\n",$arrTopicIds[$topictag['topic_id']],$id,$str);
                 fwrite($fp,$str);
-                }
-            }       
+            }          
         }
     }
     
     //描述对应的向量    
     $objSightMeta = new Sight_Object_Meta();
     $objSightMeta->fetch(array('id' => $sightId));
-    $str = $id;
-    $arrVec        = array();
     if(!empty($objSightMeta->describe)){
+        $arrVec        = array();
         $objSightMeta->describe = preg_replace( '/<.*?>/s', "", $objSightMeta->describe);
         $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($objSightMeta->describe);
         $arrTopicVoc = array_unique($arrTopicVoc);
         foreach ($arrTopicVoc as $data){
             $ret =  array_search($data,$arrVocs);
             if($ret !== false){
-                $arrVec[] = $ret + SIGHT_COUNT + 1;
+                $arrVec[] = $ret + 1;
             }
         }
         if(!empty($arrVec)){
-            $str .= ":1\t";
             sort($arrVec);
-            $str .= implode(":1\t",$arrVec);
+            $str = implode(":1\t",$arrVec);
+            $str = sprintf("%s\t%s\t%s:1\r\n",$arrDescIds[$sightId],$id,$str);
+            fwrite($fp,$str);
         }
-    }
-    $str = sprintf("%s\t%s\t%s:1\r\n",$arrDescIds[$sightId],$id,$str);
-    fwrite($fp,$str);
+    }    
     
     //百科对应的向量
 }

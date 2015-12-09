@@ -8,7 +8,6 @@ const PRE_WIKI  = "wiki_";
 
 $fp_label = fopen(WORK_PATH.INDEX_LABEL,"w");
 
-
 $listSight = new Sight_List_Meta();
 $listSight->setFilterString("`level` != ''");
 $listSight->setOrder("`id` asc");
@@ -27,7 +26,7 @@ foreach ($arrSight['list'] as $index => $sight){
         $objTopic = new Topic_Object_Topic();
         $objTopic->fetch(array('id' => $sightTopic['topic_id']));
         $content = preg_replace( '/<.*?>/s', "", $objTopic->content.$objTopic->title.$objTopic->subtitle);
-        $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($objTopic->content);
+        $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($content);
         if(!empty($arrTopicVoc)){
             $strTopicVoc = implode("\t",$arrTopicVoc);
             $strBuffer .= sprintf(PRE_TOPIC."%d\t%s\r\n",$objTopic->id,$strTopicVoc);
@@ -52,15 +51,17 @@ foreach ($arrSight['list'] as $index => $sight){
         $fp_sight = fopen(WORK_PATH."$index","w");
         fwrite($fp_sight, $strBuffer);
         fclose($fp_sight);
-    }    
+    } 
+    unset($arrSightTopic);   
 }
+unset($arrSight);
 
 $listTag = new Tag_List_Tag();
 $listTag->setFilter(array('type' => Tag_Type_Tag::GENERAL));
 $listTag->setOrder("`id` asc");
 $listTag->setPagesize(PHP_INT_MAX);
 $arrTag  = $listTag->toArray();
-foreach ($arrTag as $key => $tag){
+foreach ($arrTag['list'] as $key => $tag){
     $strBuffer = "";
     
     //通用标签话题内容
@@ -73,7 +74,7 @@ foreach ($arrTag as $key => $tag){
         $objTopic = new Topic_Object_Topic();
         $objTopic->fetch(array('id' => $tagTopic['topic_id']));
         $content = preg_replace( '/<.*?>/s', "", $objTopic->content.$objTopic->title.$objTopic->subtitle);
-        $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($objTopic->content);
+        $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($content);
         if(!empty($arrTopicVoc)){
             $strTopicVoc = implode("\t",$arrTopicVoc);
             $strBuffer .= sprintf(PRE_TOPIC."%d\t%s\r\n",$objTopic->id,$strTopicVoc);
@@ -83,7 +84,7 @@ foreach ($arrTag as $key => $tag){
     if(!empty($strBuffer)){
         $key = $index + $key + 1;
     
-        $str = sprintf("%d\ttag:%d\r\n",$key,$sight['id']);
+        $str = sprintf("%d\ttag:%d\r\n",$key,$tag['id']);
         fwrite($fp_label, $str);
     
         $fp_sight = fopen(WORK_PATH."$key","w");
@@ -91,6 +92,4 @@ foreach ($arrTag as $key => $tag){
         fclose($fp_sight);
     }
 }
-
-
 fclose($fp_label);

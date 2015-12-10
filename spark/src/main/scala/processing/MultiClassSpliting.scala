@@ -4,12 +4,11 @@ import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.util.MLUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkContext, SparkConf}
-import training.Config
 
 /**
   * Created by hejunhua on 15/12/9.
   */
-class MultiClassSpliting {
+object MultiClassSpliting {
 
     def main(args: Array[String]): Unit = {
 

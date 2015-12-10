@@ -1,7 +1,7 @@
 #/bin/bash
-mv data/model/ data/tmp
+mv data/profiles data/tmp/
 spark-submit \
-  --class "training.DecisionTreeTraining" \
+  --class "recommend.ContentBasedProfiling" \
   --master local[4] \
   --executor-memory 8G \
   --driver-memory 8G \

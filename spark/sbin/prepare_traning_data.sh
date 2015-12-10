@@ -14,8 +14,9 @@ cat data/data/feature_sight_index data/data/feature_voc_index | awk '{sub(/\r/, 
 cat data/data/model_total_vector | awk '{$2=$2-1;$1="";sub(/^[[:blank:]]*/,"",$0);print $0;}' > data/training.txt
 
 #将多元分类数据拆分为多个二元分类数据
+rm -rf data/training/*
 spark-submit \
-  --class "MultiClassSpliting" \
+  --class "processing.MultiClassSpliting" \
   --master local[4] \
   --executor-memory 8G \
   --driver-memory 8G \

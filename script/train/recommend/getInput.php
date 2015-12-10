@@ -11,6 +11,8 @@ if(!is_dir(DATA_PATH)){
     mkdir(DATA_PATH);  
 }
 
+$index = 0;
+
 $fp_label = fopen(WORK_PATH.INDEX_LABEL,"w");
 
 $listSight = new Sight_List_Meta();
@@ -18,7 +20,8 @@ $listSight->setFilterString("`level` != ''");
 $listSight->setOrder("`id` asc");
 $listSight->setPagesize(PHP_INT_MAX);
 $arrSight  = $listSight->toArray();
-foreach ($arrSight['list'] as $index => $sight){
+foreach ($arrSight['list'] as $sight){
+   
     $strBuffer = "";
     
     //景点话题内容
@@ -51,14 +54,14 @@ foreach ($arrSight['list'] as $index => $sight){
     }
     
     if(!empty($strBuffer)){
-        $index = $index + 1;
-        
         $str = sprintf("%d\tsight:%d\tname:%s\r\n",$index,$sight['id'],$sight['name']);
         fwrite($fp_label, $str);
         
         $fp_sight = fopen(DATA_PATH."$index","w");
         fwrite($fp_sight, $strBuffer);
         fclose($fp_sight);
+        
+        $index += 1;
     } 
     unset($arrSightTopic);   
 }
@@ -69,7 +72,7 @@ $listTag->setFilter(array('type' => Tag_Type_Tag::GENERAL));
 $listTag->setOrder("`id` asc");
 $listTag->setPagesize(PHP_INT_MAX);
 $arrTag  = $listTag->toArray();
-foreach ($arrTag['list'] as $key => $tag){
+foreach ($arrTag['list'] as  $tag){
     $strBuffer = "";
     
     //通用标签话题内容
@@ -93,14 +96,15 @@ foreach ($arrTag['list'] as $key => $tag){
     }
     
     if(!empty($strBuffer)){
-        $key = $index + $key + 1;
     
-        $str = sprintf("%d\ttag:%d\tname:%s\r\n",$key,$tag['id'],$tag['name']);
+        $str = sprintf("%d\ttag:%d\tname:%s\r\n",$index,$tag['id'],$tag['name']);
         fwrite($fp_label, $str);
     
-        $fp_sight = fopen(DATA_PATH."$key","w");
+        $fp_sight = fopen(DATA_PATH."$index","w");
         fwrite($fp_sight, $strBuffer);
         fclose($fp_sight);
+        
+        $index += 1;
     }
 }
 fclose($fp_label);

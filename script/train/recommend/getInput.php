@@ -31,6 +31,9 @@ foreach ($arrSight['list'] as $index => $sight){
         $objTopic = new Topic_Object_Topic();
         $objTopic->fetch(array('id' => $sightTopic['topic_id']));
         $content = preg_replace( '/<.*?>/s', "", $objTopic->content.$objTopic->title.$objTopic->subtitle);
+        if(empty($content)){
+            continue;
+        }
         $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($content);
         if(!empty($arrTopicVoc)){
             $strTopicVoc = implode("\t",$arrTopicVoc);
@@ -79,6 +82,9 @@ foreach ($arrTag['list'] as $key => $tag){
         $objTopic = new Topic_Object_Topic();
         $objTopic->fetch(array('id' => $tagTopic['topic_id']));
         $content = preg_replace( '/<.*?>/s', "", $objTopic->content.$objTopic->title.$objTopic->subtitle);
+        if(empty($content)){
+            continue;
+        }
         $arrTopicVoc = Base_Util_String::ChineseAnalyzerAll($content);
         if(!empty($arrTopicVoc)){
             $strTopicVoc = implode("\t",$arrTopicVoc);

@@ -7,8 +7,8 @@ const PRE_DESC  = "desc_";
 
 const PRE_WIKI  = "wiki_";
 
-if(!is_dir(DATA_PATH)){
-    mkdir(DATA_PATH);  
+if(!is_dir(MODEL_PATH)){
+    mkdir(MODEL_PATH);  
 }
 
 $index = 0;
@@ -57,7 +57,7 @@ foreach ($arrSight['list'] as $sight){
         $str = sprintf("%d\tsight:%d\tname:%s\r\n",$index,$sight['id'],$sight['name']);
         fwrite($fp_label, $str);
         
-        $fp_sight = fopen(DATA_PATH."$index","w");
+        $fp_sight = fopen(MODEL_PATH."$index","w");
         fwrite($fp_sight, $strBuffer);
         fclose($fp_sight);
         
@@ -100,7 +100,7 @@ foreach ($arrTag['list'] as  $tag){
         $str = sprintf("%d\ttag:%d\tname:%s\r\n",$index,$tag['id'],$tag['name']);
         fwrite($fp_label, $str);
     
-        $fp_sight = fopen(DATA_PATH."$index","w");
+        $fp_sight = fopen(MODEL_PATH."$index","w");
         fwrite($fp_sight, $strBuffer);
         fclose($fp_sight);
         

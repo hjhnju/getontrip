@@ -11,6 +11,8 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.mllib.linalg.{Vectors, SparseVector, Vector}
 
+import scala.collection.mutable.ArrayBuffer
+
 /**
   *  基于内容的推荐, 学习景点的喜好特征
   *  Created by hejunhua on 15/12/9.
@@ -25,21 +27,20 @@ object ContentBasedProfiling {
         //1. item representation (tf-idf vector)
         var labelMap = Map[String, String]()
         //documents: label, item_list
-        var documents: RDD[(String, Seq[String])] = null
+        var docRdds = ArrayBuffer[RDD[(String, Seq[String])]]()
         for(row <- scala.io.Source.fromFile("data/labels.txt").getLines.map{line => line.split("""\s+""")}) {
             if (row.length >= 2) {
                 labelMap   += (row(0) -> row(1))
                 val label   = row(0)
-                val newDocs = sc.textFile("data/documents/" + label).map(
+                val newDocRdd = sc.textFile("data/documents/" + label).map(
                     line => (label, line.split("""\s+""").drop(1).toSeq)
                 )
-                if(documents == null) {
-                    documents = newDocs
-                } else {
-                    documents = documents.union(newDocs)
-                }
+                docRdds += newDocRdd
             }
         }
+
+        //fix http://stackoverflow.com/questions/30522564/spark-when-union-a-lot-of-rdd-throws-stack-overflow-error
+        val documents = sc.union(docRdds)
 
         // vector space model
         val vsmDocuments = presentItem(sc, documents)

@@ -13,15 +13,15 @@ foreach ($fp_label as $val){
     $arrLabel[$arrTemp[0]]['id'] = $arrSub[1];
 }
 $date = date("Y-m-d",time());
-$arrFile = file(DATA_PATH.$date);
+$arrFile = file(RESULT_PATH);
 foreach ($arrFile as $data){
-    $arrRet = explode("\t",$data);
+    $arrRet = explode(" ",$data);
     $articleId = $arrRet[0];
     unset($arrRet[0]);
     foreach ($arrRet as $val){
         $rate   = 0;
         $reason = "";
-        sscanf($val,"(%d,%f,%s)",$labelId,$rate,$reason);
+        sscanf($val,"(%d,%f,%[^)])",$labelId,$rate,$reason);
         $objRecomendRet = new Recommend_Object_Result();
         $objRecomendRet->objId = $articleId;
         $objRecomendRet->labelId   = $arrLabel[$labelId]['id'];

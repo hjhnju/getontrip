@@ -6,7 +6,7 @@
  */
 class ApiController extends Base_Controller_Api {
     
-    const PAGESIZE = 3;
+    const PAGESIZE = 6;
     
     const HOT_WORD_NUM = 30;
     

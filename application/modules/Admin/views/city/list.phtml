@@ -51,13 +51,15 @@
                             {%/foreach%}  
                           </select>
                        </div>
-                    </div> 
-                 <!--    <div class="col-xs-3  pull-right">
-                   <div class="input-group input-group">
-                       <span class="input-group-addon" id="sizing-addon1">选择省份</span>
-                       <input type="text" class="form-control" placeholder="输入省份" aria-describedby="sizing-addon1" id="form-province" autocomplete="off">
-                    </div>
-                                     </div> -->
+                    </div>  
+                    <div class="col-xs-3 pull-right">   
+                        <div class="input-group " >
+                            <input type="text" class="form-control" placeholder="输入并选择城市" aria-describedby="cityName" id="form-city" autocomplete="off"/>
+                            <span class="input-group-btn">
+                            <button type="button" class="btn btn-white" id="clear-city"><i class="fa fa-remove"></i></button>
+                           </span>
+                           </div>
+                      </div>
                        <div class="col-xs-3 pull-right">   
                             <div class="input-group "> 
                               <input type="text" class="form-control" placeholder="输入并选择省份" aria-describedby="provinceName" id="form-province" autocomplete="off">
@@ -65,12 +67,13 @@
                               <button type="button" class="btn btn-white" id="clear-province"><i class="fa fa-remove"></i></button>
                             </span>
                            </div>
-                      </div> 
+                      </div>
+
                     <div class="col-xs-3 pull-right">   
                         <div class="input-group " >
-                            <input type="text" class="form-control" placeholder="输入并选择城市" aria-describedby="cityName" id="form-city" autocomplete="off"/>
+                            <input type="text" class="form-control" placeholder="输入并选择国家" data-type="country" id="form-country"  autocomplete="off"/>
                             <span class="input-group-btn">
-                            <button type="button" class="btn btn-white" id="clear-city"><i class="fa fa-remove"></i></button>
+                            <button type="button" class="btn btn-white" id="clear-country"><i class="fa fa-remove"></i></button>
                            </span>
                            </div>
                       </div>
@@ -80,6 +83,8 @@
                      <thead>
                          <tr role="row">  
                              <th class="">ID</th>
+                            <th class="">大洲</th>
+                            <th class="">国家</th>
                             <th class="">省份</th>
                             <th class="">城市</th>
                             <th class="">坐标X</th>

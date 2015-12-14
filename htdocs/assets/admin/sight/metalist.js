@@ -65,15 +65,15 @@ $(document).ready(function() {
                     "data": "region"
                 }, {
                     "data": function(e) {
-                        if (e.sight_id) {
-                            return '已绑定'+e.sight_id;
+                        if (e.city_id) {
+                            return '已绑定'+e.city_id;
                         }
                         return '未绑定';
                     }
                 }, {
                     "data": function(e) {
                         return '';
-                        //return '<a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/video/list?sight_id=' + e.id + '">列表</a>';
+                        //return '<a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/video/list?city_id=' + e.id + '">列表</a>';
 
                     }
                 }],
@@ -101,6 +101,15 @@ $(document).ready(function() {
                     $('[data-toggle="tooltip"]').tooltip();
                 });
 
+                //类型说明弹出框 
+                $('#from_detail-help').popover({
+                    //trigger: 'hover',
+                    placement: 'top',
+                    html: true,
+                    title: '类型种类：',
+                    content: '1: "城市", 2: "古镇", 3: "乡村", 4: "海边", 5: "沙漠", 6: "山峰", 7: "峡谷", 8: "冰川", 9: "湖泊", 10: "河流", 11: "温泉", 12: "瀑布", 13: "草原", 14: "湿地", 15: "自然保护区",'
+                             +'16: "公园", 17: "展馆", 18: "历史建筑", 19: "现代建筑", 20: "历史遗址", 21: "宗教场所", 22: "观景台", 23: "陵墓", 24: "学校", 25: "故居", 26: "纪念碑", 27: "其他", 28: "购物娱乐", 29: "休闲度假"'
+                });
 
                 //发布操作
                 $('#editable button.publish,#editable button.cel-publish').live('click', function(e) {

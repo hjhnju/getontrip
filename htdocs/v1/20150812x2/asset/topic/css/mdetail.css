@@ -31,7 +31,7 @@
 .dropdown-menu.datepicker{max-width:220px}
 a,img{-webkit-touch-callout:none}
 html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;height:100%;min-height:100%;-webkit-font-smoothing:antialiased;margin:auto;background-color:#fff}
-body{font:15px/1.7 'Helvetica Neue',Helvetica,STHeiTi,sans-serif;font:15px/1.7 'San Francisco',Helvetica,sans-serif;background-color:#fff;color:#666;min-height:100%;height:100%;overflow-y:scroll;-webkit-font-smoothing:antialiased}
+body{font:15px/1.7 'Helvetica Neue',Helvetica,STHeiTi,sans-serif;font:15px/1.7 'San Francisco',Helvetica,STHeiTi,sans-serif;font-weight:lighter;background-color:#fff;color:#666;min-height:100%;height:100%;overflow-y:scroll;-webkit-font-smoothing:antialiased}
 body,h1,h2,h3,h4,h5,h6,blockquote,p,pre,dl,dd,ol,ul,li,a,span,caption,th,td,form,fieldset,legend,input,button,textarea,address{margin:0;padding:0}
 article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}
 audio,canvas,progress,video{display:inline-block;vertical-align:baseline}
@@ -128,16 +128,16 @@ input::-ms-reveal{display:none}
 .topic-bg{width:100%}
 .bg-img{position:relative;z-index:2;width:100%;height:266px;background-repeat:no-repeat;background-size:cover;-moz-background-size:cover;-webkit-background-size:cover;background-position:center center}
 .bg-img .title-box{color:#fff;position:absolute;z-index:100;text-align:center;left:0;bottom:10px;width:100%;font-size:24px;vertical-align:middle;padding:0 20px;line-height:1.2}
+.bg-img .title-box.ismobile{padding:0 13pt}
 .bg-img .title-box .title{color:#fff;text-align:left;line-height:30px}
 .bg-img .title-box .title .title-detail{display:block;font-size:12px;line-height:20px}
 .bg-img .title-box .like{text-align:left;font-size:12px;line-height:30px}
 .bg-img img{width:100%;height:268px}
-.main-content{width:100%;float:none;line-height:30px}
-.main-content img{width:100%;height:200px;margin-top:8px}
-.main-content .main-content-inner{margin:14px 20px 0}
-.main-content .main-content-inner.isapp{margin:14px 20pt 0}
-.main-content .main-content-inner.rich-text{text-align:justify;font-size:19px;line-height:28px;color:#3e3e3e}
-.main-content .main-content-inner.rich-text p{text-align:justify;margin-top:10px;color:#3e3e3e}
+.main-content{width:100%;float:none;line-height:30px;font-weight:lighter}
+.main-content img{width:100%;height:200px;margin-top:12pt}
+.main-content .main-content-inner{margin:14px 20px 0;font-weight:lighter}
+.main-content .main-content-inner.rich-text{text-align:justify;font-size:19px;line-height:28px;color:#1c1c1c}
+.main-content .main-content-inner.rich-text p{text-align:justify;margin-top:10px;color:#1c1c1c}
 .main-content .main-content-inner.rich-text p.imagedesc{font-size:12px;color:#696969;line-height:18px;text-align:left}
 .main-content .main-content-inner.rich-text .table{width:100%;max-width:100%;margin-bottom:20px}
 .main-content .main-content-inner.rich-text .table-bordered{border:1px solid #ddd}
@@ -146,7 +146,13 @@ input::-ms-reveal{display:none}
 .main-content .main-content-inner.book-rich-text{text-align:left;font-size:16px;line-height:28px;color:#111}
 .main-content .main-content-inner.book-rich-text.isapp{margin:14px 10pt 0}
 .main-content .main-content-inner.book-rich-text p{text-align:justify;margin-top:10px;color:#3e3e3e}
+.main-content .main-content-inner.isapp,.main-content .main-content-inner.ismobile{margin:14pt 13pt 0;text-align:justify;font-size:18px;line-height:29px;letter-spacing:1px;color:#1c1c1c}
+.main-content .main-content-inner.isapp p,.main-content .main-content-inner.ismobile p{text-align:justify;margin-top:24pt;color:#1c1c1c}
+.main-content .main-content-inner.isapp p.imagedesc,.main-content .main-content-inner.ismobile p.imagedesc{margin-top:15pt;font-size:12px;color:#696969;line-height:18px;letter-spacing:1px;text-align:left}
+.main-content .main-content-inner.isapp p:first-child,.main-content .main-content-inner.ismobile p:first-child{margin-top:14pt}
+.main-content .main-content-inner.isapp-book{margin:14pt 9pt 0}
 .main-content .text-from{margin:50px 20px 40px;text-align:center;font-size:10px;color:#696969}
+.main-content .text-from.isapp,.main-content .text-from.ismobile{margin:39pt 0;margin:39pt 20pt;opacity:.4;font-size:10pt;line-height:20px}
 .header-for-mobile{height:62px;overflow:hidden;line-height:1;background:#fff}
 .header-for-mobile-btn{float:right;margin-top:17px;border-radius:3px;background-color:#57c200;padding:8px 9px;color:#fff;font-size:12px}
 .header-for-mobile-logo-img{float:left;margin-top:7px;width:48px;height:48px}

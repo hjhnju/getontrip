@@ -215,4 +215,69 @@ class Sight_Api{
         $logicSight = new Sight_Logic_Meta();
         return $logicSight->getSightByMetaName($metaName);
     }
+
+    /**
+     * 接口19：Sight_Api::getCountryList($arrInfo,$page,$pageSize)
+     * 根据条件获取国家列表
+     * @param string $arrInfo
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public static function getCountryList($arrInfo,$page,$pageSize){
+        $logicSight = new Sight_Logic_Meta();
+        return $logicSight->getCountryList($arrInfo, $page, $pageSize);
+    }
+
+    /**
+     * 接口20：Sight_Api::getProvinceList($arrInfo,$page,$pageSize)
+     * 根据条件获取国家列表
+     * @param string $arrInfo
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public static function getProvinceList($arrInfo,$page,$pageSize){
+        $logicSight = new Sight_Logic_Meta();
+        return $logicSight->getProvinceList($arrInfo, $page, $pageSize);
+    }
+
+    /**
+     * 接口21：Sight_Api::getCityList($arrInfo,$page,$pageSize)
+     * 根据条件获取城市列表
+     * @param string $arrInfo
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public static function getCityList($arrInfo,$page,$pageSize){
+        $logicSight = new Sight_Logic_Meta();
+        return $logicSight->getCityList($arrInfo, $page, $pageSize);
+    }
+
+     /**
+     * 接口22：Sight_Api::getRegionList($arrInfo,$page,$pageSize)
+     * 根据条件获取地区列表
+     * @param string $arrInfo
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public static function getRegionList($arrInfo,$page,$pageSize){
+        $logicSight = new Sight_Logic_Meta();
+        return $logicSight->getRegionList($arrInfo, $page, $pageSize);
+    }
+
+    /**
+     * 接口23：Sight_Api::getCityObjList($arrInfo,$page,$pageSize)
+     * 根据条件获取大洲-国家-省份-城市-地区列表
+     * @param string $arrInfo
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public static function getCityObjList($arrInfo,$page,$pageSize){
+        $logicSight = new Sight_Logic_Meta();
+        return $logicSight->getCityObjList($arrInfo, $page, $pageSize);
+    }
 }

@@ -11,9 +11,9 @@ class City_Api{
      * 获取城市信息，供前端使用
      * @return array
      */
-    public static function getCityInfo(){
+    public static function getCityInfo($cityId = ''){
        $logicCity = new City_Logic_City();
-       return $logicCity->getCityInfo();
+       return $logicCity->getCityInfo($cityId);
     }
     
     /**
@@ -122,5 +122,19 @@ class City_Api{
     public static function getCityNum($arrInfo){
         $logicCity = new City_Logic_City();
         return $logicCity->getCityNum($arrInfo);
+    }
+
+    
+    /**
+     * 接口8：City_Api::queryCountryPrefix($str,$page,$pageSize)
+     * 国家名前缀模糊查询
+     * @param string $str
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public static function queryCountryPrefix($str,$page,$pageSize){
+        $logicCity = new City_Logic_City();
+        return $logicCity->queryCountryPrefix($str, $page, $pageSize);
     }
 }

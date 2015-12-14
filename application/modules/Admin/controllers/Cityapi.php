@@ -84,6 +84,16 @@ class CityapiController extends Base_Controller_Api{
 
     }
 
+    /**
+     * 获取省份信息  用于下拉框
+     * @return [type] [description]
+    */
+    public function getcountryListAction(){
+      $str=$_REQUEST['query'];
+        //最大值 PHP_INT_MAX  
+        $List =City_Api::queryCountryPrefix($str,1,PHP_INT_MAX);
+        return $this->ajax($List["list"]);  
+    }
     
     /**
      * 获取省份信息  用于下拉框
@@ -108,6 +118,7 @@ class CityapiController extends Base_Controller_Api{
 
         return $this->ajax($List["list"]);  
     }
+
 
     /*
       发布  或取消发布操作

@@ -23,8 +23,8 @@ $(document).ready(function() {
                     "data": function(d) {
                         d.params = {};
                         //添加额外的参数传给服务器
-                        if ($("#form-province").attr('data-pid')) {
-                            d.params.pid = $("#form-province").attr('data-pid');
+                        if ($("#form-province").attr('data-province_id')) {
+                            d.params.provinceid = $("#form-province").attr('data-province_id');
                         }
                         if ($("#form-status").val()) {
                             d.params.status = $.trim($("#form-status").val());
@@ -34,6 +34,9 @@ $(document).ready(function() {
                         }
                         if ($("#form-city").attr('data-city_id')) {
                             d.params.id = $("#form-city").attr('data-city_id');
+                        }
+                        if ($("#form-country").attr('data-country_id')) {
+                            d.params.countryid = $("#form-country").attr('data-country_id');
                         }
                         //d.raw = 'raw';
                     }
@@ -45,6 +48,10 @@ $(document).ready(function() {
                 }],
                 "columns": [{
                     "data": "id"
+                }, {
+                    "data": "continentname"
+                }, {
+                    "data": "countryname"
                 }, {
                     "data": "pidname"
                 }, {
@@ -195,6 +202,20 @@ $(document).ready(function() {
                过滤事件
            */
         var filter = function() {
+            $('#form-country').typeahead({
+                display: 'name',
+                val: 'id',
+                ajax: {
+                    url: '/admin/cityapi/getcountryList',
+                    triggerLength: 1
+                },
+                itemSelected: function(item, val, text, ele) {
+                    ele.val(text);
+                    ele.attr('data-country_id', val);
+                    //触发dt的重新加载数据的方法
+                    api.ajax.reload();
+                }
+            });
             //输入框自动完成
             $('#form-province').typeahead({
                 display: 'name',

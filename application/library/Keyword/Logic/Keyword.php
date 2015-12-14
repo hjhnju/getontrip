@@ -235,11 +235,10 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $arrKeyword  = $arrKeyword['data'];
         foreach ($arrKeyword as $key => $val){
             $keyword = $this->getKeywordByInfo($val['id']);
-            $arrKeyword[$key]['name']  = empty($val['name'])?trim($keyword['name']):$val['name'];
-            $arrKeyword[$key]['desc']  = trim($val['content']);
-            $arrKeyword[$key]['desc']  = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($arrKeyword[$key]['desc']));
+            $arrKeyword[$key]['title']  = empty($val['name'])?trim($keyword['name']):$val['name'];
             $arrKeyword[$key]['url']   = trim($keyword['url']);
             $arrKeyword[$key]['image'] = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
+            unset($arrKeyword[$key]['name']);
         }
         return array('data' => $arrKeyword,'num' => $num);
     }
@@ -290,7 +289,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $arrRet = $listKeyword->toArray();
         foreach ($arrRet['list'] as $key => $val){
             $arrRet['list'][$key]['id']      = strval($val['id']);
-            $arrRet['list'][$key]['content'] = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['content']));
+            $arrRet['list'][$key]['content'] = Base_Util_String::delStartEmpty(Base_Util_String::getHtmlEntity($val['content']));
             $arrRet['list'][$key]['url']      = trim($val['url']);
             $listKeywordCatalog = new Keyword_List_Catalog();
             $listKeywordCatalog->setFields(array('name','url'));
@@ -402,7 +401,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
                 }
             }
         }
-        $arrTemp['content']     = Base_Util_String::getHtmlEntity(Base_Util_String::trimall($content));
+        $arrTemp['content']     = Base_Util_String::getHtmlEntity(Base_Util_String::delStartEmpty($content));
         $arrTemp['image']       = $hash;
         $arrTemp['url']         = $wikiUrl;
         $arrTemp['status']      = Keyword_Type_Status::PUBLISHED;

@@ -33,6 +33,15 @@ class DetailController extends Base_Controller_Page {
           //增加访问统计
           $logicVisit = new Tongji_Logic_Visit();
           $logicVisit->addVisit(Tongji_Type_Visit::TOPIC,$postid);
+          
+          //记一条业务日志
+          $arrLog = array(
+              'type'     => 'visit',
+              'uid'      => User_Api::getCurrentUser(),
+              'obj_id'   => $postid,
+              'obj_type' => 'topic',
+          );
+          Base_Log::NOTICE($arrLog);
 
            //处理来源 
           /* $sourceInfo = Source_Api::getSourceInfo($postInfo['from']);
@@ -51,8 +60,8 @@ class DetailController extends Base_Controller_Page {
            if($postInfo['content'] != ""){
                $spider  = Spider_Factory::getInstance("Filterimg",$postInfo['content'],Spider_Type_Source::STRING);
                $postInfo['content'] = $spider->getContentToDis();
-           }
-
+           } 
+           $this->getView()->assign('title', $postInfo['title']); 
            $this->getView()->assign('post', $postInfo); 
        } 
        

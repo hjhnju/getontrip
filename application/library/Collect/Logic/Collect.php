@@ -28,6 +28,15 @@ class Collect_Logic_Collect{
         $redis->hDel(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateKeyName($obj_id,'*'));
         $redis->hDel(Collect_Keys::getHashKeyByType($type),Collect_Keys::getTotalKeyName($obj_id));    
 
+        //记一条业务日志
+        $arrLog = array(
+            'type'     => 'collect-add',
+            'uid'      => $user_id,
+            'obj_id'   => $obj_id,
+            'obj_type' => $type,
+        );
+        Base_Log::NOTICE($arrLog);
+        
         //更新下热度信息
         return $ret;
     }
@@ -45,7 +54,17 @@ class Collect_Logic_Collect{
         $ret         = $obj->remove();
         $redis       = Base_Redis::getInstance();
         $redis->hDel(Collect_Keys::getHashKeyByType($type),Collect_Keys::getLateKeyName($obj_id,'*'));
-        $redis->hDel(Collect_Keys::getHashKeyByType($type),Collect_Keys::getTotalKeyName($obj_id));    
+        $redis->hDel(Collect_Keys::getHashKeyByType($type),Collect_Keys::getTotalKeyName($obj_id));  
+
+        //记一条业务日志
+        $arrLog = array(
+            'type'     => 'collect-del',
+            'uid'      => $user_id,
+            'obj_id'   => $obj_id,
+            'obj_type' => $type,
+        );
+        Base_Log::NOTICE($arrLog);
+        
         //更新下热度信息
         return $ret;
     }

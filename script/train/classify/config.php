@@ -1,5 +1,7 @@
 <?php
-require_once '../env.inc.php';
+if(file_exists('../../env.inc.php')){
+    require_once '../../env.inc.php';
+}
 ini_set('memory_limit','512M');
 const WORK_PATH        = "/home/work/data/";
 

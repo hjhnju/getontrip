@@ -5,7 +5,9 @@
 {%else%}
 <link rel="stylesheet" type="text/css" href="{%$feroot%}/topic/css/detail.css" />
 {%/if%} 
+ <style type="text/css" media="screen">
  
+ </style>
 {%/block%} 
 {%block name="content"%}
 {%if $isapp eq 0%}  
@@ -36,11 +38,11 @@
     
   </div>
 {%/if%}  
-<div class="container main-wrap content-wrap{%if $isapp eq 1%} isapp{%/if%}"> 
+<div class="container main-wrap content-wrap{%if $isapp eq 1%} isapp{%/if%} {%if $isMobile%} ismobile{%/if%}"> 
  {%if isset($post.id)%}  
     {%if $isapp eq 0%}  
       <div class="bg-img" id="bg-img" style="background-image:url('{%$feroot%}/common/img/imgloading.png'); "  data-stroot="{%$stroot%}"  data-image="{%if empty($post.image)==0%}{%$post.image%}{%/if%}">  
-      <div class="title-box">
+      <div class="title-box {%if $isMobile%} ismobile{%/if%}">
           <div class="title">
             {%if empty($post.title)==0%}{%$post.title%}{%/if%} 
           </div>
@@ -52,11 +54,13 @@
       <div class="img-mask"></div> 
     </div> 
    {%/if%}
-  <div class="main-content">
-    <div class="main-content-inner rich-text{%if $isapp eq 1%} isapp{%/if%}">
+
+  <div class="main-content"> 
+    <div class="main-content-inner rich-text{%if $isapp eq 1%} isapp{%/if%} {%if $isMobile%} ismobile{%/if%}"> 
+
        {%if empty($post.title)==0%}{%$post.content%}{%/if%}
     </div>
-    <div class="text-from">
+    <div class="text-from{%if $isapp eq 1%} isapp{%/if%} {%if $isMobile%} ismobile{%/if%}">
        {%if empty($post.from_detail) eq 0%}
             内容来自{%$post.from%}
        {%elseif empty($post.from) eq 0%}

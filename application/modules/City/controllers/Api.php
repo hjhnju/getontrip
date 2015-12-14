@@ -58,12 +58,14 @@ class ApiController extends Base_Controller_Api {
     }  
     
     /**
-     * 接口3：/api/city/list
+     * 接口3：/api/1.0/city/list
      * 获取城市列表信息，切换城市时使用
+     * @param integer cityid,城市ID
      * @return json
      */
     public function listAction(){
-        $ret = City_Api::getCityInfo();
+        $cityId   = isset($_REQUEST['cityid'])?intval($_REQUEST['cityid']):'';
+        $ret      = City_Api::getCityInfo($cityId);
         return $this->ajax($ret);
     }
     

@@ -182,6 +182,7 @@ class Sight_Logic_Sight extends Base_Logic{
             $arrSight[$key]['name']  = empty($val['name'])?trim($sight['name']):$val['name'];
             $arrSight[$key]['image'] = isset($sight['image'])?Base_Image::getUrlByName($sight['image']):'';
         
+            $arrSight[$key]['title']  = $arrSight[$key]['name'];
             $strTopicIds   = $logicTopic->getTopicIdBySight($val['id']);
             $arrTopicIds   = explode(",",$strTopicIds);
             //类别数

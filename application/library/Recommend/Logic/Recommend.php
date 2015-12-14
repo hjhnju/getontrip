@@ -9,9 +9,22 @@ class Recommend_Logic_Recommend extends Base_Logic{
      */
     public function listArticles($page, $pageSize, $arrInfo = array()){
         $listArticle = new Recommend_List_Result();
-        if(!empty($arrInfo)){
-            $listArticle->setFilter($arrInfo);
+        $strFilter   = "";
+        if(isset($arrInfo['sight'])){
+            $strFilter = "`label_type` =".Recommend_Type_Label::SIGHT." and label_id=".$arrInfo['sight'];
+            unset($arrInfo['sight']);
         }
+        if(isset($arrInfo['tag'])){
+            $strFilter = "`label_type` =".Recommend_Type_Label::GENERAL." and label_id=".$arrInfo['tag'];
+            unset($arrInfo['tag']);
+        }
+        if(empty($strFilter)){
+            $strFilter = "1";
+        }
+        foreach ($arrInfo as $key => $val){            
+            $strFilter .= " and `".$key."` =".$val;
+        }
+        $listArticle->setFilterString($strFilter);
         $listArticle->setPage($page);
         $listArticle->setPagesize($pageSize);
         return $listArticle->toArray();

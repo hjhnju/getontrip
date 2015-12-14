@@ -7,7 +7,7 @@ ini_set('memory_limit','512M');
 
 const WORK_PATH        = "/home/work/data/";
 
-const RESULT_PATH      = "/home/work/data/result/";
+const RESULT_PATH      = "/home/work/data/similarity.output";
 
 const MODEL_PATH       = "/home/work/data/feature/";
 

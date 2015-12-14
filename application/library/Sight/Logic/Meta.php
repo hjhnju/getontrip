@@ -72,8 +72,7 @@ class Sight_Logic_Meta extends Base_Logic{
         $list  = new Sight_List_Meta();
         $arrParam   = array();
         $arrParam = array_merge($arrParam,$arrInfo);
-        $filter = '';
-        
+        $filter = ''; 
         if(!empty($arrParam)){
             if(isset($arrParam['name'])){
                 $filter = "`name` like '%".$arrParam['name']."%'  and "; 
@@ -82,6 +81,10 @@ class Sight_Logic_Meta extends Base_Logic{
             if(isset($arrParam['type'])){
                 $filter = "`type` like '%".$arrParam['type']."%'  and "; 
                 unset($arrParam['type']);
+            }
+            if (isset($arrParam['city'])) {
+                $filter = "`city` like '%".$arrParam['city']."%'  and "; 
+                unset($arrParam['city']);
             }
             foreach ($arrParam as $key => $val){
                 $filter .= "`".$key."` = '".$val."' and ";
@@ -98,6 +101,25 @@ class Sight_Logic_Meta extends Base_Logic{
         $list->setPage($page);
         $list->setPagesize($pageSize);
         return $list->toArray();
+    }
+
+    /**
+     * 修改景点元数据
+     * @param integer $id, 元数据ID
+     * @param array $arrInfo
+     * @return boolean
+     */
+    public function editMeta($id,$arrInfo){
+        $objSightMeta = new Sight_Object_Meta();
+        $objSightMeta->fetch(array('id' => $id));
+        if(empty($objSightMeta->id)){
+            return false;
+        }
+        foreach ($arrInfo as $key => $val){
+            $objSightMeta->$key = $val;
+        }
+        return $objSightMeta->save();
+        return $ret;
     }
 
 
@@ -137,10 +159,37 @@ class Sight_Logic_Meta extends Base_Logic{
         $list->setFilter($arrParam);      
         $list->setPage($page);
         $list->setPagesize($pageSize);
-        $list->setGroup('`province`');
-        return $list->toArray();
+        //$list->setGroup('`province`');
+        $List = $list->toArray();
+        //去重
+        $List['list'] = $this->array_unique_fb($List['list']);
+        return $List;
+        for ($i=0; $i < count($List['list']); $i++) { 
+           /* if (condition) {
+                # code...
+            }*/
+        }
     
     }
+
+    //二维数组去掉重复值,并保留键值
+    function array_unique_fb($array2D){
+        foreach ($array2D as $k=>$v){
+            $v=join(',',$v);  //降维,也可以用implode,将一维数组转换为用逗号连接的字符串
+            $temp[$k]=$v;
+        }
+        $temp=array_unique($temp); //去掉重复的字符串,也就是重复的一维数组    
+        foreach ($temp as $k => $v){
+            $array=explode(',',$v); //再将拆开的数组重新组装
+            //下面的索引根据自己的情况进行修改即可
+            $temp2[$k]['province'] =$array[0];
+            $temp2[$k]['city'] =$array[1];
+            $temp2[$k]['is_china'] =$array[2]; 
+        }
+        return $temp2;
+    }
+
+
 
         /**
      * 根据条件获取城市列表
@@ -185,13 +234,13 @@ class Sight_Logic_Meta extends Base_Logic{
 
 
     /**
-     * 根据条件获取大洲-国家-省份-城市-地区列表
+     * 根据条件设置大洲-国家-省份-城市-地区列表
      * @param string $arrInfo
      * @param integer $page
      * @param integer $pageSize
      * @return array
      */
-    public function getCityObjList($arrInfo,$page,$pageSize){  
+    public function setCityObjList(){  
     
         $logicSightMeta = new Sight_Logic_Meta();
         $logicCityMeta = new City_Logic_City();
@@ -226,7 +275,7 @@ class Sight_Logic_Meta extends Base_Logic{
                 $countryName = $countryItem['country'];
                 $cityObj_id++;
                 //查询国家是否存在
-                $country_meta = $logicCityMeta->getCityMeta(array('name'=>$countryName)); 
+                $country_meta = $logicCityMeta->getCityMeta(array('name'=>$countryName,'countryid'=>0)); 
                 if (empty($country_meta)) { 
                    //插入一条国家信息
                    $obj = array(
@@ -279,7 +328,7 @@ class Sight_Logic_Meta extends Base_Logic{
                     for ($m=0; $m < count($cityList['list']); $m++) {  
                         $cityItem = $cityList['list'][$m]; 
                         $cityName = $cityItem['city'];
-                        $city_meta = $logicCityMeta->getCityMeta(array('name'=>$cityName,'provinceid'=>$provinceid)); 
+                        $city_meta = $logicCityMeta->getCityMeta(array('name'=>$cityName,'provinceid'=>$provinceid,'cityid'=>0)); 
                         $cityObj_id++;
                         if (empty($city_meta)) { 
                            //插入一条城市信息
@@ -332,5 +381,47 @@ class Sight_Logic_Meta extends Base_Logic{
         return '成功！';
     }
 
- 
+    
+
+    /**
+     * 根据条件设置景点的city_id
+     * @param string $arrInfo
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public function setCityID(){ 
+         
+        //查询国外所有的二级城市列表
+        $logicCity = new City_Logic_City();
+        $cityList = $logicCity->queryCity(array(), 1, PHP_INT_MAX); 
+        $logicSight = new Sight_Object_Meta(); 
+        for ($i=0; $i < count($cityList['list']); $i++) { 
+            $cityItem = $cityList['list'][$i];  
+            mb_regex_encoding('utf-8');//设置正则替换所用到的编码 
+            $cityName = mb_ereg_replace('[市|区|县]', '', $cityItem['name']);//注意这里的和preg_replace不一样 它无需用正则的/xxxxx/这种限定符 直接写主体即可
+            $cityName = mb_ereg_replace('[自治州]', '', $cityName);//注意这里的和preg_replace不一样 它无需用正则的/xxxxx/这种限定符 直接写主体即可
+
+            //根据城市名称修改city_id 
+            $city_id = $cityItem['id']; 
+            //先查找匹配的景点
+            $sightList = $this->searchMeta(array('city' => $cityName),1,PHP_INT_MAX);
+            for ($i=0; $i < count($sightList['list']); $i++) {
+                $item = $sightList['list'][$i]; 
+                /*foreach ($arrInfo as $key => $val){ 
+                    $item[$key] = $val;
+                } return $item;
+                */
+                foreach ($item as $key => $val){ 
+                    $logicSight->$key = $val; 
+                }
+                $logicSight->cityId = $city_id; 
+                $ret = $logicSight->save();
+                if (!$ret) {
+                    return '失败！name:'.$cityName.',id:'.$city_id;
+                } 
+            }  
+         } 
+        return '成功！';
+    }
 }

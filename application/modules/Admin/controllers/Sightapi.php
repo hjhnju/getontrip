@@ -325,7 +325,7 @@ class  SightapiController extends Base_Controller_Api{
         
 
         $List = Sight_Api::searchMeta($arrInfo,$page,$pageSize);
-
+        
         $retList['recordsFiltered'] =$List['total'];
         $retList['recordsTotal'] = $List['total']; 
         $retList['data'] =$List['list']; 

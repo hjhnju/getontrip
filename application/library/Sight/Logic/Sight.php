@@ -182,6 +182,7 @@ class Sight_Logic_Sight extends Base_Logic{
             $arrSight[$key]['name']  = empty($val['name'])?trim($sight['name']):$val['name'];
             $arrSight[$key]['image'] = isset($sight['image'])?Base_Image::getUrlByName($sight['image']):'';
         
+            $arrSight[$key]['title']  = $arrSight[$key]['name'];
             $strTopicIds   = $logicTopic->getTopicIdBySight($val['id']);
             $arrTopicIds   = explode(",",$strTopicIds);
             //类别数
@@ -314,9 +315,9 @@ class Sight_Logic_Sight extends Base_Logic{
         }
         if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
             $data = $this->modelSight->query(array('name' => $arrInfo['name']), 1, 1);
-            $url  = Base_Config::getConfig('web')->root."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
+            $url  = "http://123.57.67.165:8301/InitData?sightId=".$data[0]['id']."&type=All&num=".Base_Config::getConfig('thirddata')->initnum;
             $http = Base_Network_Http::instance()->url($url);
-            $http->timeout(1);
+            $http->timeout(2);
             $http->exec();
         }
         return $ret; 
@@ -358,9 +359,9 @@ class Sight_Logic_Sight extends Base_Logic{
         $ret = $objSight->save();
         if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
             $data = $this->modelSight->query(array('id' => $sightId), 1, 1);
-            $url  = Base_Config::getConfig('web')->root."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
+            $url  = "http://123.57.67.165:8301/InitData?sightId=".$data[0]['id']."&type=All&num=".Base_Config::getConfig('thirddata')->initnum;
             $http = Base_Network_Http::instance()->url($url);
-            $http->timeout(1);
+            $http->timeout(2);
             $http->exec();
         }
         return $ret;
@@ -378,9 +379,9 @@ class Sight_Logic_Sight extends Base_Logic{
         $ret = $objSight->save();
         if($ret && $bDoPublish){
             $data = $this->modelSight->query(array('id' => $sightId), 1, 1);
-            $url  = Base_Config::getConfig('web')->root."/InitData?sightId=".$data[0]['id']."&type=All&num=".$conf['thirddata'] ['initnum'];
+            $url  = "http://123.57.67.165:8301/InitData?sightId=".$data[0]['id']."&type=All&num=".Base_Config::getConfig('thirddata')->initnum;
             $http = Base_Network_Http::instance()->url($url);
-            $http->timeout(1);
+            $http->timeout(2);
             $http->exec();
         }
         return $ret;

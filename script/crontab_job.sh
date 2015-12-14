@@ -4,7 +4,7 @@ offline=(10.173.13.95)
 #online=(10.252.34.151 10.165.112.153 10.171.116.218)
 online=(10.252.34.151)
 
-entity=(city sight content topic book wiki video)
+entity=(city sight topic book wiki video)
 
 if [ $1 = "online" ];then
     for ip in ${online[@]};

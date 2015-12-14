@@ -108,7 +108,7 @@ class TopicModel extends BaseModel{
         $arrTopicIds = array_unique($arrTopicIds);
         $strTopicIds = implode(",",$arrTopicIds);
         $from = ($page-1)*$pageSize;
-        $sql = "SELECT id FROM `topic` where `id` in (".$strTopicIds.") ORDER BY hot2 desc, update_time desc limit $from,$pageSize";            
+        $sql = "SELECT id FROM `topic` where `id` in (".$strTopicIds.") ORDER BY hot3 desc, update_time desc limit $from,$pageSize";            
 
         try {
             $data = $this->db->fetchAll($sql);

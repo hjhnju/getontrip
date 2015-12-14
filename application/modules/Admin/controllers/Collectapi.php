@@ -73,6 +73,11 @@ class CollectapiController extends Base_Controller_Api{
                 $obj_info = Topic_Api::getTopicById($id);
                 $item['obj_title'] = $obj_info['title'];
                 break;
+            case Collect_Type::VIDEO:
+                $item['obj_table'] = 'video';
+                $obj_info = Video_Api::getVideoInfo($id);
+                $item['obj_title'] = $obj_info['title'];
+                break;
             default:
                 $type = '';
                 $item['obj_table'] = ''; 

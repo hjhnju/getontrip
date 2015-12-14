@@ -164,20 +164,10 @@ class Topic_Logic_Topic extends Base_Logic{
                 $temp['name']  = $sight['name'];
                 $arrRet['arrsights'][] = $temp;
             }
-        }
-        
-        if(empty($sightId)){
-            $sightId = isset($arrRet['arrsights'][0]['id'])?($arrRet['arrsights'][0]['id']):'';
-        }
-                
-        if(!empty($sightId)){
-            $arrSight         = Sight_Api::getSightById($sightId);           
-            $arrRet['sight']  = $arrSight['name'];           
-        }
+        }        
         
         $logicComment          = new Comment_Logic_Comment();
         $arrRet['id']          = strval($arrRet['id']);
-        $arrRet['sightid']     = strval($sightId);
         $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
         $arrRet['subtitle']    = Base_Util_String::trimall($arrRet['subtitle']);
         $arrRet['title']       = Base_Util_String::trimall($arrRet['title']);
@@ -238,6 +228,16 @@ class Topic_Logic_Topic extends Base_Logic{
             $tag = str_replace("其他", "", $arrRet['tags'][0]);
             $arrRet['tags'] = array($tag);
         }
+        
+        if(empty($sightId)){
+            $sightId = isset($arrRet['arrsights'][0]['id'])?($arrRet['arrsights'][0]['id']):'';
+        }
+        
+        if(!empty($sightId)){
+            $arrSight         = Sight_Api::getSightById($sightId);
+            $arrRet['sight']  = $arrSight['name'];
+        }
+        $arrRet['sightid']     = strval($sightId);
         
         //这里需要更新一下热度
         return $arrRet;
@@ -742,11 +742,7 @@ class Topic_Logic_Topic extends Base_Logic{
             $listSightTopic->setPagesize(PHP_INT_MAX);
             $arrList = $listSightTopic->toArray();
             foreach($arrList['list'] as $key => $val){
-                if($arrInfo['status'] == Topic_Type_Status::PUBLISHED){
-                    $this->updateTopicRedis(self::ADD_TOPIC, $val['sight_id'], $topicId);
-                }else{
-                    $this->updateTopicRedis(self::DEL_TOPIC, $val['sight_id'], $topicId);
-                }
+                $this->updateTopicRedis(self::ADD_TOPIC, $val['sight_id'], $topicId);
             }
         }
                  
@@ -968,6 +964,12 @@ class Topic_Logic_Topic extends Base_Logic{
         $redis = Base_Redis::getInstance();        
         $redis->delete(Sight_Keys::getSightTopicKey($sightId));
         $redis->hDel(Sight_Keys::getSightTongjiKey($sightId), Sight_Keys::TOPIC);
+        $logicSight = new Sight_Logic_Sight();
+        $sight   = $logicSight->getSightById($sightId);
+        $arrKeys = $redis->keys(City_Keys::getCityTopicKey($sight['city_id'], '*', '*'));
+        foreach ($arrKeys as $key){
+            $redis->delete($key);
+        }
     }
     
     public function getTopicNumByTag($tagId, $sightId){

@@ -19,6 +19,14 @@ class Praise_Logic_Praise extends Base_Logic{
         $obj->userId = $user_id;
         $ret         = $obj->save();
         if($ret){
+            //记一条业务日志
+            $arrLog = array(
+                'type'     => 'priase-add',
+                'uid'      => $user_id,
+                'obj_id'   => $obj_id,
+                'obj_type' => $type,
+            );
+            Base_Log::NOTICE($arrLog);
             return Praise_RetCode::SUCCESS;
         }
         return Praise_RetCode::UNKNOWN_ERROR;
@@ -35,6 +43,14 @@ class Praise_Logic_Praise extends Base_Logic{
         $obj         = new Praise_Object_Praise();
         $obj->fetch(array('type' => $type,'obj_id' => $obj_id,'user_id'=> $user_id));
         $ret         = $obj->remove();
+        //记一条业务日志
+        $arrLog = array(
+            'type'     => 'priase-del',
+            'uid'      => $user_id,
+            'obj_id'   => $obj_id,
+            'obj_type' => $type,
+        );
+        Base_Log::NOTICE($arrLog);
         return $ret;
     }
     

@@ -65,29 +65,6 @@ class Search_Logic_Search{
                 $arrRet = $this->logicSight->search($query, $page, $pageSize);
                 break;
             case Search_Type_Search::CONTENT:
-                //内容信息
-                $arrRet = Base_Search::Search('content', $query, $page, $pageSize, array('id','unique_id','search_type','title','content'));
-                foreach ($arrRet['data'] as $key => $val){
-                    if($val['search_type'] == 'topic'){
-                        $topic = Topic_Api::getTopicById($val['id']);
-                        $arrRet['data'][$key]['image'] = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
-                    }elseif($val['search_type'] == 'book'){                       
-                        $book = Book_Api::getBookInfo($val['id']);
-                        $arrRet['data'][$key]['url']   = isset($book['url'])?trim($book['url']):'';
-                        $arrRet['data'][$key]['image'] = isset($book['image'])?Base_Image::getUrlByName($book['image']):'';
-                    }elseif($val['search_type'] == 'video'){
-                        $video = Video_Api::getVideoInfo($val['id']);
-                        $arrRet['data'][$key]['url']   = isset($video['url'])?trim($video['url']):'';
-                        $arrRet['data'][$key]['image'] = isset($video['image'])?Base_Image::getUrlByName($video['image']):'';
-                    }else{
-                        $keyword = Keyword_Api::queryById($val['id']);
-                        $arrRet['data'][$key]['url'] = isset($keyword['url'])?trim($keyword['url']):'';
-                        $arrRet['data'][$key]['image'] = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
-                    }
-                    $arrRet['data'][$key]['title']   = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['title']));
-                    $arrRet['data'][$key]['content'] = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['content']));
-                }
-                break;
             case Search_Type_Search::TOPIC:
                 $arrRet    = $this->logicTopic->searchTopic($query, $page, $pageSize);
                 break;
@@ -103,55 +80,34 @@ class Search_Logic_Search{
             default :
                 $arrCity     = $this->logicCity->search($query, $page, $pageSize);
                 $arrSight    = $this->logicSight->search($query, $page, $pageSize);
-                $arrContent = Base_Search::Search('content', $query, $page, $pageSize, array('id','unique_id','search_type','title','content'));
-                
+                $arrWiki     = $this->logicKeyword->search($query, $page, $pageSize);                
                 $arrTopic    = $this->logicTopic->searchTopic($query, $page, $pageSize);
-                $arrVideo    = $this->logicVideo->search($query, $page, 1);
-                $arrBook     = $this->logicBook->search($query, $page, 1);
-                if($arrTopic['num'] >= 2){
-                    if(empty($arrVideo['num']) && empty($arrBook['num'])){
-                        $arrContent['data'] = $arrTopic['data'];
-                    }elseif(empty($arrVideo['num'])){
-                        $arrTopic['data']   = array_slice($arrTopic['data'], 0,3);
-                        $arrContent['data'] = array_merge($arrTopic['data'],$arrBook['data']);
-                    }elseif(empty($arrBook['num'])){
-                        $arrTopic['data']   = array_slice($arrTopic['data'], 0,3);
-                        $arrContent['data'] = array_merge($arrTopic['data'],$arrVideo['data']);
-                    }else{
-                        $arrTopic['data']   = array_slice($arrTopic['data'], 0,2);
-                        $arrContent['data'] = array_merge($arrTopic['data'],$arrBook['data'],$arrVideo['data']);
-                    }
-                }
-                foreach ($arrContent['data'] as $key => $val){
-                    if($val['search_type'] == 'topic'){
-                        $topic = Topic_Api::getTopicById($val['id']);
-                        $arrContent['data'][$key]['image'] = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
-                    }elseif($val['search_type'] == 'book'){                       
-                        $book = Book_Api::getBookInfo($val['id']);
-                        $arrContent['data'][$key]['url']   = isset($book['url'])?trim($book['url']):'';
-                        $arrContent['data'][$key]['image'] = isset($book['image'])?Base_Image::getUrlByName($book['image']):'';
-                    }elseif($val['search_type'] == 'video'){
-                        $video = Video_Api::getVideoInfo($val['id']);
-                        $arrContent['data'][$key]['url']   = isset($video['url'])?trim($video['url']):'';
-                        $arrContent['data'][$key]['image'] = isset($video['image'])?Base_Image::getUrlByName($video['image']):'';
-                    }else{
-                        $keyword = Keyword_Api::queryById($val['id']);
-                        $arrContent['data'][$key]['url']   = isset($keyword['url'])?$keyword['url']:'';
-                        $arrContent['data'][$key]['image'] = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
-                    }
-                    $arrContent['data'][$key]['title']   = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['title']));
-                    $arrContent['data'][$key]['content'] = Base_Util_String::trimall(Base_Util_String::getHtmlEntity($val['content']));
-                }
+                $arrVideo    = $this->logicVideo->search($query, $page, $pageSize);
+                $arrBook     = $this->logicBook->search($query, $page, $pageSize);               
                 $arrRet = array(
                     'city'        => $arrCity['data'],
                     'city_num'    => $arrCity['num'],
                     'sight'       => $arrSight['data'],
                     'sight_num'   => $arrSight['num'],
-                    'content'     => $arrContent['data'],
-                    'content_num' => $arrContent['num'],
+                    'content'     => $arrTopic['data'],
+                    'content_num' => $arrTopic['num'],
+                    'landscape'   => $arrWiki['data'],
+                    'landscape_num' => $arrWiki['num'],
+                    'book'        => $arrBook['data'],
+                    'book_num'    => $arrBook['num'],
+                    'video'       => $arrVideo['data'],
+                    'video_num'   => $arrVideo['num'],
                 );
                 break;
         }
+        //记一条业务日志
+        $arrLog = array(
+            'type'  => 'search',
+            'uid'   => User_Api::getCurrentUser(),
+            'query' => $query,
+        );
+        Base_Log::NOTICE($arrLog);
+        
         $this->logicHotWord->addSearchWord($query);
         if(!empty($type)){
             return $arrRet['data'];
@@ -201,7 +157,7 @@ class Search_Logic_Search{
             $listTopic->setPage($page);
             $listTopic->setFilter(array('status' => Topic_Type_Status::PUBLISHED));
             $listTopic->setPagesize(self::HOT_TOPIC_NUM);
-            $listTopic->setOrder('`hot2` desc, `create_time` desc');
+            $listTopic->setOrder('`hot3` desc, `create_time` desc');
             $arrData = $listTopic->toArray();
             $arrData['list'] = array_slice($arrData['list'],($page-1)*$pageSize,$pageSize);
             if(empty($arrData['list'])){

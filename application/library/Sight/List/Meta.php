@@ -8,7 +8,7 @@ class Sight_List_Meta extends Base_List {
      * 数据表名
      * @var string
      */
-    protected $table = 'sight_meta';
+    protected $table = 'sight_meta_test';
 
     /**
      * 主键

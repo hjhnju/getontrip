@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-import sys
+# import sys
 import logging 
 from json import *
+import urlparse
 from scrapy.utils.url import urljoin_rfc
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.selector import Selector
@@ -17,16 +18,26 @@ class BaidulvyouSpider(CrawlSpider):
     # download_delay = 1
     allowed_domains = ["lvyou.baidu.com"]
     start_urls = [
-        # 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=1&rn=50&seasonid=5&cid=500&surl=zhongguo'
-        'http://lvyou.baidu.com/plan/ajax/getcitylist?format=ajax'  
+        'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=1&rn=50&seasonid=5&surl=taiguo'
+        # 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=4&rn=1&seasonid=5&cid=500&surl=zhongguo'
+        # 'http://lvyou.baidu.com/plan/ajax/getcitylist?format=ajax' 
+        # 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&surl=fuquanshan'
+        # 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=1&rn=50&seasonid=5&surl=chongqing'
+        
+        
+         
+        # "http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=1&rn=50&seasonid=5&surl=taizhou",     
+ 
     ]
 
     rules = [
         # Rule(sle(allow=('/plan/ajax/getcitylist')),callback='parse_country',follow=True) 
     ]
 
+    zhixiashi = ['chongqing','shanghai','beijing','tianjin','taiwan','xianggang','aomen']
+
     # 第一步 抓取所有国家名称 返回城国家列表页url
-    def parse(self, response): 
+    def parse1(self, response): 
 
         items = []
 
@@ -34,100 +45,136 @@ class BaidulvyouSpider(CrawlSpider):
         result = JSONDecoder().decode(
             response.body)['data']['list'][2]['sub_info']
 
+        # 初始化中国的数据
+        item = SightItem()
+        item['country'] = '中国'
+        item['surl'] = 'zhongguo'
+        item['url'] = 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=1&rn=50&seasonid=5&cid=500&surl=zhongguo'
+        items.append(item)
+
         for jsonitem in result:
             countryItem = jsonitem['cities']
             for country in countryItem:
                 item = SightItem()
                 item['url'] = 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=1&rn=50&seasonid=5&cid=500&surl='+country['surl']
-                items.append(item)
+                # items.append(item)
 
-        # 初始化中国的数据
-        # item = SightItem()
-        # item['country'] = '中国'
-        # item['surl'] = 'zhongguo'
-        # item['url'] = 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=1&rn=50&seasonid=5&cid=500&surl=zhongguo'
-        # items.append(item)
+
 
         for item in items:
             yield Request(item['url'], callback=self.parse_city)
 
     # 根据国家名称 查询城市名称 返回城市列表页url
-    def parse_city(self, response):
-    # def parse(self, response):
-         
+    # def parse_city(self, response):
+    def parse(self, response): 
         items = []
         pItems = []
         result = JSONDecoder().decode(response.body)['data']
-        total = result['scene_total']
-        if total > 0:
-            for jsonitem in result['scene_list']:
-                item = SightItem()
-                item['url'] = 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=1&rn=50&seasonid=5&surl='+jsonitem['surl']
-                items.append(item)
-
-                # 如果是第一页，则生成后续页码的url，并返回当前parse_city函数
-                if response.url.count('pn=1&') == 1:
-                    pageNum = (total/50)+1 
-                    for x in range(2,(pageNum+1)):  
-                        item = SightItem()
-                        item['url'] = 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=%d&rn=50&seasonid=5&cid=500&surl=%s' % (x,result['surl'])
-                        pItems.append(item)
+         
+        #总数
+        total = result['scene_total']  
+         
+        if total > 0: 
+            scene_list = result['scene_list'] 
+            # province = result['scene_path'][2]['surl']
+            province = ''
+            currentUrl = response.url
+            urlParams = dict([(k,v[0]) for k,v in urlparse.parse_qs(urlparse.urlparse(currentUrl).query).items()])
+            # 当前页码
+            currentPage = int(urlParams['pn'])
+            # 如果是第一页，则生成后续页码的url，并返回当前parse_city函数
+            if currentPage == 1:
+                pageNum = (total/50)+1  
+                for x in range(2,(pageNum+1)):  
+                    item = SightItem()
+                    if SPIDER.zhixiashi.count(province)>0:
+                        item['url'] = 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=%d&rn=50&seasonid=5&surl=%s' % (x,result['surl'])
                         pass
-                    
+                    else:
+                        item['url'] = 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=%d&rn=50&seasonid=5&cid=500&surl=%s' % (x,result['surl'])
+                        pass
+                    pItems.append(item)
                     pass
-
+                
                 pass
 
-            for item in pItems:
-                yield Request(item['url'],  callback=self.parse_city)
+            for index in range(len(scene_list)): 
+                jsonitem = scene_list[index]  
+                item = SightItem() 
+                item['surl'] =  jsonitem['surl'] 
+                item['weight'] = (currentPage-1)*50+index+1 
+                item['url'] = 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=1&rn=50&seasonid=5&surl='+jsonitem['surl']
+                items.append(item) 
+                pass
+
+            for item in pItems: 
+                yield Request(item['url'],  callback=self.parse)
                 pass 
 
             for item in items:
-                yield Request(item['url'],  callback=self.parse_sight)
-                pass
+                yield Request(item['url'],meta={'psurl': item['surl']}, callback=self.parse_sight)
             pass
 
     # 根据城市名称 查询景点列表 返回景点列表页url
     # def parse(self, response):
-    def parse_sight(self, response):
+    def parse_sight(self, response): 
         items = []
-        pItems = []
+        pItems = [] 
+        urlParams = dict([(k,v[0]) for k,v in urlparse.parse_qs(urlparse.urlparse(response.url).query).items()]) 
         result = JSONDecoder().decode(response.body)['data']
         total = result['scene_total'] 
-        if total > 0:
-            for jsonitem in result['scene_list']:
-                item = SightItem()
-                item['url'] = 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&surl='+jsonitem['surl']
-                items.append(item)
+        psurl = response.meta.get('psurl',urlParams['surl'])
+        pathLevel = len(result['scene_path']) 
+        province = result['scene_path'][2]['surl']
+         
+         
+        if total > 0 and (pathLevel<5 or (pathLevel>=5 and result['scene_path'][3]==psurl)):
+        # if total > 0 and ((pathLevel<5 and ((SPIDER.zhixiashi.count(province)>0 and psurl==province) or (SPIDER.zhixiashi.count(province)<0))) or (pathLevel>=5 and result['scene_path'][3]==psurl)):
+            
+            scene_list = result['scene_list']
+            
+            
+            # 当前页码 
+            currentPage = int(urlParams['pn'])
 
-                # 如果是第一页，则生成后续页码的url，并返回当前parse_sight函数
-                if response.url.count('pn=1&') == 1:
-                    pageNum = (total/50)+1 
-                    for x in range(2,(pageNum+1)):  
-                        item = SightItem()
-                        item['url'] = 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=%d&rn=50&seasonid=5&surl=%s' % (x,result['surl'])
-                        pItems.append(item)
-                        pass
-                    
+            
+            
+            # 如果是第一页，则生成后续页码的url，并返回当前parse_sight函数
+            if currentPage == 1:
+                pageNum = (total/50)+1 
+                for x in range(2,(pageNum+1)):  
+                    item = SightItem()
+                    item['surl'] =  urlParams['surl']  
+                    item['url'] = 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=%d&rn=50&seasonid=5&surl=%s' % (x,result['surl'])
+                    pItems.append(item)
                     pass
+                
+                pass
+
+            for index in range(len(scene_list)): 
+                jsonitem = scene_list[index]   
+          
+                item = SightItem()
+                item['weight'] = (currentPage-1)*50+index+1
+                item['url'] = 'http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&surl='+jsonitem['surl']
+                items.append(item) 
+                
                 pass
 
             for item in pItems:
-                yield Request(item['url'],  callback=self.parse_sight)
+                yield Request(item['url'],meta={'psurl': item['surl']},  callback=self.parse_sight)
                 pass 
 
             for item in items:
-                yield Request(item['url'],  callback=self.parse_details)
+                yield Request(item['url'] ,meta={'item': item}, callback=self.parse_details)
                 pass 
-
+            
             pass
-
-        
+ 
 
     # 景点详情详情
     def parse_details(self, response):
-    # def parse(self, response):
-        
+    # def parse(self, response): 
         typeList = {0: '', 1: "城市", 2: "古镇", 3: "乡村", 4: "海边", 5: "沙漠", 6: "山峰", 7: "峡谷", 8: "冰川", 9: "湖泊", 10: "河流", 11: "温泉", 12: "瀑布", 13: "草原", 14: "湿地", 15: "自然保护区",
                     16: "公园", 17: "展馆", 18: "历史建筑", 19: "现代建筑", 20: "历史遗址", 21: "宗教场所", 22: "观景台", 23: "陵墓", 24: "学校", 25: "故居", 26: "纪念碑", 27: "其他", 28: "购物娱乐", 29: "休闲度假"}
         typeStr = ''
@@ -139,13 +186,15 @@ class BaidulvyouSpider(CrawlSpider):
         type_list = ex.get('cids','').split(',')
         pic_list = result.get('pic_list', [])
         map_info = ex.get('map_info','')
+ 
+        item = response.meta.get('item',SightItem())
 
-        item = SightItem() 
         surl = result['surl'].strip().encode('utf8', 'ignore').decode('utf8')
         item['surl'] = surl
+         
         item['is_china'] = result['is_china']
         item['describe'] = ex.get('more_desc','').strip()
-        item['impression'] = ex.get('impression', '').strip()
+        item['impression'] = ex.get('impression', ex.get('abs_desc','')).strip()
         item['address'] = ex.get('address','').strip()
         item['level'] = ex.get('level','').strip()
         item['url'] = 'http://lvyou.baidu.com/'+surl
@@ -162,21 +211,27 @@ class BaidulvyouSpider(CrawlSpider):
         item['province'] = scene_path[2]['sname'].strip()
         pathLevel = len(scene_path)
         if pathLevel == 4:
-            item['city'] = scene_path[2]['sname'].strip()
+            #类型为：城市 ，
+            if type_list.count('1')>0: 
+                item['city'] = scene_path[3]['sname'].strip() 
+                pass
+            else:
+                item['city'] = scene_path[2]['sname'].strip()
+                pass 
             item['region'] = ''
             pass
-        elif pathLevel == 5:
+        elif pathLevel == 5: 
             item['city'] = scene_path[3]['sname'].strip()
-            item['region'] = ''
+            # 直辖市 则不分配地区
+            if type_list.count('1')>0:  
+                item['region'] = scene_path[4]['sname'].strip()
+            else:
+                item['region'] = ''
             pass
-        elif pathLevel == 6:
+        elif pathLevel >= 6:
             item['city'] = scene_path[3]['sname'].strip()
             item['region'] = scene_path[4]['sname'].strip()
-            pass
-        elif pathLevel>6:
-            item['city'] = scene_path[3]['sname'].strip()
-            item['region'] = scene_path[4]['sname'].strip()
-            pass
+            pass 
          
         # 特殊处理坐标
         if map_info != '' and map_info.find(',') != -1:
@@ -189,7 +244,7 @@ class BaidulvyouSpider(CrawlSpider):
             pass
 
         # 特殊处理图片
-        if len(pic_list)==0 or pic_list['pic_url']==None:
+        if pic_list==False or len(pic_list)==0 or pic_list['pic_url']==None:
             item['image'] = ''
             pass
         else:
@@ -206,12 +261,10 @@ class BaidulvyouSpider(CrawlSpider):
         item['typeStr'] = typeStr.strip().decode('utf8')
         
         if type_list.count('1')>0: 
-            logging.info("Item type is city: %s :,%s" % (result['sname'],result['surl']))
-            yield Request('http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=1&rn=50&seasonid=5&surl=%s' % (result['surl']),  callback=self.parse_sight) 
-            pass
+            logging.info("Item type is city: %s :,%s" % (result['sname'],result['surl'])) 
+            # yield Request('http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&pn=1&rn=50&seasonid=5&surl=%s' % (result['surl']),  callback=self.parse_sight) 
+            pass 
+        yield item
+ 
 
-        else:
-            yield item
-
-
-# SPIDER = BaidulvyouSpider()
+SPIDER = BaidulvyouSpider()

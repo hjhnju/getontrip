@@ -60,8 +60,8 @@ class DetailController extends Base_Controller_Page {
            if($postInfo['content'] != ""){
                $spider  = Spider_Factory::getInstance("Filterimg",$postInfo['content'],Spider_Type_Source::STRING);
                $postInfo['content'] = $spider->getContentToDis();
-           }
-
+           } 
+           $this->getView()->assign('title', $postInfo['title']); 
            $this->getView()->assign('post', $postInfo); 
        } 
        

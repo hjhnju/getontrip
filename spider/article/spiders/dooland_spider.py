@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import os
 from scrapy.utils.url import urljoin_rfc
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.selector import Selector
@@ -16,36 +16,35 @@ class DoolandSpider(CrawlSpider):
     # download_delay = 1
     allowed_domains = ["dooland.com"]
     start_urls = [
-        "http://southpeople.dooland.com",
-        'http://beijingjishi.dooland.com',
-        'http://dutianxia.dooland.com',
-        'http://ybtx.dooland.com',
-        'http://blogweekly.dooland.com',
-        'http://hxly.dooland.com',
-        'http://lysj.dooland.com',
+        # "http://southpeople.dooland.com",
+        # 'http://beijingjishi.dooland.com',
+        # 'http://dutianxia.dooland.com',
+        # 'http://ybtx.dooland.com',
+        # 'http://blogweekly.dooland.com',
+        # 'http://hxly.dooland.com',
+        # 'http://lysj.dooland.com', 
+        # 'http://redoo.dooland.com',
+        # 'http://yfdj.dooland.com',
+        # 'http://travel.dooland.com',
+        # 'http://dianying.dooland.com',
+        # 'http://kxzy.dooland.com',
+        # 'http://xinjiang.dooland.com', 
+        # 'http://lifeweeker.dooland.com',
+        # 'http://aomi.dooland.com',
+        # 'http://bkzs.dooland.com',
+        # 'http://xsgx.dooland.com',
+        # 'http://zhongguoshuhua.dooland.com',
+        # 'http://blqs.dooland.com', 
+        # 'http://zgxb.dooland.com',
+        # 'http://wsbl.dooland.com',
+        # 'http://kanshijie.dooland.com',
+        # 'http://vistastory.dooland.com',
+        # 'http://zhongguoxinwenzhoukan.dooland.com',
+        # 'http://blqs.dooland.com',
+        #######################################
+         
+        "http://www.dooland.com/magazine/article_641279.html"
 
-        'http://redoo.dooland.com',
-        'http://yfdj.dooland.com',
-        'http://travel.dooland.com',
-        'http://dianying.dooland.com',
-        'http://kxzy.dooland.com',
-        'http://xinjiang.dooland.com',
-
-
-        'http://lifeweeker.dooland.com',
-        'http://aomi.dooland.com',
-        'http://bkzs.dooland.com',
-        'http://xsgx.dooland.com',
-        'http://zhongguoshuhua.dooland.com',
-        'http://blqs.dooland.com',
-
-        'http://zgxb.dooland.com',
-        'http://wsbl.dooland.com',
-        'http://kanshijie.dooland.com',
-        'http://vistastory.dooland.com',
-        'http://zhongguoxinwenzhoukan.dooland.com',
-        'http://blqs.dooland.com',
-        # 'http://www.dooland.com/magazine/article_22540.html'
     ]
 
     rules = [ 
@@ -69,14 +68,12 @@ class DoolandSpider(CrawlSpider):
 
     # 某一期 所有文章url list
     def parse_list(self, response):
-        items = []
-        # print '(abc)'+response.url
+        items = [] 
         for sel in response.xpath('//*[@class="jx_Article"]/ul/li/h2'):
             item = ArticleItem()
             item['url'] = 'http://www.dooland.com/magazine/' + sel.xpath('a/@href').extract()[0].strip()
             # item['title'] = sel.xpath('a/@title').extract()[0].strip() 
-            items.append(item) 
-            # print '(def)'
+            items.append(item)  
         
         for item in items:
             # yield Request(item['url'],meta={'item': item}, callback=self.parse_details)
@@ -84,9 +81,8 @@ class DoolandSpider(CrawlSpider):
        
 
     # 文章详情
-    def parse_details(self, response):
-    # def parse(self, response):
-         
+    # def parse_details(self, response):
+    def parse(self, response):
         item = ArticleItem() 
         sel=Selector(response)
         item['url'] = response.url
@@ -101,5 +97,45 @@ class DoolandSpider(CrawlSpider):
         item['author'] = ''
         
         return item
+    
 
+
+    # 看历史文章详情专用
+    def parse_kanlishi_details(self, response):
+    # def parse(self, response):
+        item = response.meta['item'] 
+        sel=Selector(response)
+        item['url'] = response.url
+        item['title'] = sel.xpath('//*[@class="title"]/div/h1/text()').extract()[0].strip() 
+        item['content'] = sel.xpath('//*[@id="article"]/div').extract()[0] 
+         
+        # TODO 来源ID
+        item['source_id'] = ''
+        item['author'] = ''
+        
+        return item
+
+    #读取文件名称
+    def readFile(self,response):  
+    # def parse(self, response):
+        dir = "E:\\kanlishi"
+        wildcard = ".txt"
+        exts = wildcard.split(" ")
+        files = os.listdir(dir)
+        count = 0
+        items = []
+        for name in files: 
+            for ext in exts:
+                if(name.endswith(ext)): 
+                    aid = name.split('_')[2]
+                    count = count + 1 
+                    item = ArticleItem() 
+                    item['source'] = '看历史'.decode('utf8')
+                    item['issue'] = name.split('_')[0].decode('GBK')
+                    item['url'] = 'http://www.dooland.com/magazine/article_'+aid + '.html'
+                    items.append(item)
+                    yield Request(item['url'],meta={'item': item},callback=self.parse_kanlishi_details)
+
+                    break
+                    
 SPIDER = DoolandSpider()

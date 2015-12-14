@@ -26,7 +26,7 @@ class City_Object_Meta extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'pinyin', 'pid', 'provinceid', 'cityid', 'create_user', 'update_user', 'create_time', 'update_time');
+    protected $fields = array('id', 'name', 'pinyin', 'pid', 'continentid', 'countryid', 'provinceid', 'cityid', 'create_user', 'update_user', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -37,6 +37,8 @@ class City_Object_Meta extends Base_Object {
         'name'        => 'name',
         'pinyin'      => 'pinyin',
         'pid'         => 'pid',
+        'continentid' => 'continentid',
+        'countryid'   => 'countryid',
         'provinceid'  => 'provinceid',
         'cityid'      => 'cityid',
         'create_user' => 'createUser',
@@ -52,6 +54,8 @@ class City_Object_Meta extends Base_Object {
     protected $intProps = array(
         'id'          => 1,
         'pid'         => 1,
+        'continentid' => 1,
+        'countryid'   => 1,
         'provinceid'  => 1,
         'cityid'      => 1,
         'create_user' => 1,
@@ -91,6 +95,18 @@ class City_Object_Meta extends Base_Object {
      * @var integer
      */
     public $pid;
+
+    /**
+     * 大洲id  0是大洲
+     * @var integer
+     */
+    public $continentid;
+
+    /**
+     * 国家id   0:是国家
+     * @var integer
+     */
+    public $countryid;
 
     /**
      * 所属省

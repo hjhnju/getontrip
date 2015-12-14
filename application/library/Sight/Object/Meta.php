@@ -8,7 +8,7 @@ class Sight_Object_Meta extends Base_Object {
      * 数据表名
      * @var string
      */
-    protected $table = 'sight_meta';
+    protected $table = 'sight_meta_test';
 
     /**
      * 主键

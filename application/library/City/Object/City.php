@@ -26,7 +26,7 @@ class City_Object_City extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'status', 'x', 'y', 'create_time', 'update_time', 'create_user', 'update_user', 'image');
+    protected $fields = array('id', 'status', 'x', 'y', 'create_time', 'update_time', 'image', 'create_user', 'update_user', 'is_china', 'continent');
 
     /**
      * 字段与属性隐射关系
@@ -39,9 +39,11 @@ class City_Object_City extends Base_Object {
         'y'           => 'y',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
+        'image'       => 'image',
         'create_user' => 'createUser',
         'update_user' => 'updateUser',
-        'image'       => 'image',
+        'is_china'    => 'isChina',
+        'continent'   => 'continent',
     );
 
     /**
@@ -55,6 +57,7 @@ class City_Object_City extends Base_Object {
         'update_time' => 1,
         'create_user' => 1,
         'update_user' => 1,
+        'is_china'    => 1,
     );
 
     /**
@@ -102,6 +105,12 @@ class City_Object_City extends Base_Object {
     public $updateTime;
 
     /**
+     * 城市图像
+     * @var string
+     */
+    public $image;
+
+    /**
      * 城市创建人ID
      * @var integer
      */
@@ -114,9 +123,15 @@ class City_Object_City extends Base_Object {
     public $updateUser;
 
     /**
-     * 城市图像
+     * 是否国内
+     * @var integer
+     */
+    public $isChina;
+
+    /**
+     * 大洲
      * @var string
      */
-    public $image;
+    public $continent;
 
 }

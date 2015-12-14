@@ -38,7 +38,11 @@ class SightItem(scrapy.Item):
     x = scrapy.Field()
     y = scrapy.Field()
     url = scrapy.Field()
+    weight = scrapy.Field()
 
     surl = scrapy.Field() 
     total = scrapy.Field() 
+
+    page = scrapy.Field()
+    index = scrapy.Field()  
     pass

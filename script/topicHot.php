@@ -47,7 +47,7 @@ foreach ($arrTopic['list'] as $val){
 $arrTopicIds = array_unique($arrTopicIds);
 foreach ($arrTopicIds as $topic){       
     $hot1  = getHot($topic,0);   
-    $hot2  = getHot($topic,0.08);
+    $hot2  = getHot($topic,4);
     $hot3  = getHot($topic,1);
     
     $objTopic        = new Topic_Object_Topic();

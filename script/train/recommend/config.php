@@ -9,8 +9,8 @@ const WORK_PATH        = "/home/work/data/";
 
 const RESULT_PATH      = "/home/work/data/similarity.output";
 
-const MODEL_PATH       = "/home/work/data/feature/";
+const MODEL_PATH       = "/home/work/data/documents/";
 
-const DATA_PATH        = "/home/work/data/documents/";
+const DATA_PATH        = "/home/work/data/work/";
 
 const INDEX_LABEL      = "label_index";

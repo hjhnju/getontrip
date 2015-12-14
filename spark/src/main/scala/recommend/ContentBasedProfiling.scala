@@ -26,7 +26,7 @@ object ContentBasedProfiling {
         var labelMap = Map[String, String]()
         //documents: label, item_list
         var documents: RDD[(String, Seq[String])] = null
-        for(row <- scala.io.Source.fromFile("data/labels.top5").getLines.map{line => line.split("""\s+""")}) {
+        for(row <- scala.io.Source.fromFile("data/labels.txt").getLines.map{line => line.split("""\s+""")}) {
             if (row.length >= 2) {
                 labelMap   += (row(0) -> row(1))
                 val label   = row(0)

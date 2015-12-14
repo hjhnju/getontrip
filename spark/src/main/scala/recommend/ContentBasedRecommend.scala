@@ -54,21 +54,12 @@ object ContentBasedRecommend {
 
             val v1 = docProfile
             val v2 = point.features
-
-            //get similariy
-            val d1 = new DenseVector(v1.toArray)
-            val d2 = new DenseVector(v2.toArray)
-            val dotProduct = d1.dot(d2)
-            val normA = Vectors.norm(v1, 2)
-            val normB = Vectors.norm(v2, 2)
-            var cosineSimilarity = dotProduct / (normA * normB)
-            cosineSimilarity = (math rint cosineSimilarity * 10000) / 10000
-            //val cosineSimilarity = this.similarity(v1, v2)
+            val cosineSimilarity = this.similarity(v1, v2)
 
             val reason = ""
             (docId, (point.label.toInt, cosineSimilarity, reason))
         }
-        val filterAndSortedSims = sims.groupByKey().map(x => (x._1, x._2.toArray.filter(_._2 >= 0.30).sortBy(_._2).reverse)).filter(_._2.length > 0)
+        val filterAndSortedSims = sims.groupByKey().map(x => (x._1, x._2.toArray.filter(_._2 >= 0.10).sortBy(_._2).reverse)).filter(_._2.length > 0)
 
         val simOut = filterAndSortedSims.map{x => x._1 + " " + x._2.mkString(" ")}
 

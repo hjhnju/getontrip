@@ -18,11 +18,22 @@ class Recommend_Api{
      * 对文章进行处理
      * @param integer $id
      * @param array $arrInfo,eg:array(array('label_id'=>1,'label_type'=>1,'status'=>1),array(...)...); 
-     * 
+     * @return boolean
      */
     public static function dealArticle($id, $arrInfo){
         $logic = new Recommend_Logic_Recommend();
         return $logic->dealArticle($id, $arrInfo);
+    }
+    
+    /**
+     * 接口3：Recommend_Api::getArticleDetail($id)
+     * 获取文章详情
+     * @param integer $id
+     * @return array
+     */
+    public static function getArticleDetail($id){
+        $logic = new Recommend_Logic_Recommend();
+        return $logic->getArticleDetail($id);
     }
     
 } 

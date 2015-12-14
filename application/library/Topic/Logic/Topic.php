@@ -714,7 +714,7 @@ class Topic_Logic_Topic extends Base_Logic{
                 $objSightTopic->sightId = $val;
                 $objSightTopic->save();
                 if($objTopic->status == Topic_Type_Status::PUBLISHED){
-                    $this->updateTopicRedis(self::ADD_TOPIC, $val['sight_id'], $objTopic->id);                    
+                    $this->updateTopicRedis(self::ADD_TOPIC, $val, $objTopic->id);                    
                 }                
             }
         }
@@ -966,9 +966,11 @@ class Topic_Logic_Topic extends Base_Logic{
         $redis->hDel(Sight_Keys::getSightTongjiKey($sightId), Sight_Keys::TOPIC);
         $logicSight = new Sight_Logic_Sight();
         $sight   = $logicSight->getSightById($sightId);
-        $arrKeys = $redis->keys(City_Keys::getCityTopicKey($sight['city_id'], '*', '*'));
-        foreach ($arrKeys as $key){
-            $redis->delete($key);
+        if(isset($sight['city_id'])){
+            $arrKeys = $redis->keys(City_Keys::getCityTopicKey($sight['city_id'], '*', '*'));
+            foreach ($arrKeys as $key){
+                $redis->delete($key);
+            }
         }
     }
     

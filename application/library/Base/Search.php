@@ -97,19 +97,19 @@ class Base_Search {
                 $val['title'][0]   = isset($val['title'][0])?$val['title'][0]:'';
                 $val['content'][0] = isset($val['content'][0])?$val['content'][0]:'';
                 $arrRet['response']['docs'][$key]['search_type']  = $val['search_type'][0];
-                $arrRet['response']['docs'][$key]['title']    = isset($arrRet['highlighting'][$val['unique_id']]['title'][0])?$arrRet['highlighting'][$val['unique_id']]['title'][0]:$val['title'][0]; 
-                $arrRet['response']['docs'][$key]['content']  = isset($arrRet['highlighting'][$val['unique_id']]['content'][0])?$arrRet['highlighting'][$val['unique_id']]['content'][0]:$val['content'][0];
+                $arrRet['response']['docs'][$key]['title']    = trim(isset($arrRet['highlighting'][$val['unique_id']]['title'][0])?$arrRet['highlighting'][$val['unique_id']]['title'][0]:$val['title'][0]); 
+                $arrRet['response']['docs'][$key]['content']  = trim(isset($arrRet['highlighting'][$val['unique_id']]['content'][0])?$arrRet['highlighting'][$val['unique_id']]['content'][0]:$val['content'][0]);
                 unset($arrRet['response']['docs'][$key]['unique_id']);
             }elseif($type == 'topic' || $type == 'book' || $type == 'video'){
                 $val['title'][0]   = isset($val['title'][0])?$val['title'][0]:'';
                 $val['content'][0] = isset($val['content'][0])?$val['content'][0]:'';
-                $arrRet['response']['docs'][$key]['title']    = isset($arrRet['highlighting'][$val['id']]['title'][0])?$arrRet['highlighting'][$val['id']]['title'][0]:$val['title'][0];
-                $arrRet['response']['docs'][$key]['content']  = isset($arrRet['highlighting'][$val['id']]['content'][0])?$arrRet['highlighting'][$val['id']]['content'][0]:$val['content'][0];
+                $arrRet['response']['docs'][$key]['title']    = trim(isset($arrRet['highlighting'][$val['id']]['title'][0])?$arrRet['highlighting'][$val['id']]['title'][0]:$val['title'][0]);
+                $arrRet['response']['docs'][$key]['content']  = trim(isset($arrRet['highlighting'][$val['id']]['content'][0])?$arrRet['highlighting'][$val['id']]['content'][0]:$val['content'][0]);
             }else{
                 $val['name'][0]   = isset($val['name'][0])?$val['name'][0]:'';
                 $val['content'][0] = isset($val['content'][0])?$val['content'][0]:'';
-                $arrRet['response']['docs'][$key]['name']  = isset($arrRet['highlighting'][$val['id']]['name'][0])?$arrRet['highlighting'][$val['id']]['name'][0]:'';
-                $arrRet['response']['docs'][$key]['content']  = isset($arrRet['highlighting'][$val['id']]['content'][0])?$arrRet['highlighting'][$val['id']]['content'][0]:$val['content'][0];
+                $arrRet['response']['docs'][$key]['name']  = trim(isset($arrRet['highlighting'][$val['id']]['name'][0])?$arrRet['highlighting'][$val['id']]['name'][0]:'');
+                $arrRet['response']['docs'][$key]['content']  = trim(isset($arrRet['highlighting'][$val['id']]['content'][0])?$arrRet['highlighting'][$val['id']]['content'][0]:$val['content'][0]);
             }          
         }
         return array('num' => strval($arrRet['response']['numFound']),'data' => $arrRet['response']['docs']);

@@ -3,6 +3,10 @@ require_once "config.php";
 
 const PRE_ARTICLE = "article_";
 
+const TITLE_REPEAT   = 5;
+
+const KEYWORD_REPEAT = 3;
+
 const DEFAULT_PAGESIZE = 500;
 
 if(!is_dir(DATA_PATH)){
@@ -22,7 +26,8 @@ for($i = 1; $i<= $totalPage; $i ++){
     $arrArticle  = $listArticle->toArray();
     foreach ($arrArticle['list'] as $val){
         $strBuffer = "";
-        $content = preg_replace( '/<.*?>/s', "", $val['title'].$val['content']);
+        $content = str_repeat($val['title'], TITLE_REPEAT).str_repeat($val['keywords'],KEYWORD_REPEAT).$val['content'];
+        $content = preg_replace( '/<.*?>/s', "", $content);
         if(empty($content)){
             continue;
         }

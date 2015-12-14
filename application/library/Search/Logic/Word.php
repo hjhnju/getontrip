@@ -47,9 +47,15 @@ class Search_Logic_Word extends Base_Logic{
                 $strWhere .= ' and `'.$key."` = $val";
             }
         }
-        $sql = "select distinct(`word`) as query ,`status`, (select count(*) from `search_word` where word = query) as num from `search_word` where ".$strWhere." order by `status` desc, num desc limit $from, $pageSize ";
+        //$sql = "select distinct(`word`) as query ,`status`, (select count(*) from `search_word` where word = query) as num from `search_word` where ".$strWhere." order by `status` desc, num desc limit $from, $pageSize ";
+        $sql = "select `id`,`word` as query ,`status` from `search_word` where ".$strWhere."  group by `word` order by `status` desc  limit $from, $pageSize ";
         try {
             $data = $model->db->fetchAll($sql);
+            foreach ($data as $key => $val){
+                $sql_count = "select count(*) from `search_word` where word='".$val['query']."'";
+                $num       = $model->db->fetchOne($sql_count);
+                $data[$key]['num'] = $num;
+            }
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
             return array();

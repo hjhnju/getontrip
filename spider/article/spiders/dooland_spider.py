@@ -43,7 +43,7 @@ class DoolandSpider(CrawlSpider):
         # 'http://blqs.dooland.com',
         #######################################
          
-        "http://www.dooland.com/magazine/article_717469.html",
+        "http://www.dooland.com/magazine/article_641279.html"
 
     ]
 
@@ -68,14 +68,12 @@ class DoolandSpider(CrawlSpider):
 
     # 某一期 所有文章url list
     def parse_list(self, response):
-        items = []
-        # print '(abc)'+response.url
+        items = [] 
         for sel in response.xpath('//*[@class="jx_Article"]/ul/li/h2'):
             item = ArticleItem()
             item['url'] = 'http://www.dooland.com/magazine/' + sel.xpath('a/@href').extract()[0].strip()
             # item['title'] = sel.xpath('a/@title').extract()[0].strip() 
-            items.append(item) 
-            # print '(def)'
+            items.append(item)  
         
         for item in items:
             # yield Request(item['url'],meta={'item': item}, callback=self.parse_details)
@@ -83,8 +81,8 @@ class DoolandSpider(CrawlSpider):
        
 
     # 文章详情
-    def parse_details(self, response):
-    # def parse(self, response):
+    # def parse_details(self, response):
+    def parse(self, response):
         item = ArticleItem() 
         sel=Selector(response)
         item['url'] = response.url
@@ -118,8 +116,8 @@ class DoolandSpider(CrawlSpider):
         return item
 
     #读取文件名称
-    # def readFile(self,response):  
-    def parse(self, response):
+    def readFile(self,response):  
+    # def parse(self, response):
         dir = "E:\\kanlishi"
         wildcard = ".txt"
         exts = wildcard.split(" ")

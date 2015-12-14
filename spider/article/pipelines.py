@@ -19,6 +19,7 @@ import MySQLdb
 import MySQLdb.cursors
 
 from article.items import SightItem
+from article.utils.htmlParser import htmlParser 
 
 class ArticlePipeline(object):
 
@@ -34,7 +35,6 @@ class ArticlePipeline(object):
             charset='utf8',
             use_unicode=False
         )
-    
 
         self.file = codecs.open('items.json', 'w', encoding='utf-8')
 
@@ -46,8 +46,11 @@ class ArticlePipeline(object):
         if spiderName == 'dooland':
             item = self.filter_item(item, spiderName)
             # 插入数据库
+            # query = self.dbpool.runInteraction(
+            #     self._conditional_insert_article, item)
             query = self.dbpool.runInteraction(
-                self._conditional_insert_article, item)
+                self._kanlishi, item)
+             
             pass
         elif spiderName == 'yunyuedu':
             item = self.filter_item(item, spiderName)
@@ -55,36 +58,23 @@ class ArticlePipeline(object):
             query = self.dbpool.runInteraction(
                 self._conditional_insert_article, item)
             pass
-        elif spiderName == 'baidulvyou': 
+        elif spiderName == 'baidulvyou':
             # 插入数据库
             query = self.dbpool.runInteraction(
                 self._conditional_insert_sight, item)
-             
-            # if item['typeStr'].find('城市'.decode('utf8'))>-1:
-            #     query = self.dbpool.runInteraction(self._conditional_insert_sight, item)
-            #     pass
-            # else:
-            #     logging.info("Duplicate item found: %s" % item['name'])
-            # raise DropItem("Duplicate item found: %s" % item['name'])
+
             pass
-        # if item['city']=='北京'.decode('utf8'):
-        #     tmpitem = SightItem()
-        #     tmpitem['name'] = item['name']
-        #     tmpitem['weight'] = item['weight'] 
-        #     tmpitem['city'] = item['city']
-        #     line = json.dumps(dict(tmpitem)) + "\n"
-        #     self.file.write(line.decode('unicode_escape'))
-        #     pass
-       
-         
+
         # line = json.dumps(dict(item)) + "\n"
         # self.file.write(line.decode('unicode_escape'))
+        # self.file.write(line)
 
         return item
 
     # 过滤html
     def filter_item(self, item, spiderName):
         content = item['content']
+        
         
         content = re.sub(r'<br(\s)*\/(\s)*>', '<br>', content)
         if content.find('<p>') == -1:
@@ -93,7 +83,7 @@ class ArticlePipeline(object):
         # 过滤掉样式
         content = re.sub(r'<p.*?>', '<p>', content)
         content = re.sub(r'<b\s.*?>', '<b>', content)
-        content = re.sub(r'<br.*?>', '</p><p>', content)
+        # content = re.sub(r'<br.*?>', '<p></p>', content)
 
         # 过滤content  去掉div span标签
         content = re.sub(r'<div.*?>', '<p>', content)
@@ -102,10 +92,9 @@ class ArticlePipeline(object):
         content = re.sub(r'<\/span>', '', content)
 
         # 去掉空白  测试一下
-        content = re.sub(r'<p>\s+', '<p>', content)
-        content = re.sub(r'<p>(&nbsp)*;', '<p>', content)
-        content = content.replace(u'<p>(\u3000)*', u'<p>')
-
+        content = re.sub(r'<p>[\s|　]+', '<p>', content)
+        content = re.sub(r'<p>(&nbsp)*;', '<p>', content) 
+        content = re.sub(ur'<p>[\u3000]*', '<p>',content) 
         # 去掉H2标题 HR线
         if spiderName == 'yunyuedu':
             content = re.sub(r'<h2.*?>.*?<\/h2>', '', content)
@@ -113,8 +102,16 @@ class ArticlePipeline(object):
             pass
 
         item['content'] = content
+        # if content.find('<img'):
+        #     print 'sadad'
+        #     hp = htmlParser()  
+        #     # 传入要分析的数据，是html的。  
+        #     hp.feed(content) 
+        #     pass
         return item
         pass
+    
+
 
     # 插入景点库
     def _conditional_insert_sight(self, tx, item):
@@ -124,13 +121,12 @@ class ArticlePipeline(object):
         # print sql
         tx.execute(sql)
         result = tx.fetchone()
-
         if result:
-            if result['weight']!=item['weight']:
-                 logging.info("Item weight updated in db:id->%s(%s), %s-->> ,%s" %
-                         (result['id'],result['name'].decode('utf8'),result['weight'], item['weight']))
-                 pass 
-            try: 
+            if result['weight'] != item['weight']:
+                logging.info("Item weight updated in db:id->%s(%s), %s-->> ,%s" %
+                             (result['id'], result['name'].decode('utf8'), result['weight'], item['weight']))
+                pass
+            try:
                 tx.execute(
                     "update `sight_meta_test` set `level`=%s,`image`=%s, `describe`=%s, `impression`=%s,`address`=%s,`type`=%s,`continent`=%s,`country`=%s,`province`=%s,`city`=%s,`region`=%s,`url`=%s,`x`=%s,`y`=%s,`is_china`=%s,`weight`=%s,`update_time`=%s"
                     "where `id`=%s  ",
@@ -146,7 +142,7 @@ class ArticlePipeline(object):
                               (item['surl'], e.args[0], e.args[1]))
 
             logging.info("Item already updated in db:id->%s, %s ,%s,%s" %
-                         (result['id'],item['name'], item['surl'], item['weight']))
+                         (result['id'], item['name'], item['surl'], item['weight']))
         else:
             try:
                 tx.execute(
@@ -171,17 +167,25 @@ class ArticlePipeline(object):
 
     # 插入数据库
     def _conditional_insert_article(self, tx, item):
-
-        sql = "select * from article \
-               where url = '%s'" % (item['url'], )
+        
+        sql = 'SELECT * FROM article \
+               WHERE url = "%s" ' % (item['url'], )
         tx.execute(sql)
         result = tx.fetchone()
-
+        # print item
         if result:
-            # log.msg("Item already stored in db: %s" % item, level=log.DEBUG)
-            logging.info("Item already stored in db: %s ,%s" %
-                         (item['title'], item['url']))
+            try:
+                tx.execute(
+                    "update `article` set `content`=%s"
+                    "where `id`=%s  ",
+                    (item['content'], result['id'])
+                )
+            except MySQLdb.Error, e:
+                logging.error("update Item:%s Error %d: %s" %
+                              (item['url'], e.args[0], e.args[1]))
 
+            logging.info("Item already updated in db:id->%s, %s ,%s" %
+                         (result['id'], item['title'], item['url']))
         else:
             tx.execute(
                 "insert into article (title,content,source, url, author,issue,create_time,update_time) "
@@ -193,3 +197,28 @@ class ArticlePipeline(object):
             # log.msg("Item stored in db: %s" % item, level=log.DEBUG)
             logging.info("Item stored in db: %s ,%s" %
                          (item['title'], item['url']))
+    
+
+    # 批量修改看历史的文章
+    def _kanlishi(self, tx, item):
+        print 'aasdadads'
+        sql = 'SELECT * FROM article \
+               WHERE source = "看历史" ' 
+        tx.execute(sql)
+        result = tx.fetchall()
+        for item in result:
+            content = re.sub(r'<imgsrc=', '<img src=', item['content'])
+            content = re.sub(r'<imgalt=', '<img alt=', content)
+            try:
+                tx.execute(
+                    "update `article` set `content`=%s"
+                    "where `id`=%s  ",
+                    (content, item['id'])
+                )
+            except MySQLdb.Error, e:
+                logging.error("update Item:%s Error %d: %s" %
+                              (item['id'], e.args[0], e.args[1]))
+                
+            logging.info("Item already updated in db:id->%s, %s ,%s" %
+                         (item['id'], item['title'], item['url']))
+            pass

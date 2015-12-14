@@ -10,13 +10,16 @@ class Recommend_Logic_Recommend extends Base_Logic{
     public function listArticles($page, $pageSize, $arrInfo = array()){
         $listArticle = new Recommend_List_Result();
         $strFilter   = "";
+        $bSpecial    = false;
         if(isset($arrInfo['sight'])){
             $strFilter = "`label_type` =".Recommend_Type_Label::SIGHT." and label_id=".$arrInfo['sight'];
             unset($arrInfo['sight']);
+            $bSpecial = true;
         }
         if(isset($arrInfo['tag'])){
             $strFilter = "`label_type` =".Recommend_Type_Label::GENERAL." and label_id=".$arrInfo['tag'];
             unset($arrInfo['tag']);
+            $bSpecial = true;
         }
         if(empty($strFilter)){
             $strFilter = "1";
@@ -24,10 +27,24 @@ class Recommend_Logic_Recommend extends Base_Logic{
         foreach ($arrInfo as $key => $val){            
             $strFilter .= " and `".$key."` =".$val;
         }
+        $listArticle->setGroup("obj_id");
         $listArticle->setFilterString($strFilter);
         $listArticle->setPage($page);
         $listArticle->setPagesize($pageSize);
-        return $listArticle->toArray();
+        if($bSpecial){
+            return $listArticle->toArray();   
+        }
+        $listArticle->setFields(array('id','obj_id'));
+        $arrRet =  $listArticle->toArray();
+        foreach($arrRet['list'] as $key => $val){
+            $listArticle = new Recommend_List_Result();
+            $listArticle->setFilter(array('obj_id' => $val['obj_id']));
+            $listArticle->setFields(array('label_id','label_type','rate','reason','status','create_time','update_time'));
+            $listArticle->setPagesize(PHP_INT_MAX);
+            $arrTemp = $listArticle->toArray();
+            $arrRet['list'][$key]['group'] = $arrTemp['list'];
+        }
+        return $arrRet;
     }
     
     /**
@@ -42,5 +59,11 @@ class Recommend_Logic_Recommend extends Base_Logic{
             $objRecommendRet->status = $val['status'];
             $objRecommendRet->save();
         }
+    }
+    
+    public function getArticleDetail($id){
+        $objArticle = new Recommend_Object_Article();
+        $objArticle->fetch(array('id' => $id));
+        return $objArticle->toArray();
     }
 }

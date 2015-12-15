@@ -47,7 +47,7 @@ foreach ($arrTopic['list'] as $val){
 $arrTopicIds = array_unique($arrTopicIds);
 foreach ($arrTopicIds as $topic){       
     $hot1  = getHot($topic,0);   
-    $hot2  = getHot($topic,0.08);
+    $hot2  = getHot($topic,4);
     $hot3  = getHot($topic,1);
     
     $objTopic        = new Topic_Object_Topic();
@@ -107,9 +107,9 @@ function getHot($topic,$during){
     $praiseTime     = isset($arrPraise['list'][0])?$arrPraise['list'][0]['create_time']:$publishTime;
     
     $collectTime = $collectTime > FROM_TIME ?($collectTime - FROM_TIME)/3600:1;
-    $commentTime = $collectTime > FROM_TIME ?($commentTime - FROM_TIME)/3600:1;
-    $praiseTime  = $collectTime > FROM_TIME ?($praiseTime - FROM_TIME)/3600:1;
-    $publishTime = $publishTime > FROM_TIME ?($collectTime - FROM_TIME)/3600:1;
+    $commentTime = $commentTime > FROM_TIME ?($commentTime - FROM_TIME)/3600:1;
+    $praiseTime  = $praiseTime  > FROM_TIME ?($praiseTime - FROM_TIME)/3600:1;
+    $publishTime = $publishTime > FROM_TIME ?($publishTime - FROM_TIME)/3600:1;
     
     $hot  = ($praiseNum + $collectTopicNum + $commentNum + 4*log10($topicUv+1) + 1.0)*(($publishTime+$collectTime+$commentTime+$praiseTime)*(0.25*$during)+1.0);
     return $hot;

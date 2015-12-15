@@ -1,4 +1,6 @@
 #/bin/bash
+cd `dirname $0`/../
+echo "executing path = "`pwd`
 rm -rf data/profiles
 rm -rf data/labelrdds
 spark-submit \

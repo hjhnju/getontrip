@@ -2,6 +2,7 @@
 #第1列0～numClasses-1
 #第2～N列 one-based and asc order
 #获取数据
+mkdir -p data/data
 rm -rf data/data/documents
 scp -r work@123.57.67.165://home/work/data/documents.tar data/data/ 
 scp -r work@123.57.67.165://home/work/data/label_index data/data/ 

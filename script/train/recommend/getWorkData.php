@@ -7,7 +7,7 @@ const TITLE_REPEAT   = 5;
 
 const KEYWORD_REPEAT = 3;
 
-const DEFAULT_PAGESIZE = 500;
+const DEFAULT_PAGESIZE = 300;
 
 if(!is_dir(DATA_PATH)){
     mkdir(DATA_PATH);

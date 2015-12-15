@@ -55,10 +55,11 @@ class Recommend_Logic_Recommend extends Base_Logic{
     public function dealArticle($id, $arrInfo){
         foreach ($arrInfo as $val){
             $objRecommendRet = new Recommend_Object_Result();
-            $objRecommendRet->fetch(array('id' => $id,'label_id' => $val['label_id'],'label_type' => $val['label_type']));
+            $objRecommendRet->fetch(array('obj_id' => $id,'label_id' => $val['label_id'],'label_type' => $val['label_type']));
             $objRecommendRet->status = $val['status'];
-            $objRecommendRet->save();
+            $ret = $objRecommendRet->save();
         }
+        return $ret;
     }
     
     public function getArticleDetail($id){

@@ -514,6 +514,7 @@ class Book_Logic_Book extends Base_Logic{
             $book = $this->getBookById($val['id']);
             $arrBook[$key]['url']   = trim($book['url']);
             $arrBook[$key]['image'] = $book['image'];
+            $arrBook[$key]['content'] = strval($book['author']);
             $arrBook[$key]['search_type'] = 'book';
         }
         return array('data' => $arrBook, 'num' => $num);

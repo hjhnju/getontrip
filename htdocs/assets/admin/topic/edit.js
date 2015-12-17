@@ -51,7 +51,7 @@ $(document).ready(function() {
                     },
                     onMediaDelete: function(files) {
                         var file = files[0];
-                        if ($(file).attr("data-image") || $(file).attr("data-hash")) {
+                        if ($(file).attr('src').indexOf('/pic/')>=0) {
                             if (confirm("会从服务器删除图片，确定删除么 ?") == false) {
                                 return false;
                             }

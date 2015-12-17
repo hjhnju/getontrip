@@ -5372,9 +5372,15 @@
             // [workaround] getting image from clipboard
             //  - IE11 and Firefox: CTRL+v hook
             //  - Webkit: event.clipboardData
-            
+            $paste = $('<div />').attr('contenteditable', true).css({
+                    position: 'absolute',
+                    left: -100000,
+                    opacity: 0
+            });
+            layoutInfo.editable().after($paste);
+            $paste.on('paste', pasteByEvent);
             //修改1 这里全部使用 hook 方法
-            //if ((agent.isMSIE && agent.browserVersion > 10) || agent.isFF) {
+            if ((agent.isMSIE && agent.browserVersion > 10) || agent.isFF) {
                 $paste = $('<div />').attr('contenteditable', true).css({
                     position: 'absolute',
                     left: -100000,
@@ -5393,18 +5399,27 @@
                 });
 
                 layoutInfo.editable().before($paste);
-           // } else {
-               // layoutInfo.editable().on('paste', pasteByEvent);
-            //}
+           } else {
+               layoutInfo.editable().on('paste',  function(event) {
+                    handler.invoke('saveRange', layoutInfo.editable());
+                        $paste.focus();
+                        if ($paste) {
+                        $paste.focus();
+                    }
+                    pasteByEvent(event);
+               });
+            }
         };
 
         var pasteByHook = function(layoutInfo) {
             var $editable = layoutInfo.editable();
             var node = $paste[0].firstChild;
 
-            if (dom.isImg(node)) {
+            /*if (dom.isImg(node)) { 
                 var dataURI = node.src;
-                var decodedData = atob(dataURI.split(',')[1]);
+                //var decodedData = window.atob(dataURI.split(',')[1]);
+                var decodedData = dataURI.split(',');
+                //
                 var array = new Uint8Array(decodedData.length);
                 for (var i = 0; i < decodedData.length; i++) {
                     array[i] = decodedData.charCodeAt(i);
@@ -5418,7 +5433,7 @@
                 handler.invoke('restoreRange', $editable);
                 handler.invoke('focus', $editable);
                 handler.insertImages(layoutInfo, [blob]);
-            } else {
+            } else {*/
                 var pasteContent = $('<div />').html(filterContent($paste.html())).html();
                 handler.invoke('restoreRange', $editable);
                 handler.invoke('focus', $editable);
@@ -5426,7 +5441,8 @@
                 if (pasteContent) {
                     handler.invoke('pasteHTML', $editable, pasteContent);
                 }
-            }
+            //}
+             
 
             $paste.empty();
         };
@@ -5442,11 +5458,25 @@
             var $editable = layoutInfo.editable();
 
             if (clipboardData && clipboardData.items && clipboardData.items.length) {
-                var item = list.head(clipboardData.items);
+               /* var item = list.head(clipboardData.items);
                 if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
                     handler.insertImages(layoutInfo, [item.getAsFile()]);
-                } 
-                handler.invoke('editor.afterCommand', $editable);
+                } */
+                /*handler.invoke('editor.afterCommand', $editable);*/
+                setTimeout(function() {
+                    if (!$paste) {
+                        return;
+                    }
+                    var pasteContent = $('<div />').html(filterContent($paste.html())).html();
+                    handler.invoke('restoreRange', $editable);
+                    handler.invoke('focus', $editable);
+
+                    if (pasteContent) {
+                        handler.invoke('pasteHTML', $editable, pasteContent);
+                    }
+                    $paste.empty();
+                });
+                
             }
         };
 
@@ -5458,11 +5488,25 @@
             //var pattern4 = /id=\"(.*?)\"/gi; //去掉id属性 
             //var pattern5 = /\<p(.*?)\>/gi;//去掉p多余的属性
             var pattern6 = /div/gi; //div替换为p
-            var pattern7 = /font/gi; //font替换为span
+            var pattern7 = /<\/?font(.*?)>/gi; //font替换为span
             var pattern8 = /<\/?[span|strong](.*?)>/gi; //去掉span
             var pattern9 = /<p(.*?)>/gi; //去掉p所有的属性
-
-            return html.replace(pattern1, '').replace(pattern2, '').replace('blockquote', 'p').replace(pattern6, 'p').replace(pattern7, 'span').replace(pattern8, '').replace(pattern9, '<p>');
+            //return html;
+            html = html.replace(/ style=\"[^"]*\"/gi,'');
+           html = html.replace(/ id=\"[^"]*\"/gi,'');
+           html = html.replace(/ class=\"[^"]*\"/gi,'');
+           html = html.replace(/<\/?font>/gi,'');
+           html = html.replace(/<\/?span[^>]*>/gi,'');
+           html = html.replace(/div/gi,'p');
+           
+           html = html.replace(/<p[^>]*>/gi,'<p>'); 
+           html = html.replace(/&nbsp;/gi, "");
+           html = html.replace(/<p><p>/gi, "<p>") ;
+           html = html.replace(/<\/p><\/p>/gi, "<\/p>") ;
+           html = html.replace(/<p><\/p>/gi, "") ;
+           html = html.replace(/<\/?o:p>/gi,'');
+            return html;
+            return html.replace(pattern1, '').replace(pattern2, '').replace('blockquote', 'p').replace(pattern6, 'p').replace(pattern7, '').replace(pattern8, '').replace(pattern9, '<p>');
 
         }
     };

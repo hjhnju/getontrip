@@ -7,13 +7,13 @@ const TITLE_REPEAT   = 5;
 
 const KEYWORD_REPEAT = 3;
 
-const DEFAULT_PAGESIZE = 300;
+const DEFAULT_PAGESIZE = 200;
 
-if(!is_dir(DATA_PATH)){
+/*if(!is_dir(DATA_PATH)){
     mkdir(DATA_PATH);
-}
+}*/
 
-$date = date("Y-m-d",time());
+$date = date("Ymd",time());
 
 $fp = fopen(DATA_PATH.$date,"w");
 

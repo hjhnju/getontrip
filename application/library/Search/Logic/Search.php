@@ -153,13 +153,19 @@ class Search_Logic_Search{
         $label    = Tag_Api::getTagInfo($objLabel->id);  
         $labelId  = $objLabel->id;
         if(isset($label['name']) && ($label['name'] == '热门内容')){
-            $listTopic = new Topic_List_Topic();
-            $listTopic->setPage($page);
-            $listTopic->setFilter(array('status' => Topic_Type_Status::PUBLISHED));
-            $listTopic->setPagesize(self::HOT_TOPIC_NUM);
-            $listTopic->setOrder('`hot2` desc, `create_time` desc');
-            $arrData = $listTopic->toArray();
-            $arrData['list'] = array_slice($arrData['list'],($page-1)*$pageSize,$pageSize);
+            if($page == 1){
+                $modelTopic      = new TopicModel();
+                $arrData['list'] = $modelTopic->getRandTopicIds($pageSize);
+            }elseif($page <= 15){
+                $listTopic = new Topic_List_Topic();
+                $listTopic->setPage($page-1);
+                $listTopic->setFilter(array('status' => Topic_Type_Status::PUBLISHED));
+                $listTopic->setPagesize($pageSize);
+                $listTopic->setOrder('`hot2` desc, `create_time` desc');
+                $arrData = $listTopic->toArray();
+            }else{
+                $arrData['list'] = array();
+            }
             if(empty($arrData['list'])){
                 return $arrData['list'];
             }

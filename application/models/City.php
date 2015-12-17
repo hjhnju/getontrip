@@ -26,10 +26,10 @@ class CityModel extends BaseModel{
         $filterInfo = '';
         $filterMeta = '';        
         foreach ($arrInfo as $key => $val){
-            if(in_array($key, $this->_fields_info)){
-                $filterInfo .= 'city.`'.$key."` = ".$val." AND ";
+            if(in_array($key, $this->_fields_meta)){
+                $filterMeta .= 'city_meta.`'.$key."` = ".$val." AND ";                
             }else{
-                $filterMeta .= 'city_meta.`'.$key."` = ".$val." AND ";
+                $filterInfo .= 'city.`'.$key."` = ".$val." AND ";
             }
         }
         $filter = $filterInfo . $filterMeta . " city_meta.`cityid` = 0 AND city_meta.`provinceid` != 0";

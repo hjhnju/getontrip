@@ -331,6 +331,9 @@ class Base_Extract {
         //div标签转成p标签
         $content = preg_replace( '/<div.*?>/is', '<p>', $content );
         $content = preg_replace( '/<\/div>/is', '</p>', $content );
+
+        //去掉所有的style样式 
+        $content = preg_replace( '/ style=\".*?\"/is', '', $content );
         //去掉所有标签两旁的空白
         $arr = array();
         preg_match_all('/(　)*(\xc2\xa0)*\s*(&nbsp;)*<(.*?)>(　)*(\xc2\xa0)*\s*(&nbsp;)*/i', $content, $arr);

@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+    <meta charset="utf-8">
+    <title>途知</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta name="format-detection" content="telephone=no, email=no">
+
+    <style>
+        html, body {
+            font-size: 16px;
+        }
+        html {
+            background: #f6f6f6;
+            color: #2f2f2f;
+        }
+      .bs-docs-container {
+            margin-top: 35px;
+            min-height: 480px;
+        }
+        .container {
+            _width: 580px;
+            max-width: 580px;
+            padding: 0 1em;
+            margin: 0 auto;
+        } 
+        .bs-docs-container .weixin {
+            position: absolute;
+            width: 80%;
+            padding-right: 13%;
+
+            margin: 0;
+            left: 5%;
+            top: 10px;
+            font-size: 14px;
+            line-height: 1.42;
+            color: #303537;
+            background: url({%$feroot%}/common/img/hand.png) right top no-repeat;
+            z-index: 1000;
+            background-size: 40px 40px;
+        }
+        .bs-docs-container .weixin p{
+                padding: 0px;
+                margin: 0px;
+                font-size: 15px;
+                line-height: 20px;
+                text-align: right;
+         }
+        .bs-docs-container .weixin p span{
+            color: #22ABEE;
+
+        }
+        .logo {
+            position: absolute;
+            bottom: 10%;    left: 0;
+            right: 0;
+            margin: 0 auto;width: 100px;    text-align: center;
+        }  
+         .logo span{
+                display: block;
+                 color: #2A2D2E; font-size: 15px;
+        }.logo_img {
+            width: 60px;
+            margin: 0 auto;
+            text-align: center;font-size: 15px;
+            text-align: center;
+        }
+    </style> 
+  <body> 
+    
+    <div class="container bs-docs-container"> 
+      <div class="weixin">
+        <p>
+          由于微信的限制，请点击右上角按钮<br>
+          <span>在Safari中打开</span>下载途知
+        </p>
+      </div>
+      <div class="logo">
+          <img src="{%$feroot%}/home/img/app-logo.png" alt="" class="logo_img">
+          <span>亦行·亦读</span>
+      </div>  
+    </div>
+ </body>
+ 

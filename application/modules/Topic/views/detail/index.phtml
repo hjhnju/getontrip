@@ -6,8 +6,10 @@
 <link rel="stylesheet" type="text/css" href="{%$feroot%}/topic/css/detail.css" />
 {%/if%} 
  <style type="text/css" media="screen">
- 
+
  </style>
+}
+}
 {%/block%} 
 {%block name="content"%}
 {%if $isapp eq 0%}  
@@ -15,11 +17,13 @@
     {%if $isMobile%}{%else%}{%/if%} 
     <div class="header-for-mobile">
       <a href="/download" class="header-for-mobile-download-link">
-      <span class="header-for-mobile-btn">立即下载</span>
+      <span class="header-for-mobile-btn">下载iOS版</span>
       <img class="header-for-mobile-logo-img" src="{%$feroot%}/common/img/app-logo.png">
       <span class="header-for-mobile-title">途知</span>
       <span class="header-for-mobile-meta">
-        深度旅行：旅行中的历史文化科学趣闻
+        <!-- 深度旅行：旅行中的历史文化科学趣闻 -->
+        深度旅行：了解景点、城市的历史、人文、科学、地理等知识
+
       </span>
       </a>
     </div> 
@@ -43,12 +47,19 @@
     {%if $isapp eq 0%}  
       <div class="bg-img" id="bg-img" style="background-image:url('{%$feroot%}/common/img/imgloading.png'); "  data-stroot="{%$stroot%}"  data-image="{%if empty($post.image)==0%}{%$post.image%}{%/if%}">  
       <div class="title-box {%if $isMobile%} ismobile{%/if%}">
+          <span class="tag">
+            {%$post.sight%}
+             {%foreach $post.tags as $key=>$item%} 
+             · {%$item%}
+             {%/foreach%}  
+            
+          </span>
           <div class="title">
             {%if empty($post.title)==0%}{%$post.title%}{%/if%} 
           </div>
-          <div class="like" style="display:none;">
-             <i class="fa"></i>{%$post.collect%}
-             <i class="fa fa-eye"></i>{%$post.collect%}
+          <div class="like clearfix" style="">
+             <i class="collect"></i><span class="number">{%$post.collect%}</span>
+             <i class="eye"></i><span class="number">{%$post.visit%}</span>
           </div>
        </div> 
       <div class="img-mask"></div> 

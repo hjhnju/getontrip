@@ -165,7 +165,6 @@ class Topic_Logic_Topic extends Base_Logic{
                 $arrRet['arrsights'][] = $temp;
             }
         }        
-        
         $logicComment          = new Comment_Logic_Comment();
         $arrRet['id']          = strval($arrRet['id']);
         $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
@@ -208,23 +207,6 @@ class Topic_Logic_Topic extends Base_Logic{
         $logicTag = new Tag_Logic_Tag();
         $arrRet['tags'] = $logicTag->getTopicTags($topicId);
         if(!empty($arrRet['tags'])){
-            foreach ($arrRet['tags'] as $tagName){
-                $tag = $logicTag->getTagByName($tagName);
-                if($tag['type'] == Tag_Type_Tag::GENERAL){
-                    $listSightTag = new Sight_List_Tag();
-                    $listSightTag->setFilter(array('tag_id' => $tag['id']));
-                    $listSightTag->setPagesize(PHP_INT_MAX);
-                    $arrSightTag  = $listSightTag->toArray();
-                    foreach ($arrSightTag['list'] as $sight){
-                        $temp['id']    = strval($sight['sight_id']);
-                        $sight         = Sight_Api::getSightById($sight['sight_id']);
-                        $temp['name']  = isset($sight['name'])?$sight['name']:'';
-                        if(!empty($temp['name']) && ($sight['status'] == Sight_Type_Status::PUBLISHED)){
-                            $arrRet['arrsights'][] = $temp;
-                        }
-                    }
-                }
-            }
             $tag = str_replace("其他", "", $arrRet['tags'][0]);
             $arrRet['tags'] = array($tag);
         }

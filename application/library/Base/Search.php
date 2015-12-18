@@ -75,6 +75,7 @@ class Base_Search {
         }else{
             $url .='&hl.fragsize=17&hl.simple.pre='.urlencode('').'&hl.simple.post='.urlencode('');
         }
+        //var_dump(Base_Solr::getInstance().$url);die;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, Base_Solr::getInstance().$url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -94,9 +95,9 @@ class Base_Search {
         }
         
         foreach ($arrRet['response']['docs'] as $key => $val){
+            $val['content'][0] = isset($val['content'][0])?Base_Util_String::getSubString($val['content'][0],17):'';
             if($type == 'content'){
-                $val['title'][0]   = isset($val['title'][0])?$val['title'][0]:'';
-                $val['content'][0] = isset($val['content'][0])?$val['content'][0]:'';
+                $val['title'][0]   = isset($val['title'][0])?Base_Util_String::getSubString($val['title'][0],17):'';                
                 $arrRet['response']['docs'][$key]['search_type']  = $val['search_type'][0];
                 $arrRet['response']['docs'][$key]['title']    = trim(isset($arrRet['highlighting'][$val['unique_id']]['title'][0])?$arrRet['highlighting'][$val['unique_id']]['title'][0]:$val['title'][0]); 
                 $arrRet['response']['docs'][$key]['content']  = trim(isset($arrRet['highlighting'][$val['unique_id']]['content'][0])?$arrRet['highlighting'][$val['unique_id']]['content'][0]:$val['content'][0]);
@@ -105,14 +106,12 @@ class Base_Search {
                 unset($arrRet['response']['docs'][$key]['unique_id']);
             }elseif($type == 'topic' || $type == 'book' || $type == 'video'){
                 $val['title'][0]   = isset($val['title'][0])?$val['title'][0]:'';
-                $val['content'][0] = isset($val['content'][0])?$val['content'][0]:'';
                 $arrRet['response']['docs'][$key]['title']    = trim(isset($arrRet['highlighting'][$val['id']]['title'][0])?$arrRet['highlighting'][$val['id']]['title'][0]:$val['title'][0]);
                 $arrRet['response']['docs'][$key]['content']  = trim(isset($arrRet['highlighting'][$val['id']]['content'][0])?$arrRet['highlighting'][$val['id']]['content'][0]:$val['content'][0]);
                 $arrRet['response']['docs'][$key]['title']   = str_replace("\r", "", $arrRet['response']['docs'][$key]['title']);
                 $arrRet['response']['docs'][$key]['content'] = str_replace("\n", "", $arrRet['response']['docs'][$key]['content']);
             }else{
                 $val['name'][0]   = isset($val['name'][0])?$val['name'][0]:'';
-                $val['content'][0] = isset($val['content'][0])?$val['content'][0]:'';
                 $arrRet['response']['docs'][$key]['name']  = trim(isset($arrRet['highlighting'][$val['id']]['name'][0])?$arrRet['highlighting'][$val['id']]['name'][0]:'');
                 $arrRet['response']['docs'][$key]['content']  = trim(isset($arrRet['highlighting'][$val['id']]['content'][0])?$arrRet['highlighting'][$val['id']]['content'][0]:$val['content'][0]);
                 

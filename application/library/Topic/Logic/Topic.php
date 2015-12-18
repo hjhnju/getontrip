@@ -681,7 +681,7 @@ class Topic_Logic_Topic extends Base_Logic{
     
     public function addTopic($arrInfo){
         $objTopic = new Topic_Object_Topic();
-        $redis = Base_Redis::getInstance();
+        $redis    = Base_Redis::getInstance();
         foreach ($arrInfo as $key => $val){
             $key  = $this->getprop($key);
             $objTopic->$key = $val;
@@ -830,11 +830,11 @@ class Topic_Logic_Topic extends Base_Logic{
      * @return array
      */
     public function searchTopic($query,$page,$pageSize){
-        $arrTopic  = Base_Search::Search('topic', $query, $page, $pageSize, array('id','title'));
+        $arrTopic  = Base_Search::Search('topic', $query, $page, $pageSize, array('id','title','content'));
         $num       = $arrTopic['num'];
         $arrTopic  = $arrTopic['data'];
         foreach ($arrTopic as $key => $val){
-            $topic = $this->getTopicById($val['id']);           
+            $topic = $this->getTopicById($val['id']);
             $arrTopic[$key]['image']       = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
             $arrTopic[$key]['search_type'] = 'topic';
         }

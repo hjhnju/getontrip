@@ -194,6 +194,8 @@ class Sight_Logic_Sight extends Base_Logic{
             $topic_num     = $this->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
             $arrSight[$key]['desc']     = sprintf("%d个类别，%d篇内容",$count,$topic_num);
             $arrSight[$key]['content']  = $arrSight[$key]['desc'];
+            
+            $arrSight[$key]['search_type']  = 'sight';
         }
         return array('data' => $arrSight, 'num' => $num);
     }

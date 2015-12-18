@@ -45,7 +45,8 @@ class Base_Search {
             return $arrRet;
         }
         foreach (self::$arrPrams as $val){
-            $query .= $val.":\"".$word."\" or ";
+            $query .= $val.":\"".$word."\" , ";
+            //$query .= $val.":\"".$word."\" or ";
         }
         $query = substr($query,0,-3);
         $query = urlencode($query);

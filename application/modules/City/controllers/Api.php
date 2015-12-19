@@ -60,12 +60,10 @@ class ApiController extends Base_Controller_Api {
     /**
      * 接口3：/api/1.0/city/list
      * 获取城市列表信息，切换城市时使用
-     * @param integer cityid,城市ID
      * @return json
      */
     public function listAction(){
-        $cityId   = isset($_REQUEST['cityid'])?intval($_REQUEST['cityid']):'';
-        $ret      = City_Api::getCityInfo($cityId);
+        $ret      = City_Api::getCityInfo();
         return $this->ajax($ret);
     }
     
@@ -111,6 +109,18 @@ class ApiController extends Base_Controller_Api {
      */
     public function provinceAction(){
         $ret = $this->_logicCity->provice();
+        return $this->ajax($ret);
+    }
+    
+    /**
+     * 接口7:/api/1.0/city/hot
+     * 获取当前城市及热门城市信息
+     * @param integer cityid,城市ID
+     * @return json
+     */
+    public function hotAction(){
+        $cityId   = isset($_REQUEST['cityid'])?intval($_REQUEST['cityid']):'';        
+        $ret      = $this->_logicCity->getHotCity($cityId);
         return $this->ajax($ret);
     }
 }

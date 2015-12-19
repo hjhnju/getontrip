@@ -65,20 +65,8 @@ class City_Logic_City{
      * 获取城市信息，供前端使用
      * @return array
      */
-    public function getCityInfo($cityId = ''){
+    public function getCityInfo(){
         $arrRet        = array();
-        $arrRet['cityInfo']= array();
-        if(!empty($cityId)){
-            $logicSight = new Sight_Logic_Sight();
-            $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$cityId);
-            $topicNum          = $this->getTopicNum($cityId);
-            $objCity           = new City_Object_Meta();
-            $objCity->fetch(array('id' => $cityId));
-            $arrRet['cityInfo']['name']        = strval(str_replace("市", "", $objCity->name));
-            $arrRet['cityInfo']['sight']       = strval($sightNum);
-            $arrRet['cityInfo']['topic']       = strval($topicNum);
-        }
-        $arrRet['hot'] = $this->getHotCity();
         $arrLeters     = range('A','Z');
         $objCity       = new City_Object_City();
         $logicSight    = new Sight_Logic_Sight();
@@ -175,7 +163,7 @@ class City_Logic_City{
      * @param integer $pageSize
      * @return array
      */
-    public function queryCity($arrInfo,$page,$pageSize){
+    public function queryCity($arrInfo,$page,$pageSize){ 
       $modelCity       = new CityModel();
         $arrRet          = array();
         $arrRet['total'] = $modelCity->getCityNum($arrInfo);
@@ -302,7 +290,21 @@ class City_Logic_City{
      * 获取热门城市信息
      * @return array
      */
-    public function getHotCity(){
+    public function getHotCity($cityId = ''){
+        $arrRet        = array();
+        $arrRet['cityInfo']= array();
+        if(!empty($cityId)){
+            $logicSight = new Sight_Logic_Sight();
+            $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$cityId);
+            $topicNum          = $this->getTopicNum($cityId);
+            $objCity           = new City_Object_Meta();
+            $objCity->fetch(array('id' => $cityId));
+            $arrRet['cityInfo']['id']          = strval($objCity->id);
+            $arrRet['cityInfo']['name']        = strval(str_replace("市", "", $objCity->name));
+            $arrRet['cityInfo']['sight']       = strval($sightNum);
+            $arrRet['cityInfo']['topic']       = strval($topicNum);
+        }
+        
         $modelTopic    = new TopicModel();
         $logicSight = new Sight_Logic_Sight();
         $arrHotCity = array(
@@ -323,8 +325,8 @@ class City_Logic_City{
             $arrHotCity[$key]['sight']       = strval($sightNum);
             $arrHotCity[$key]['topic']       = strval($topicNum);
         }
-
-        return $arrHotCity;
+        $arrRet['hot'] = $arrHotCity;
+        return $arrRet;
     }
     
     /**

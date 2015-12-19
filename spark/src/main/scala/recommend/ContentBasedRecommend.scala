@@ -15,6 +15,9 @@ import org.apache.spark.{SparkContext, SparkConf}
   */
 object ContentBasedRecommend {
 
+    // 相似度最低值
+    val threshold: Double = 0.10
+
     def main (args: Array[String]) {
 
         val conf = new SparkConf().setAppName("GetOntrip Sparking")
@@ -24,7 +27,7 @@ object ContentBasedRecommend {
         val profiles: RDD[LabeledPoint] = MLUtils.loadLibSVMFile(sc, "data/profiles.libsvm")
 
         // 读取待验证的文档向量
-        val newDocs: RDD[(String, Seq[String])] = sc.textFile("data/newdocs.20151211").map {
+        val newDocs: RDD[(String, Seq[String])] = sc.textFile("data/newdocs.txt").map {
             line =>
                 val arrTmp = line.split( """\s+""")
                 (arrTmp(0), arrTmp.drop(1).toSeq)
@@ -59,7 +62,9 @@ object ContentBasedRecommend {
             val reason = ""
             (docId, (point.label.toInt, cosineSimilarity, reason))
         }
-        val filterAndSortedSims = sims.groupByKey().map(x => (x._1, x._2.toArray.filter(_._2 >= 0.10).sortBy(_._2).reverse)).filter(_._2.length > 0)
+
+        // 过滤掉相似度小的; 推荐标签按相似度降序排序; 无推荐结果不输出
+        val filterAndSortedSims = sims.groupByKey().map(x => (x._1, x._2.toArray.filter(_._2 >= this.threshold).sortBy(_._2).reverse)).filter(_._2.length > 0)
 
         val simOut = filterAndSortedSims.map{x => x._1 + " " + x._2.mkString(" ")}
 

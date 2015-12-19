@@ -165,7 +165,6 @@ class Topic_Logic_Topic extends Base_Logic{
                 $arrRet['arrsights'][] = $temp;
             }
         }        
-        
         $logicComment          = new Comment_Logic_Comment();
         $arrRet['id']          = strval($arrRet['id']);
         $arrRet['commentNum']  = $logicComment->getTotalCommentNum($topicId);
@@ -208,23 +207,6 @@ class Topic_Logic_Topic extends Base_Logic{
         $logicTag = new Tag_Logic_Tag();
         $arrRet['tags'] = $logicTag->getTopicTags($topicId);
         if(!empty($arrRet['tags'])){
-            foreach ($arrRet['tags'] as $tagName){
-                $tag = $logicTag->getTagByName($tagName);
-                if($tag['type'] == Tag_Type_Tag::GENERAL){
-                    $listSightTag = new Sight_List_Tag();
-                    $listSightTag->setFilter(array('tag_id' => $tag['id']));
-                    $listSightTag->setPagesize(PHP_INT_MAX);
-                    $arrSightTag  = $listSightTag->toArray();
-                    foreach ($arrSightTag['list'] as $sight){
-                        $temp['id']    = strval($sight['sight_id']);
-                        $sight         = Sight_Api::getSightById($sight['sight_id']);
-                        $temp['name']  = isset($sight['name'])?$sight['name']:'';
-                        if(!empty($temp['name']) && ($sight['status'] == Sight_Type_Status::PUBLISHED)){
-                            $arrRet['arrsights'][] = $temp;
-                        }
-                    }
-                }
-            }
             $tag = str_replace("其他", "", $arrRet['tags'][0]);
             $arrRet['tags'] = array($tag);
         }
@@ -681,7 +663,7 @@ class Topic_Logic_Topic extends Base_Logic{
     
     public function addTopic($arrInfo){
         $objTopic = new Topic_Object_Topic();
-        $redis = Base_Redis::getInstance();
+        $redis    = Base_Redis::getInstance();
         foreach ($arrInfo as $key => $val){
             $key  = $this->getprop($key);
             $objTopic->$key = $val;
@@ -830,11 +812,11 @@ class Topic_Logic_Topic extends Base_Logic{
      * @return array
      */
     public function searchTopic($query,$page,$pageSize){
-        $arrTopic  = Base_Search::Search('topic', $query, $page, $pageSize, array('id','title'));
+        $arrTopic  = Base_Search::Search('topic', $query, $page, $pageSize, array('id','title','content'));
         $num       = $arrTopic['num'];
         $arrTopic  = $arrTopic['data'];
         foreach ($arrTopic as $key => $val){
-            $topic = $this->getTopicById($val['id']);           
+            $topic = $this->getTopicById($val['id']);
             $arrTopic[$key]['image']       = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
             $arrTopic[$key]['search_type'] = 'topic';
         }

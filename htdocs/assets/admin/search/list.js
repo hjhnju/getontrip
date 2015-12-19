@@ -135,18 +135,18 @@ $(document).ready(function() {
                     var listLabel = new Remoter('/admin/searchapi/listLabel');
                     listLabel.remote({
                         id: data.id
-                    });
+                    });                   
                     listLabel.on('success', function(data) {
                         data = data.data.length ? data.data[0] : !1;
                         if (!data) return;
-
-                        $('#myModal input[name="obj_id"]').attr("checked", false);
+                        //$('#myModal input[name="sight_id"]').attr("checked", false);
                         for (var i = 0; i < data.objs.length; i++) {
                             $('#myModal input[value="' + data.objs[i].id + '"]:checkbox').attr("checked", true);
                             $('#myModal input[value="' + data.objs[i].id + '"]:checkbox').parent().attr('class', 'checked');
                         };
                         $('#myModal').modal();
-
+                        $('#myModal input[name="sight_id"]').removeAttr('checked');
+                        $('#myModal input[name="city_id"]').removeAttr('checked');
                     });
 
                 });

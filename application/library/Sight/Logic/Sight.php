@@ -99,7 +99,8 @@ class Sight_Logic_Sight extends Base_Logic{
         if(!empty($cityId)){
             $listSight->setFilter(array('city_id' => $cityId));
         }        
-        $listSight->setOrder('`id` asc');
+        //$listSight->setOrder('`id` asc');
+        $listSight->setOrder('`hot2` desc');
         $listSight->setPage($page);
         $listSight->setPagesize($pageSize);
         $arrRet  = $listSight->toArray();  
@@ -129,12 +130,8 @@ class Sight_Logic_Sight extends Base_Logic{
      * @return array
      */
     public function getSightByTopic($topicId,$page=1,$pageSize=PHP_INT_MAX){
-        $listSightTopic = new Sight_List_Topic();
-        $listSightTopic->setFields(array('sight_id'));
-        $listSightTopic->setFilter(array('topic_id' => $topicId));
-        $listSightTopic->setPage($page);
-        $listSightTopic->setPagesize($pageSize);
-        $ret = $listSightTopic->toArray();
+        $model = new SightModel();
+        $ret = $model->getSightByTopic($topicId, $page, $pageSize);
         return $ret;
     }
     
@@ -193,6 +190,8 @@ class Sight_Logic_Sight extends Base_Logic{
             $topic_num     = $this->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
             $arrSight[$key]['desc']     = sprintf("%d个类别，%d篇内容",$count,$topic_num);
             $arrSight[$key]['content']  = $arrSight[$key]['desc'];
+            
+            $arrSight[$key]['search_type']  = 'sight';
         }
         return array('data' => $arrSight, 'num' => $num);
     }

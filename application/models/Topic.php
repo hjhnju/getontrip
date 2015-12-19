@@ -193,4 +193,10 @@ class TopicModel extends BaseModel{
        // $redis->hSet(Tag_Keys::getTagTopicNumKey(),$sightId,$total);
         return $total;
     }
+    
+    public function getRandTopicIds($pageSize){
+        $sql  = "SELECT id FROM `topic` where status = ".Topic_Type_Status::PUBLISHED." ORDER BY rand() limit 0,".$pageSize;
+        $data = $this->db->fetchAll($sql);
+        return $data;
+    }
 }

@@ -3153,7 +3153,7 @@
              *  @memberof DataTable#oApi
              */
             function _fnInitComplete(settings, json) {
-                settings._bInitComplete = true;
+                //settings._bInitComplete = true;
 
                 // On an Ajax load we now have data and therefore want to apply the column
                 // sizing

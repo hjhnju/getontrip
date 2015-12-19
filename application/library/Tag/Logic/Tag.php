@@ -105,19 +105,26 @@ class Tag_Logic_Tag extends Base_Logic{
         $listTopictag->setFilter(array('tag_id' => $id));
         $listTopictag->setPagesize(PHP_INT_MAX);
         $arrList = $listTopictag->toArray();
-        if(!empty($arrList['list'])){
-            return false;
+        foreach ($arrList['list'] as $val){
+            $objTag = new Topic_Object_Tag();
+            $objTag->fetch(array('id'=>$val['id']));
+            $objTag->remove();
+        }
+        
+        $listSightTag = new Sight_List_Tag();
+        $listSightTag->setFilter(array('tag_id' => $id));
+        $listSightTag->setPagesize(PHP_INT_MAX);
+        $arrSightTag  = $listSightTag->toArray();
+        foreach ($arrSightTag['list'] as $val){
+            $objSightTag = new Sight_Object_Tag();
+            $objSightTag->fetch(array('id' => $val['id']));
+            $objSightTag->remove();
         }
         
         $objTag = new Tag_Object_Tag();
         $objTag->fetch(array('id' => $id));
         $ret1 = $objTag->remove();
-      
-        foreach ($arrList['list'] as $val){
-            $objTag = new Topic_Object_Tag();
-            $objTag->fetch(array('id'=>$val['id']));            
-            $objTag->remove();
-        }    
+        
         $redis = Base_Redis::getInstance();
         $ret2 = $redis->delete(Tag_Keys::getTagInfoKey($id));
         return $ret1&&$ret2;

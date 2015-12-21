@@ -269,4 +269,22 @@ class User_Logic_User extends Base_Logic{
         }
         return User_RetCode::UNKNOWN_ERROR;
     }
+
+
+
+    /**
+     * 根据条件获取用户数量
+     * @param array $arrInfo
+     * @return integer
+     */
+    public function getUsersNum($arrInfo){
+        $listUser = new User_List_User();  
+        if(!empty($arrInfo)){
+            $listUser->setFilter($arrInfo);
+        }
+        $listUser->setFields(array('id'));
+        $listUser->setPagesize(PHP_INT_MAX);
+        $arrRet    = $listUser->toArray();        
+        return $arrRet['total'];
+    }
 }

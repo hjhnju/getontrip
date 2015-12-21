@@ -147,4 +147,15 @@ class Tag_Api{
         $logicTagRelation = new Tag_Logic_Relation();
         return $logicTagRelation->getAllClassTags($page, $pageSize);
     }
+
+    /**
+     * 接口13: Tag_Api::getTagById($id)
+     * 获取标签信息 
+     * @param integer   $id
+     * @return array
+     */
+    public static function getTagById($id){
+       $logicTag = new Tag_Logic_Tag();
+       return $logicTag->getTagById($id);
+    }
 }

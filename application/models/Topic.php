@@ -122,8 +122,8 @@ class TopicModel extends BaseModel{
     
     public function getCityTopicNum($cityId){
         $arrTopicIds = array();
-        $sql_general = "SELECT distinct(a.id) FROM `topic` a, `topic_tag`  b, `sight_tag` c ,`sight` d WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.tag_id = c.tag_id and c.sight_id = d.id  and d.city_id = $cityId";
-        $sql_normal  = "SELECT distinct(a.id) FROM `topic`  a, `sight_topic` b ,`sight` c WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.sight_id = c.id and c.city_id = $cityId";
+        $sql_general = "SELECT distinct(a.id) FROM `topic` a, `topic_tag`  b, `sight_tag` c ,`sight` d WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.tag_id = c.tag_id and c.sight_id = d.id  and d.status = ".Sight_Type_Status::PUBLISHED." and d.city_id = $cityId";
+        $sql_normal  = "SELECT distinct(a.id) FROM `topic`  a, `sight_topic` b ,`sight` c WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.sight_id = c.id and c.city_id = $cityId and c.status=".Sight_Type_Status::PUBLISHED;
         $data = $this->db->fetchAll($sql_general);
         foreach ($data as $val){
             if(!in_array($val,$arrTopicIds)){
@@ -192,5 +192,11 @@ class TopicModel extends BaseModel{
         }
        // $redis->hSet(Tag_Keys::getTagTopicNumKey(),$sightId,$total);
         return $total;
+    }
+    
+    public function getRandTopicIds($pageSize){
+        $sql  = "SELECT id FROM `topic` where status = ".Topic_Type_Status::PUBLISHED." ORDER BY rand() limit 0,".$pageSize;
+        $data = $this->db->fetchAll($sql);
+        return $data;
     }
 }

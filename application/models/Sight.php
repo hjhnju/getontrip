@@ -221,4 +221,29 @@ class SightModel extends BaseModel
         }
         return $ret;
     }
+    
+    public function getSightByTopic($topicId,$page,$pageSize){
+        $arrRet['list'] = array();
+        $from   = ($page-1)*$pageSize;
+        $sql_sight    = "SELECT b.sight_id  from `sight` a, `sight_topic` b where a.status = ".Sight_Type_Status::PUBLISHED." and  a.id = b.sight_id and b.topic_id = $topicId limit $from,$pageSize";
+        $sql_tag      = "SELECT b.sight_id  from `sight` a, `sight_tag` b, `topic_tag` c where a.id = b.sight_id and a.status=".Sight_Type_Status::PUBLISHED." and b.tag_id = c.tag_id and c.topic_id = $topicId limit $from, $pageSize";
+        try {
+            $ret_sight = $this->db->fetchAll($sql_sight); 
+            foreach ($ret_sight as $val){
+                if(!in_array(array('sight_id'=>$val['sight_id']),$arrRet['list'])){
+                    $arrRet['list'][] = array('sight_id'=>$val['sight_id']);
+                }
+            }           
+            $ret_tag = $this->db->fetchAll($sql_tag);
+            foreach ($ret_tag as $val){
+                if(!in_array(array('sight_id'=>$val['sight_id']),$arrRet['list'])){
+                    $arrRet['list'][] = array('sight_id'=>$val['sight_id']);
+                }
+            }
+        } catch (Exception $ex) {
+            Base_Log::error($ex->getMessage());
+            return 0;
+        }        
+        return $arrRet;
+    }
 }

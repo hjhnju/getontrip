@@ -11,9 +11,9 @@ class City_Api{
      * 获取城市信息，供前端使用
      * @return array
      */
-    public static function getCityInfo($cityId = ''){
+    public static function getCityInfo(){
        $logicCity = new City_Logic_City();
-       return $logicCity->getCityInfo($cityId);
+       return $logicCity->getCityInfo();
     }
     
     /**
@@ -59,7 +59,7 @@ class City_Api{
      * @return array
      */
     public static function queryCity($arrInfo,$page,$pageSize){
-        $logicCity = new City_Logic_City();
+        $logicCity = new City_Logic_City(); 
         return $logicCity->queryCity($arrInfo, $page, $pageSize);
     }
     

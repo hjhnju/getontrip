@@ -111,6 +111,6 @@ function getHot($topic,$during){
     $praiseTime  = $praiseTime  > FROM_TIME ?($praiseTime - FROM_TIME)/3600:1;
     $publishTime = $publishTime > FROM_TIME ?($publishTime - FROM_TIME)/3600:1;
     
-    $hot  = ($praiseNum + $collectTopicNum + $commentNum + 4*log10($topicUv+1) + 1.0)*(($publishTime+$collectTime+$commentTime+$praiseTime)*(0.25*$during)+1.0);
+    $hot  = (4*log10($topicUv+1) + $collectTopicNum + $commentNum + $praiseNum + 1.0)*(($publishTime+$collectTime+$praiseTime+$commentTime)*$during+1.0);
     return $hot;
 }

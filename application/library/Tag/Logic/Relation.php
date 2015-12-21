@@ -8,20 +8,20 @@ class Tag_Logic_Relation extends Base_Logic{
     }
     
     public function groupByTop($arrTags){
-        //一级分类标签按历史、文化、科学、艺术排序
+        //一级分类标签按历史、文化、科学、艺术排序，数组中为存放次序
         if(ENVIRON == 'dev'){
             $arrTemp   = array(
-                '75' => 0,
-                '11' => 0,
-                '74' => 0,
-                '83' => 0,              
+                '75' => array(),
+                '11' => array(),
+                '74' => array(),
+                '83' => array(),              
             );
         }else{
             $arrTemp   = array(
-                '75' => 0,
-                '11' => 0,
-                '74' => 0,
-                '83' => 0,              
+                '75' => array(),
+                '11' => array(),
+                '74' => array(),
+                '83' => array(),              
             );
         }
         $arrRet    = array();
@@ -30,11 +30,21 @@ class Tag_Logic_Relation extends Base_Logic{
             $objTagRelation = new Tag_Object_Relation();
             $objTagRelation->fetch(array('classifytag_id' => $tag));
             if(!empty($objTagRelation->toptagId)){
-                $arrTemp[$objTagRelation->toptagId] += 1;
+                $arrTemp[$objTagRelation->toptagId][] = $tag;
             }
         }
         foreach ($arrTemp as $key => $val){
-            if($val >= $limit_num){
+            if(count(array_unique($val)) == 1){
+                $tmp  = array();
+                $tag  = $this->_logicTag->getTagById($val[0]);
+                if(!isset($tag['name'])){
+                    continue;
+                }
+                $tmp['id']   = strval($key);
+                $tmp['name'] = trim($tag['name']);
+                $tmp['name'] = str_replace("其他", "", $tmp['name']);
+                $arrRet[]  = $tmp;
+            }elseif(count($val) >= $limit_num){
                 $tmp  = array();
                 $tag  = $this->_logicTag->getTagById($key);
                 if(!isset($tag['name'])){

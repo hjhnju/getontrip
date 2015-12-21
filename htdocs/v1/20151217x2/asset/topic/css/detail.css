@@ -154,7 +154,7 @@ input::-ms-reveal{display:none}
 .header-for-mobile-logo-img{float:left;margin-top:7px;width:48px;height:48px}
 .header-for-mobile-download-link,.header-for-mobile-download-link:active,.header-for-mobile-download-link:visited,.header-for-mobile-download-link:hover{display:block;padding:0 10px 0 16px;text-decoration:none}
 .header-for-mobile-title{display:block;font-size:18px;color:#000;padding:12px 0 2px;margin-left:58px}
-.header-for-mobile-meta{display:block;font-size:10px;color:#666;padding:0 0 12px;margin-left:58px}
+.header-for-mobile-meta{display:block;font-size:10px;color:#666;padding:5px 0 12px;margin-left:58px}
 @media (max-width:320px){.bg-img .title-box{padding:0 14px}
 .main-content .main-content-inner{margin:14px 14px 0}
 .main-content .main-content-inner.rich-text{font-size:16px;line-height:26px}

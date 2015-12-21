@@ -2,6 +2,7 @@
 cd `dirname $0`/../
 echo "executing path = "`pwd`
 
+#使用说明
 function _usage(){
     FILE=`basename $0`
     echo "Execute recommend articles to sights."
@@ -10,55 +11,63 @@ function _usage(){
     echo -e "\t-h, this page"
     exit 0
 }
- 
+
 DATE=`date +%Y%m%d`
-while getopts "d:h" opt 
+while getopts "d:h" opt
 do
     case $opt in
-        d)  
+        d)
             DATE=$OPTARG;;
-        h)  
+        h)
             _usage;;
     esac
 done
-INPUTFILE="newdocs."$DATE
-echo "inputfile is $INPUTFILE"
 
-tarFile="~/data/work/$INPUTFILE.tar.gz"
-if [ -f "$tarFile" ]; then 
-    echo "cp $tarFile data/"
-    cp $tarFile data/
+# 输入
+inputfile=$HOME"/publish/data/newdocs."$DATE
+echo "inputfile is $inputfile"
 
-    echo "tar zxvf $tarFile"
-    tar zxvf $tarFile
+inputProfiles=$HOME"/publish/data/profiles.libsvm"
+inputIdfModel=$HOME"/publish/data/idf.model"
 
-    echo "mv $INPUTFILE data/"
-    mv $INPUTFILE data/
-fi
-
-if [ ! -f "data/$INPUTFILE" ]; then
-    echo "no input file data/$INPUTFILE"
+if [ ! -f "$inputfile" ]; then
+    echo "no input file $inputfile"
     exit 1
 fi
 
-echo "cp data/$INPUTFILE data/newdocs.txt"
-cp data/$INPUTFILE data/newdocs.txt
+echo "cp $inputfile data/newdocs.txt"
+cp $inputfile data/newdocs.txt
+
+if [ -d "data/profiles.libsvm" ]; then
+    rm -rf data/profiles.libsvm
+fi
+
+echo "cp -r $inputProfiles data/profiles.libsvm"
+cp -r $inputProfiles data/profiles.libsvm
+
+echo "cp $inputIdfModel data/idf.model"
+cp $inputIdfModel data/idf.model
+
+# 输出
+outputfile=$HOME"/publish/data/similarity."$DATE
+echo "outputfile is $outputfile"
 
 if [ -d "data/similarity.out" ]; then
     echo "rm -rf data/similarity.out"
     rm -rf data/similarity.out
 fi
 
+# 执行
 echo "executing spark-submit for recommend.ContentBasedRecommend"
 spark-submit \
   --class "recommend.ContentBasedRecommend" \
   --master local[4] \
-  --executor-memory 3G \
-  --driver-memory 3G \
+  --executor-memory 4G \
+  --driver-memory 4G \
   --conf spark.shuffle.spill=false \
   --conf "spark.executor.extraJavaOptions=-XX:+PrintGCDetails -XX:+PrintGCTimeStamps" \
   target/scala-2.10/getontrip-sparking_2.10-1.0.jar
 
-echo "cp -r data/similarity.out data/similarity.$DATE"
-cp -r data/similarity.out data/similarity.$DATE
-
+echo "cat data/similarity.out/part-* > $outputfile"
+cat data/similarity.out/part-* > $outputfile
+echo "output file is $outputfile"

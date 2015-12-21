@@ -23,20 +23,20 @@ $(document).ready(function() {
                     "data": function(d) {
                         d.params = {};
                         //添加额外的参数传给服务器
-                        if ($("#form-province").attr('data-province_id')) {
-                            d.params.provinceid = $("#form-province").attr('data-province_id');
-                        }
                         if ($("#form-status").val()) {
                             d.params.status = $.trim($("#form-status").val());
                         }
                         if ($('#form-user_id').attr("checked")) {
                             d.params.create_user = $('#form-user_id').val();
                         }
-                        if ($("#form-city").attr('data-city_id')) {
-                            d.params.id = $("#form-city").attr('data-city_id');
+                        if ($("#form-city").attr('data-id')) {
+                            d.params.id = $("#form-city").attr('data-id');
                         }
-                        if ($("#form-country").attr('data-country_id')) {
-                            d.params.countryid = $("#form-country").attr('data-country_id');
+                        if ($("#form-province").attr('data-id')) {
+                            d.params.provinceid = $("#form-province").attr('data-id');
+                        }
+                        if ($("#form-country").attr('data-id')) {
+                            d.params.countryid = $("#form-country").attr('data-id');
                         }
                         //d.raw = 'raw';
                     }
@@ -211,7 +211,7 @@ $(document).ready(function() {
                 },
                 itemSelected: function(item, val, text, ele) {
                     ele.val(text);
-                    ele.attr('data-country_id', val);
+                    ele.attr('data-id', val);
                     //触发dt的重新加载数据的方法
                     api.ajax.reload();
                 }
@@ -229,7 +229,7 @@ $(document).ready(function() {
                      val: value of the *val* property
                      text: value of the *display* property*/
                     $("#form-province").val(text);
-                    $("#form-province").attr('data-pid', val);
+                    $("#form-province").attr('data-id', val);
                     //触发dt的重新加载数据的方法
                     api.ajax.reload();
                 }
@@ -245,16 +245,18 @@ $(document).ready(function() {
                 },
                 itemSelected: function(item, val, text) {
                     $("#form-city").val(text);
-                    $("#form-city").attr('data-city_id', val);
+                    $("#form-city").attr('data-id', val);
                     //触发dt的重新加载数据的方法
                     api.ajax.reload();
                 }
             });
 
+           
+
             //城市框后的清除按钮，清除所选的景点
-            $('#clear-city').click(function(event) {
-                $("#form-city").val('');
-                $("#form-city").attr('data-city_id', '');
+            $('#clear-city,#clear-country,#clear-province').click(function(event) {
+                $(this).parent().prev().val('');
+                $(this).parent().prev().attr('data-id', '');
                 //触发dt的重新加载数据的方法
                 api.ajax.reload();
             });

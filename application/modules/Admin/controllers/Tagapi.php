@@ -103,7 +103,19 @@ class TagapiController extends Base_Controller_Api{
         return $this->ajax($List["list"]);  
     }
 
-       /**
+    /**
+     * 获取通用标签、二级分类信息  用于下拉框
+     * @return [type] [description]
+     */
+    public function getTagGeneralListAction(){ 
+        $str=$_REQUEST['query'];
+        //最大值 PHP_INT_MAX  
+        $List =Tag_Api::queryTagPrefix($str,1,PHP_INT_MAX,array('type'=>Tag_Type_Tag::GENERAL)); 
+          
+        return $this->ajax($List["list"]);  
+    }
+
+    /**
      * 根据景点获取通用标签信息list  
      * @return [type] [description]
     */

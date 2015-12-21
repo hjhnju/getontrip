@@ -32,9 +32,9 @@ class IndexAction extends Yaf_Action_Abstract {
  
 
           //查询用户总数
-         /* $userNum = User_Api::getUserList($page,$pageSize,$arrParams = array());
+          $userNum = User_Api::getUsersNum(array());
           $this->getView()->assign('userNum', $userNum); 
-*/
+
    }
 }
 

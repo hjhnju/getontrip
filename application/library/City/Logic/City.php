@@ -7,6 +7,8 @@ class City_Logic_City{
     
     const DEFAULT_CITY = 2;
     
+    const CHINA_ID     = 10001;
+    
     protected $_modeSight;
     
     public function __construct(){
@@ -65,15 +67,20 @@ class City_Logic_City{
      * 获取城市信息，供前端使用
      * @return array
      */
-    public function getCityInfo(){
+    public function getCityInfo($type){
         $arrRet        = array();
         $arrLeters     = range('A','Z');
         $objCity       = new City_Object_City();
         $logicSight    = new Sight_Logic_Sight();
         $modelTopic    = new TopicModel();
+        if($type == City_Type_Type::INLAND){
+            $strPre = "`countryid`  = ".self::CHINA_ID;
+        }else{
+            $strPre = "`countryid` != ".self::CHINA_ID;
+        }
         foreach($arrLeters as $char){
-            $strFilter = "`cityid` = 0 and `provinceid` != 0";
-            $listCity = new City_List_Meta();
+            $strFilter  = $strPre. " and `cityid` = 0 and `provinceid` != 0";
+            $listCity   = new City_List_Meta();
             $strFilter .=" and `pinyin` like '".strtolower($char)."%'";
             $listCity->setFilterString($strFilter);
             $listCity->setFields(array('id','name'));
@@ -81,6 +88,7 @@ class City_Logic_City{
             $arrCity = $listCity->toArray();
             $tempCity = array();
             foreach ($arrCity['list'] as $key => $val){
+                $objCity = new City_Object_City();
                 $objCity->fetch(array('id' => $val['id']));
                 if($objCity->status == City_Type_Status::PUBLISHED){
                     $val['id']         = strval($val['id']);
@@ -290,7 +298,7 @@ class City_Logic_City{
      * 获取热门城市信息
      * @return array
      */
-    public function getHotCity($cityId = ''){
+    public function getHotCity($type,$cityId = ''){
         $arrRet        = array();
         $arrRet['cityInfo']= array();
         if(!empty($cityId)){
@@ -307,14 +315,26 @@ class City_Logic_City{
         
         $modelTopic    = new TopicModel();
         $logicSight = new Sight_Logic_Sight();
-        $arrHotCity = array(
-            array('id' =>'2',   'name'=>'北京'),
-            array('id' =>'41',  'name'=>'上海'),
-            array('id' =>'2211','name'=>'深圳'),
-            array('id' =>'925', 'name'=>'南京'),
-            array('id' =>'1058','name'=>'杭州'),
-            array('id' =>'972', 'name'=>'苏州'),
-        );
+        if($type == City_Type_Type::INLAND){
+            $arrHotCity = array(
+                array('id' =>'2',   'name'=>'北京'),
+                array('id' =>'41',  'name'=>'上海'),
+                array('id' =>'2211','name'=>'深圳'),
+                array('id' =>'925', 'name'=>'南京'),
+                array('id' =>'1058','name'=>'杭州'),
+                array('id' =>'972', 'name'=>'苏州'),
+            );
+        }else{
+            $arrHotCity = array(
+                array('id' =>'2',   'name'=>'北京'),
+                array('id' =>'41',  'name'=>'上海'),
+                array('id' =>'2211','name'=>'深圳'),
+                array('id' =>'925', 'name'=>'南京'),
+                array('id' =>'1058','name'=>'杭州'),
+                array('id' =>'972', 'name'=>'苏州'),
+            );
+        }
+        
         foreach ($arrHotCity as $key => $val){
             $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
             $topicNum          = $modelTopic->getCityTopicNum($val['id']);

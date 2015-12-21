@@ -60,10 +60,12 @@ class ApiController extends Base_Controller_Api {
     /**
      * 接口3：/api/1.0/city/list
      * 获取城市列表信息，切换城市时使用
+     * @param integer type,0:海外,1:内地
      * @return json
      */
     public function listAction(){
-        $ret      = City_Api::getCityInfo();
+        $type     = isset($_REQUEST['type'])?intval($_REQUEST['type']):City_Type_Type::INLAND;
+        $ret      = City_Api::getCityInfo($type);
         return $this->ajax($ret);
     }
     
@@ -116,11 +118,13 @@ class ApiController extends Base_Controller_Api {
      * 接口7:/api/1.0/city/hot
      * 获取当前城市及热门城市信息
      * @param integer cityid,城市ID
+     * @param integer type,0:海外,1:内地
      * @return json
      */
     public function hotAction(){
-        $cityId   = isset($_REQUEST['cityid'])?intval($_REQUEST['cityid']):'';        
-        $ret      = $this->_logicCity->getHotCity($cityId);
+        $cityId   = isset($_REQUEST['cityid'])?intval($_REQUEST['cityid']):''; 
+        $type     = isset($_REQUEST['type'])?intval($_REQUEST['type']):City_Type_Type::INLAND;
+        $ret      = $this->_logicCity->getHotCity($type,$cityId);
         return $this->ajax($ret);
     }
 }

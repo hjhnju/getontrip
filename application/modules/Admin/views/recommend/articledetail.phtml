@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"> 
+    {%if $isMobile%}  
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta name="format-detection" content="telephone=no, email=no">
+    {%/if%}
+    
+    <title>
+         {%if isset($title)%}
+         {%$title%}
+         {%else%}  
+              途知          
+         {%/if%} 
+    </title> 
+    <link rel="icon" href="{%$webroot%}/favicon.ico" type="image/x-icon" /> 
+    <link rel="stylesheet" type="text/css" href="{%$feroot%}s/admin/recommend/css/articledetail.css" />
+</head>
+<body class="page">
+  <div id="main-wraper">  
+ 
+ 
+      <div class="container main-wrap content-wrap{%if $isapp eq 1%} isapp{%/if%} {%if $isMobile%} ismobile{%/if%}"> 
+       {%if isset($post.id)%}  
+          {%if $isapp eq 0%}  
+            <div class="bg-img" id="bg-img" style="background-image:url('{%$feroot%}/common/img/imgloading.png'); "  data-stroot="{%$stroot%}"  data-image="{%if empty($post.image)==0%}{%$post.image%}{%/if%}">  
+            <div class="title-box {%if $isMobile%} ismobile{%/if%}">
+                <div class="title">
+                  {%if empty($post.title)==0%}{%$post.title%}{%/if%} 
+                </div>
+                <div class="like" style="display:none;">
+                   <i class="fa"></i>{%$post.collect%}
+                   <i class="fa fa-eye"></i>{%$post.collect%}
+                </div>
+             </div> 
+            <div class="img-mask"></div> 
+          </div> 
+         {%/if%}
+
+        <div class="main-content"> 
+          <div class="main-content-inner rich-text{%if $isapp eq 1%} isapp{%/if%} {%if $isMobile%} ismobile{%/if%}"> 
+
+             {%if empty($post.title)==0%}{%$post.content%}{%/if%}
+          </div>
+          <div class="text-from{%if $isapp eq 1%} isapp{%/if%} {%if $isMobile%} ismobile{%/if%}">
+             {%if empty($post.from_detail) eq 0%}
+                  内容来自{%$post.from%}
+             {%elseif empty($post.from) eq 0%}
+                  <a href="{%$post.url%}" target="_blank">内容来自{%$post.from%}，查看原网页</a>
+             {%/if%} 
+          </div>
+        </div>
+      {%/if%}  
+      </div>
+ 
+  </div>
+</body>
+</html>

@@ -79,4 +79,18 @@ class User_Api{
         }
         return false;
     }
+
+
+    /**
+     * 接口6：User_Api::getUsersNum($arrInfo)
+     * 根据条件获取用户数量
+     * @param integer $page
+     * @param integer $pageSize
+     * @param array $arrParams
+     * @return array
+     */
+    public static function getUsersNum($arrInfo){
+       $logicUser = new User_Logic_User();
+       return $logicUser->getUsersNum($arrInfo);
+    }
 }

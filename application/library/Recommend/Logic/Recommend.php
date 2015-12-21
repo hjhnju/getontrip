@@ -58,6 +58,41 @@ class Recommend_Logic_Recommend extends Base_Logic{
             $objRecommendRet->fetch(array('obj_id' => $id,'label_id' => $val['label_id'],'label_type' => $val['label_type']));
             $objRecommendRet->status = $val['status'];
             $ret = $objRecommendRet->save();
+            if ($val['status']==Recommend_Type_Status::ACCEPT) {
+                //如果状态为确认，则保存当前文章到话题
+                //添加到数据库
+               $article = Recommend_Api::getArticleDetail($id);
+               $sourceInfo = Source_Api::getSourceByName($article['source']); 
+               if (empty($sourceInfo)) {
+                   //不存在来源，则添加此来源
+                   $sourceInfo = array(
+                                        'name'=>$article['source'],
+                                        'type'=>Source_Type_Type::MAGZINE,
+                                        'group'=>0
+                                        );
+                   $addret = Source_Api::addSource($sourceInfo);
+                   if($addret){
+                       $sourceInfo=Source_Api::getSourceByName($article['source']); 
+                   }
+                }
+                
+                $topic['from'] = $sourceInfo['id'];
+                   
+                $topic['title'] = $article['title'];
+                $topic['subtitle'] = $article['subtitle'];
+                $topic['url'] = $article['url'];
+                $topic['status'] = Topic_Type_Status::NOTPUBLISHED;
+                $spider = Spider_Factory::getInstance("Filterimg",$article['content'],Spider_Type_Source::STRING);
+                $topic['content'] =  trim($spider->getReplacedContent());
+                $topic['from_detail'] = $article['author'].','.$article['title'].','.$article['source'].$article['issue'];
+                //特殊处理景点和通用标签
+                if ($val['label_type']==Recommend_Type_Label::SIGHT) {
+                    $topic['sights'] = array($val['label_id']);
+                }elseif ($val['label_type']==Recommend_Type_Label::GENERAL) {
+                    $topic['tags'] = array($val['label_id']);
+                }
+                $bRet=Topic_Api::addTopic($topic);   
+             }
         }
         return $ret;
     }

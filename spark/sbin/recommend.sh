@@ -1,4 +1,5 @@
-#/bin/bash
+#! /bin/bash
+# nohup sh sbin/recommend.sh -d 20151214 2>&1 1>nohup.out &
 cd `dirname $0`/../
 echo "executing path = "`pwd`
 

@@ -34,3 +34,9 @@ spark-submit \
   --conf spark.shuffle.spill=false \
   --conf "spark.executor.extraJavaOptions=-XX:+PrintGCDetails -XX:+PrintGCTimeStamps" \
   target/scala-2.10/getontrip-sparking_2.10-1.0.jar
+
+echo "cp -r data/profiles.svm $outputdir"
+cp -r data/profiles.svm $outputdir
+
+echo "cp -r data/idf.model $outputdir"
+cp -r data/idf.model $outputdir

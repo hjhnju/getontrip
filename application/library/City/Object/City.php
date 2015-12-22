@@ -26,7 +26,7 @@ class City_Object_City extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'status', 'x', 'y', 'create_time', 'update_time', 'image', 'create_user', 'update_user', 'is_china', 'continent');
+    protected $fields = array('id', 'name', 'status', 'x', 'y', 'create_time', 'update_time', 'image', 'create_user', 'update_user', 'is_china', 'continent');
 
     /**
      * 字段与属性隐射关系
@@ -34,6 +34,7 @@ class City_Object_City extends Base_Object {
      */
     public $properties = array(
         'id'          => 'id',
+        'name'        => 'name',
         'status'      => 'status',
         'x'           => 'x',
         'y'           => 'y',
@@ -73,6 +74,12 @@ class City_Object_City extends Base_Object {
      * @var integer
      */
     public $id;
+
+    /**
+     * 
+     * @var string
+     */
+    public $name;
 
     /**
      * 状态

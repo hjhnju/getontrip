@@ -298,55 +298,28 @@ class City_Logic_City{
      * 获取热门城市信息
      * @return array
      */
-    public function getHotCity($type,$cityId = ''){
+    public function getHotCity($type){
         $arrRet        = array();
-        $arrRet['cityInfo']= array();
-        if(!empty($cityId)){
-            $logicSight = new Sight_Logic_Sight();
-            $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$cityId);
-            $topicNum          = $this->getTopicNum($cityId);
-            $objCity           = new City_Object_Meta();
-            $objCity->fetch(array('id' => $cityId));
-            $arrRet['cityInfo']['id']          = strval($objCity->id);
-            $arrRet['cityInfo']['name']        = strval(str_replace("市", "", $objCity->name));
-            $arrRet['cityInfo']['sight']       = strval($sightNum);
-            $arrRet['cityInfo']['topic']       = strval($topicNum);
-        }
-        
+        $logicSight    = new Sight_Logic_Sight();
         $modelTopic    = new TopicModel();
-        $logicSight = new Sight_Logic_Sight();
+        $arrHotCity    = City_Api::getHotCityIds();
         if($type == City_Type_Type::INLAND){
-            $arrHotCity = array(
-                array('id' =>'2',   'name'=>'北京'),
-                array('id' =>'41',  'name'=>'上海'),
-                array('id' =>'2211','name'=>'深圳'),
-                array('id' =>'925', 'name'=>'南京'),
-                array('id' =>'1058','name'=>'杭州'),
-                array('id' =>'972', 'name'=>'苏州'),
-            );
+            $arrHotCity = isset($arrHotCity['inland'])?$arrHotCity['inland']:array();
         }else{
-            $arrHotCity = array(
-                array('id' =>'2',   'name'=>'北京'),
-                array('id' =>'41',  'name'=>'上海'),
-                array('id' =>'2211','name'=>'深圳'),
-                array('id' =>'925', 'name'=>'南京'),
-                array('id' =>'1058','name'=>'杭州'),
-                array('id' =>'972', 'name'=>'苏州'),
-            );
-        }
-        
+            $arrHotCity = isset($arrHotCity['outer'])?$arrHotCity['outer']:array();
+        }    
         foreach ($arrHotCity as $key => $val){
-            $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
-            $topicNum          = $modelTopic->getCityTopicNum($val['id']);
+            $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val);
+            $topicNum          = $modelTopic->getCityTopicNum($val);
             
             $objCity           = new City_Object_City();
-            $objCity->fetch(array('id' => $val['id']));
-            $arrHotCity[$key]['image']       = Base_Image::getUrlByName($objCity->image);
-            $arrHotCity[$key]['sight']       = strval($sightNum);
-            $arrHotCity[$key]['topic']       = strval($topicNum);
+            $objCity->fetch(array('id' => $val));
+            $arrRet[$key]['id']          = strval($val);
+            $arrRet[$key]['image']       = Base_Image::getUrlByName($objCity->image);
+            $arrRet[$key]['sight']       = strval($sightNum);
+            $arrRet[$key]['topic']       = strval($topicNum);
         }
-        $arrRet['hot'] = $arrHotCity;
-        return $arrRet;
+        return array('hot' => $arrRet);
     }
     
     /**
@@ -523,5 +496,32 @@ class City_Logic_City{
         }
         $ret = $objCity->save();
         return $objCity->id;
+    }
+    
+    public function getHotCityIds(){
+        $arrRet  = array();
+        $listHot = new Hot_List_Hot();
+        $listHot->setFields(array('obj_id'));
+        $listHot->setFilter(array('obj_type' => Hot_Type_Obj::CITY,'type' => Hot_Type_Hot::HOT));
+        $listHot->setPagesize(PHP_INT_MAX);
+        $arrHot  = $listHot->toArray();
+        foreach($arrHot['list'] as $val){
+            $objCity = new City_Object_City();
+            $objCity->fetch(array('id' => $val['obj_id']));
+            if($objCity->isChina == City_Type_Type::INLAND){
+                $arrRet['inland'][] = $objCity->id;
+            }else{
+                $arrRet['outer'][]  = $objCity->id;
+            }
+        }
+        return $arrRet;
+    }
+    
+    public function setHotCity($id){
+        $objHot = new Hot_Object_Hot();
+        $objHot->objId   = $id;
+        $objHot->objType = Hot_Type_Obj::CITY;
+        $objHot->type    = Hot_Type_Hot::HOT;
+        return $objHot->save();
     }
 }

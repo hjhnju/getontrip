@@ -14,10 +14,10 @@ foreach ($fp_label as $val){
     $arrLabel[$arrTemp[0]]['id'] = $arrSub[1];
 }
 $date = date("Ymd",time());
-$arrFile = file(RESULT_PATH);
+$arrFile = file(RESULT_PATH.$date);
 foreach ($arrFile as $data){
     $arrRet = explode(" ",$data);
-    $articleId = $arrRet[0];
+    sscanf($arrRet[0],"article_%d",$articleId);
     unset($arrRet[0]);
     foreach ($arrRet as $val){
         $rate   = 0;

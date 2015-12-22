@@ -35,7 +35,7 @@ class Sight_Logic_Sight extends Base_Logic{
      * @return array
      */
     public function getSightById($sightId){
-        $objSight = new Sight_Object_Sight();
+        $objSight = new Sight_Object_Meta();
         $objSight->fetch(array('id' => $sightId));
         $arrSight =  $objSight->toArray();
         

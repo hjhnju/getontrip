@@ -117,14 +117,12 @@ class ApiController extends Base_Controller_Api {
     /**
      * 接口7:/api/1.0/city/hot
      * 获取当前城市及热门城市信息
-     * @param integer cityid,城市ID
      * @param integer type,0:海外,1:内地
      * @return json
      */
     public function hotAction(){
-        $cityId   = isset($_REQUEST['cityid'])?intval($_REQUEST['cityid']):''; 
         $type     = isset($_REQUEST['type'])?intval($_REQUEST['type']):City_Type_Type::INLAND;
-        $ret      = $this->_logicCity->getHotCity($type,$cityId);
+        $ret      = $this->_logicCity->getHotCity($type);
         return $this->ajax($ret);
     }
 }

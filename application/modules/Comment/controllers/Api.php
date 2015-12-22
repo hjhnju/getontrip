@@ -89,4 +89,24 @@ class ApiController extends Base_Controller_Api {
         }
         return $this->ajaxError();
     }
+    
+    /**
+     * 接口4：/api/1.0/comment/my
+     * 查询我的评论接口
+     * @param integer page
+     * @param integer pageSize
+     * @return json
+     */
+    public function myAction(){
+        $page       = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
+        $type       = isset($_REQUEST['type'])?intval($_REQUEST['type']):Comment_Type_Type::TOPIC;
+        $userId     = User_Api::getCurrentUser();
+        if(empty($userId)){
+            return $this->ajaxError(Comment_RetCode::SESSION_NOT_LOGIN,User_RetCode::getMsg(Comment_RetCode::SESSION_NOT_LOGIN));
+        }
+        $logic      = new Comment_Logic_Comment();
+        $ret        = $logic->getUserComments($page,$pageSize,$userId);
+        return $this->ajax($ret);
+    }
 }

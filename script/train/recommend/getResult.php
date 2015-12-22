@@ -1,5 +1,6 @@
 <?php
 require_once "config.php";
+$limit_rate = isset($argv[1])?doubleval($argv[1]):CONFORM_RATE;
 $arrLabel = array();
 $fp_label = file(WORK_PATH.INDEX_LABEL);
 foreach ($fp_label as $val){
@@ -12,22 +13,31 @@ foreach ($fp_label as $val){
     }
     $arrLabel[$arrTemp[0]]['id'] = $arrSub[1];
 }
-$date = date("Y-m-d",time());
-$arrFile = file(RESULT_PATH);
+$date = date("Ymd",time());
+$arrFile = file(RESULT_PATH.$date);
 foreach ($arrFile as $data){
     $arrRet = explode(" ",$data);
-    $articleId = $arrRet[0];
+    sscanf($arrRet[0],"article_%d",$articleId);
     unset($arrRet[0]);
     foreach ($arrRet as $val){
         $rate   = 0;
         $reason = "";
         sscanf($val,"(%d,%f,%[^)])",$labelId,$rate,$reason);
-        $objRecomendRet = new Recommend_Object_Result();
-        $objRecomendRet->objId = $articleId;
-        $objRecomendRet->labelId   = $arrLabel[$labelId]['id'];
-        $objRecomendRet->labelType = $arrLabel[$labelId]['type'];
-        $objRecomendRet->rate    = $rate;
-        $objRecomendRet->reason  = $reason;
-        $objRecomendRet->save();
+        if($rate >= $limit_rate){
+            $objRecomendRet = new Recommend_Object_Result();
+            $objRecomendRet->fetch(array('obj_id' => $articleId,'label_id' => $arrLabel[$labelId]['id'],'label_type' => $arrLabel[$labelId]['type']));
+            if(!empty($objRecomendRet->id)){
+                $objRecomendRet->rate    = $rate;
+                $objRecomendRet->reason  = $reason;
+                $objRecomendRet->save();
+            }else{
+                $objRecomendRet->objId     = $articleId;
+                $objRecomendRet->labelId   = $arrLabel[$labelId]['id'];
+                $objRecomendRet->labelType = $arrLabel[$labelId]['type'];
+                $objRecomendRet->rate    = $rate;
+                $objRecomendRet->reason  = $reason;
+                $objRecomendRet->save();
+            }
+        }
     }
 }

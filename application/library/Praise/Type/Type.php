@@ -24,12 +24,19 @@ class Praise_Type_Type extends Base_Type {
     const VIDEO = 3;
     
     /**
+     * 4 图文点赞
+     * @var integer
+     */
+    const IMAGETOPIC = 4;
+    
+    /**
      * 类型名
      * @var array
      */
     public static $names = array(
-        self::TOPIC    => '话题点赞',
-        self::BOOK     => '书籍点赞',
-        self::VIDEO    => '视频点赞',
+        self::TOPIC      => '话题点赞',
+        self::BOOK       => '书籍点赞',
+        self::VIDEO      => '视频点赞',
+        self::IMAGETOPIC => '图文点赞',
     );
 }

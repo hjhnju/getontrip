@@ -39,6 +39,12 @@ class Sight_Logic_Sight extends Base_Logic{
         $objSight->fetch(array('id' => $sightId));
         $arrSight =  $objSight->toArray();
         
+        if(!isset($arrSight['name'])){
+            $objSight = new Sight_Object_Meta();
+            $objSight->fetch(array('id' => $sightId));
+            $arrSight =  $objSight->toArray();
+        }
+        
         $listSightTag = new Sight_List_Tag();
         $listSightTag->setFilter(array('sight_id' => $sightId));
         $arrTags      = $listSightTag->toArray();

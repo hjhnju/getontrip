@@ -188,7 +188,7 @@ class Sight_Object_Meta extends Base_Object {
     public $status;
 
     /**
-     * 权重值
+     * 
      * @var integer
      */
     public $weight;

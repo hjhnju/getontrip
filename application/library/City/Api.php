@@ -11,9 +11,9 @@ class City_Api{
      * 获取城市信息，供前端使用
      * @return array
      */
-    public static function getCityInfo(){
+    public static function getCityInfo($type = City_Type_Type::INLAND){
        $logicCity = new City_Logic_City();
-       return $logicCity->getCityInfo();
+       return $logicCity->getCityInfo($type);
     }
     
     /**
@@ -136,5 +136,26 @@ class City_Api{
     public static function queryCountryPrefix($str,$page,$pageSize){
         $logicCity = new City_Logic_City();
         return $logicCity->queryCountryPrefix($str, $page, $pageSize);
+    }
+    
+    /**
+     * 接口9：City_Api::getHotCityIds()
+     * 获取热门城市ID数组，按国内国外分组
+     * @return array eg:array('inland' => array(2,3),'outer' => array(44,22))
+     */
+    public static function getHotCityIds(){
+        $logicCity = new City_Logic_City();
+        return $logicCity->getHotCityIds();
+    }
+    
+    /**
+     * 接口10：City_Api::setHotCity($id)
+     * 设置热门城市
+     * @param integer $id
+     * @return boolean
+     */
+    public static function setHotCity($id){
+        $logicCity = new City_Logic_City();
+        return $logicCity->setHotCity($id);
     }
 }

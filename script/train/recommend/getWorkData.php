@@ -9,10 +9,6 @@ const KEYWORD_REPEAT = 3;
 
 const DEFAULT_PAGESIZE = 200;
 
-/*if(!is_dir(DATA_PATH)){
-    mkdir(DATA_PATH);
-}*/
-
 $date = date("Ymd",time());
 
 $fp = fopen(DATA_PATH.$date,"w");

@@ -1,4 +1,4 @@
-#/bin/bash
+#!/usr/bin/env bash
 mv data/model/ data/tmp
 spark-submit \
   --class "training.DecisionTreeTraining" \

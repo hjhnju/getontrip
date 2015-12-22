@@ -313,11 +313,9 @@ class City_Logic_City{
             $topicNum          = $modelTopic->getCityTopicNum($val);
             
             $objCity           = new City_Object_City();
-            $objCityMeta       = new City_Object_Meta();
             $objCity->fetch(array('id' => $val));
-            $objCityMeta->fetch(array('id' => $val));
             $arrRet[$key]['id']          = strval($val);
-            $arrRet[$key]['name']        = strval($objCityMeta->name);
+            $arrRet[$key]['name']        = strval($objCity->name);
             $arrRet[$key]['image']       = Base_Image::getUrlByName($objCity->image);
             $arrRet[$key]['sight']       = strval($sightNum);
             $arrRet[$key]['topic']       = strval($topicNum);

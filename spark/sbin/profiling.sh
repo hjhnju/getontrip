@@ -1,27 +1,31 @@
-#/bin/bash
+#! /bin/bash
 cd `dirname $0`/../
 echo "executing path = "`pwd`
 
+dataDir=$HOME"/publish/data/"
+
 # 输入文件
-input="data/documents/"
-if [ ! -d "$input" ]; then
-    echo "input dir $input not exists"
+input1=$dataDir"/documents/"
+if [ ! -d "$input1" ]; then
+    echo "input dir $input1 not exists"
     exit 255
 fi
-input="data/labels.txt"
-if [ ! -f "$input" ]; then
-    echo "input file $input not exists"
+input2=$dataDir"/labels.txt"
+if [ ! -f "$input2" ]; then
+    echo "input file $input2 not exists"
     exit 255
 fi
 
 # 输出文件
-if [ -d "data/profiles.svm" ]; then
-    echo "rm -rf data/profiles.svm"
-    rm -rf data/profiles.svm
+if [ -d $dataDir"/profiles.svm" ]; then
+    echo "mv $dataDir/profiles.svm $dataDir/backup/"
+    mkdir -p $dataDir/backup/
+    mv $dataDir/profiles.svm $dataDir/backup/
 fi
-if [ -f "data/idf.model" ]; then
-    echo "rm -rf data/idf.model"
-    rm -rf data/idf.model
+if [ -f "$dataDir/idf.model" ]; then
+    echo "mv $dataDir/idf.model $dataDir/backup/idf.model"
+    mkdir -p $dataDir/backup/
+    mv $dataDir/idf.model $dataDir/backup/
 fi
 
 # 计算偏好特征
@@ -33,10 +37,4 @@ spark-submit \
   --driver-memory 4G \
   --conf spark.shuffle.spill=false \
   --conf "spark.executor.extraJavaOptions=-XX:+PrintGCDetails -XX:+PrintGCTimeStamps" \
-  target/scala-2.10/getontrip-sparking_2.10-1.0.jar
-
-echo "cp -r data/profiles.svm $outputdir"
-cp -r data/profiles.svm $outputdir
-
-echo "cp -r data/idf.model $outputdir"
-cp -r data/idf.model $outputdir
+  $dataDir/getontrip-sparking_2.10-1.0.jar

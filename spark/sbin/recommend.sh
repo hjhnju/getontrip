@@ -3,6 +3,9 @@
 cd `dirname $0`/../
 echo "executing path = "`pwd`
 
+dataDir=$HOME"/publish/data/"
+#dataDir=$HOME"/Dev/getontrip/spark/data/"
+
 #使用说明
 function _usage(){
     FILE=`basename $0`
@@ -25,37 +28,37 @@ do
 done
 
 # 输入
-inputfile=$HOME"/publish/data/newdocs."$DATE
+inputfile=$dataDir"/newdocs."$DATE
 echo "inputfile is $inputfile"
 
-inputProfiles=$HOME"/publish/data/profiles.libsvm"
-inputIdfModel=$HOME"/publish/data/idf.model"
+inputProfiles=$dataDir"/profiles.libsvm"
+inputIdfModel=$dataDir"/idf.model"
 
 if [ ! -f "$inputfile" ]; then
     echo "no input file $inputfile"
     exit 1
 fi
 
-echo "cp $inputfile data/newdocs.txt"
-cp $inputfile data/newdocs.txt
+echo "cp $inputfile $dataDir/newdocs.txt"
+cp $inputfile $dataDir"/newdocs.txt"
 
-if [ -d "data/profiles.libsvm" ]; then
-    rm -rf data/profiles.libsvm
+if [ ! -d "$inputProfiles" ]; then
+    echo "no input profiles $inputProfiles"
+    exit 1
 fi
 
-echo "cp -r $inputProfiles data/profiles.libsvm"
-cp -r $inputProfiles data/profiles.libsvm
-
-echo "cp $inputIdfModel data/idf.model"
-cp $inputIdfModel data/idf.model
+if [ ! -f "$inputIdfModel" ]; then
+    echo "no input idfmodel $inputIdfModel"
+    exit 1
+fi
 
 # 输出
-outputfile=$HOME"/publish/data/similarity."$DATE
+outputfile=$dataDir"/similarity."$DATE
 echo "outputfile is $outputfile"
 
-if [ -d "data/similarity.out" ]; then
-    echo "rm -rf data/similarity.out"
-    rm -rf data/similarity.out
+if [ -d "$dataDir/similarity.out" ]; then
+    echo "rm -rf $dataDir/similarity.out"
+    rm -rf "$dataDir/similarity.out"
 fi
 
 # 执行
@@ -67,8 +70,9 @@ spark-submit \
   --driver-memory 4G \
   --conf spark.shuffle.spill=false \
   --conf "spark.executor.extraJavaOptions=-XX:+PrintGCDetails -XX:+PrintGCTimeStamps" \
-  target/scala-2.10/getontrip-sparking_2.10-1.0.jar
+  $dataDir/getontrip-sparking_2.10-1.0.jar \
+  $dataDir
 
-echo "cat data/similarity.out/part-* > $outputfile"
-cat data/similarity.out/part-* > $outputfile
+echo "cat $dataDir/similarity.out/part-* > $outputfile"
+cat $dataDir/similarity.out/part-* > $outputfile
 echo "output file is $outputfile"

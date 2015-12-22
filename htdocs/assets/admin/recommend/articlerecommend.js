@@ -177,6 +177,10 @@ $(document).ready(function() {
                         };
                        items.push(data);
                     }) 
+                    if (items.length==0) {
+                         toastr.warning('请选择一个状态'); 
+                         return;
+                    }
                     $.ajax({
                         "url": "/admin/recommendapi/dealArticle",
                         "data": {id:obj_id,params:items},

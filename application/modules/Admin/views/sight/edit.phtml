@@ -53,6 +53,11 @@
                   <form class="cmxform form-horizontal tasi-form" id="Form" method="post" action="" novalidate="novalidate" >
                     {%if isset($post.id)%}
                     <input type="hidden" name="id" id="id" value="{%$post.id%}"/>
+                    {%else%}
+                    <div class="alert alert-danger" role="alert">
+                      请先转至【元数据管理】-【景点元数据】搜索并景点，实在没有再回来吧 ^_^  <a href="/admin/sight/metalist">点击跳转</a>
+                    </div>
+                     
                     {%/if%}
                   	
                       <div class="form-group ">

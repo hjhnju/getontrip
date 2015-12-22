@@ -23,6 +23,21 @@ class Sight_Logic_Meta extends Base_Logic{
     }
 
     /**
+     * 添加新的景点元数据
+     * @param array $arrInfo : array('name' => 'xxx','cityid' => 'xxx')
+     * @return boolean
+     */
+    public function addSightMeta($arrInfo){
+        $objSightMeta = new Sight_Object_Meta();
+        foreach ($arrInfo as $key => $val){
+            $key = $this->getprop($key);
+            $objSightMeta->$key = $val;
+        }
+        $objSightMeta->save();
+        return $objSightMeta->id;
+    }
+
+    /**
      * 根据metaName获取景点元数据
      * @param  integer $metaName 
      * @return array

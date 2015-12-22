@@ -306,6 +306,20 @@ class Sight_Api{
         $logicSight = new Sight_Logic_Sight();
         return $logicSight->isExistById($id);
     }
+
+    
+    /**
+     * 接口26：Sight_Api::addSightMeta($arrInfo)
+     * 编辑景点元数据
+     * @param string $arrInfo
+     * @param integer $page
+     * @param integer $pageSize
+     * @return array
+     */
+    public static function addSightMeta($arrInfo){
+        $logicSight = new Sight_Logic_Meta();
+        return $logicSight->addSightMeta($arrInfo);
+    }
     
 
     

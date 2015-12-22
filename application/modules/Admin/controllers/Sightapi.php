@@ -127,8 +127,17 @@ class  SightapiController extends Base_Controller_Api{
     */
     public function addAction(){ 
        $_REQUEST['status'] = $this->getStatusByActionStr($_REQUEST['action']);
-       $bRet=Sight_Api::addSight($_REQUEST);   
-       if($bRet){
+       //先添加一条景点元数据
+       $sightMeta = $_REQUEST;
+       $sightMeta['status'] = Sight_Type_Meta::CONFIRMED; 
+       $sightMeta['city_id'] =intval($_REQUEST['city_id']);
+        
+       $metaId = Sight_Api::addSightMeta($sightMeta);
+
+       $_REQUEST['id'] = $metaId;
+       $bRet = Sight_Api::addSight($_REQUEST); 
+        
+       if($bRet){ 
             return $this->ajax();
        } 
        return $this->ajaxError();

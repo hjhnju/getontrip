@@ -73,13 +73,8 @@ class City_Logic_City{
         $objCity       = new City_Object_City();
         $logicSight    = new Sight_Logic_Sight();
         $modelTopic    = new TopicModel();
-        if($type == City_Type_Type::INLAND){
-            $strPre = "`countryid`  = ".self::CHINA_ID;
-        }else{
-            $strPre = "`countryid` != ".self::CHINA_ID;
-        }
         foreach($arrLeters as $char){
-            $strFilter  = $strPre. " and `cityid` = 0 and `provinceid` != 0";
+            $strFilter  = "`cityid` = 0 and `provinceid` != 0";
             $listCity   = new City_List_Meta();
             $strFilter .=" and `pinyin` like '".strtolower($char)."%'";
             $listCity->setFilterString($strFilter);
@@ -91,7 +86,17 @@ class City_Logic_City{
                 $objCity = new City_Object_City();
                 $objCity->fetch(array('id' => $val['id']));
                 if($objCity->status == City_Type_Status::PUBLISHED){
+                    if($type == City_Type_Type::INLAND){
+                        if($objCity->isChina !== City_Type_Type::INLAND){
+                            continue;
+                        }
+                    }else{
+                        if($objCity->isChina == City_Type_Type::INLAND){
+                            continue;
+                        }
+                    }
                     $val['id']         = strval($val['id']);
+                    $val['name']       = strval($val['name']);
                     $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
                     $topicNum          = $modelTopic->getCityTopicNum($val['id']);
                     $val['sight']       = strval($sightNum);

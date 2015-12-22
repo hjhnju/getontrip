@@ -49,7 +49,7 @@ object ContentBasedProfiling {
         val documents = sc.union(docRdds)
 
         // vector space model
-        val vsmDocuments = presentItem(sc, documents)
+        val vsmDocuments = presentItem(sc, dataDir, documents)
         vsmDocuments.cache()
 
         //2. profile learning (这里采用mean of vectors, 广义的可以是分类模型)
@@ -66,7 +66,7 @@ object ContentBasedProfiling {
       * @param documents
       * @return
       */
-    def presentItem(sc: SparkContext, documents: RDD[(String, Seq[String])]): RDD[(String, Vector)] = {
+    def presentItem(sc: SparkContext, dataDir: String,  documents: RDD[(String, Seq[String])]): RDD[(String, Vector)] = {
 
         val hashingTF = new HashingTF(1048356)
         val tf: RDD[Vector] = hashingTF.transform(documents.values).map(v => v.toSparse)

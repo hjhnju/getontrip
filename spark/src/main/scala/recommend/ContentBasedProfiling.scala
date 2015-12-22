@@ -1,15 +1,14 @@
 package recommend
 
-import java.io.{ObjectOutputStream, FileOutputStream, DataOutputStream}
+import java.io.{ObjectOutputStream, FileOutputStream}
 
-import breeze.linalg.DenseVector
 import org.apache.spark.mllib.feature.{IDF, HashingTF}
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}
 import org.apache.spark.mllib.util.MLUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkContext, SparkConf}
-import org.apache.spark.mllib.linalg.{Vectors, SparseVector, Vector}
+import org.apache.spark.mllib.linalg.Vector
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -21,6 +20,13 @@ object ContentBasedProfiling {
 
     def main (args: Array[String]) {
 
+        if(args.length < 1) {
+            println("arguments: <dataDir> ")
+            return
+        }
+        val dataDir = args.last
+        println("[ContentBasedRecommend] data dir = " + dataDir)
+
         val conf = new SparkConf().setAppName("GetOntrip Sparking")
         val sc   = new SparkContext(conf)
 
@@ -28,11 +34,11 @@ object ContentBasedProfiling {
         var labelMap = Map[String, String]()
         //documents: label, item_list
         var docRdds = ArrayBuffer[RDD[(String, Seq[String])]]()
-        for(row <- scala.io.Source.fromFile("data/labels.txt").getLines.map{line => line.split("""\s+""")}) {
+        for(row <- scala.io.Source.fromFile(dataDir +"/labels.txt").getLines.map{line => line.split("""\s+""")}) {
             if (row.length >= 2) {
                 labelMap   += (row(0) -> row(1))
                 val label   = row(0)
-                val newDocRdd = sc.textFile("data/documents/" + label).map(
+                val newDocRdd = sc.textFile(dataDir + "/documents/" + label).map(
                     line => (label, line.split("""\s+""").drop(1).toSeq)
                 )
                 docRdds += newDocRdd
@@ -43,12 +49,12 @@ object ContentBasedProfiling {
         val documents = sc.union(docRdds)
 
         // vector space model
-        val vsmDocuments = presentItem(sc, documents)
+        val vsmDocuments = presentItem(sc, dataDir, documents)
         vsmDocuments.cache()
 
         //2. profile learning (这里采用mean of vectors, 广义的可以是分类模型)
         val profiles = profileLearning(sc, vsmDocuments)
-        MLUtils.saveAsLibSVMFile(profiles, "data/profiles.libsvm")
+        MLUtils.saveAsLibSVMFile(profiles, dataDir + "/profiles.libsvm")
 
         //3. recommend
         // do recommend in ContentBasedRecommend
@@ -60,7 +66,7 @@ object ContentBasedProfiling {
       * @param documents
       * @return
       */
-    def presentItem(sc: SparkContext, documents: RDD[(String, Seq[String])]): RDD[(String, Vector)] = {
+    def presentItem(sc: SparkContext, dataDir: String,  documents: RDD[(String, Seq[String])]): RDD[(String, Vector)] = {
 
         val hashingTF = new HashingTF(1048356)
         val tf: RDD[Vector] = hashingTF.transform(documents.values).map(v => v.toSparse)
@@ -68,7 +74,7 @@ object ContentBasedProfiling {
         // 最少在两篇文章出现的才计入idf, 否则idf=0
         val idfModel = new IDF(minDocFreq = 2).fit(tf)
         // 保存idf model, 推荐时使用
-        val oos = new ObjectOutputStream(new FileOutputStream("data/idf.model"))
+        val oos = new ObjectOutputStream(new FileOutputStream(dataDir + "/idf.model"))
         oos.writeObject(idfModel)
         oos.close
 

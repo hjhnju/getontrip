@@ -38,6 +38,12 @@ class Collect_Type extends Base_Type {
      * @var unknown
      */
     const VIDEO = 6;
+    
+    /**
+     * 7 收藏图文
+     * @var integer
+     */
+    const IMAGETOPIC = 7;
    
     /**
      * 状态名
@@ -50,5 +56,6 @@ class Collect_Type extends Base_Type {
         self::BOOK       => '收藏书籍',
         self::COTENT     => '收藏内容',
         self::VIDEO      => '收藏视频',
+        self::IMAGETOPIC => '收藏图文',
     );
 }

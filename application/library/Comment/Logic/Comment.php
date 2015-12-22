@@ -279,4 +279,21 @@ class Comment_Logic_Comment  extends Base_Logic{
         $objComment->status = Comment_Type_Status::DELETED;
         return $objComment->save();
     }
+    
+    public function getUserComments($page,$pageSize,$userId){
+        $arrRet      = array();
+        $listComment = new Comment_List_Comment();
+        $listComment->setFilter(array('from_user_id' => $userId,'type' => Comment_Type_Type::TOPIC));
+        $listComment->setPage($page);
+        $listComment->setPagesize($pageSize);
+        $arrComment  = $listComment->toArray();
+        foreach ($arrComment['list'] as $key => $val){
+            $objTopic = new Topic_Object_Topic();
+            $objTopic->fetch(array('id' => $val['obj_id']));
+            $arrRet[$key]['title'] = $val['content'];
+            $arrRet[$key]['from']  = $objTopic->title;
+            $arrRet[$key]['time']  = date("m月d日",$val['create_time']);
+        }
+        return $arrRet;
+    }
 }

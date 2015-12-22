@@ -28,13 +28,20 @@ class Comment_Type_Type extends Base_Type {
     const WIKI = 4;
     
     /**
+     * 5 图文评论
+     * @var integer
+     */
+    const IMAGETOPIC = 5;
+    
+    /**
      * 状态名
      * @var array
      */
     public static $names = array(
-        self::TOPIC    => '话题评论',
-        self::BOOK     => '书籍评论',
-        self::VIDEO    => '视频评论',
-        self::WIKI     => '百科评论',
+        self::TOPIC      => '话题评论',
+        self::BOOK       => '书籍评论',
+        self::VIDEO      => '视频评论',
+        self::WIKI       => '百科评论',
+        self::IMAGETOPIC => '图文评论',
     );
 }

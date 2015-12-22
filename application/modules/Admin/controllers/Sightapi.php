@@ -134,6 +134,8 @@ class  SightapiController extends Base_Controller_Api{
        return $this->ajaxError();
     }
 
+
+
     public function delAction(){
         //判断是否有ID
         $id=isset($_REQUEST['id'])?$_REQUEST['id']:''; 
@@ -325,12 +327,84 @@ class  SightapiController extends Base_Controller_Api{
         
 
         $List = Sight_Api::searchMeta($arrInfo,$page,$pageSize);
-        
+        foreach ($List['list'] as $key => $item) {
+            $item['stats_name'] = Sight_Type_Meta::getTypeName($item['status']);
+        }
+        for ($i=0; $i < count($List['list']); $i++) { 
+           $List['list'][$i]['stats_name'] = Sight_Type_Meta::getTypeName($List['list'][$i]['status']);
+        }
         $retList['recordsFiltered'] =$List['total'];
         $retList['recordsTotal'] = $List['total']; 
         $retList['data'] =$List['list']; 
         return $this->ajax($retList);
     }
+
+   /**
+    * 添加景点信息
+    */
+    public function addToSightAction(){ 
+       $metaId = isset($_REQUEST['id'])?$_REQUEST['id']:''; 
+       $action = isset($_REQUEST['action'])?$_REQUEST['action']:'';
+
+       $status = $this->getMetaStatusByActionStr($action);
+       if ($status==Sight_Type_Meta::NOTNEED||$status==Sight_Type_Meta::NEEDCONFIRM) {
+          //只修改状态
+          $ret=Sight_Api::editMeta($metaId,array('status'=>$status));   
+          if($ret){
+              return $this->ajax($ret);
+          } 
+          return $this->ajaxError();
+       }
+       
+       $ret=Sight_Api::editMeta($metaId,array('status'=>$status));   
+       if(!$ret){
+          return $this->ajaxError();
+       }
+          
+
+       //先判断该景点是否已经添加至景点库 
+       $isExistById = Sight_Api::isExistById($metaId);
+       if (!empty($isExistById)) {
+         return $this->ajaxError(1200,'该景点已经添加到了景点库，无需再添加');
+       }
+
+     
+
+       $metaObj = Sight_Api::getSightByMetaId($metaId);
+       
+       //处理城市，查询当前城市是否存在 
+       $cityInfo = City_Api::getCityById($metaObj['city_id']);
+       if (!isset($cityInfo['status'])) {
+         # 城市尚未保存到city表里面
+         $cityInfo['status'] = 1;
+         $cityRet = City_Api::addCity($cityInfo); 
+       }
+
+       //上传图片
+       $logic = new Base_Logic();
+       $image = $logic->uploadPic($metaObj['image'],'http://hiphotos.baidu.com');
+       $metaObj['image'] = $image;
+       $metaObj['status'] = 1;
+
+         
+
+       $bRet=Sight_Api::addSight($metaObj);   
+       if($bRet){ 
+          return $this->ajax($bRet); 
+       } 
+       return $this->ajaxError();
+    }
+    
+    /**
+     * 修改景点元数据的状态
+     * @return [type] [description]
+     */
+    public function changeMetaStatusAction()
+    {
+         $metaId = isset($_REQUEST['id'])?$_REQUEST['id']:'';
+         $action = isset($_REQUEST['action'])?$_REQUEST['action']:'';
+    }
+
 
     /**
      * 获取保存的状态
@@ -347,6 +421,28 @@ class  SightapiController extends Base_Controller_Api{
            break;
          default:
            $status = Sight_Type_Status::NOTPUBLISHED;
+           break;
+       } 
+       return   $status;
+    }
+
+
+    
+    /**
+     * 获取保存的状态
+     * @param  [type] $action [description]
+     * @return [type]         [description]
+     */
+    public function getMetaStatusByActionStr($action){
+        switch ($action) {
+         case 'NOTNEED':
+           $status = Sight_Type_Meta::NOTNEED;
+           break;
+         case 'NEEDCONFIRM':
+           $status = Sight_Type_Meta::NEEDCONFIRM;
+           break;
+         case 'CONFIRMED': 
+           $status = Sight_Type_Meta::CONFIRMED;
            break;
        } 
        return   $status;

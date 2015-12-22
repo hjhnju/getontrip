@@ -32,6 +32,9 @@ class EditAction extends Yaf_Action_Abstract {
            //获取城市名称
            $cityInfo=City_Api::getCityById($postInfo["city_id"]);
            $postInfo["city_name"]=$cityInfo["name"];
+           if(empty($cityInfo["status"])){ 
+                $cityInfo["status"]='';
+           }  
            if ($cityInfo['status']!==City_Type_Status::PUBLISHED) {
               $postInfo["city_statusName"] = '城市还未发布';
            }

@@ -130,11 +130,11 @@ $(document).ready(function() {
                     maxNumber: 75,
                     onOk: function() {
                         $('#describe').css('background-color', 'transparent');
-                        $('#Form #submitBtn').attr('disabled', false);
+                        $('#Form button[type="submit"]').attr('disabled', false);
                     },
                     onOver: function() {
                         $('#describe').css('background-color', 'lightpink');
-                        $('#Form #submitBtn').attr('disabled', 'disabled');
+                        $('#Form button[type="submit"]').attr('disabled', 'disabled');
                     }
                 });
 

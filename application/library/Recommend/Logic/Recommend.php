@@ -39,9 +39,9 @@ class Recommend_Logic_Recommend extends Base_Logic{
         $arrRet =  $listArticle->toArray();
         foreach($arrRet['list'] as $key => $val){
             $listArticle = new Recommend_List_Result();
-            $listArticle->setFilter(array('obj_id' => $val['obj_id']));
+            $listArticle->setFilterString('obj_id = '.$val['obj_id']." and rate > 0.3");
             $listArticle->setFields(array('label_id','label_type','rate','reason','status','create_time','update_time'));
-            $listArticle->setPagesize(PHP_INT_MAX);
+            $listArticle->setPagesize(PHP_INT_MAX);            
             $listArticle->setOrder("`rate` desc");
             $arrTemp = $listArticle->toArray();
             $arrRet['list'][$key]['group'] = $arrTemp['list'];

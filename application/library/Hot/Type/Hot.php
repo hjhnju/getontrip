@@ -8,17 +8,17 @@ class Hot_Type_Hot extends Base_Type {
     
     /**
      * 城市的热度类型
-     * 0 非热门
-     * @var integer
-     */
-    const HOT = 0; 
-
-    /**
-     * 城市的热度类型
      * 1 热门
      * @var integer
      */
-    const NOTHOT = 1;
+    const HOT = 1; 
+
+    /**
+     * 城市的热度类型
+     * 2 非热门
+     * @var integer
+     */
+    const NOTHOT = 2;
 
     
     /**

@@ -100,7 +100,7 @@ class Base_Util_Secure {
      * @return string $strDecoded
      */
     public static function decryptForUuap($strKey, $strEncoded) {
-        $strEncrypted = str_replace('/', '-', $strEncoded);
+        $strEncrypted = str_replace('-', '/', $strEncoded);
         $strEncrypted = base64_decode($strEncrypted);
         $objTd = mcrypt_module_open('des', '', 'ecb', '');
         $objIv = @mcrypt_create_iv(mcrypt_enc_get_iv_size($objTd), MCRYPT_RAND);

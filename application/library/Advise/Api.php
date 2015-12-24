@@ -41,4 +41,13 @@ class Advise_Api{
         $logicAdvise = new Advise_Logic_Advise();
         return $logicAdvise->addAnswer($adviseId, $strContent);
     }
+    
+    /**
+     * 接口4：Advise_Api::getAutoAnswer()
+     * 获取自动回复模板
+     * @return array
+     */
+    public static function getAutoAnswer(){
+        $logicAdvise = new Advise_Logic_Advise();
+    }
 }

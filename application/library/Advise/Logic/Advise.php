@@ -13,6 +13,8 @@ class Advise_Logic_Advise{
         '欢迎关注微信号，一起讨论',
     );
     
+    const WELCOME = '小途在这，有什么可以帮助您?';
+    
     protected $logicUser = '';
         
     public function __construct(){
@@ -25,14 +27,25 @@ class Advise_Logic_Advise{
      */
     public function listAdvise($userId, $page, $pageSize){
         $arrRet     = array();
-        $index      = 0;
+        $index      = ($page -1)*$pageSize;
         $image      = $this->logicUser->getUserAvatar($userId);      
         $listAdvise = new Advise_List_Advise();
         $listAdvise->setFilter(array('userid' => $userId));
         $listAdvise->setPage($page);
-        $listAdvise->setPagesize($pageSize);
+        if($page == 1){
+            $listAdvise->setPagesize($pageSize - 1);
+            $temp['id']          = '';
+            $temp['image']       = '';
+            $temp['type']        = strval(Advise_Type_Type::ANSWER);
+            $temp['content']     = self::WELCOME;
+            $temp['create_time'] = date('Y-m-d H:i',time());
+            $arrRet[] = $temp;
+        }else{
+            $listAdvise->setPagesize($pageSize);
+        }
         $ret =  $listAdvise->toArray();
         foreach ($ret['list'] as $val){
+            $temp = array();
             $temp['id']          = strval($val['id']);
             $temp['type']        = strval(Advise_Type_Type::ADVISE);
             $temp['image']       = $image;
@@ -40,13 +53,9 @@ class Advise_Logic_Advise{
             $temp['create_time'] = date('Y-m-d H:i',$val['create_time']);           
             $arrRet[] = $temp;
             
-            //拼回答,优先选择人工回答
+            //拼回答
             $ret = $this->getAnswer($val['id'], $index);
-            foreach ($ret as $key => $val){
-                if(empty($val['create_time'])){
-                    $ret[$key]['create_time'] = $temp['create_time'];
-                }
-            }
+            
             $arrRet = array_merge($arrRet,$ret);
             $index += 1;                        
         }
@@ -85,6 +94,11 @@ class Advise_Logic_Advise{
         $listAdvise->setFilter($arrParams);
         $arrRet =  $listAdvise->toArray();
         foreach ($arrRet['list'] as $key => $val){
+            if($val['status'] !== Advise_Type_Status::SETTLED){
+                $arrRet['list'][$key]['update_time'] = '';
+                $arrRet['list'][$key]['update_user'] = '';
+                $arrRet['list'][$key]['create_user'] = '';
+            }
             $listAdvise = new Advise_List_Advise();
             $listAdvise->setPagesize(PHP_INT_MAX);
             $listAdvise->setFilter(array('userid' => $val['id'],'type' => Advise_Type_Type::ANSWER));
@@ -105,17 +119,8 @@ class Advise_Logic_Advise{
         $objAdvise->userid  = $userId;
         $objAdvise->content = $strData;
         $objAdvise->status  = Advise_Type_Status::UNTREATED;
-        $objAdvise->save();
-        
-        $listAdvise         = new Advise_List_Advise();
-        $listAdvise->setPagesize(PHP_INT_MAX);
-        $listAdvise->setFilter(array('userid' => $userId));
-        $ret   = $listAdvise->toArray();
-        $index = $ret['total'];
-        if(isset($this->_feedmsg[$index])){
-            return $this->_feedmsg[$index];
-        }
-        return '';
+        $ret = $objAdvise->save();
+        return $ret;
     }
     
     /**
@@ -127,21 +132,15 @@ class Advise_Logic_Advise{
     public function getAnswer($adviseId,$index){
         $listAdvise          = new Advise_List_Advise();
         $listAdvise->setFilter(array('userid' => $adviseId));
+        $listAdvise->setFields(array('id','content','create_time'));
         $listAdvise->setPagesize(PHP_INT_MAX);
         $ret = $listAdvise->toArray();
-        $arrRet = array();
-        if(!empty($ret['list'])){
-            return $ret['list'];
+        foreach ($ret['list'] as $key => $val){
+            $ret['list'][$key]['id'] = strval($val['id']);
+            $ret['list'][$key]['type'] = strval(Advise_Type_Type::ANSWER);
+            $ret['list'][$key]['create_time'] = date('Y-m-d H:i',$val['create_time']);
         }
-        if(isset($this->_feedmsg[$index])){
-            $temp['id']          = '';
-            $temp['image']       = "";
-            $temp['type']        = strval(Advise_Type_Type::ANSWER);
-            $temp['content']     = $this->_feedmsg[$index];
-            $temp['create_time'] = '';
-            $arrRet[] = $temp;
-        }
-        return $arrRet;
+        return $ret['list'];
     }
     
     /**
@@ -159,5 +158,9 @@ class Advise_Logic_Advise{
         $objAdvise->updateTime = time();
         $ret2 = $objAdvise->save();
         return $ret1&&$ret2;
+    }
+    
+    public function getAutoAnswer(){
+        return $this->_feedmsg;
     }
 }

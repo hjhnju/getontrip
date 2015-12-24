@@ -71,6 +71,29 @@ class Base_Logic{
         return '';
     }
     
+    public function upPicData($file){
+        $ext = explode("/",$file['type']);
+        if (!isset($ext[1])||!in_array($ext[1], array('jpg', 'gif', 'jpeg','png'))) {
+            return false;
+        }
+        
+        $hash = md5(microtime(true));
+        $hash = substr($hash, 8, 16);
+        if(trim($ext[1]) == 'gif'){
+            $filename = $hash . '.gif';
+        }else{
+            $filename = $hash . '.jpg';
+        }
+        
+        $oss = Oss_Adapter::getInstance();
+        $res = $oss->writeFile($filename, $file['tmp_name']);
+        if($res){
+            return $filename;
+        }else{
+            return false;
+        }
+    }
+    
     /**
      * 删除图片
      * @param string $name

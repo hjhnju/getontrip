@@ -19,9 +19,9 @@ class ImagetopicModel extends BaseModel{
         if($order == self::ORDER_NEW){
             $sql = "SELECT a.id FROM `imagetopic`  a,`sight_imagetopic` b WHERE a.status = ".Imagetopic_Type_Status::PUBLISHED." and a.id=b.imagetopic_id and b.sight_id = $sightId  ORDER by a.update_time desc limit $from,$pageSize";
         }else{
-            $sql = "SELECT a.id FROM `imagetopic`  a,`sight_imagetopic` b WHERE a.status = ".Imagetopic_Type_Status::PUBLISHED." and a.id=b.imagetopic_id and b.sight_id = $sightId  ORDER by a.hot desc limit $from,$pageSize";
+            $sql = "SELECT distinct(a.id) FROM `imagetopic`  a,`sight_imagetopic` b, `hot` c  WHERE a.status = ".Imagetopic_Type_Status::PUBLISHED." and a.id=b.imagetopic_id and b.sight_id = $sightId  and c.obj_id = a.id and c.obj_type = ".Hot_Type_Obj::IMAGETOPIC." and c.type = ".Hot_Type_Hot::DEFAULTVAL." ORDER by c.hot desc limit $from,$pageSize";
         }                   
-        try {                  	
+        try {                 	
             $data = $this->db->fetchAll($sql);          
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());          

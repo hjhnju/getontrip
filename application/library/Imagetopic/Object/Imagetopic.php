@@ -26,7 +26,7 @@ class Imagetopic_Object_Imagetopic extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'title', 'content', 'image', 'hot', 'status', 'owner', 'create_time', 'update_time');
+    protected $fields = array('id', 'title', 'content', 'image', 'status', 'owner', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -37,7 +37,6 @@ class Imagetopic_Object_Imagetopic extends Base_Object {
         'title'       => 'title',
         'content'     => 'content',
         'image'       => 'image',
-        'hot'         => 'hot',
         'status'      => 'status',
         'owner'       => 'owner',
         'create_time' => 'createTime',
@@ -87,12 +86,6 @@ class Imagetopic_Object_Imagetopic extends Base_Object {
      * @var string
      */
     public $image;
-
-    /**
-     * 图文热度
-     * @var 
-     */
-    public $hot;
 
     /**
      * 图文状态

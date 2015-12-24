@@ -19,7 +19,12 @@ class Hot_Type_Hot extends Base_Type {
      * @var integer
      */
     const NOTHOT = 2;
-
+    
+    /**
+     * 默认的热度类型
+     * @var integer
+     */
+    const DEFAULTVAL = 1;
     
     /**
      * 状态名
@@ -28,5 +33,6 @@ class Hot_Type_Hot extends Base_Type {
     public static $names = array(
         self::HOT        => '热门',
         self::NOTHOT     => '非热门',
+        self::DEFAULTVAL => '默认的热度类型',
     );
 }

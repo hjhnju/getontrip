@@ -1,13 +1,15 @@
 <?php
 class Recommend_Logic_Recommend extends Base_Logic{
     
+    const LIMIT_RATE = 0.3;
+    
     /**
      * 根据条件获取推荐的文章列表
      * @param integer $page
      * @param integer $pageSize
      * @param array $arrInfo
      */
-    public function listArticles($page, $pageSize, $arrInfo = array()){
+    public function listArticles($page, $pageSize, $type, $arrInfo = array()){
         $listArticle = new Recommend_List_Result();
         $strFilter   = "";
         $bSpecial    = false;
@@ -21,13 +23,18 @@ class Recommend_Logic_Recommend extends Base_Logic{
             unset($arrInfo['tag']);
             $bSpecial = true;
         }
+        if(isset($arrInfo['classtag'])){
+            $strFilter = "`label_type` =".Recommend_Type_Label::TAG." and label_id=".$arrInfo['classtag'];
+            unset($arrInfo['classtag']);
+            $bSpecial = true;
+        }
         if(empty($strFilter)){
             $strFilter = "1";
         }
         foreach ($arrInfo as $key => $val){            
             $strFilter .= " and `".$key."` =".$val;
         }
-        $strFilter .= " and rate > 0.3";
+        $strFilter .= " and `label_type` = ".$type." and `rate` > ".self::LIMIT_RATE;
         $listArticle->setGroup("obj_id");
         $listArticle->setFilterString($strFilter);
         $listArticle->setPage($page);
@@ -39,7 +46,7 @@ class Recommend_Logic_Recommend extends Base_Logic{
         $arrRet =  $listArticle->toArray();
         foreach($arrRet['list'] as $key => $val){
             $listArticle = new Recommend_List_Result();
-            $listArticle->setFilterString('obj_id = '.$val['obj_id']." and rate > 0.3");
+            $listArticle->setFilterString('obj_id = '.$val['obj_id']." and `label_type` = ".$type." and `rate` > ".self::LIMIT_RATE);
             $listArticle->setFields(array('label_id','label_type','rate','reason','status','create_time','update_time'));
             $listArticle->setPagesize(PHP_INT_MAX);            
             $listArticle->setOrder("`rate` desc");

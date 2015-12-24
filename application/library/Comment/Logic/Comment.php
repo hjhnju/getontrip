@@ -154,7 +154,7 @@ class Comment_Logic_Comment  extends Base_Logic{
         $listComment->setFilter($arrFilter);
         $listComment->setPage($page);
         $listComment->setPagesize($pageSize);
-        $listComment->setOrder("create_time asc");
+        //$listComment->setOrder("create_time asc");
         $ret = $listComment->toArray();
         foreach ($ret['list'] as $key => $val){
             $ret['list'][$key]['from_name']   = $logicUser->getUserName($val['from_user_id']);
@@ -290,6 +290,7 @@ class Comment_Logic_Comment  extends Base_Logic{
         foreach ($arrComment['list'] as $key => $val){
             $objTopic = new Topic_Object_Topic();
             $objTopic->fetch(array('id' => $val['obj_id']));
+            $arrRet[$key]['id']    = strval($objTopic->id);
             $arrRet[$key]['title'] = $val['content'];
             $arrRet[$key]['from']  = $objTopic->title;
             $arrRet[$key]['time']  = date("m月d日",$val['create_time']);

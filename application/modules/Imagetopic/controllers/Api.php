@@ -32,23 +32,32 @@ class ApiController extends Base_Controller_Api {
     }  
     
     /**
-     * 接口1：/api/1.0/imagetopic/add
+     * 接口2：/api/1.0/imagetopic/add
      * 添加图文接口
      * @param integer sightId, 景点ID
+     * @param string  title, 图文标题
+     * @param string  content,图文内容
+     * @param file    image,  图文图片
      * @return json
      */
     public function addAction() {
-        $sight      = isset($_REQUEST['sight'])?intval($_REQUEST['sight']):'';
+        $sightId    = isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
         $title      = isset($_REQUEST['title'])?trim($_REQUEST['title']):'';
         $content    = isset($_REQUEST['content'])?trim($_REQUEST['content']):'';
-        if(empty($imagetopicId)){
+        $image      = isset($_FILES['image'])?$_FILES['image']:'';
+        if(empty($sight) || empty($image)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $this->ajax("aaa");
+        $logic = new Imagetopic_Logic_Imagetopic();
+        $ret   = $logic->add($sightId, $title, $content, $image);
+        if($ret){
+            return $this->ajaxError($ret,Base_RetCode::getMsg($ret));
+        }
+        return $this->ajax($ret);
     }
     
     /**
-     * 接口1：/api/1.0/imagetopic/list
+     * 接口3：/api/1.0/imagetopic/list
      * 图文列表页接口:包括最新和热门
      * @param integer sightId,景点ID
      * @param integer order,类型,1:最新,2:热门

@@ -32,9 +32,12 @@ $(document).ready(function() {
                         if ($("#form-type").val()) {
                             d.params.type = $("#form-type").val();
                         }
-                        if ($('#form-is_china').attr("checked")) {
+                        if ($('#form-is_china').val()) {
                             d.params.is_china = $('#form-is_china').val();
-                        } 
+                        }
+                        if ($("#form-status").val()) {
+                            d.params.status = $.trim($("#form-status").val());
+                        }
                     }
                 },
                 "columnDefs": [{
@@ -62,18 +65,41 @@ $(document).ready(function() {
                 }, {
                     "data": "city"
                 }, {
-                    "data": "region"
+                    "data": function(e) {
+                         if (e.image) {
+                             return '<a href="' + e.image + '" target="_blank">查看图片</a>';
+                         }
+                         return '暂无';
+                     }
+                }, {
+                    "data": function(e) {
+                        return e.x+','+e.y;
+                    }
                 }, {
                     "data": function(e) {
                         if (e.city_id) {
-                            return '已绑定'+e.city_id;
+                            return ''+e.city_id;
                         }
                         return '未绑定';
                     }
                 }, {
+                    "data": "stats_name"
+                }, {
                     "data": function(e) {
-                        return '';
-                        //return '<a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/video/list?city_id=' + e.id + '">列表</a>';
+                        if (e.status==0) {
+                           return '<button class="btn btn-warning btn-xs save" title="保存到景点库" data-toggle="tooltip"  data-id=' + e.id + '" data-action="CONFIRMED">保存到景点库</button>'
+                                  +'<button class="btn btn-warning btn-xs save" title="移至待处理" data-toggle="tooltip"  data-id=' + e.id + '" data-action="NEEDCONFIRM">移至待处理</button>';
+                        
+                        } else if (e.status==1) {
+                           return '<button class="btn btn-warning btn-xs save" title="保存到景点库" data-toggle="tooltip"  data-id=' + e.id + '" data-action="CONFIRMED">保存到景点库</button>'
+                                + '<button class="btn btn-warning btn-xs save" title="无需处理" data-toggle="tooltip"  data-id=' + e.id + '" data-action="NOTNEED">无需处理</button>';
+                        
+                        }else {
+                           return '<button class="btn btn-warning btn-xs save" title="无需处理" data-toggle="tooltip"  data-id=' + e.id + '" data-action="NOTNEED">无需处理</button>'
+                                  +'<button class="btn btn-warning btn-xs save" title="移至待处理" data-toggle="tooltip"  data-id=' + e.id + '" data-action="NEEDCONFIRM">移至待处理</button>';
+                        
+                        }
+                         //return '<a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/video/list?city_id=' + e.id + '">列表</a>';
 
                     }
                 }],
@@ -104,36 +130,34 @@ $(document).ready(function() {
                 //类型说明弹出框 
                 $('#from_detail-help').popover({
                     //trigger: 'hover',
-                    placement: 'top',
+                    placement: 'bottom',
                     html: true,
-                    title: '类型种类：',
-                    content: '1: "城市", 2: "古镇", 3: "乡村", 4: "海边", 5: "沙漠", 6: "山峰", 7: "峡谷", 8: "冰川", 9: "湖泊", 10: "河流", 11: "温泉", 12: "瀑布", 13: "草原", 14: "湿地", 15: "自然保护区",'
-                             +'16: "公园", 17: "展馆", 18: "历史建筑", 19: "现代建筑", 20: "历史遗址", 21: "宗教场所", 22: "观景台", 23: "陵墓", 24: "学校", 25: "故居", 26: "纪念碑", 27: "其他", 28: "购物娱乐", 29: "休闲度假"'
+                    title: '可选类型：',
+                    content: '<span style="width:250px;display: block;">1: "城市", 2: "古镇", 3: "乡村", 4: "海边", 5: "沙漠", 6: "山峰", 7: "峡谷", 8: "冰川", 9: "湖泊", 10: "河流", 11: "温泉", 12: "瀑布", 13: "草原", 14: "湿地", 15: "自然保护区",'
+                             +'16: "公园", 17: "展馆", 18: "历史建筑", 19: "现代建筑", 20: "历史遗址", 21: "宗教场所", 22: "观景台", 23: "陵墓", 24: "学校", 25: "故居", 26: "纪念碑", 27: "其他", 28: "购物娱乐", 29: "休闲度假"</span>'
                 });
 
                 //发布操作
-                $('#editable button.publish,#editable button.cel-publish').live('click', function(e) {
+                $('#editable button.save').live('click', function(e) {
                     e.preventDefault();
                     var nRow = $(this).parents('tr')[0];
                     var data = oTable.api().row(nRow).data();
-                    var action;
-                    if ($(this).hasClass('publish')) {
-                        if (!data.image) {
-                            toastr.warning('发布之前必须上传背景图片');
-                            return;
-                        }
-                        action = 'PUBLISHED';
-                    } else {
-                        action = 'NOTPUBLISHED';
-                    }
-                    var publish = new Remoter('/admin/sightapi/publish');
+                    action = $(this).attr('data-action');
+
+                    var publish = new Remoter('/admin/sightapi/addToSight');
                     publish.remote({
                         id: data.id,
                         action: action
                     });
                     publish.on('success', function(data) {
+                        if (data.bizError) {
+                            toastr.warning(data.statusInfo);
+                        }else{ 
+                            toastr.success('保存成功');
+                        }
                         //刷新当前页
                         oTable.fnRefresh();
+                        
                     });
 
                 });
@@ -151,11 +175,15 @@ $(document).ready(function() {
                     api.ajax.reload();
                 }
             }); 
+ 
 
-            //只看国内的
-            $('#form-is_china').click(function(event) {
+            $('#form-status,#form-is_china').change(function(event) {
+                //触发dt的重新加载数据的方法
                 api.ajax.reload();
             });
+
+            //状态下拉列表 
+            $('#form-status,#form-is_china').selectpicker();
 
         }
 

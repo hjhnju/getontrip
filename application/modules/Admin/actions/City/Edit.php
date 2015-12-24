@@ -20,6 +20,7 @@ class EditAction extends Yaf_Action_Abstract {
             if(empty($postInfo["status"])){
                 $postInfo["x"]=0;
                 $postInfo["y"]=0; 
+                $postInfo["status"]='';
             }  
            $this->getView()->assign('post', $postInfo); 
 

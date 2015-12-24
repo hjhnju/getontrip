@@ -184,6 +184,7 @@ class Collect_Logic_Collect{
                             //内容访问数
                             $logicVisit = new Tongji_Logic_Visit();
                             $temp['visit']  = strval($logicVisit->getVisitCount(Collect_Type::BOOK, $val['obj_id']));
+                            $temp['praise'] = strval($logicPraise->getPraiseNum($val['obj_id'],Praise_Type_Type::BOOK));
                             $temp['type']   = strval(Collect_Type::BOOK);
                             $arrRet[]       = $temp;
                             break;
@@ -198,7 +199,8 @@ class Collect_Logic_Collect{
                             //内容访问数
                             $logicVisit = new Tongji_Logic_Visit();
                             $temp['visit']  = strval($logicVisit->getVisitCount(Collect_Type::VIDEO, $val['obj_id']));
-                            $temp['type']   = strval(Collect_Type::VIDEO);
+                            $temp['type']   = strval(Collect_Type::VIDEO); 
+                            $temp['praise'] = '0';
                             $arrRet[]       = $temp;
                             break;
                         default:

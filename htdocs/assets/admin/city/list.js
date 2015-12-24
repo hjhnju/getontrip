@@ -75,7 +75,7 @@ $(document).ready(function() {
                         if (e.statusName == '已发布') {
                             return e.statusName + '<button type="button" class="btn btn-warning btn-xs cel-publish" title="取消发布" data-toggle="tooltip" ><i class="fa fa-close"></i></button>';
                         } else {
-                            return '未添加信息，请编辑';
+                            return '未完善信息，请编辑';
                         }
 
                     }

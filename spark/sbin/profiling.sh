@@ -2,34 +2,62 @@
 cd `dirname $0`/../
 echo "executing path = "`pwd`
 
-dataDir=$HOME"/publish/data/"
+#使用说明
+function _usage(){
+    FILE=`basename $0`
+    echo "Execute profiling articles to sights/tags."
+    echo "Usage: sh $FILE -t sight|tag"
+    echo -e "\t-h, this page"
+    exit 0
+}
+
+target=""
+while getopts "t:h" opt
+do
+    case $opt in
+        d)
+            target=$OPTARG;;
+        h)
+            _usage;;
+    esac
+done
+
+# 输入
+dataDir=$HOME"/publish/data"
+lablesFile=$dataDir"/labels_"$target".txt"
+documentsDir=$dataDir"/documents_"$target
+
+# 输出
+profilesDir=$dataDir"/profiles_"$target".libsvm"
+idfModelFile=$dataDir"/idf_"$target".model"
+
 
 # 输入文件
-input1=$dataDir"/documents/"
-if [ ! -d "$input1" ]; then
-    echo "input dir $input1 not exists"
+if [ ! -d "$documentsDir" ]; then
+    echo "input dir $documentsDir not exists"
     exit 255
 fi
-input2=$dataDir"/labels.txt"
-if [ ! -f "$input2" ]; then
-    echo "input file $input2 not exists"
+
+if [ ! -f "$lablesFile" ]; then
+    echo "input file $lablesFile not exists"
     exit 255
 fi
 
 # 输出文件
-if [ -d $dataDir"/profiles.svm" ]; then
-    echo "mv $dataDir/profiles.svm $dataDir/backup/"
+if [ -d "$profilesDir" ]; then
+    echo "mv $profilesDir $dataDir/backup/"
     mkdir -p $dataDir/backup/
-    mv $dataDir/profiles.svm $dataDir/backup/
+    mv $profilesDir $dataDir/backup/
 fi
-if [ -f "$dataDir/idf.model" ]; then
-    echo "mv $dataDir/idf.model $dataDir/backup/idf.model"
+if [ -f "$idfModelFile" ]; then
+    echo "mv $idfModelFile $dataDir/backup/"
     mkdir -p $dataDir/backup/
-    mv $dataDir/idf.model $dataDir/backup/
+    mv $idfModelFile $dataDir/backup/
 fi
 
 # 计算偏好特征
 echo "executing spark-submit for recommend.ContentBasedProfiling"
+echo "Arguments: <dataDir> <labels> <documents> <idfmodel> <profiles>"
 spark-submit \
   --class "recommend.ContentBasedProfiling" \
   --master local[4] \
@@ -37,4 +65,5 @@ spark-submit \
   --driver-memory 4G \
   --conf spark.shuffle.spill=false \
   --conf "spark.executor.extraJavaOptions=-XX:+PrintGCDetails -XX:+PrintGCTimeStamps" \
-  $dataDir/getontrip-sparking_2.10-1.0.jar
+  $dataDir/getontrip-sparking_2.10-1.0.jar \
+  $dataDir $lablesFile $documentsDir $idfModelFile $profilesDir

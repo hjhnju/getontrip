@@ -21,27 +21,32 @@ object ContentBasedRecommend {
     def main (args: Array[String]) {
 
         if(args.length < 1) {
-            println("arguments: <dataDir> ")
+            println("Arguments: <dataDir> <profiles> <newdocs> <idfmodel> <simout> ")
             return
         }
-        val dataDir = args.last
+        val dataDir = args(0)
         println("[ContentBasedRecommend] data dir = " + dataDir)
+
+        val libsvmFile   = dataDir + "/" + args(1) // "profiles.libsvm"
+        val docsFile     = dataDir + "/" + args(2) // "newdocs.txt"
+        val idfModelFile = dataDir + "/" + args(3) // "idf.model"
+        val simOutDir    = dataDir + "/" + args(4) // "similarity.out"
 
         val conf = new SparkConf().setAppName("GetOntrip Sparking")
         val sc   = new SparkContext(conf)
 
         // 读取各类的偏好特征向量
-        val profiles: RDD[LabeledPoint] = MLUtils.loadLibSVMFile(sc, dataDir + "/profiles.libsvm")
+        val profiles: RDD[LabeledPoint] = MLUtils.loadLibSVMFile(sc, libsvmFile)
 
         // 读取待验证的文档向量
-        val newDocs: RDD[(String, Seq[String])] = sc.textFile(dataDir + "/newdocs.txt").map {
+        val newDocs: RDD[(String, Seq[String])] = sc.textFile(docsFile).map {
             line =>
                 val arrTmp = line.split( """\s+""")
                 (arrTmp(0), arrTmp.drop(1).toSeq)
         }
 
         // 读取model
-        val ois = new ObjectInputStream(new FileInputStream(dataDir + "/idf.model"))
+        val ois = new ObjectInputStream(new FileInputStream(idfModelFile))
         val idfModel = ois.readObject().asInstanceOf[IDFModel]
 
         // 计算tf
@@ -75,7 +80,7 @@ object ContentBasedRecommend {
 
         val simOut = filterAndSortedSims.map{x => x._1 + " " + x._2.mkString(" ")}
 
-        simOut.saveAsTextFile(dataDir + "/similarity.out")
+        simOut.saveAsTextFile(simOutDir)
     }
 
     def similarity(v1: Vector, v2: Vector): Double =  {

@@ -3,66 +3,65 @@
 cd `dirname $0`/../
 echo "executing path = "`pwd`
 
-dataDir=$HOME"/publish/data/"
-#dataDir=$HOME"/Dev/getontrip/spark/data/"
-
 #使用说明
 function _usage(){
     FILE=`basename $0`
     echo "Execute recommend articles to sights."
-    echo "Usage: sh $FILE [-d]"
+    echo "Usage: sh $FILE [-d] -t sight|tag"
     echo -e "\t-d YYYYMMDD, is option, default is today=$DATE"
     echo -e "\t-h, this page"
     exit 0
 }
 
 DATE=`date +%Y%m%d`
-while getopts "d:h" opt
+target=""
+while getopts "d:t:h" opt
 do
     case $opt in
         d)
             DATE=$OPTARG;;
+        t)
+            target=$OPTARG;;
         h)
             _usage;;
     esac
 done
 
+
+dataDir=$HOME"/publish/data/"
 # 输入
-inputfile=$dataDir"/newdocs."$DATE
-echo "inputfile is $inputfile"
+newdocsFile=$dataDir"/newdocs."$DATE
+inputProfiles=$dataDir"/profiles_"$target".libsvm"
+idfModelFile=$dataDir"/idf_"$target".model"
 
-inputProfiles=$dataDir"/profiles.libsvm"
-inputIdfModel=$dataDir"/idf.model"
+# 输出
+outputDir=$dataDir"/similarity_"$target".out"
+outputFile=$dataDir"/similarity_"$target"."$DATE
+echo "outputfile is $outputfile"
 
-if [ ! -f "$inputfile" ]; then
-    echo "no input file $inputfile"
+if [ ! -f "$newdocsFile" ]; then
+    echo "no input file $newdocsFile"
     exit 1
 fi
-
-echo "cp $inputfile $dataDir/newdocs.txt"
-cp $inputfile $dataDir"/newdocs.txt"
 
 if [ ! -d "$inputProfiles" ]; then
     echo "no input profiles $inputProfiles"
     exit 1
 fi
 
-if [ ! -f "$inputIdfModel" ]; then
-    echo "no input idfmodel $inputIdfModel"
+if [ ! -f "$idfModelFile" ]; then
+    echo "no input idfmodel $idfModelFile"
     exit 1
 fi
 
-# 输出
-outputfile=$dataDir"/similarity."$DATE
-echo "outputfile is $outputfile"
-
-if [ -d "$dataDir/similarity.out" ]; then
-    echo "rm -rf $dataDir/similarity.out"
-    rm -rf "$dataDir/similarity.out"
+if [ -d "$outputDir" ]; then
+    echo "rm -rf $outputDir"
+    rm -rf "$outputDir"
 fi
 
 # 执行
 echo "executing spark-submit for recommend.ContentBasedRecommend"
+echo "Arguments: <dataDir> <profiles> <newdocs> <idfmodel> <outdir>"
 spark-submit \
   --class "recommend.ContentBasedRecommend" \
   --master local[4] \
@@ -71,8 +70,8 @@ spark-submit \
   --conf spark.shuffle.spill=false \
   --conf "spark.executor.extraJavaOptions=-XX:+PrintGCDetails -XX:+PrintGCTimeStamps" \
   $dataDir/getontrip-sparking_2.10-1.0.jar \
-  $dataDir
+  $dataDir $inputProfiles $newdocsFile $idfModelFile $outputDir
 
-echo "cat $dataDir/similarity.out/part-* > $outputfile"
-cat $dataDir/similarity.out/part-* > $outputfile
-echo "output file is $outputfile"
+echo "cat $outputDir/part-* > $outputFile"
+cat $outputDir/part-* > $outputFile
+echo "output file is $outputFile"

@@ -8,12 +8,17 @@ dataDir=$HOME"/publish/data/"
 cd $dataDir
 
 #标签映射
-cat $dataDir/label_index | awk '{sub(/\r/, " ");print $1" "$2$3;}' > $dataDir/labels.txt
+cat $dataDir/label_sight | awk '{sub(/\r/, " ");print $1" "$2$3;}' > $dataDir/labels_sight.txt
+cat $dataDir/label_tag | awk '{sub(/\r/, " ");print $1" "$2$3;}' > $dataDir/labels_tag.txt
 
 #分词后的文档集合
-tar zxvf documents.tar.gz
+docs=$((`ls -l documents_sight | wc -l` - 1))
+labels=`cat labels_sight.txt | wc -l`
+echo "sight document classes:"$docs
+echo "sight labels:"$labels
 
-docs=$((`ls -l documents | wc -l` - 1))
-labels=`cat labels.txt | wc -l`
-echo "document classes:"$docs
-echo "labels:"$labels
+docs=$((`ls -l documents_tag | wc -l` - 1))
+labels=`cat labels_tag.txt | wc -l`
+echo "tag document classes:"$docs
+echo "tag labels:"$labels
+

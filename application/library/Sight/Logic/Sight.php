@@ -64,7 +64,7 @@ class Sight_Logic_Sight extends Base_Logic{
          
         return $arrSight;
     }
-    
+      
     /**
      * 根据景点ID获取景点及话题信息，支持带标签筛选及热度的时间范围设置
      * @param integer $sightId

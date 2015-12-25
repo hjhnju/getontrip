@@ -51,19 +51,6 @@ class Sight_Logic_Sight extends Base_Logic{
         $arrSight['tags'] = $arrTags['list'];
         return $arrSight;
     }
-
-    /**
-     * 根据景点ID判断是否保存到sight表里面
-     * @param integer $sightId
-     * @return array
-     */
-    public function isExistById($sightId){
-        $objSight = new Sight_Object_Sight();
-        $objSight->fetch(array('id' => $sightId));
-        $arrSight =  $objSight->toArray();
-         
-        return $arrSight;
-    }
     
     /**
      * 根据景点ID获取景点及话题信息，支持带标签筛选及热度的时间范围设置
@@ -207,7 +194,11 @@ class Sight_Logic_Sight extends Base_Logic{
             
             //话题数
             $topic_num     = $this->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
-            $arrSight[$key]['desc']     = sprintf("%d个类别，%d篇内容",$count,$topic_num);
+            $wiki_num      = Keyword_Api::getKeywordNum($val['id']);
+            $book_num      = Book_Api::getBookNum($val['id']);
+            $video_num     = Video_Api::getVideoNum($val['id']);            
+            
+            $arrSight[$key]['desc']     = sprintf("%d个类别，%d个内容",$count,$topic_num + $video_num + $wiki_num + $book_num);
             $arrSight[$key]['content']  = $arrSight[$key]['desc'];
             
             $arrSight[$key]['search_type']  = 'sight';

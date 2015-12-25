@@ -115,9 +115,12 @@ class Home_Logic_List{
             $temp['image'] = isset($val['image'])?Base_Image::getUrlByName($val['image']):'';
                       
             $topic_num     = $this->_logicSight->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
+            $wiki_num      = Keyword_Api::getKeywordNum($val['id']);
+            $book_num      = Book_Api::getBookNum($val['id']);
+            $video_num     = Video_Api::getVideoNum($val['id']);
 
             $collect       = $this->_logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $val['id']);
-            $temp['content']  = sprintf("%d个内容",$topic_num);
+            $temp['content']  = sprintf("%d个内容",$topic_num + $wiki_num + $book_num + $video_num);
             $temp['collect']  = sprintf("%d人收藏",$collect);
             
             $arrSight[] = $temp;

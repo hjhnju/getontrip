@@ -229,11 +229,14 @@ class Search_Logic_Search{
                     $temp['image'] = isset($arrCity['image'])?Base_Image::getUrlByName($arrCity['image']):'';
                     $sight_num     = $this->logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$cityId);
                     
-                    $modelTopic    = new TopicModel();
-                    $topic_num     = $modelTopic->getCityTopicNum($cityId);
+                    $modelCity     = new CityModel();
+                    $topic_num     = $modelCity->getCityTopicNum($cityId);
+                    $wiki_num      = $modelCity->getCityWikiNum($cityId);
+                    $video_num     = $modelCity->getCityVidoNum($cityId);
+                    $book_num      = $modelCity->getCityBookNum($cityId);
                     $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::CITY, $cityId);
                     $temp['param1']  =  sprintf("%d个景点",$sight_num);
-                    $temp['param2']  =  sprintf("%d个内容",$topic_num);
+                    $temp['param2']  =  sprintf("%d个内容",$topic_num + $wiki_num + $video_num + $book_num);
                     $temp['param3']  =  sprintf("%d人收藏",$collect);                                     
                     $arrData[] = $temp;
                 }
@@ -256,8 +259,11 @@ class Search_Logic_Search{
                         $count    += $this->logicComment->getTotalCommentNum($id);
                     }
                     $topic_num     = $this->logicSight->getTopicNum($sightId,array('status' => Topic_Type_Status::PUBLISHED));
+                    $wiki_num      = Keyword_Api::getKeywordNum($sightId);
+                    $book_num      = Book_Api::getBookNum($sightId);
+                    $video_num     = Video_Api::getVideoNum($sightId);
                     $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $sightId);
-                    $temp['param1']  =  sprintf("%d个内容",$topic_num);
+                    $temp['param1']  =  sprintf("%d个内容",$topic_num + $wiki_num + $book_num + $video_num);
                     $temp['param2']  =  sprintf("%d条评论",$count);
                     $temp['param3']  =  sprintf("%d人收藏",$collect);                                        
                     $arrData[] = $temp;

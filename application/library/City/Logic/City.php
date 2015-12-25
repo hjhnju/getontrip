@@ -55,9 +55,12 @@ class City_Logic_City{
         $logicCollect = new Collect_Logic_Collect();
         foreach ($arrSight as $key => $val){       
             $topic_num     = $logicSight->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
+            $wiki_num      = Keyword_Api::getKeywordNum($val['id']);
+            $book_num      = Book_Api::getBookNum($val['id']);
+            $video_num     = Video_Api::getVideoNum($val['id']);
             $arrSight[$key]['id']        = strval($val['id']);
             $arrSight[$key]['image']     = Base_Image::getUrlByName($val['image']);
-            $arrSight[$key]['topics']    = sprintf("%s个内容",$topic_num);
+            $arrSight[$key]['topics']    = sprintf("%s个内容",$topic_num + $wiki_num + $book_num + $video_num);
             $arrSight[$key]['collected'] = strval($logicCollect->checkCollect(Collect_Type::SIGHT, $val['id']));
         }
         return $arrSight;
@@ -72,7 +75,7 @@ class City_Logic_City{
         $arrLeters     = range('A','Z');
         $objCity       = new City_Object_City();
         $logicSight    = new Sight_Logic_Sight();
-        $modelTopic    = new TopicModel();
+        $modelCity     = new CityModel();
         foreach($arrLeters as $char){
             $strFilter  = "`cityid` = 0 and `provinceid` != 0";
             $listCity   = new City_List_Meta();
@@ -98,9 +101,12 @@ class City_Logic_City{
                     $val['id']         = strval($val['id']);
                     $val['name']       = strval($val['name']);
                     $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
-                    $topicNum          = $modelTopic->getCityTopicNum($val['id']);
+                    $topic_num         = $modelCity->getCityTopicNum($val['id']);
+                    $wiki_num          = $modelCity->getCityWikiNum($val['id']);
+                    $video_num         = $modelCity->getCityVidoNum($val['id']);
+                    $book_num          = $modelCity->getCityBookNum($val['id']);
                     $val['sight']       = strval($sightNum);
-                    $val['topic']       = strval($topicNum);
+                    $val['topic']       = strval($topic_num + $wiki_num + $video_num + $book_num);
                     $tempCity[] = $val;
                 }
             }
@@ -306,7 +312,7 @@ class City_Logic_City{
     public function getHotCity($type){
         $arrRet        = array();
         $logicSight    = new Sight_Logic_Sight();
-        $modelTopic    = new TopicModel();
+        $modelCity     = new CityModel();
         $arrHotCity    = City_Api::getHotCityIds();
         if($type == City_Type_Type::INLAND){
             $arrHotCity = isset($arrHotCity['inland'])?$arrHotCity['inland']:array();
@@ -315,7 +321,10 @@ class City_Logic_City{
         }    
         foreach ($arrHotCity as $key => $val){
             $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val);
-            $topicNum          = $modelTopic->getCityTopicNum($val);
+            $topic_num         = $modelCity->getCityTopicNum($val);
+            $wiki_num          = $modelCity->getCityWikiNum($val);
+            $video_num         = $modelCity->getCityVidoNum($val);
+            $book_num          = $modelCity->getCityBookNum($val);
             
             $objCity           = new City_Object_City();
             $objCity->fetch(array('id' => $val));
@@ -323,7 +332,7 @@ class City_Logic_City{
             $arrRet[$key]['name']        = strval($objCity->name);
             $arrRet[$key]['image']       = Base_Image::getUrlByName($objCity->image);
             $arrRet[$key]['sight']       = strval($sightNum);
-            $arrRet[$key]['topic']       = strval($topicNum);
+            $arrRet[$key]['topic']       = strval($topic_num + $wiki_num + $video_num + $book_num);
         }
         return array('hot' => $arrRet);
     }
@@ -393,7 +402,7 @@ class City_Logic_City{
      */
     public function search($query, $page, $pageSize){
         $logicSight = new Sight_Logic_Sight();
-        $modelTopic  = new TopicModel();
+        $modelCity  = new CityModel();
         $arrCity  = Base_Search::Search('city', $query, $page, $pageSize, array('id'));
         $num      = $arrCity['num'];
         $arrCity  = $arrCity['data'];
@@ -406,8 +415,13 @@ class City_Logic_City{
             $arrCity[$key]['image'] = isset($city['image'])?Base_Image::getUrlByName($city['image']):'';
             
             $sight_num     = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
-            $topic_num     = $modelTopic->getCityTopicNum($val['id']);
-            $arrCity[$key]['desc'] = sprintf("%d个景点，%d篇内容",$sight_num,$topic_num);
+            
+            $topic_num     = $modelCity->getCityTopicNum($val['id']);
+            $wiki_num      = $modelCity->getCityWikiNum($val['id']);
+            $video_num     = $modelCity->getCityVidoNum($val['id']);
+            $book_num      = $modelCity->getCityBookNum($val['id']);
+            
+            $arrCity[$key]['desc'] = sprintf("%d个景点，%d个内容",$sight_num,$topic_num + $wiki_num + $video_num + $book_num);
             $arrCity[$key]['content'] = $arrCity[$key]['desc'];
         }
         return  array('data' => $arrCity,'num' => $num);

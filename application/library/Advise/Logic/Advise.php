@@ -30,7 +30,7 @@ class Advise_Logic_Advise{
         $index      = ($page -1)*$pageSize;
         $image      = $this->logicUser->getUserAvatar($userId);      
         $listAdvise = new Advise_List_Advise();
-        $listAdvise->setFilter(array('userid' => $userId));
+        $listAdvise->setFilter(array('userid' => $userId,'type' => Advise_Type_Type::ADVISE));
         $listAdvise->setPage($page);
         if($page == 1){
             $listAdvise->setPagesize($pageSize - 1);
@@ -131,7 +131,7 @@ class Advise_Logic_Advise{
      */
     public function getAnswer($adviseId,$index){
         $listAdvise          = new Advise_List_Advise();
-        $listAdvise->setFilter(array('userid' => $adviseId));
+        $listAdvise->setFilter(array('userid' => $adviseId,'type' => Advise_Type_Type::ANSWER));
         $listAdvise->setFields(array('id','content','create_time'));
         $listAdvise->setPagesize(PHP_INT_MAX);
         $ret = $listAdvise->toArray();

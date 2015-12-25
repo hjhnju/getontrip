@@ -126,19 +126,30 @@ class Collect_Logic_Collect{
                     }
                     $temp['name']     = isset($sight['name'])?$sight['name']:'';
                     $temp['image']    = isset($sight['image'])?Base_Image::getUrlByName($sight['image']):'';
-                    $temp['content']  = sprintf("%d个内容",$logicSight->getTopicNum($val['obj_id']));
+                    $topic_num        = $logicSight->getTopicNum($val['obj_id']);
+                    $wiki_num         = Keyword_Api::getKeywordNum($val['obj_id']);
+                    $book_num         = Book_Api::getBookNum($val['obj_id']);
+                    $video_num        = Video_Api::getVideoNum($val['obj_id']);
+                    
+                    $temp['content']  = sprintf("%d个内容",$topic_num + $wiki_num + $book_num + $video_num);
                     $temp['collect']  = sprintf("%d人收藏",$this->getTotalCollectNum(Collect_Type::SIGHT, $val['obj_id']));
                     $arrRet[]         = $temp;
                 }
                 break;
             case Collect_Type::CITY:
                 $logicCity = new City_Logic_City();
+                $modelCity = new CityModel();
                 foreach ($arrCollect['list'] as $val){
                     $temp['id']       = strval($val['obj_id']);
                     $city             = $logicCity->getCityById($val['obj_id']);
                     $temp['image']    = isset($city['image'])?Base_Image::getUrlByName($city['image']):'';
                     $temp['name']     = str_replace("市","",$city['name']);
-                    $temp['content']  = sprintf("%d个内容",$logicCity->getTopicNum($val['obj_id']));
+                    $topic_num        = $logicCity->getTopicNum($val['obj_id']);
+                    $wiki_num         = $modelCity->getCityWikiNum($val['obj_id']);
+                    $video_num        = $modelCity->getCityVidoNum($val['obj_id']);
+                    $book_num         = $modelCity->getCityBookNum($val['obj_id']);
+                    
+                    $temp['content']  = sprintf("%d个内容",$topic_num + $wiki_num + $video_num + $book_num);
                     $temp['collect']  = sprintf("%d人收藏",$this->getTotalCollectNum(Collect_Type::CITY, $val['obj_id']));
                     $arrRet[]         = $temp;
                 }

@@ -166,8 +166,8 @@ class Praise_Logic_Praise extends Base_Logic{
                     $temp['title']  = $objBook->title;
                     $temp['author'] = $objBook->author;
                     $temp['image']  = Base_Image::getUrlByName($objBook->image);
-                    $temp['praisenum'] = strval($logicPraise->getPraiseNum($objTopic->id,Praise_Type_Type::BOOK));
-                    $temp['visitnum']  = strval($logicVisit->getVisitCount(Tongji_Type_Visit::BOOK, $objTopic->id));
+                    $temp['praisenum'] = strval($logicPraise->getPraiseNum($objBook->id,Praise_Type_Type::BOOK));
+                    $temp['visitnum']  = strval($logicVisit->getVisitCount(Tongji_Type_Visit::BOOK, $objBook->id));
                     break;
                 default:
                     break;

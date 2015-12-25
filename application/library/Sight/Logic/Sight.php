@@ -482,4 +482,18 @@ class Sight_Logic_Sight extends Base_Logic{
         }
         return true;
     }
+    
+    /**
+     * 根据景点ID判断是否保存到sight表里面
+     * @param integer $sightId
+     * @return array
+     */
+    public function isExistById($sightId){
+        $objSight = new Sight_Object_Sight();
+        $objSight->fetch(array('id' => $sightId));
+        $arrSight =  $objSight->toArray();
+         
+        return $arrSight;
+    }
+    
 }

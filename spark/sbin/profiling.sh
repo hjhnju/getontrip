@@ -15,7 +15,7 @@ target=""
 while getopts "t:h" opt
 do
     case $opt in
-        d)
+        t)
             target=$OPTARG;;
         h)
             _usage;;

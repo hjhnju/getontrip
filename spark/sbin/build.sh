@@ -2,7 +2,8 @@
 cd `dirname $0`/../
 echo "executing path = "`pwd`
 
-dataDir=/home/work/publish/data/
+dataDir=$HOME/publish/data/
+#dataDir=$HOME/Dev/getontrip/spark/data
 
 #build
 sbt package

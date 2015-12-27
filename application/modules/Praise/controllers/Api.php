@@ -6,10 +6,12 @@
  */
 class ApiController extends Base_Controller_Api {
     
+    const PAGESIZE = 6;
+    
     protected $logic;
     
     public function init() {
-        $this->setNeedLogin(true);
+        $this->setNeedLogin(false);
         parent::init();
         $this->logic     = new Praise_Logic_Praise();     
     }
@@ -28,7 +30,12 @@ class ApiController extends Base_Controller_Api {
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,
                 Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $ret = $this->logic->addPraise($type, $this->userid, $obj_id);
+        $user_id     = User_Api::getCurrentUser();
+        if(empty($user_id)){
+            return $this->ajaxError(Base_RetCode::SESSION_NOT_LOGIN,
+                Base_RetCode::getMsg(Base_RetCode::SESSION_NOT_LOGIN));
+        }
+        $ret = $this->logic->addPraise($type, $user_id, $obj_id);
         if($ret){
             return $this->ajaxError($ret,Praise_RetCode::getMsg($ret));
         }
@@ -49,10 +56,29 @@ class ApiController extends Base_Controller_Api {
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,
                 Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $ret = $this->logic->delPraise($type, $this->userid, $obj_id);
+        $user_id     = User_Api::getCurrentUser();
+        if(empty($user_id)){
+            return $this->ajaxError(Base_RetCode::SESSION_NOT_LOGIN,
+                Base_RetCode::getMsg(Base_RetCode::SESSION_NOT_LOGIN));
+        }
+        $ret = $this->logic->delPraise($type, $user_id, $obj_id);
         if($ret){
             return $this->ajax();
         }
         return $this->ajaxError();
+    }
+    
+    /**
+     * 接口3：/api/1.0/praise/list
+     * 查看我的点赞接口
+     * @param integer page
+     * @param integer pageSize
+     * @return json
+     */
+    public function listAction(){
+        $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
+        $ret       = $this->logic->listPraise($page, $pageSize);
+        return $this->ajax($ret);
     }
 }

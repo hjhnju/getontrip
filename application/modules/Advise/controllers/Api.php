@@ -26,11 +26,13 @@ class ApiController extends Base_Controller_Api {
         }
         $logic     = new Advise_Logic_Advise();
         $ret       = $logic->addAdvise($this->userid,$strAdvise);
-        $this->ajax($ret);
+        $this->ajax(strval($ret));
     }
     
     /**
      * 接口2：/api/advise/list
+     * @param integer page
+     * @param integer pageSize
      * 查询反馈意见接口
      * @return json
      */

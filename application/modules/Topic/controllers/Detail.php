@@ -15,17 +15,23 @@ class DetailController extends Base_Controller_Page {
     /**
      *  详情
      */
-    public function indexAction() {             
-       $postid = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0;
+    public function indexAction() {    
+        $request = $this->getRequest();
+        $param   = $request->getParams();
+       $postid   = isset($param['id'])? trim($param['id']) : intval($_REQUEST['id']);
        $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
        $sightId   = isset($_REQUEST['sightId'])?trim($_REQUEST['sightId']):''; 
        
        if(empty($postid)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
        }
-
+     
        $logic      = new Topic_Logic_Topic();
-       $postInfo    = $logic->getTopicDetail($postid,$sightId); 
+       if(is_int($postid) && $postid < 1448){
+           $postInfo    = $logic->getTopicDetail($postid,$sightId);
+       }else{
+           $postInfo    = $logic->getTopicDetail(Base_Util_Secure::decryptForUuap(Base_Util_Secure::PASSWD_KEY,$postid),$sightId);
+       }
        //$postInfo = Topic_Api::getTopicById($postid);
        if(!isset($postInfo['id'])){
           $this->getView()->assign('post', array()); 
@@ -60,8 +66,8 @@ class DetailController extends Base_Controller_Page {
            if($postInfo['content'] != ""){
                $spider  = Spider_Factory::getInstance("Filterimg",$postInfo['content'],Spider_Type_Source::STRING);
                $postInfo['content'] = $spider->getContentToDis();
-           } 
-           $this->getView()->assign('title', $postInfo['title']); 
+           }
+
            $this->getView()->assign('post', $postInfo); 
        } 
        

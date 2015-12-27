@@ -63,40 +63,25 @@ $(document).ready(function() {
                 }, {
                     "data": "province"
                 }, {
-                    "data": "city"
-                }, {
-                    "data": function(e) {
-                         if (e.image) {
-                             return '<a href="' + e.image + '" target="_blank">查看图片</a>';
-                         }
-                         return '暂无';
-                     }
-                }, {
-                    "data": function(e) {
-                        return e.x+','+e.y;
-                    }
-                }, {
-                    "data": function(e) {
+                    "data":  function(e) {
                         if (e.city_id) {
-                            return ''+e.city_id;
-                        }
-                        return '未绑定';
+                            return '<a data-city_id="'+e.city_id+'" class="changeCity">'+e.city+'</a>';
+                        } 
                     }
-                }, {
+                },  {
                     "data": "stats_name"
                 }, {
                     "data": function(e) {
                         if (e.status==0) {
-                           return '<button class="btn btn-warning btn-xs save" title="保存到景点库" data-toggle="tooltip"  data-id=' + e.id + '" data-action="CONFIRMED">保存到景点库</button>'
-                                  +'<button class="btn btn-warning btn-xs save" title="移至待处理" data-toggle="tooltip"  data-id=' + e.id + '" data-action="NEEDCONFIRM">移至待处理</button>';
+                           return '<button class="btn btn-warning btn-xs save" title="加入景点库" data-toggle="tooltip"  data-id=' + e.id + '" data-action="CONFIRMED">加入景点库</button>'
+                                  +'<button class="btn btn-warning btn-xs save" title="加入推荐" data-toggle="tooltip"  data-id=' + e.id + '" data-action="NEEDCONFIRM">加入推荐</button>';
                         
                         } else if (e.status==1) {
-                           return '<button class="btn btn-warning btn-xs save" title="保存到景点库" data-toggle="tooltip"  data-id=' + e.id + '" data-action="CONFIRMED">保存到景点库</button>'
-                                + '<button class="btn btn-warning btn-xs save" title="无需处理" data-toggle="tooltip"  data-id=' + e.id + '" data-action="NOTNEED">无需处理</button>';
+                           return '<button class="btn btn-warning btn-xs save" title="加入景点库" data-toggle="tooltip"  data-id=' + e.id + '" data-action="CONFIRMED">加入景点库</button>'
+                                + '<button class="btn btn-warning btn-xs save" title="取消推荐" data-toggle="tooltip"  data-id=' + e.id + '" data-action="NOTNEED">取消推荐</button>';
                         
                         }else {
-                           return '<button class="btn btn-warning btn-xs save" title="无需处理" data-toggle="tooltip"  data-id=' + e.id + '" data-action="NOTNEED">无需处理</button>'
-                                  +'<button class="btn btn-warning btn-xs save" title="移至待处理" data-toggle="tooltip"  data-id=' + e.id + '" data-action="NEEDCONFIRM">移至待处理</button>';
+                           return '';
                         
                         }
                          //return '<a class="btn btn-warning btn-xs" title="列表" data-toggle="tooltip"  target="_blank"  href="/admin/video/list?city_id=' + e.id + '">列表</a>';
@@ -162,6 +147,12 @@ $(document).ready(function() {
 
                 });
 
+                $('#editable a.changeCity').live('click', function(e) {
+                     e.preventDefault();
+                     $('#form-city').val($(this).text());
+                      api.ajax.reload();
+                });
+
             }
         }
 
@@ -177,7 +168,23 @@ $(document).ready(function() {
             }); 
  
 
-            $('#form-status,#form-is_china').change(function(event) {
+            $('#form-status').change(function(event) {
+                //触发dt的重新加载数据的方法
+                api.ajax.reload();
+            });
+
+            $('#form-is_china').change(function(event) {
+                if ($(this).val()=='0') {
+                   //国外隐藏级别
+                    api.columns([2]).visible(false);
+                    api.columns([4,5]).visible(true, true);
+                }else{
+                    //国内隐藏大洲，国家 
+                    api.columns([2]).visible(true);
+                    api.columns([4,5]).visible(false, false);
+                }
+                api.columns.adjust().draw( false ); // adjust column sizing and redraw
+
                 //触发dt的重新加载数据的方法
                 api.ajax.reload();
             });

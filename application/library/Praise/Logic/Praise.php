@@ -130,4 +130,52 @@ class Praise_Logic_Praise extends Base_Logic{
         }
         return false;
     }
+    
+    public function listPraise($page, $pageSize){
+        $arrRet      = array();
+        $logicPraise = new Praise_Logic_Praise();
+        $logicVisit  = new Tongji_Logic_Visit();
+        $user_id     = User_Api::getCurrentUser();
+        if(empty($user_id)){
+            return $arrRet;
+        }
+        $listPraise = new Praise_List_Praise();
+        $listPraise->setFilter(array('user_id' => $user_id));
+        $listPraise->setPage($page);
+        $listPraise->setPagesize($pageSize);
+        $arrPraise  = $listPraise->toArray();
+        foreach ($arrPraise['list'] as $val){
+            $temp = array();
+            switch ($val['type']){
+                case Praise_Type_Type::TOPIC:
+                    $objTopic = new Topic_Object_Topic();
+                    $objTopic->fetch(array('id' => $val['obj_id']));
+                    $temp['id']        = strval($objTopic->id);
+                    $temp['type']      = strval($val['type']);
+                    $temp['title']     = $objTopic->title;
+                    $temp['subtitle']  = $objTopic->subtitle;
+                    $temp['image']     = Base_Image::getUrlByName($objTopic->image);
+                    $temp['praisenum'] = strval($logicPraise->getPraiseNum($objTopic->id));
+                    $temp['visitnum']  = strval($logicVisit->getVisitCount(Tongji_Type_Visit::TOPIC, $objTopic->id));
+                    break;
+                case Praise_Type_Type::BOOK:
+                    $objBook = new Book_Object_Book();
+                    $objBook->fetch(array('id' => $val['obj_id']));
+                    $temp['id']     = strval($objBook->id);
+                    $temp['type']   = strval($val['type']);
+                    $temp['title']  = $objBook->title;
+                    $temp['author'] = $objBook->author;
+                    $temp['image']  = Base_Image::getUrlByName($objBook->image);
+                    $temp['praisenum'] = strval($logicPraise->getPraiseNum($objBook->id,Praise_Type_Type::BOOK));
+                    $temp['visitnum']  = strval($logicVisit->getVisitCount(Tongji_Type_Visit::BOOK, $objBook->id));
+                    break;
+                default:
+                    break;
+            }
+            if(!empty($temp)){
+                $arrRet[] = $temp;
+            }
+        }
+        return $arrRet;
+    }
 }

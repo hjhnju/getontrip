@@ -2,15 +2,15 @@
 class Recommend_Api{
     
     /**
-     * 接口1：Recommend_Api::listArticles($page, $pageSize, $arrInfo = array())
+     * 接口1：Recommend_Api::listArticles($page, $pageSize, $arrInfo = array(), $type = Recommend_Type_Label::SIGHT)
      * 根据条件获取推荐的文章列表
      * @param integer $page
      * @param integer $pageSize
      * @param array $arrInfo
      */
-    public static function listArticles($page, $pageSize, $arrInfo = array()){
+    public static function listArticles($page, $pageSize, $arrInfo = array(), $type = Recommend_Type_Label::SIGHT){
         $logic = new Recommend_Logic_Recommend();
-        return $logic->listArticles($page, $pageSize, $arrInfo);
+        return $logic->listArticles($page, $pageSize, $type, $arrInfo);
     }
     
     /**

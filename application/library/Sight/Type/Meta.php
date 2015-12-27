@@ -27,8 +27,8 @@ class Sight_Type_Meta extends Base_Type {
      * @var array
      */
     public static $names = array(
-        self::NOTNEED       => '无需处理',
-        self::NEEDCONFIRM   => '待处理',
-        self::CONFIRMED     => '已确认',
+        self::NOTNEED       => '未采纳',
+        self::NEEDCONFIRM   => '推荐采纳',
+        self::CONFIRMED     => '已采纳',
     );
 }

@@ -39,8 +39,26 @@ class Imagetopic_Logic_Imagetopic extends Base_Logic{
         return $arrRet;
     }
     
-    public function add(){
+    public function add($sightId, $title, $content, $image){
+        $userId        = User_Api::getCurrentUser();
+        if(empty($userId)){
+            return Base_RetCode::SESSION_NOT_LOGIN;
+        }
+        $objImageTopic = new Imagetopic_Object_Imagetopic();
+        $objImageTopic->owner   = $userId;
+        $objImageTopic->title   = $title;
+        $objImageTopic->content = $content;
+        $objImageTopic->image   = $this->upPicData($image);
+        $ret1 = $objImageTopic->save();
         
+        $objSightImagetopic = new Sight_Object_Imagetopic();
+        $objSightImagetopic->sightId = $sightId;
+        $objSightImagetopic->imagetopicId = $objImageTopic->id;
+        $ret2 = $objSightImagetopic->save();
+        if($ret1 && $ret2){
+            return Base_RetCode::SUCCESS;
+        }
+        return Base_RetCode::UNKNOWN_ERROR;
     }
     
     public function getList($sightId, $order, $page, $pageSize){

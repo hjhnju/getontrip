@@ -34,14 +34,17 @@ class Base_Pg {
      * @return         Db实例
      */
     public static function getInstance($strName) {
-        $arrTbl = explode('.', $strName);
-        $dbname = $arrTbl[0];
-        if(!isset(self::$_arrInstance[$dbname])) {
-            $arrShardInfo = self::loadConfig();
-            $arrConf = $arrShardInfo[$dbname];
-            self::$_arrInstance[$dbname] = new Base_TopazDb($arrConf);
-        }
-        return self::$_arrInstance[$dbname];
+        $arrShardInfo     = self::loadConfig();
+        $arrConf          = $arrShardInfo[$strName];
+        $arrConf['hosts'] = explode(',', $arrConf['hosts']);
+        $key              = array_rand($arrConf['hosts']);
+        $host             = $arrConf['hosts'][$key];
+        $port             = $arrConf['port'];
+        $dbname           = $arrConf['dbname'];
+        $username         = $arrConf['username'];
+        $password         = $arrConf['password'];
+        $conn = @pg_connect("host=$host port=$port dbname=$dbname user=$username password=$password");
+        return $conn;        
     }
 
     private static $_pdoInstance;

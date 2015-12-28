@@ -331,8 +331,12 @@ class Base_Util_String {
 	}
 	
 	public static function Pinyin($str){
+	    $setting = array(
+	        'delimiter' => '',
+	        'accent'    => false,
+	    );
 	    require_once "../../pinyin/src/Pinyin/Pinyin.php";
-        $ret = Overtrue\Pinyin\Pinyin::trans($str);
+        $ret = Overtrue\Pinyin\Pinyin::trans($str, $setting);
         return $ret;
 	}	
 }

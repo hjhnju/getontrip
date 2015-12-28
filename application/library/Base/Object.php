@@ -241,7 +241,7 @@ class Base_Object {
                 $data[$field] = $this->get($prop);
             }
         }
-    
+        
         if (isset($this->properties['create_time']) && empty($data['create_time'])) {
             $data['create_time'] = time();
         }
@@ -260,7 +260,7 @@ class Base_Object {
     }
     
     /**
-     * 更新数据到db中，默认尝试写入新数据，如果存在primary key则会更新
+     * 更新数据到db中，默认尝试写入新数据，如果存在primary key则会更新。如果是更新主键，会有问题
      * @param array $data 要更新的数据
      * @return boolean 成功返回true 失败false
      */

@@ -15,22 +15,21 @@ import org.apache.spark.{SparkContext, SparkConf}
   */
 object ContentBasedRecommend {
 
-    // 相似度最低值
-    val threshold: Double = 0.10
-
     def main (args: Array[String]) {
 
         if(args.length < 1) {
-            println("Arguments: <dataDir> <profiles> <newdocs> <idfmodel> <simout> ")
+            println("Arguments: <dataDir> <profiles> <newdocs> <idfmodel> <simout> <threshold> ")
             return
         }
         val dataDir = args(0)
         println("[ContentBasedRecommend] data dir = " + dataDir)
 
-        val libsvmFile   = dataDir + "/" + args(1) // "profiles.libsvm"
-        val docsFile     = dataDir + "/" + args(2) // "newdocs.txt"
-        val idfModelFile = dataDir + "/" + args(3) // "idf.model"
-        val simOutDir    = dataDir + "/" + args(4) // "similarity.out"
+        val libsvmFile   = args(1) // "profiles.libsvm"
+        val docsFile     = args(2) // "newdocs.txt"
+        val idfModelFile = args(3) // "idf.model"
+        val simOutDir    = args(4) // "similarity.out"
+        // 相似度最低值
+        val threshold    = args(5).toDouble
 
         val conf = new SparkConf().setAppName("GetOntrip Sparking")
         val sc   = new SparkContext(conf)
@@ -62,6 +61,7 @@ object ContentBasedRecommend {
         val labels: RDD[(Long, String)]   = newDocs.keys.zipWithIndex().map(line => (line._2, line._1))
         val docVsm: RDD[(String, Vector)] = labels.join(vectors).values
 
+        // 笛卡尔乘积
         val sims = docVsm.cartesian(profiles).map{ line =>
             val docId = line._1._1
             val docProfile = line._1._2
@@ -76,7 +76,7 @@ object ContentBasedRecommend {
         }
 
         // 过滤掉相似度小的; 推荐标签按相似度降序排序; 无推荐结果不输出
-        val filterAndSortedSims = sims.groupByKey().map(x => (x._1, x._2.toArray.filter(_._2 >= this.threshold).sortBy(_._2).reverse)).filter(_._2.length > 0)
+        val filterAndSortedSims = sims.groupByKey().map(x => (x._1, x._2.toArray.filter(_._2 >= threshold).sortBy(_._2).reverse)).filter(_._2.length > 0)
 
         val simOut = filterAndSortedSims.map{x => x._1 + " " + x._2.mkString(" ")}
 
@@ -85,8 +85,19 @@ object ContentBasedRecommend {
 
     def similarity(v1: Vector, v2: Vector): Double =  {
 
-        val d1 = new DenseVector(v1.toArray)
-        val d2 = new DenseVector(v2.toArray)
+        var d1 = new DenseVector(v1.toArray)
+        var d2 = new DenseVector(v2.toArray)
+
+        // 补齐空的维度
+        if (d1.length < d2.length) {
+            val d3 = DenseVector.zeros[Double](d2.length - d1.length)
+            d1 = DenseVector.vertcat(d1, d3)
+        } else if (d1.length > d2.length) {
+            val d3 = DenseVector.zeros[Double](d1.length - d2.length)
+            d2 = DenseVector.vertcat(d2, d3)
+        }
+
+        // 点乘必须保证维数一样
         val dotProduct = d1.dot(d2)
 
         val normA = Vectors.norm(v1, 2)

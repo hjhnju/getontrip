@@ -27,10 +27,10 @@ object ContentBasedProfiling {
 
         val dataDir = args(0) //"/home/work/publish/data"
         println("[ContentBasedRecommend] data dir = " + dataDir)
-        val labelsFile = dataDir   + "/" + args(1)   //"labels.txt"
-        val docDir     = dataDir   + "/" + args(2)   //"documents/"
-        val idfModelFile = dataDir + "/" + args(3)   //"idf.model"
-        val libsvmFile = dataDir   + "/" + args(4)   //"profiles.libsvm"
+        val labelsFile = args(1)   //"labels.txt"
+        val docDir     = args(2)   //"documents"
+        val idfModelFile = args(3)   //"idf.model"
+        val libsvmFile = args(4)   //"profiles.libsvm"
 
         val conf = new SparkConf().setAppName("GetOntrip Sparking")
         val sc   = new SparkContext(conf)
@@ -43,7 +43,7 @@ object ContentBasedProfiling {
             if (row.length >= 2) {
                 labelMap   += (row(0) -> row(1))
                 val label   = row(0)
-                val newDocRdd = sc.textFile(docDir + label).map(
+                val newDocRdd = sc.textFile(docDir + "/" + label).map(
                     line => (label, line.split("""\s+""").drop(1).toSeq)
                 )
                 docRdds += newDocRdd

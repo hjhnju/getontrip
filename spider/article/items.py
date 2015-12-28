@@ -17,7 +17,10 @@ class ArticleItem(scrapy.Item):
     source_id = scrapy.Field()
     issue = scrapy.Field()
     author = scrapy.Field()
-    url = scrapy.Field()  
+    url = scrapy.Field()
+    subtitle = scrapy.Field()
+    keywords = scrapy.Field()
+
     pass
 
 

@@ -23,8 +23,8 @@ function setCityList($myfile){
     $logicCityMeta = new City_Logic_City();
     $countryArray = array();
     $continentArray = array('亚洲');
-    //$continentArray = array('亚洲','欧洲','北美洲','大洋洲','南美洲','非洲','南极洲');
-    $cityObj_id = 4999;
+    $continentArray = array('亚洲','欧洲','北美洲','大洋洲','南美洲','非洲','南极洲');
+    $cityObj_id = 9999;
     $continentid = 10000;
     $countryid = 0;
     $provinceid = 0;
@@ -41,6 +41,7 @@ function setCityList($myfile){
            $obj = array(
                       'id'=>$cityObj_id,
                       'name'=>$continentName,
+                      //'pinyin'=>Base_Util_String::Pinyin($continentName),
                       'pid'=>0 ,
                       'continentid'=>0,
                       'countryid'=>0,
@@ -58,7 +59,7 @@ function setCityList($myfile){
        //根据大洲查询所有国家列表
        $countryList = Sight_Api::getCountryList(array('continent'=>$continentName),1,PHP_INT_MAX);
        $countryArray=array_reverse($countryList['list'],false);
-       for ($j=0; $j < count($countryArray); $j++) { 
+       for ($j=count($countryArray)-1; $j >=0; $j--) { 
             $countryItem = $countryArray[$j]; 
             $countryName = $countryItem['country'];
             $cityObj_id++;
@@ -69,6 +70,7 @@ function setCityList($myfile){
                $obj = array(
                   'id'=>$cityObj_id,
                   'name'=>$countryName,
+                  //'pinyin'=>Base_Util_String::Pinyin($countryName),
                   'pid'=>$continentid,
                   'continentid'=>$continentid,
                   'countryid'=>0,
@@ -80,8 +82,8 @@ function setCityList($myfile){
             }else{ 
                $countryid = $country_meta['id'];
             } 
-            if ($countryItem['country']!='中国') {
-                continue;
+            if ($countryItem['country']=='中国') {
+               // continue;
             } 
             $content = '国家:countryid:'.$countryid.',countryName:'.$countryName."\n"; 
             fwrite($myfile, $content);
@@ -96,44 +98,25 @@ function setCityList($myfile){
                 //$provinceItem = $provinceList['list'][$k]; 
             foreach ($provinceList['list'] as $key => $provinceItem){ 
                 //特殊处理港澳台开始
-                if ($provinceItem['province']!='台湾'&&$provinceItem['province']!='香港'&&$provinceItem['province']!='澳门') {
+                if ($countryItem['country']=='中国'&&$provinceItem['province']!='台湾'&&$provinceItem['province']!='香港'&&$provinceItem['province']!='澳门'&&$provinceItem['city']!='香港'&&$provinceItem['city']!='澳门') {
                     $isGangaotai = 0;
                     continue;
                 }
                 $isGangaotai = 1;//是否是港澳台
                 //特殊处理港澳台结束
-                
-                if ($provinceItem['province']==$provinceItem['city']&&$provinceItem['is_china']==0) {
-                    # 国外省份 ,城市==省份名称的默认归属到未知省份
-                    $provinceName = '';
+               
+                //如果省份名称为空，则设为未知省份
+                if ($provinceItem['province']=='') {
                     $cityName = $provinceItem['city'];
                     if (!in_array($cityName,$unknownProvinceList)) {
                        array_push($unknownProvinceList,$cityName); 
                     } 
-                }else{ 
-                   $provinceName = $provinceItem['province'];
-                   echo $provinceName;
-                   if (in_array($provinceName, $unknownProvinceList)) {
-                       $cityName = $provinceItem['city']; 
-                       if (!in_array($cityName,$unknownProvinceList)) {
-                           array_push($unknownProvinceList,$cityName); 
-                        }  
-                   }else{   
-                      if (!in_array($provinceName,$knownProvinceList)) {
-                           array_push($knownProvinceList,$provinceName); 
-                           //特殊处理港澳台
-                               if ($isGangaotai==1) {
-                                 continue;
-                               }
-                           //再把当前省份下面的城市全部列归到未知省份里面
-                            //根据省份查询城市列表
-                            $cityList = Sight_Api::getCityList(array('continent'=>$continentName,'country'=>$countryName,'province'=>$provinceName),1,PHP_INT_MAX);
-                            foreach ($cityList['list'] as $key => $value) {
-                               array_push($unknownProvinceList,$value['city']);  
-                            }
-                      }  
-                   } 
-                }  
+                }else{
+                    $provinceName = $provinceItem['province']; 
+                    if (!in_array($provinceName,$knownProvinceList)) {
+                       array_push($knownProvinceList,$provinceName); 
+                    }  
+                }
             }
             
             //去重  
@@ -175,6 +158,7 @@ function setunknownProvinceList($myfile,$unknownProvinceList=array(),$cityObj_id
     $obj = array(
       'id'=>$cityObj_id,
       'name'=>'未知省份',
+      //'pinyin'=>'weizhishengfen',
       'pid'=>$countryid,
       'continentid'=>$continentid,
       'countryid'=>$countryid,
@@ -192,6 +176,7 @@ function setunknownProvinceList($myfile,$unknownProvinceList=array(),$cityObj_id
         $obj = array(
           'id'=>$cityObj_id,
           'name'=>$provinceName,
+          //'pinyin'=>Base_Util_String::Pinyin($provinceName),
           'pid'=>$provinceid,
           'continentid'=>$continentid,
           'countryid'=>$countryid,
@@ -220,12 +205,13 @@ function setknownProvinceList($myfile,$knownProvinceList=array(),$cityObj_id,$co
         //$provinceName = $knownProvinceList[$m];
         $cityObj_id++;
         //查询省份是否存在
-        $province_meta = $logicCityMeta->getCityMeta(array('name'=>$provinceName,'countryid'=>$countryid)); 
+        $province_meta = $logicCityMeta->getCityMeta(array('name'=>$provinceName,'countryid'=>$countryid,'provinceid'=>0)); 
         if (empty($province_meta)) { 
            //插入一条省份信息
            $obj = array(
               'id'=>$cityObj_id,
               'name'=>$provinceName,
+              //'pinyin'=>Base_Util_String::Pinyin($provinceName),
               'pid'=>$countryid,
               'continentid'=>$continentid,
               'countryid'=>$countryid,
@@ -236,7 +222,7 @@ function setknownProvinceList($myfile,$knownProvinceList=array(),$cityObj_id,$co
         }else{ 
            $provinceid = $province_meta['id']; 
         }  
-        $content = '省份:provinceid:'.$provinceid.',provinceName:'.$provinceName."\n"; 
+        $content = '已知省份:provinceid:'.$provinceid.',provinceName:'.$provinceName."\n"; 
         fwrite($myfile, $content);
         echo $content; 
 
@@ -245,7 +231,7 @@ function setknownProvinceList($myfile,$knownProvinceList=array(),$cityObj_id,$co
         $content = '国家:'.$countryName.',省份：'.$provinceName.',总城市数：'.$cityList['total']."\n"; 
         fwrite($myfile, $content);
         echo $content; 
-
+      
         for ($n=0; $n < $cityList['total']; $n++) {  
             $cityItem = $cityList['list'][$n]; 
             $cityName = $cityItem['city'];
@@ -257,6 +243,7 @@ function setknownProvinceList($myfile,$knownProvinceList=array(),$cityObj_id,$co
                $obj = array(
                   'id'=>$cityObj_id,
                   'name'=>$cityName,
+                  //'pinyin'=>Base_Util_String::Pinyin($cityName),
                   'pid'=>$provinceid,
                   'continentid'=>$continentid,
                   'countryid'=>$countryid,

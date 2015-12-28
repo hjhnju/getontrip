@@ -6,19 +6,19 @@
  */
 class Sight_Type_Meta extends Base_Type {
     /**
-     * 0 无需处理
+     * 0 未采纳
      * @var integer
      */
     const NOTNEED    = 0;  
  
     /**
-     * 1 待处理
+     * 1 推荐采纳
      * @var integer
      */
     const NEEDCONFIRM  = 1;
     
     /**
-     * 2 已确认
+     * 2 已采纳
      * @var unknown
      */
     const CONFIRMED    = 2;

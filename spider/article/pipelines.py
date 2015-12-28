@@ -40,16 +40,18 @@ class ArticlePipeline(object):
 
     # 过滤item
     def process_item(self, item, spider):
-
+        # line = json.dumps(dict(item)) + "\n"
+        # self.file.write(line.decode('unicode_escape')) 
+        return item
         # 不同的spider 调用不同的过滤方法
         spiderName = spider.name
         if spiderName == 'dooland':
             item = self.filter_item(item, spiderName)
             # 插入数据库
-            # query = self.dbpool.runInteraction(
-            #     self._conditional_insert_article, item)
             query = self.dbpool.runInteraction(
-                self._kanlishi, item)
+                self._conditional_insert_article, item)
+            # query = self.dbpool.runInteraction(
+            #     self._kanlishi, item)
              
             pass
         elif spiderName == 'yunyuedu':
@@ -65,9 +67,7 @@ class ArticlePipeline(object):
 
             pass
 
-        # line = json.dumps(dict(item)) + "\n"
-        # self.file.write(line.decode('unicode_escape'))
-        # self.file.write(line)
+        
 
         return item
 
@@ -86,20 +86,22 @@ class ArticlePipeline(object):
         # content = re.sub(r'<br.*?>', '<p></p>', content)
 
         # 过滤content  去掉div span标签
-        content = re.sub(r'<div.*?>', '<p>', content)
-        content = re.sub(r'<\/div>', '</p>', content)
+       
         content = re.sub(r'<span.*?>', '', content)
         content = re.sub(r'<\/span>', '', content)
 
         # 去掉空白  测试一下
         content = re.sub(r'<p>[\s|　]+', '<p>', content)
-        content = re.sub(r'<p>(&nbsp)*;', '<p>', content) 
+        content = re.sub(r'<p>[&nbsp]*;', '<p>', content) 
         content = re.sub(ur'<p>[\u3000]*', '<p>',content) 
         # 去掉H2标题 HR线
-        if spiderName == 'yunyuedu':
+        if spiderName == 'yunyuedu': 
             content = re.sub(r'<h2.*?>.*?<\/h2>', '', content)
             content = re.sub(r'<hr.*?\/>', '', content)
             pass
+       
+        content = re.sub(r'<div.*?>', '', content)
+        content = re.sub(r'<\/div>', '', content)
 
         item['content'] = content
         # if content.find('<img'):
@@ -116,7 +118,7 @@ class ArticlePipeline(object):
     # 插入景点库
     def _conditional_insert_sight(self, tx, item):
         item['name'] = re.sub(r"'", "\\'", item['name'])
-        sql = "select * from sight_meta_test \
+        sql = "select * from sight_meta \
                where name = '%s' and (city='%s' or city=province)" % (item['name'], item['city'])
         # print sql
         tx.execute(sql)
@@ -128,7 +130,7 @@ class ArticlePipeline(object):
                 pass
             try:
                 tx.execute(
-                    "update `sight_meta_test` set `level`=%s,`image`=%s, `describe`=%s, `impression`=%s,`address`=%s,`type`=%s,`continent`=%s,`country`=%s,`province`=%s,`city`=%s,`region`=%s,`url`=%s,`x`=%s,`y`=%s,`is_china`=%s,`weight`=%s,`update_time`=%s"
+                    "update `sight_meta` set `level`=%s,`image`=%s, `describe`=%s, `impression`=%s,`address`=%s,`type`=%s,`continent`=%s,`country`=%s,`province`=%s,`city`=%s,`region`=%s,`url`=%s,`x`=%s,`y`=%s,`is_china`=%s,`weight`=%s,`update_time`=%s"
                     "where `id`=%s  ",
                     (item['level'], item['image'], item['describe'],
                      item['impression'], item['address'], item[
@@ -146,7 +148,7 @@ class ArticlePipeline(object):
         else:
             try:
                 tx.execute(
-                    "insert into `sight_meta_test` (`name`,`level`,`image`, `describe`, `impression`,`address`,`type`,`continent`,`country`,`province`,`city`,`region`,`url`,`x`,`y`,`is_china`,`weight`,`create_time`,`update_time`)  "
+                    "insert into `sight_meta` (`name`,`level`,`image`, `describe`, `impression`,`address`,`type`,`continent`,`country`,`province`,`city`,`region`,`url`,`x`,`y`,`is_china`,`weight`,`create_time`,`update_time`)  "
                     "values (%s, %s , %s , %s ,%s ,%s ,%s ,%s, %s , %s , %s ,%s ,%s ,%s ,%s,%s,%s,%s,%s)",
                     (item['name'], item['level'], item['image'], item['describe'],
                      item['impression'], item['address'], item[
@@ -168,17 +170,17 @@ class ArticlePipeline(object):
     # 插入数据库
     def _conditional_insert_article(self, tx, item):
         
-        sql = 'SELECT * FROM article \
+        sql = 'SELECT * FROM recommend_article \
                WHERE url = "%s" ' % (item['url'], )
         tx.execute(sql)
         result = tx.fetchone()
-        # print item
+         
         if result:
             try:
                 tx.execute(
-                    "update `article` set `content`=%s"
-                    "where `id`=%s  ",
-                    (item['content'], result['id'])
+                    "update `recommend_article` set `content`=%s ,`subtitle`=%s,`keywords`=%s"
+                    " where `id`=%s  ",
+                    (item['content'],item['subtitle'],item['keywords'], result['id'])
                 )
             except MySQLdb.Error, e:
                 logging.error("update Item:%s Error %d: %s" %
@@ -188,9 +190,9 @@ class ArticlePipeline(object):
                          (result['id'], item['title'], item['url']))
         else:
             tx.execute(
-                "insert into article (title,content,source, url, author,issue,create_time,update_time) "
-                "values (%s, %s , %s , %s ,%s ,%s ,%s ,%s)",
-                (item['title'], item['content'], item['source'], item['url'],
+                "insert into recommend_article (title,subtitle,keywords,content,source, url, author,issue,create_time,update_time) "
+                "values (%s, %s , %s , %s ,%s ,%s ,%s ,%s,%s, %s )",
+                (item['title'], item['subtitle'], item['keywords'], item['content'], item['source'], item['url'],
                     item['author'], item['issue'],
                  repr(int(time.time())), repr(int(time.time())))
             )

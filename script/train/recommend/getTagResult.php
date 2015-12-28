@@ -13,8 +13,8 @@ $arrFile = file(RESULT_TAG_PATH.$date);
 foreach ($arrFile as $data){
     $arrRet = explode(" ",$data);
     sscanf($arrRet[0],"article_%d",$articleId);
-    unset($arrRet[0]);
-    foreach ($arrRet as $val){
+    $val = isset($arrRet[1])?$arrRet[1]:'';
+    if(!empty($val)){
         $rate   = 0;
         $reason = "";
         sscanf($val,"(%d,%f,%[^)])",$labelId,$rate,$reason);

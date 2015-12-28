@@ -58,9 +58,13 @@ class User_Logic_User extends Base_Logic{
         if(!empty($arrRet['image'])){
             $arrRet['image'] = Base_Image::getUrlByName($arrRet['image']);
         }
+        if(!empty($arrRet['backimage'])){
+            $arrRet['bakimg'] = Base_Image::getUrlByName($arrRet['backimage']);
+        }
         return array(
             'nick_name' => isset($arrRet['nick_name'])?trim($arrRet['nick_name']):'',
             'image'     => isset($arrRet['image'])?trim($arrRet['image']):'',
+            'bakimg'    => isset($arrRet['bakimg'])?trim($arrRet['bakimg']):'',
             'sex'       => isset($arrRet['sex'])?trim(strval($arrRet['sex'])):'',
             'city'      => isset($arrRet['city'])?trim(strval($arrRet['city'])):'',
         );
@@ -71,39 +75,29 @@ class User_Logic_User extends Base_Logic{
      * @param array $arrParam
      * @return boolean
      */
-    public function editUserInfo($userId,$arrParam, $file = ''){
+    public function editUserInfo($userId,$arrParam){
         $objUser  = new User_Object_User();
         $objUser->fetch(array('id' => $userId));
         foreach ($arrParam as $key => $val){
             if($val !== ""){
-                $key           = $this->getprop($key);     
-                $objUser->$key = trim($val);
+                if($key == 'img'){
+                    if(!empty($objUser->image)){
+                        $this->delPic($objUser->image);
+                    }
+                    $objUser->image = $this->upPicData($val);
+                }elseif($key == 'bakimg'){
+                    if(!empty($objUser->backimage)){
+                        $this->delPic($objUser->backimage);
+                    }
+                    $objUser->backimage = $this->upPicData($val);
+                }else{
+                    $key           = $this->getprop($key);
+                    $objUser->$key = trim($val);
+                }
             }            
         }
-        if(!empty($file)){            
-            $ext = explode("/",$file['type']);
-            if (!isset($ext[1])||!in_array($ext[1], array('jpg', 'gif', 'jpeg','png'))) {
-                 return false;
-            }
-              
-            $hash = md5(microtime(true));
-            $hash = substr($hash, 8, 16);
-            if(trim($ext[1]) == 'gif'){
-                $filename = $hash . '.gif';
-            }else{
-                $filename = $hash . '.jpg';
-            }        
+        if(!empty($file)){
             
-            $oss = Oss_Adapter::getInstance();
-            $res = $oss->writeFile($filename, $file['tmp_name']);
-            if($res){
-                if(!empty($objUser->image)){
-                    $this->delPic($objUser->image);
-                }
-                $objUser->image = $filename;
-            }else{
-                return false;
-            }
         }
         return $objUser->save();
     }
@@ -125,6 +119,11 @@ class User_Logic_User extends Base_Logic{
                 $key           = $this->getprop($key);
                 if($key == 'image'){
                     $objUser->$key = $this->uploadPic($val);
+                }elseif($key == 'bakimg'){
+                    if(!empty($objUser->backimage)){
+                        $this->delPic($objUser->backimage);
+                    }
+                    $objUser->backimage = $this->upPicData($arrParam['bakimg']);
                 }elseif($key == 'nickName'){
                     if($this->checkName($val)){
                         $logicRegist = new User_Logic_Regist();
@@ -269,22 +268,18 @@ class User_Logic_User extends Base_Logic{
         }
         return User_RetCode::UNKNOWN_ERROR;
     }
-
-
-
+    
     /**
      * 根据条件获取用户数量
      * @param array $arrInfo
      * @return integer
      */
     public function getUsersNum($arrInfo){
-        $listUser = new User_List_User();  
+        $listUser = new User_List_User();
         if(!empty($arrInfo)){
             $listUser->setFilter($arrInfo);
         }
         $listUser->setFields(array('id'));
-        $listUser->setPagesize(PHP_INT_MAX);
-        $arrRet    = $listUser->toArray();        
-        return $arrRet['total'];
+        return $listUser->getTotal();
     }
 }

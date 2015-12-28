@@ -190,7 +190,7 @@ $(document).ready(function() {
                         },
                         "success": function(response) {
                             if (response.status == 0) {
-                                toastr.success('操作成功'); 
+                                toastr.success('操作成功！'); 
                                 //刷新当前页
                                 oTable.fnRefresh();
                                 //打开新的链接

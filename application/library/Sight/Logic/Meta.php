@@ -90,17 +90,17 @@ class Sight_Logic_Meta extends Base_Logic{
         $filter =  'sight_id =-1 and '; 
         if(!empty($arrParam)){
             if(isset($arrParam['name'])){
-                $filter = "`name` like '%".$arrParam['name']."%'  and "; 
+                $filter .= "`name` like '%".$arrParam['name']."%'  and "; 
                 unset($arrParam['name']);
             }
             if(isset($arrParam['type'])){
-                $filter = "`type` like '%".$arrParam['type']."%'  and "; 
+                $filter .= "`type` like '%".$arrParam['type']."%'  and "; 
                 unset($arrParam['type']);
             }
-            if (isset($arrParam['city'])) {
+            /*if (isset($arrParam['city'])) {
                 $filter = "`city` like '%".$arrParam['city']."%'  and "; 
                 unset($arrParam['city']);
-            }
+            }*/
             foreach ($arrParam as $key => $val){
                 $filter .= "`".$key."` = '".$val."' and ";
             }
@@ -112,7 +112,7 @@ class Sight_Logic_Meta extends Base_Logic{
                 $list->setFilterString($filter);
             }
         }
-
+        
         $list->setOrder("continent asc,country asc,province asc,city asc,level desc"); 
         $list->setPage($page);
         $list->setPagesize($pageSize);

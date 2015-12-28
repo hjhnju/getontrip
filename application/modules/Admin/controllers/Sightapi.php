@@ -332,16 +332,20 @@ class  SightapiController extends Base_Controller_Api{
         $pageSize=isset($_REQUEST['length'])?$_REQUEST['length']:20; 
         $page=($start/$pageSize)+1; 
         $arrInfo =isset($_REQUEST['params'])?$_REQUEST['params']:array(); 
-
         
+       /* $arrInfo = array(
+            
+          );*/
+        //return $this->ajax($arrInfo);
 
         $List = Sight_Api::searchMeta($arrInfo,$page,$pageSize);
-        foreach ($List['list'] as $key => $item) {
-            $item['stats_name'] = Sight_Type_Meta::getTypeName($item['status']);
-        }
+         
         for ($i=0; $i < count($List['list']); $i++) { 
-           $List['list'][$i]['stats_name'] = Sight_Type_Meta::getTypeName($List['list'][$i]['status']);
+           $item = $List['list'][$i];
+           $item['stats_name'] = Sight_Type_Meta::getTypeName($item['status']); 
+           $List['list'][$i] = $item;
         }
+
         $retList['recordsFiltered'] =$List['total'];
         $retList['recordsTotal'] = $List['total']; 
         $retList['data'] =$List['list']; 

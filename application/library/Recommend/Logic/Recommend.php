@@ -34,7 +34,12 @@ class Recommend_Logic_Recommend extends Base_Logic{
         foreach ($arrInfo as $key => $val){            
             $strFilter .= " and `".$key."` =".$val;
         }
-        $strFilter .= " and `label_type` = ".$type." and `rate` > ".self::LIMIT_RATE;
+        if($type == Recommend_Type_Label::TAG){
+            $strFilter .= " and `label_type` = ".$type;
+        }else{
+            $strFilter .= " and `label_type` != ".Recommend_Type_Label::TAG." and `rate` > ".self::LIMIT_RATE;
+        }
+        
         $listArticle->setGroup("obj_id");
         $listArticle->setFilterString($strFilter);
         $listArticle->setPage($page);
@@ -46,7 +51,11 @@ class Recommend_Logic_Recommend extends Base_Logic{
         $arrRet =  $listArticle->toArray();
         foreach($arrRet['list'] as $key => $val){
             $listArticle = new Recommend_List_Result();
-            $listArticle->setFilterString('obj_id = '.$val['obj_id']." and `label_type` = ".$type." and `rate` > ".self::LIMIT_RATE);
+            if($type == Recommend_Type_Label::TAG){
+                $listArticle->setFilterString('obj_id = '.$val['obj_id']." and `label_type` = ".$type);
+            }else{
+                $listArticle->setFilterString('obj_id = '.$val['obj_id']." and `label_type` != ".Recommend_Type_Label::TAG." and `rate` > ".self::LIMIT_RATE);
+            }
             $listArticle->setFields(array('label_id','label_type','rate','reason','status','create_time','update_time'));
             $listArticle->setPagesize(PHP_INT_MAX);            
             $listArticle->setOrder("`rate` desc");

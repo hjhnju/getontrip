@@ -86,6 +86,7 @@ class ApiController extends Base_Controller_Api{
         if(empty($userId)){
             return $this->ajaxError(User_RetCode::SESSION_NOT_LOGIN,User_RetCode::getMsg(User_RetCode::SESSION_NOT_LOGIN));
         }
+        
         $ret      = $this->logicUser->getUserInfo($userId);
         $this->ajax($ret);
     }
@@ -98,6 +99,7 @@ class ApiController extends Base_Controller_Api{
      * @param string  image,图像
      * @param integer sex,性别: 0男性,1:女性,2表示还不确定
      * @param string  city,城市
+     * @param file  backimg,背景图片
      * @return json
      */
     public function addinfoAction() {
@@ -109,11 +111,13 @@ class ApiController extends Base_Controller_Api{
         $name       = isset($_REQUEST['nick_name'])?trim($_REQUEST['nick_name']):'';
         $sex        = isset($_REQUEST['sex'])?intval($_REQUEST['sex']):'';
         $city       = isset($_REQUEST['city'])?trim($_REQUEST['city']):'';
+        $backimg    = isset($_FILES['backimg'])?$_FILES['backimg']:'';
         $arrParam = array(
             'nick_name' => $name,
             'image'     => $image,
             'sex'       => $sex,
             'city'      => $city,
+            'bakimg'    => $backimg,
         );
         $ret        = $this->logicUser->addUserInfo($userId, $arrParam);
         if(!$ret){
@@ -130,6 +134,7 @@ class ApiController extends Base_Controller_Api{
      * @param integer sex,性别: 0男性,1:女性,2表示还不确定
      * @param string  city,城市
      * @param file  file,上传的图像文件
+     * @param file  backimg,背景图片文件
      * @return json
      */
     public function editinfoAction(){
@@ -141,19 +146,15 @@ class ApiController extends Base_Controller_Api{
         $sex        = isset($_REQUEST['sex'])?trim($_REQUEST['sex']):'';
         $city       = isset($_REQUEST['city'])?trim($_REQUEST['city']):'';
         $file       = isset($_FILES['file'])?$_FILES['file']:'';
-        /*if(!empty($name)){
-            $logicUser = new User_Logic_User();
-            $ret = $logicUser->checkName($name);
-            if($ret){
-                return $this->ajaxError(User_RetCode::USERNAME_EXIST,User_RetCode::getMsg(User_RetCode::USERNAME_EXIST));
-            }
-        }*/
+        $backimg    = isset($_FILES['backimg'])?$_FILES['backimg']:'';
         $arrParam = array(
             'nick_name' => $name,
             'sex'       => $sex,
             'city'      => $city,
+            'img'       => $file,
+            'bakimg'    => $backimg,
         );
-        $ret        = $this->logicUser->editUserInfo($userId,$arrParam, $file);
+        $ret        = $this->logicUser->editUserInfo($userId,$arrParam);
         if($ret){
             return $this->ajax();
         }

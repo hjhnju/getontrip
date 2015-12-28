@@ -33,6 +33,7 @@ dataDir=$HOME"/publish/data/"
 newdocsFile=$dataDir"/newdocs."$DATE
 inputProfiles=$dataDir"/profiles_"$target".libsvm"
 idfModelFile=$dataDir"/idf_"$target".model"
+threshold="0.10"
 
 # 输出
 outputDir=$dataDir"/similarity_"$target".out"
@@ -41,16 +42,19 @@ echo "outputfile is $outputfile"
 
 if [ ! -f "$newdocsFile" ]; then
     echo "no input file $newdocsFile"
+    _usage
     exit 1
 fi
 
 if [ ! -d "$inputProfiles" ]; then
     echo "no input profiles $inputProfiles"
+    _usage
     exit 1
 fi
 
 if [ ! -f "$idfModelFile" ]; then
     echo "no input idfmodel $idfModelFile"
+    _usage
     exit 1
 fi
 
@@ -61,7 +65,9 @@ fi
 
 # 执行
 echo "executing spark-submit for recommend.ContentBasedRecommend"
-echo "Arguments: <dataDir> <profiles> <newdocs> <idfmodel> <outdir>"
+echo "Arguments: <dataDir> <profiles> <newdocs> <idfmodel> <outdir> <threshold>"
+echo "Arguments: $dataDir $inputProfiles $newdocsFile $idfModelFile $outputDir $threshold"
+
 spark-submit \
   --class "recommend.ContentBasedRecommend" \
   --master local[4] \
@@ -70,7 +76,7 @@ spark-submit \
   --conf spark.shuffle.spill=false \
   --conf "spark.executor.extraJavaOptions=-XX:+PrintGCDetails -XX:+PrintGCTimeStamps" \
   $dataDir/getontrip-sparking_2.10-1.0.jar \
-  $dataDir $inputProfiles $newdocsFile $idfModelFile $outputDir
+  $dataDir $inputProfiles $newdocsFile $idfModelFile $outputDir $threshold
 
 echo "cat $outputDir/part-* > $outputFile"
 cat $outputDir/part-* > $outputFile

@@ -15,7 +15,7 @@ target=""
 while getopts "t:h" opt
 do
     case $opt in
-        d)
+        t)
             target=$OPTARG;;
         h)
             _usage;;
@@ -24,7 +24,7 @@ done
 
 # 输入
 dataDir=$HOME"/publish/data"
-lablesFile=$dataDir"/labels_"$target".txt"
+labelsFile=$dataDir"/labels_"$target".txt"
 documentsDir=$dataDir"/documents_"$target
 
 # 输出
@@ -35,11 +35,13 @@ idfModelFile=$dataDir"/idf_"$target".model"
 # 输入文件
 if [ ! -d "$documentsDir" ]; then
     echo "input dir $documentsDir not exists"
+    _usage
     exit 255
 fi
 
-if [ ! -f "$lablesFile" ]; then
-    echo "input file $lablesFile not exists"
+if [ ! -f "$labelsFile" ]; then
+    echo "input file $labelsFile not exists"
+    _usage
     exit 255
 fi
 
@@ -58,6 +60,7 @@ fi
 # 计算偏好特征
 echo "executing spark-submit for recommend.ContentBasedProfiling"
 echo "Arguments: <dataDir> <labels> <documents> <idfmodel> <profiles>"
+echo "Arguments: $dataDir $labelsFile $documentsDir $idfModelFile $profilesDir"
 spark-submit \
   --class "recommend.ContentBasedProfiling" \
   --master local[4] \
@@ -66,4 +69,4 @@ spark-submit \
   --conf spark.shuffle.spill=false \
   --conf "spark.executor.extraJavaOptions=-XX:+PrintGCDetails -XX:+PrintGCTimeStamps" \
   $dataDir/getontrip-sparking_2.10-1.0.jar \
-  $dataDir $lablesFile $documentsDir $idfModelFile $profilesDir
+  $dataDir $labelsFile $documentsDir $idfModelFile $profilesDir

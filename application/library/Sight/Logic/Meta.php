@@ -87,7 +87,7 @@ class Sight_Logic_Meta extends Base_Logic{
         $list  = new Sight_List_Meta();
         $arrParam   = array();
         $arrParam = array_merge($arrParam,$arrInfo);
-        $filter = ''; 
+        $filter =  'sight_id =-1 and '; 
         if(!empty($arrParam)){
             if(isset($arrParam['name'])){
                 $filter = "`name` like '%".$arrParam['name']."%'  and "; 
@@ -112,7 +112,8 @@ class Sight_Logic_Meta extends Base_Logic{
                 $list->setFilterString($filter);
             }
         }
-               
+
+        $list->setOrder("continent asc,country asc,province asc,city asc,level desc"); 
         $list->setPage($page);
         $list->setPagesize($pageSize);
         return $list->toArray();

@@ -144,7 +144,7 @@ class Collect_Logic_Collect{
                     $city             = $logicCity->getCityById($val['obj_id']);
                     $temp['image']    = isset($city['image'])?Base_Image::getUrlByName($city['image']):'';
                     $temp['name']     = str_replace("市","",$city['name']);
-                    $topic_num        = $logicCity->getTopicNum($val['obj_id']);
+                    $topic_num        = $modelCity->getCityTopicNum($val['obj_id']);
                     $wiki_num         = $modelCity->getCityWikiNum($val['obj_id']);
                     $video_num        = $modelCity->getCityVidoNum($val['obj_id']);
                     $book_num         = $modelCity->getCityBookNum($val['obj_id']);

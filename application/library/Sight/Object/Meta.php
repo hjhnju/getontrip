@@ -26,7 +26,7 @@ class Sight_Object_Meta extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'level', 'image', 'describe', 'impression', 'address', 'type', 'continent', 'country', 'province', 'city', 'region', 'is_china', 'x', 'y', 'url', 'status', 'weight', 'city_id', 'create_time', 'update_time');
+    protected $fields = array('id', 'name', 'level', 'image', 'describe', 'impression', 'address', 'type', 'continent', 'country', 'province', 'city', 'region', 'is_china', 'x', 'y', 'url', 'status', 'weight', 'city_id', 'sight_id', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -53,6 +53,7 @@ class Sight_Object_Meta extends Base_Object {
         'status'      => 'status',
         'weight'      => 'weight',
         'city_id'     => 'cityId',
+        'sight_id'    => 'sightId',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
     );
@@ -67,6 +68,7 @@ class Sight_Object_Meta extends Base_Object {
         'status'      => 1,
         'weight'      => 1,
         'city_id'     => 1,
+        'sight_id'    => 1,
         'create_time' => 1,
         'update_time' => 1,
     );
@@ -198,6 +200,12 @@ class Sight_Object_Meta extends Base_Object {
      * @var integer
      */
     public $cityId;
+
+    /**
+     * 
+     * @var integer
+     */
+    public $sightId;
 
     /**
      * 景点创建时间

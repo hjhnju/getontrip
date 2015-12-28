@@ -4,6 +4,7 @@
 #获取数据
 
 dataDir=$HOME"/publish/data/"
+#dataDir=$HOME"/Dev/getontrip/spark/data/"
 
 cd $dataDir
 

@@ -63,9 +63,9 @@
             <!-- BEGIN content STATS --> 
             <div class="adv-table editable-table ">
                  <div class="clearfix"> 
-                  <div class="col-xs-2 pull-right">   
+                  <div class="col-xs-1 pull-right">   
                        <div class="input-group ">
-                          <select name="" id="form-is_china"> 
+                          <select name="" id="form-is_china">  
                             <option value="1">国内</option> 
                             <option value="0">国外</option>   
                           </select>
@@ -89,12 +89,32 @@
                           </span>
                         </div> 
                     </div>  
-                    <div class="col-xs-2  pull-right"> 
+                    <!-- <div class="col-xs-2  pull-right"> 
                             <input type="text" class="form-control" id="form-city" placeholder="输入城市点回车"> 
+                    </div> -->
+                    <div class="col-xs-2 pull-right">   
+                        <div class="input-group " >
+                        <input type="text" class="form-control" placeholder="输入并选择城市" aria-describedby="cityName" id="form-city" autocomplete="off"  value="{%if isset($city)%}{%$city.name%}{%/if%}" data-city_id="{%if isset($city)%}{%$city.id%}{%/if%}"/>  
+                         <span class="input-group-btn">
+                              <button type="button" class="btn btn-white" id="clear-city"><i class="fa fa-remove"></i></button>
+                            </span>
+                         </div>
                     </div>
-                     <div class="col-xs-2  pull-right"> 
-                            <input type="text" class="form-control" id="form-province" placeholder="输入省份点回车"> 
-                    </div> 
+                    <!--  <div class="col-xs-2  pull-right"> 
+                           <input type="text" class="form-control" id="form-province" placeholder="输入省份点回车"> 
+                                        </div>  -->
+                    <div class="col-xs-2 pull-right hidden">   
+                       <div class="input-group ">
+                          <select name="" id="form-level"> 
+                            <option value="">全部级别</option>     
+                            <option value="5A">5A</option> 
+                            <option value="4A">4A</option> 
+                            <option value="3A">3A</option> 
+                            <option value="2A">2A</option>   
+                            <option value="A">A</option>  
+                          </select>
+                       </div>
+                   </div>
                     <div class="col-xs-2  pull-right">
                             <input type="text" class="form-control" id="form-name" placeholder="输入名称点回车">
                     </div>   

@@ -27,7 +27,7 @@ $(document).ready(function() {
                             d.params.province = $("#form-province").val();
                         }
                         if ($("#form-city").val()) {
-                            d.params.city = $("#form-city").val();
+                            d.params.city_id = $("#form-city").attr('data-city_id');
                         }
                         if ($("#form-type").val()) {
                             d.params.type = $("#form-type").val();
@@ -37,6 +37,9 @@ $(document).ready(function() {
                         }
                         if ($("#form-status").val()) {
                             d.params.status = $.trim($("#form-status").val());
+                        } 
+                        if ($("#form-level").val()) {
+                            d.params.level = $.trim($("#form-level").val());
                         }
                     }
                 },
@@ -61,11 +64,16 @@ $(document).ready(function() {
                 }, {
                     "data": "country"
                 }, {
-                    "data": "province"
+                    "data": function (e) {
+                        if (e.province) {
+                            return e.province;
+                        }
+                        return '--'
+                    }
                 }, {
                     "data":  function(e) {
                         if (e.city_id) {
-                            return '<a data-city_id="'+e.city_id+'" class="changeCity">'+e.city+'</a>';
+                            return '<a data-city_id="'+e.city_id+'" class="changeCity" data-city_id="'+e.city_id+'">'+e.city+'</a>';
                         } 
                     }
                 },  {
@@ -150,7 +158,8 @@ $(document).ready(function() {
                 $('#editable a.changeCity').live('click', function(e) {
                      e.preventDefault();
                      $('#form-city').val($(this).text());
-                      api.ajax.reload();
+                     $('#form-city').attr('data-city_id',$(this).attr('data-city_id'));
+                     api.ajax.reload();
                 });
 
             }
@@ -166,9 +175,58 @@ $(document).ready(function() {
                     api.ajax.reload();
                 }
             }); 
+
+             //景点输入框自动完成
+            $('#form-sight').typeahead({
+                display: 'name',
+                val: 'id',
+                ajax: {
+                    url: '/admin/sightapi/getSightList',
+                    triggerLength: 1
+                },
+                itemSelected: function(item, val, text) {
+                    $("#form-sight").val(text);
+                    $("#form-sight").attr('data-sight_id', val);
+                    //触发dt的重新加载数据的方法
+                    api.ajax.reload();
+                }
+            });
+
+            //景点框后的清除按钮，清除所选的景点
+            $('#clear-sight').click(function(event) {
+                $("#form-sight").val('');
+                $("#form-sight").attr('data-sight_id', '');
+                //触发dt的重新加载数据的方法
+                api.ajax.reload();
+            });
+
+
+            //城市输入框自动完成
+            $('#form-city').typeahead({
+                display: 'name',
+                val: 'id',
+                ajax: {
+                    url: '/admin/cityapi/getCityList',
+                    triggerLength: 1
+                },
+                itemSelected: function(item, val, text) {
+                    $("#form-city").val(text);
+                    $("#form-city").attr('data-city_id', val);
+                    //触发dt的重新加载数据的方法
+                    api.ajax.reload();
+                }
+            });
+
+            //景点框后的清除按钮，清除所选的景点
+            $('#clear-city').click(function(event) {
+                $("#form-city").val('');
+                $("#form-city").attr('data-city_id', '');
+                //触发dt的重新加载数据的方法
+                api.ajax.reload();
+            });
  
 
-            $('#form-status').change(function(event) {
+            $('#form-status,#form-level').change(function(event) {
                 //触发dt的重新加载数据的方法
                 api.ajax.reload();
             });
@@ -190,7 +248,7 @@ $(document).ready(function() {
             });
 
             //状态下拉列表 
-            $('#form-status,#form-is_china').selectpicker();
+            $('#form-status,#form-is_china,#form-level').selectpicker();
 
         }
 

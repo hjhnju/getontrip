@@ -44,7 +44,7 @@ class DetailController extends Base_Controller_Page {
           $arrLog = array(
               'type'     => 'visit',
               'uid'      => User_Api::getCurrentUser(),
-              'obj_id'   => $postid,
+              'obj_id'   => $postInfo['id'],
               'obj_type' => 'topic',
           );
           Base_Log::NOTICE($arrLog);

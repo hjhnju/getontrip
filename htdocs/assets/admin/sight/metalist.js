@@ -58,7 +58,12 @@ $(document).ready(function() {
                 }, {
                     "data": "level"
                 }, {
-                    "data": "type"
+                    "data": function(e) {
+                        if (e.is_landscape) {
+                            return '是';
+                        }
+                        return '否';
+                    }
                 }, {
                     "data": "continent"
                 }, {
@@ -77,7 +82,9 @@ $(document).ready(function() {
                         } 
                     }
                 },  {
-                    "data": "stats_name"
+                    "data": "weight"
+                },  {
+                    "data": "status_name"
                 }, {
                     "data": function(e) {
                         if (e.status==0) {

@@ -130,9 +130,29 @@ class  SightapiController extends Base_Controller_Api{
        //先添加一条景点元数据
        $sightMeta = $_REQUEST;
        $sightMeta['status'] = Sight_Type_Meta::CONFIRMED; 
-       $sightMeta['city_id'] =intval($_REQUEST['city_id']);
+       $sightMeta['city_id'] = intval($_REQUEST['city_id']);
+       $sightMeta['sight_id'] = -1; 
+
+       //根据城市id查询城市信息
+       $cityInfo = City_Api::getCityById(intval($_REQUEST['city_id']));
+       $sightMeta['continent'] = $cityInfo['continentname'];
+       $sightMeta['country'] = $cityInfo['countryname'];
+       $sightMeta['province'] = $cityInfo['pidname'];
+       $sightMeta['city'] = $cityInfo['name'];
+       $sightMeta['weight'] = 3000;
+
+       //判断是否是国内外
+       if ($cityInfo['countryid']==10001) {
+          if ($cityInfo['pid']==10005||$cityInfo['id']==10003||$cityInfo['id']==10004) {
+            $sightMeta['is_china'] = 2;
+          }
+          $sightMeta['is_china'] = 1;
+       }else{
+          $sightMeta['is_china'] = 0;
+       }
         
        $metaId = Sight_Api::addSightMeta($sightMeta);
+
 
        $_REQUEST['id'] = $metaId;
        $bRet = Sight_Api::addSight($_REQUEST); 
@@ -150,9 +170,9 @@ class  SightapiController extends Base_Controller_Api{
         $id=isset($_REQUEST['id'])?$_REQUEST['id']:''; 
         $bRet =Sight_Api::delSight($id);
         if($bRet){
-            return $this->ajax();
         }
         return $this->ajaxError();
+            return $this->ajax();
     }
     
 
@@ -342,7 +362,10 @@ class  SightapiController extends Base_Controller_Api{
          
         for ($i=0; $i < count($List['list']); $i++) { 
            $item = $List['list'][$i];
-           $item['stats_name'] = Sight_Type_Meta::getTypeName($item['status']); 
+           //状态
+           $item['status_name'] = Sight_Type_Meta::getTypeName($item['status']); 
+           //是否是景观
+           $item['is_landscape'] = $item['sight_id']==-1?0:1;
            $List['list'][$i] = $item;
         }
 

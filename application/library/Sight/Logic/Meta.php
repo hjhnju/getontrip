@@ -113,7 +113,7 @@ class Sight_Logic_Meta extends Base_Logic{
             }
         }
         
-        $list->setOrder("continent asc,country asc,province asc,city asc,level desc"); 
+        $list->setOrder("continent asc,country asc,province asc,city asc,weight asc"); 
         $list->setPage($page);
         $list->setPagesize($pageSize);
         return $list->toArray();

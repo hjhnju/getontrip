@@ -99,7 +99,7 @@ class City_Logic_City{
                         }
                     }
                     $val['id']         = strval($val['id']);
-                    $val['name']       = strval($val['name']);
+                    $val['name']       = strval($objCity->name);
                     $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
                     $topic_num         = $modelCity->getCityTopicNum($val['id']);
                     $wiki_num          = $modelCity->getCityWikiNum($val['id']);

@@ -20,12 +20,14 @@ $index = 0;
 $fp_label = fopen(WORK_PATH.INDEX_LABEL_SIGHT,"w");
 
 $listSight = new Sight_List_Meta();
-$listSight->setFilterString("`level` != '' and sight_id = '' or country !='中国' and weight <= 5");
+//$listSight->setFilterString("`level` != '' and sight_id = '' or country !='中国' and weight <= 5");
 $listSight->setOrder("`id` asc");
 $listSight->setPagesize(PHP_INT_MAX);
 $arrSight  = $listSight->toArray();
 foreach ($arrSight['list'] as $sight){
-   
+    if(empty($sight['status'])){
+        continue;
+    }
     $strBuffer = "";
     
     //景点话题内容

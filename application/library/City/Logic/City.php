@@ -527,4 +527,58 @@ class City_Logic_City{
         $objHot->type    = Hot_Type_Hot::HOT;
         return $objHot->save();
     }
+
+    
+    /*用于增加与国家同名城市*/
+    public function countryList(){
+        $list = new City_List_Meta();
+        $objProvice = new City_Object_Meta();
+        $objCity = new City_Object_Meta();
+        $filter =  'countryid =0 and continentid!=0'; 
+        $list->setFilterString($filter); 
+        $list->setOrder('`id` asc');
+        $list->setPagesize(PHP_INT_MAX);
+        $arrRet   =  $list->toArray(); 
+
+        $array = array(); 
+        $city_id = 12010;
+        //查询当前国家下的未知省份
+        for ($i=0; $i < count($arrRet['list']); $i++) { 
+            $item = $arrRet['list'][$i];
+            if ($item['name']=='中国') {
+                continue;
+            }
+            $objProvice->fetch(array('countryid' => $item['id'],'name'=>'未知省份')); 
+            $provice = $objProvice->toArray();
+            $item['provices'] = $provice;
+           
+            $objCity = new City_Object_Meta();
+            //查询当前国家下的同名城市
+            $objCity->fetch(array('countryid' => $item['id'],'provinceid'=>$provice['id'],'name'=>$item['name'])); 
+            //$objCity->fetch(array('countryid' => 11540,'name'=>'加拿大')); 
+            $city = $objCity->toArray();
+
+            
+            //return $city; 
+            if (empty($city['id'])) {   
+                //没有未知省份的增加一个未知省份 
+                $city_id ++; 
+                $city['id'] = $city_id;
+                $city['name'] = $item['name'];
+                $city['continentid'] = $item['continentid']; 
+                $city['countryid'] = $item['id']; 
+                $city['provinceid'] = $provice['id']; 
+                $city['pid'] = $provice['id'];
+                $city['pinyin'] = $item['pinyin']; 
+                $this->addCityMeta($city);  
+            } 
+            else {
+                $item['citys'] = $city; 
+                array_push($array,$item);
+             } 
+            $arrRet['list'][$i] = $item;
+        }
+        return array($array,count($array));
+        return $arrRet;
+    }
 }

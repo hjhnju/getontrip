@@ -126,7 +126,7 @@ $(document).ready(function() {
                  });*/
 
                 //描述字数统计
-                $('#describe').limitTextarea({
+               /* $('#describe').limitTextarea({
                     maxNumber: 75,
                     onOk: function() {
                         $('#describe').css('background-color', 'transparent');
@@ -136,7 +136,7 @@ $(document).ready(function() {
                         $('#describe').css('background-color', 'lightpink');
                         $('#Form button[type="submit"]').attr('disabled', 'disabled');
                     }
-                });
+                });*/
 
                 //点击发布或者保存按钮
                 $('#Form button[type="submit"]').click(function(event) {

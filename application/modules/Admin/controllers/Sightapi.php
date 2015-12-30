@@ -37,7 +37,7 @@ class  SightapiController extends Base_Controller_Api{
             if (!array_key_exists($city_id,$cityArray)) {  
                   //根据ID查找城市名称
                   $cityInfo = City_Api::getCityById($item['city_id']);
-                  $tmpList[$key]['city_name'] = $cityInfo['name']; 
+                  $tmpList[$key]['city_name'] = isset($cityInfo['name'])?$cityInfo['name']:''; 
                   //添加到数组
                   $cityArray[$city_id]=$cityInfo['name'];  
             }

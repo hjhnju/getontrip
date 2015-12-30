@@ -60,6 +60,10 @@ class Keyword_Logic_Keyword extends Base_Logic{
                 $bCheck    = true;
             }
         }
+        if(isset($arrInfo['sight_id'])){
+            $redis = Base_Redis::getInstance();
+            $redis->hDel(City_Keys::getCityWikiNumKey(),$arrInfo['sight_id']);
+        }
         if($bCheck){
             $obj->weight = $this->getKeywordWeight($arrInfo['sight_id']);
             $ret = $obj->save();            
@@ -94,6 +98,10 @@ class Keyword_Logic_Keyword extends Base_Logic{
                 $bCheck    = true;
             }
         }
+        if(isset($arrInfo['sight_id'])){
+            $redis = Base_Redis::getInstance();
+            $redis->hDel(City_Keys::getCityWikiNumKey(),$arrInfo['sight_id']);
+        }
         if($bCheck){
             $ret =  $obj->save();
             if(isset($arrInfo['status']) && (intval($arrInfo['status']) == Keyword_Type_Status::PUBLISHED)){
@@ -124,6 +132,11 @@ class Keyword_Logic_Keyword extends Base_Logic{
         }
         $obj    = new Keyword_Object_Keyword();
         $obj->fetch(array('id' => $id));
+        if(!empty($obj->sight_id)){
+            $redis = Base_Redis::getInstance();
+            $redis->hDel(City_Keys::getCityWikiNumKey(),$obj->sight_id);
+        }
+        
         if(!empty($obj->image)){
             $this->delPic($obj->image);   
         }

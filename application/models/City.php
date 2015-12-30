@@ -110,11 +110,11 @@ class CityModel extends BaseModel{
     }
     
     public function getCityTopicNum($cityId){
-        /*$redis = Base_Redis::getInstance();
+        $redis = Base_Redis::getInstance();
         $ret   = $redis->hGet(City_Keys::getCityTopicNumKey(),$cityId);
         if(false !== $ret){
             return intval($ret);
-        }*/
+        }
         $arrTopicIds = array();
         $sql_general = "SELECT distinct(a.id) FROM `topic` a, `topic_tag`  b, `sight_tag` c ,`sight` d WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.tag_id = c.tag_id and c.sight_id = d.id  and d.status = ".Sight_Type_Status::PUBLISHED." and d.city_id = $cityId";
         $sql_normal  = "SELECT distinct(a.id) FROM `topic`  a, `sight_topic` b ,`sight` c WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.sight_id = c.id and c.city_id = $cityId and c.status=".Sight_Type_Status::PUBLISHED;
@@ -132,46 +132,46 @@ class CityModel extends BaseModel{
         }
         $arrTopicIds = array_unique($arrTopicIds);
         $num   = count($arrTopicIds);
-        //$redis->hSet(City_Keys::getCityTopicNumKey(),$cityId,$num);
+        $redis->hSet(City_Keys::getCityTopicNumKey(),$cityId,$num);
         return $num;
     }
     
     public function getCityWikiNum($cityId){
-        /*$redis = Base_Redis::getInstance();
+        $redis = Base_Redis::getInstance();
         $ret   = $redis->hGet(City_Keys::getCityWikiNumKey(),$cityId);
         if(false !== $ret){
             return intval($ret);
-        }*/
+        }
         $sql = "SELECT distinct(a.id) FROM `keyword` a, `sight`  b WHERE  a.status = ".Keyword_Type_Status::PUBLISHED." and a.sight_id = b.id and b.city_id  =".$cityId;
         $this->db->query($sql); 
         $num = $this->db->getNumRows();     
-        //$redis->hSet(City_Keys::getCityWikiNumKey(),$cityId,$num);
+        $redis->hSet(City_Keys::getCityWikiNumKey(),$cityId,$num);
         return $num;
     }
     
     public function getCityVidoNum($cityId){
-        /*$redis = Base_Redis::getInstance();
+        $redis = Base_Redis::getInstance();
         $ret   = $redis->hGet(City_Keys::getCityVideoNumKey(),$cityId);
         if(false !== $ret){
             return intval($ret);
-        }*/
+        }
         $sql = "SELECT distinct(a.id) FROM `video` a, `sight_video`  b, `sight` c WHERE  a.status = ".Video_Type_Status::PUBLISHED." and a.id = b.video_id and b.sight_id = c.id and c.city_id  =".$cityId;
         $this->db->query($sql); 
         $num = $this->db->getNumRows();  
-        //$redis->hSet(City_Keys::getCityVideoNumKey(),$cityId, $num);
+        $redis->hSet(City_Keys::getCityVideoNumKey(),$cityId, $num);
         return $num;
     }
     
     public function getCityBookNum($cityId){
-        /*$redis = Base_Redis::getInstance();
+        $redis = Base_Redis::getInstance();
         $ret   = $redis->hGet(City_Keys::getCityBookNumKey(),$cityId);
         if(false !== $ret){
             return intval($ret);
-        }*/
+        }
         $sql = "SELECT distinct(a.id) FROM `book` a, `sight_book`  b, `sight` c WHERE  a.status = ".Book_Type_Status::PUBLISHED." and a.id = b.book_id and b.sight_id = c.id and c.city_id  =".$cityId;
         $this->db->query($sql); 
         $num = $this->db->getNumRows(); 
-        //$redis->hSet(City_Keys::getCityBookNumKey(),$cityId, $num);
+        $redis->hSet(City_Keys::getCityBookNumKey(),$cityId, $num);
         return $num;
     }
     

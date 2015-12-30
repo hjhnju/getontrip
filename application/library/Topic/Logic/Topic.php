@@ -949,6 +949,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $logicSight = new Sight_Logic_Sight();
         $sight   = $logicSight->getSightById($sightId);
         if(isset($sight['city_id'])){
+            $redis->hDel(City_Keys::getCityTopicNumKey(),$sight['city_id']);
             $arrKeys = $redis->keys(City_Keys::getCityTopicKey($sight['city_id'], '*', '*'));
             foreach ($arrKeys as $key){
                 $redis->delete($key);

@@ -215,7 +215,7 @@ class  SightapiController extends Base_Controller_Api{
 
                 //所属城市
                 $cityInfo = City_Api::getCityById($sightInfo['city_id']);
-                $sightInfo['city_name'] = $cityInfo['name']; 
+                $sightInfo['city_name'] = isset($cityInfo['name'])?$cityInfo['name']:''; 
 
                 //相关话题个数 
                 $sightInfo['topicCount']=Sight_Api::getTopicNum($sight_id);

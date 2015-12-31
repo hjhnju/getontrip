@@ -236,9 +236,16 @@ class Search_Logic_Search{
                     $temp['image'] = isset($arrCity['image'])?Base_Image::getUrlByName($arrCity['image']):'';
                     if(!empty($x) && !empty($y)){
                         $temp['dis']   = Base_Util_Number::getEarthDist($x, $y, $arrCity['x'], $arrCity['y']);
-                        $temp['dis']   = Base_Util_Number::getDis($temp['dis']);
+                        if($temp['dis'] < 1000){
+                            $temp['dis']      = strval(ceil($temp['dis']));
+                            $temp['dis_unit'] = "m";
+                        }else{
+                            $temp['dis']      = strval(ceil($temp['dis']/1000));
+                            $temp['dis_unit'] = "km";
+                        }
                     }else{
-                        $temp['dis']   = '';
+                        $temp['dis']      = '';
+                        $temp['dis_unit'] = '';
                     }
                     
                     $sight_num     = $this->logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$cityId);
@@ -262,9 +269,16 @@ class Search_Logic_Search{
                     $temp['image'] = isset($arrSight['image'])?Base_Image::getUrlByName($arrSight['image']):'';
                     if(!empty($x) && !empty($y)){
                         $temp['dis']   = Base_Util_Number::getEarthDist($x, $y, $arrSight['x'], $arrSight['y']);
-                        $temp['dis']   = Base_Util_Number::getDis($temp['dis']);
+                        if($temp['dis'] < 1000){
+                            $temp['dis']      = strval(ceil($temp['dis']));
+                            $temp['dis_unit'] = "m";
+                        }else{
+                            $temp['dis']      = strval(ceil($temp['dis']/1000));
+                            $temp['dis_unit'] = "km";
+                        }
                     }else{
                         $temp['dis']   = '';
+                        $temp['dis_unit'] = '';
                     }
                     $strTopicIds   = $this->logicTopic->getTopicIdBySight($sightId);
                     $arrTopicIds   = explode(",",$strTopicIds);

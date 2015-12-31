@@ -5,6 +5,7 @@ echo "executing path = "`pwd`
 #使用说明
 function _usage(){
     FILE=`basename $0`
+    echo "=========================================="
     echo "Execute profiling articles to sights/tags."
     echo "Usage: sh $FILE -t sight|tag"
     echo -e "\t-h, this page"
@@ -31,6 +32,13 @@ documentsDir=$dataDir"/documents_"$target
 profilesDir=$dataDir"/profiles_"$target".libsvm"
 idfModelFile=$dataDir"/idf_"$target".model"
 
+echo "输入文件："
+echo -e "\tlabelsFile=$labelsFile"
+echo -e "\tdocumentsDir=$documentsDir"
+
+echo "输出文件："
+echo -e "\tprofilesDir=$profilesDir"
+echo -e "\tidfModelFile=$idfModelFile"
 
 # 输入文件
 if [ ! -d "$documentsDir" ]; then

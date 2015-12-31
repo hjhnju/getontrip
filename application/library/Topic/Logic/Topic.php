@@ -508,6 +508,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $ret['comment'] = $logicComment->getTotalCommentNum($id);
         
         $ret['visit']   = strval($this->getTotalTopicVistUv($id));
+        $ret['shareurl']    = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$id);
         return $ret;
     }
     

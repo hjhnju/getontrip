@@ -35,13 +35,13 @@ function getCityList($myfile,$logfile){
     //循环加入文件
     foreach ($datalist as $key => $item) {
         if ($key==0) {
-            $content = '{"id":'.$item['id'].',"name":"'.$item['name'].'"}'."\n"; 
+            $content = '{"id":'.$item['id'].',"name":"'.$item['name'].'","countryname":"'.$item['countryname'].'"}'."\n"; 
         }
         else{
-            $content = ',{"id":'.$item['id'].',"name":"'.$item['name'].'"}'."\n"; 
+            $content = ',{"id":'.$item['id'].',"name":"'.$item['name'].'","countryname":"'.$item['countryname'].'"}'."\n"; 
         } 
         fwrite($myfile, $content);
-        $logText = ($key+1).','.$item['id'].','.$item['name']."\n";
+        $logText = ($key+1).','.$item['id'].','.$item['name'].','.$item['countryname']."\n";
         fwrite($logfile, $logText);
         echo $logText;
     }

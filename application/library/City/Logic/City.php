@@ -558,7 +558,7 @@ class City_Logic_City{
         $arrRet   =  $list->toArray(); 
 
         $array = array(); 
-        $city_id = 12010;
+        $city_id = 13000;
         //查询当前国家下的未知省份
         for ($i=0; $i < count($arrRet['list']); $i++) { 
             $item = $arrRet['list'][$i];

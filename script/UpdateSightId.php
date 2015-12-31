@@ -177,4 +177,4 @@ function indexAction(){
          }
        }
        return  $this->ajax(array('yes'=>$arrayYes,'no'=>$arrayNo));  
-    }
+}

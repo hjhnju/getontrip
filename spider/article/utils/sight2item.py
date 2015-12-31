@@ -14,6 +14,7 @@ class sight2item:
     sightList = []
     landscapeList = []
     count = 59999
+    # count = 110000
     cityList = []
     typeList = {0: '', 1: "城市", 2: "古镇", 3: "乡村", 4: "海边", 5: "沙漠", 6: "山峰", 7: "峡谷", 8: "冰川", 9: "湖泊", 10: "河流", 11: "温泉", 12: "瀑布", 13: "草原", 14: "湿地", 15: "自然保护区",
                     16: "公园", 17: "展馆", 18: "历史建筑", 19: "现代建筑", 20: "历史遗址", 21: "宗教场所", 22: "观景台", 23: "陵墓", 24: "学校", 25: "故居", 26: "纪念碑", 27: "其他", 28: "购物娱乐", 29: "休闲度假"}
@@ -37,7 +38,7 @@ class sight2item:
     @staticmethod
     def main():
         # 打开景点文件
-        dir = u"E:\\sight\\meta"
+        dir = u"E:\\sight\\meta_test"
         wildcard = ".txt"
 
         # 打开城市文件，读取城市列表
@@ -120,9 +121,17 @@ class sight2item:
             pic_list = result.get('pic_list', [])
             map_info = ex.get('map_info', '')
             is_china = result.get('is_china', '0')
-
-            surl = result['surl'].strip().encode('utf8', 'ignore').decode('utf8')
             
+            surl = result['surl'].strip().encode('utf8', 'ignore').decode('utf8')
+            # 增加处理城市的情况，如果类型为城市 且下面还有景点则剪贴该景点的文件到城市目录下
+            # 然后return;
+            if type_list.count('1') > 0:
+
+                pass
+            
+            
+
+
             item['surl'] = surl
             item['weight'] = result['weight']
             item['is_china'] = is_china

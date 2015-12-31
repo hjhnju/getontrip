@@ -67,7 +67,7 @@ ITEM_PIPELINES = {
 }
 
 LOG_LEVEL = 'INFO'
-LOG_FILE = 'kanlishiLog.txt' 
+LOG_FILE = 'alllog3.txt' 
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html

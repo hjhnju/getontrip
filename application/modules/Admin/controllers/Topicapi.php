@@ -37,7 +37,7 @@ class  TopicapiController extends Base_Controller_Api{
             $tmpList[$i]["symbols"]    = Base_Util_String::checkEnglishSymbol($topic['content']);
             $tmpList[$i]["subtitle"] =isset($topic["subtitle"])?$topic["subtitle"]:'';
             $tmpList[$i]["isContent"] =empty($topic["content"])?false:true;
-
+            $tmpList[$i]["shareurl"] =isset($topic["shareurl"])?$topic["shareurl"]:'';
 
             //处理景点名称
             $sightlist = $tmpList[$i]['sights'];

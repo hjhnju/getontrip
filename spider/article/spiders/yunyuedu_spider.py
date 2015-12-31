@@ -82,7 +82,9 @@ class YunyueduSpider(CrawlSpider):
         
         # TODO 来源ID
         item['source_id'] = ''
-         
+        item['subtitle'] = ''
+        item['keywords'] = ''
+        
         return item
 
 SPIDER = YunyueduSpider()

@@ -21,14 +21,18 @@ class ApiController extends Base_Controller_Api {
      * @param integer page
      * @param integer pageSize
      * @param integer order,搜索标签
+     * @param string  x,经度
+     * @param string  y,纬度
      * @return json
      */
     public function labelAction() {
         $page       = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
-        $labelId    = isset($_REQUEST['order'])?intval($_REQUEST['order']):'';         
+        $labelId    = isset($_REQUEST['order'])?intval($_REQUEST['order']):''; 
+        $x          = isset($_REQUEST['x'])?doubleval($_REQUEST['x']):'';   
+        $y          = isset($_REQUEST['y'])?doubleval($_REQUEST['y']):'';
         $logic      = new Search_Logic_Search();
-        $ret        = $logic->label($labelId, $page, $pageSize);
+        $ret        = $logic->label($labelId, $page, $pageSize, $x, $y);
         $this->ajax($ret);
     }
     

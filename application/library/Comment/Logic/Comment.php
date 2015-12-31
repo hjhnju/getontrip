@@ -283,7 +283,7 @@ class Comment_Logic_Comment  extends Base_Logic{
     public function getUserComments($page,$pageSize,$userId){
         $arrRet      = array();
         $listComment = new Comment_List_Comment();
-        $listComment->setFilter(array('from_user_id' => $userId,'type' => Comment_Type_Type::TOPIC));
+        $listComment->setFilter(array('from_user_id' => $userId,'type' => Comment_Type_Type::TOPIC,'status' => Comment_Type_Status::PUBLISHED));
         $listComment->setPage($page);
         $listComment->setPagesize($pageSize);
         $arrComment  = $listComment->toArray();

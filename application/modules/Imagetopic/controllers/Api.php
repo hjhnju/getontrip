@@ -61,6 +61,8 @@ class ApiController extends Base_Controller_Api {
      * 图文列表页接口:包括最新和热门
      * @param integer sightId,景点ID
      * @param integer order,类型,1:最新,2:热门
+     * @param integer page
+     * @param integer pageSize
      * @return json
      */
     public function listAction() {

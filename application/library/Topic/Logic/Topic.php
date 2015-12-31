@@ -508,6 +508,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $ret['comment'] = $logicComment->getTotalCommentNum($id);
         
         $ret['visit']   = strval($this->getTotalTopicVistUv($id));
+        $ret['shareurl']    = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$id);
         return $ret;
     }
     
@@ -949,6 +950,7 @@ class Topic_Logic_Topic extends Base_Logic{
         $logicSight = new Sight_Logic_Sight();
         $sight   = $logicSight->getSightById($sightId);
         if(isset($sight['city_id'])){
+            $redis->hDel(City_Keys::getCityTopicNumKey(),$sight['city_id']);
             $arrKeys = $redis->keys(City_Keys::getCityTopicKey($sight['city_id'], '*', '*'));
             foreach ($arrKeys as $key){
                 $redis->delete($key);

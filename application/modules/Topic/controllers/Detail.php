@@ -38,13 +38,13 @@ class DetailController extends Base_Controller_Page {
        }else{ 
           //增加访问统计
           $logicVisit = new Tongji_Logic_Visit();
-          $logicVisit->addVisit(Tongji_Type_Visit::TOPIC,$postid);
+          $logicVisit->addVisit(Tongji_Type_Visit::TOPIC,$postInfo['id']);
           
           //记一条业务日志
           $arrLog = array(
               'type'     => 'visit',
               'uid'      => User_Api::getCurrentUser(),
-              'obj_id'   => $postid,
+              'obj_id'   => $postInfo['id'],
               'obj_type' => 'topic',
           );
           Base_Log::NOTICE($arrLog);

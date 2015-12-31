@@ -766,6 +766,9 @@ class Book_Logic_Book extends Base_Logic{
         $arrSightBook  = $listSightBook->toArray();
         foreach ($arrSightBook['list'] as $val){
             $redis->hDel(Sight_Keys::getSightTongjiKey($val['sight_id']),Sight_Keys::BOOK);
+            $objSight = new Sight_Object_Sight();
+            $objSight->fetch(array('id' => $val['sight_id']));
+            $redis->hDel(City_Keys::getCityBookNumKey(),$objSight->cityId);
         }
     }
 }

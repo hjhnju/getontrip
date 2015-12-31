@@ -97,6 +97,14 @@ class Sight_Logic_Meta extends Base_Logic{
                 $filter .= "`type` like '%".$arrParam['type']."%'  and "; 
                 unset($arrParam['type']);
             }
+            if(isset($arrParam['status']) && $arrParam['status'] == Sight_Type_Meta::NEEDCONFIRM){
+                $filter .= " `status` != ".Sight_Type_Meta::NOTNEED." and ";
+                unset($arrParam['status']);
+            }
+            if(isset($arrParam['is_china']) && empty($arrParam['is_china'])){
+                $filter .= " `is_china` != 1 and ";
+                unset($arrParam['is_china']);
+            }
             /*if (isset($arrParam['city'])) {
                 $filter = "`city` like '%".$arrParam['city']."%'  and "; 
                 unset($arrParam['city']);

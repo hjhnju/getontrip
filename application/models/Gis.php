@@ -5,9 +5,12 @@ class GisModel
     private $table = 'sight';
     
     protected $db  = '';
+    
+    protected $conn = '';
 
     public function __construct(){
-        $this->db = Base_Pg::getPDOInstance('getontrip');
+        //$this->db   = Base_Pg::getPDOInstance('getontrip');
+        $this->conn = Base_Pg::getInstance("getontrip");
     }
 
     /**
@@ -85,5 +88,21 @@ class GisModel
             return 0;
         }
         return $ret;
+    }
+    
+    public function testPg(){
+        $arrRet = array();
+        $sql    = "select p.id ,ST_Distance('POINT(116.327353 40.001376)'::geography, p.the_geom) as dis from cities p order by dis asc;";
+        try {
+            $resultSet = pg_query($this->conn,$sql);
+            while ($row = pg_fetch_row($resultSet)){
+                $tmp['id']  = $row[0];
+                $tmp['dis'] = $row[1];
+                $arrRet[] = $tmp;
+            }
+        } catch (Exception $ex) {
+            Base_Log::error($ex->getMessage());
+        }
+        return $arrRet;
     }
 }

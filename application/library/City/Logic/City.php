@@ -77,38 +77,21 @@ class City_Logic_City{
         $logicSight    = new Sight_Logic_Sight();
         $modelCity     = new CityModel();
         foreach($arrLeters as $char){
-            $strFilter  = "`cityid` = 0 and `provinceid` != 0";
-            $listCity   = new City_List_Meta();
-            $strFilter .=" and `pinyin` like '".strtolower($char)."%'";
-            $listCity->setFilterString($strFilter);
-            $listCity->setFields(array('id','name'));
-            $listCity->setPageSize(PHP_INT_MAX);
-            $arrCity = $listCity->toArray();
+            $arrCity  = $modelCity->queryPushCityByPinyin($char,$type);
             $tempCity = array();
-            foreach ($arrCity['list'] as $key => $val){
+            foreach ($arrCity as $key => $val){
                 $objCity = new City_Object_City();
                 $objCity->fetch(array('id' => $val['id']));
-                if($objCity->status == City_Type_Status::PUBLISHED){
-                    if($type == City_Type_Type::INLAND){
-                        if($objCity->isChina !== City_Type_Type::INLAND){
-                            continue;
-                        }
-                    }else{
-                        if($objCity->isChina == City_Type_Type::INLAND){
-                            continue;
-                        }
-                    }
-                    $val['id']         = strval($val['id']);
-                    $val['name']       = strval($val['name']);
-                    $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
-                    $topic_num         = $modelCity->getCityTopicNum($val['id']);
-                    $wiki_num          = $modelCity->getCityWikiNum($val['id']);
-                    $video_num         = $modelCity->getCityVidoNum($val['id']);
-                    $book_num          = $modelCity->getCityBookNum($val['id']);
-                    $val['sight']       = strval($sightNum);
-                    $val['topic']       = strval($topic_num + $wiki_num + $video_num + $book_num);
-                    $tempCity[] = $val;
-                }
+                $val['id']         = strval($val['id']);
+                $val['name']       = strval($objCity->name);
+                $sightNum          = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$val['id']);
+                $topic_num         = $modelCity->getCityTopicNum($val['id']);
+                $wiki_num          = $modelCity->getCityWikiNum($val['id']);
+                $video_num         = $modelCity->getCityVidoNum($val['id']);
+                $book_num          = $modelCity->getCityBookNum($val['id']);
+                $val['sight']      = strval($sightNum);
+                $val['topic']      = strval($topic_num + $wiki_num + $video_num + $book_num);
+                $tempCity[] = $val;
             }
             if(!empty($tempCity)){
                 $arrRet[$char] = $tempCity;

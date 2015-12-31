@@ -20,12 +20,14 @@ $index = 0;
 $fp_label = fopen(WORK_PATH.INDEX_LABEL_SIGHT,"w");
 
 $listSight = new Sight_List_Meta();
-$listSight->setFilterString("`level` != '' and sight_id = '' or country !='中国' and weight <= 5");
+//$listSight->setFilterString("`level` != '' and sight_id = '' or country !='中国' and weight <= 5");
 $listSight->setOrder("`id` asc");
 $listSight->setPagesize(PHP_INT_MAX);
 $arrSight  = $listSight->toArray();
 foreach ($arrSight['list'] as $sight){
-   
+    if(empty($sight['status'])){
+        continue;
+    }
     $strBuffer = "";
     
     //景点话题内容
@@ -55,14 +57,14 @@ foreach ($arrSight['list'] as $sight){
             $strSightVoc = implode("\t",$arrSightVoc);
             $strBuffer .= sprintf(PRE_DESC."%d\t%s\r\n",$sight['id'],$strSightVoc);
         }
-    }
-    
+    }    
+
+    //子景点描述内容及子景点景观
     $tmpListSight = new Sight_List_Meta();
     $tmpListSight->setFilter(array('sight_id' => $sight['id']));
     $tmpListSight->setPagesize(PHP_INT_MAX);
     $arrTmpListSight = $tmpListSight->toArray();
     foreach ($arrTmpListSight['list'] as $data){
-        //子景点描述内容
         if(!empty($data['describe'])){
             $arrSightVoc = Base_Util_String::ChineseAnalyzerAll($data['describe']);
             if(!empty($arrSightVoc)){
@@ -70,8 +72,39 @@ foreach ($arrSight['list'] as $sight){
                 $strBuffer .= sprintf(PRE_SUB_SIGHT."%d\t%s\r\n",$data['id'],$strSightVoc);
             }
         }
+        
+        $listKeyword = new Keyword_List_Keyword();
+        $listKeyword->setFilter(array('sight_id' => $data['id']));
+        $listKeyword->setPagesize(PHP_INT_MAX);
+        $arrKeyword  = $listKeyword->toArray();
+        foreach ($arrKeyword['list'] as $wiki){
+            if(!empty($wiki['content'])){
+                $arrSightVoc = Base_Util_String::ChineseAnalyzerAll($wiki['content']);
+                if(!empty($arrSightVoc)){
+                    $strSightVoc = implode("\t",$arrSightVoc);
+                    $strBuffer .= sprintf(PRE_SUB_WIKI."%d\t%s\r\n",$wiki['id'],$strSightVoc);
+                }
+            }
+        }
+        
     }
     
+    //景观内容
+    $listKeyword = new Keyword_List_Keyword();
+    $listKeyword->setFilter(array('sight_id' => $sight['id']));
+    $listKeyword->setPagesize(PHP_INT_MAX);
+    $arrKeyword  = $listKeyword->toArray();
+    foreach ($arrKeyword['list'] as $wiki){
+        if(!empty($wiki['content'])){
+            $arrSightVoc = Base_Util_String::ChineseAnalyzerAll($wiki['content']);
+            if(!empty($arrSightVoc)){
+                $strSightVoc = implode("\t",$arrSightVoc);
+                $strBuffer .= sprintf(PRE_WIKI."%d\t%s\r\n",$wiki['id'],$strSightVoc);
+            }
+        }
+    }
+    
+    //特征写入文件
     if(!empty($strBuffer)){
         $str = sprintf("%d\tsight:%d\tname:%s\r\n",$index,$sight['id'],$sight['name']);
         fwrite($fp_label, $str);

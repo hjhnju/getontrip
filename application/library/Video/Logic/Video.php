@@ -521,6 +521,10 @@ class Video_Logic_Video extends Base_Logic{
         $arrSightVideo  = $listSightVideo->toArray();
         foreach ($arrSightVideo['list'] as $val){
             $redis->hDel(Sight_Keys::getSightTongjiKey($val['sight_id']),Sight_Keys::VIDEO);
+            
+            $objSight = new Sight_Object_Sight();
+            $objSight->fetch(array('id' => $val['sight_id']));
+            $redis->hDel(City_Keys::getCityVideoNumKey(),$objSight->cityId);
         }
     }
 }

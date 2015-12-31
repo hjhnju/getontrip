@@ -118,13 +118,17 @@ class Search_Logic_Search{
     /**
      * 获取搜索标签类型
      */
-    public function label($labelId, $page, $pageSize){
+    public function label($labelId, $page, $pageSize,$x , $y){
         $arrRet    = array();
         $arrData   = array(); 
         $oss       = Oss_Adapter::getInstance();
         $arrRet['image']     = Base_Image::getUrlByName(Base_Config::getConfig('searchlabel')->image);
         $sign                = $oss->getMetaLen(Base_Config::getConfig('searchlabel')->image);
         $arrRet['image']    .= sprintf("?%s",md5($sign));
+        
+        $arrRet['images']    = array(
+            array('url' => $arrRet['image']),
+        );
         if($page == 1){
             $listTag = new Tag_List_Tag();
             $listTag->setFilter(array('type' => Tag_Type_Tag::SEARCH));
@@ -148,11 +152,8 @@ class Search_Logic_Search{
                 $labelId     = 1;
             }
         }
-        $objLabel = new Tag_Object_Tag();
-        $objLabel->fetch(array('type' => Tag_Type_Tag::SEARCH,'weight' => $labelId));
-        $label    = Tag_Api::getTagInfo($objLabel->id);  
-        $labelId  = $objLabel->id;
-        if(isset($label['name']) && ($label['name'] == '热门内容')){
+
+        if(empty($labelId) || intval($labelId) == 1){
             if($page == 1){
                 $modelTopic      = new TopicModel();
                 $arrData['list'] = $modelTopic->getRandTopicIds($pageSize);
@@ -210,16 +211,22 @@ class Search_Logic_Search{
             return $arrRet;
         }
         
+        $objLabel = new Tag_Object_Tag();
+        $objLabel->fetch(array('type' => Tag_Type_Tag::SEARCH,'weight' => $labelId));
+        $label    = Tag_Api::getTagInfo($objLabel->id);
+        $labelId  = $objLabel->id;
+        
         $listLabel = new Search_List_Label();
         $listLabel->setFilter(array('label_id' => $labelId));
         $listLabel->setPage($page);
         $listLabel->setPagesize($pageSize);
         $arrLabel = $listLabel->toArray();
-        if(!empty($arrLabel['list'])){
-            $type  = intval($arrLabel['list'][0]['type']);
-            if($type == Search_Type_Label::CITY){
-                $logicCity = new City_Logic_City();
-                foreach ($arrLabel['list'] as $key => $val){
+        if(!empty($arrLabel['list'])){     
+            $logicCity     = new City_Logic_City();
+            $modelCity     = new CityModel();
+            $logicSight    = new Sight_Logic_Sight();
+            foreach ($arrLabel['list'] as $key => $val){
+                if($val['type'] == Search_Type_Label::CITY){            
                     $cityId        = $val['obj_id'];
                     $arrCity       = $logicCity->getCityById($cityId);
                     $temp['id']    = strval($cityId);
@@ -227,9 +234,16 @@ class Search_Logic_Search{
                     $temp['name']  = $arrCity['name'];
                     $temp['name']  = str_replace("市", "", $temp['name']);
                     $temp['image'] = isset($arrCity['image'])?Base_Image::getUrlByName($arrCity['image']):'';
-                    $sight_num     = $this->logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$cityId);
+                    if(!empty($x) && !empty($y)){
+                        $temp['dis']   = Base_Util_Number::getEarthDist($x, $y, $arrCity['x'], $arrCity['y']);
+                        $temp['dis']   = Base_Util_Number::getDis($temp['dis']);
+                    }else{
+                        $temp['dis']   = '';
+                    }
                     
-                    $modelCity     = new CityModel();
+                    $sight_num     = $this->logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$cityId);
+            
+                    
                     $topic_num     = $modelCity->getCityTopicNum($cityId);
                     $wiki_num      = $modelCity->getCityWikiNum($cityId);
                     $video_num     = $modelCity->getCityVidoNum($cityId);
@@ -237,18 +251,21 @@ class Search_Logic_Search{
                     $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::CITY, $cityId);
                     $temp['param1']  =  sprintf("%d个景点",$sight_num);
                     $temp['param2']  =  sprintf("%d个内容",$topic_num + $wiki_num + $video_num + $book_num);
-                    $temp['param3']  =  sprintf("%d人收藏",$collect);                                     
+                    $temp['param3']  =  sprintf("%d人收藏",$collect);
                     $arrData[] = $temp;
-                }
-            }else{
-                $logicSight    = new Sight_Logic_Sight();
-                foreach ($arrLabel['list'] as $key => $val){
+                }else{
                     $sightId       = $val['obj_id'];
                     $arrSight      = $logicSight->getSightById($sightId);
                     $temp['id']    = strval($sightId);
                     $temp['type']  = strval(Search_Type_Label::SIGHT);
                     $temp['name']  = $arrSight['name'];
                     $temp['image'] = isset($arrSight['image'])?Base_Image::getUrlByName($arrSight['image']):'';
+                    if(!empty($x) && !empty($y)){
+                        $temp['dis']   = Base_Util_Number::getEarthDist($x, $y, $arrSight['x'], $arrSight['y']);
+                        $temp['dis']   = Base_Util_Number::getDis($temp['dis']);
+                    }else{
+                        $temp['dis']   = '';
+                    }
                     $strTopicIds   = $this->logicTopic->getTopicIdBySight($sightId);
                     $arrTopicIds   = explode(",",$strTopicIds);
                     $count         = 0;
@@ -265,7 +282,7 @@ class Search_Logic_Search{
                     $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $sightId);
                     $temp['param1']  =  sprintf("%d个内容",$topic_num + $wiki_num + $book_num + $video_num);
                     $temp['param2']  =  sprintf("%d条评论",$count);
-                    $temp['param3']  =  sprintf("%d人收藏",$collect);                                        
+                    $temp['param3']  =  sprintf("%d人收藏",$collect);
                     $arrData[] = $temp;
                 }
             }

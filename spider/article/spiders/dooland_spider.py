@@ -16,34 +16,34 @@ class DoolandSpider(CrawlSpider):
     # download_delay = 1
     allowed_domains = ["dooland.com"]
     start_urls = [
-        # "http://southpeople.dooland.com",
-        # 'http://beijingjishi.dooland.com',
-        # 'http://dutianxia.dooland.com',
-        # 'http://ybtx.dooland.com',
-        # 'http://blogweekly.dooland.com',
-        # 'http://hxly.dooland.com',
-        # 'http://lysj.dooland.com', 
-        # 'http://redoo.dooland.com',
-        # 'http://yfdj.dooland.com',
-        # 'http://travel.dooland.com',
-        # 'http://dianying.dooland.com',
-        # 'http://kxzy.dooland.com',
-        # 'http://xinjiang.dooland.com', 
-        # 'http://lifeweeker.dooland.com',
-        # 'http://aomi.dooland.com',
-        # 'http://bkzs.dooland.com',
-        # 'http://xsgx.dooland.com',
-        # 'http://zhongguoshuhua.dooland.com',
-        # 'http://blqs.dooland.com', 
-        # 'http://zgxb.dooland.com',
-        # 'http://wsbl.dooland.com',
-        # 'http://kanshijie.dooland.com',
-        # 'http://vistastory.dooland.com',
-        # 'http://zhongguoxinwenzhoukan.dooland.com',
-        # 'http://blqs.dooland.com',
+        "http://southpeople.dooland.com",
+        'http://beijingjishi.dooland.com',
+        'http://dutianxia.dooland.com',
+        'http://ybtx.dooland.com',
+        'http://blogweekly.dooland.com',
+        'http://hxly.dooland.com',
+        'http://lysj.dooland.com', 
+        'http://redoo.dooland.com',
+        'http://yfdj.dooland.com',
+        'http://travel.dooland.com',
+        'http://dianying.dooland.com',
+        'http://kxzy.dooland.com',
+        'http://xinjiang.dooland.com', 
+        'http://lifeweeker.dooland.com',
+        'http://aomi.dooland.com',
+        'http://bkzs.dooland.com',
+        'http://xsgx.dooland.com',
+        'http://zhongguoshuhua.dooland.com',
+        'http://blqs.dooland.com', 
+        'http://zgxb.dooland.com',
+        'http://wsbl.dooland.com',
+        'http://kanshijie.dooland.com',
+        'http://vistastory.dooland.com',
+        'http://zhongguoxinwenzhoukan.dooland.com',
+        'http://blqs.dooland.com',
         #######################################
          
-        "http://www.dooland.com/magazine/article_641279.html"
+        # "http://www.dooland.com/magazine/article_408755.html"
 
     ]
 
@@ -81,8 +81,8 @@ class DoolandSpider(CrawlSpider):
        
 
     # 文章详情
-    # def parse_details(self, response):
-    def parse(self, response):
+    def parse_details(self, response):
+    # def parse(self, response):
         item = ArticleItem() 
         sel=Selector(response)
         item['url'] = response.url
@@ -92,10 +92,13 @@ class DoolandSpider(CrawlSpider):
         item['source'] = sel.xpath('//*[@id="main"]/aside/section[1]/h3/text()').extract()[0].split( )[0]
         item['issue'] = sel.xpath('//*[@id="main"]/aside/section[1]/h3/text()').extract()[0].split( )[1]
 
+        item['keywords'] = sel.xpath('//*[@id="main"]/article//div[@class="date"]/ul/li[2]/font/text()').extract()[0]
+
         # TODO 来源ID
         item['source_id'] = ''
         item['author'] = ''
-        
+        item['subtitle'] = ''
+         
         return item
     
 
@@ -108,10 +111,11 @@ class DoolandSpider(CrawlSpider):
         item['url'] = response.url
         item['title'] = sel.xpath('//*[@class="title"]/div/h1/text()').extract()[0].strip() 
         item['content'] = sel.xpath('//*[@id="article"]/div').extract()[0] 
-         
+        item['keywords'] = sel.xpath('//*[@id="main"]/article//div[@class="date"]/ul/li[2]/font').extract()[0]
         # TODO 来源ID
         item['source_id'] = ''
         item['author'] = ''
+        item['subtitle'] = ''
         
         return item
 

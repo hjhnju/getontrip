@@ -6,8 +6,9 @@ echo "executing path = "`pwd`
 #使用说明
 function _usage(){
     FILE=`basename $0`
+    echo "====================================="
     echo "Execute recommend articles to sights."
-    echo "Usage: sh $FILE [-d] -t sight|tag"
+    echo "Usage: sh $FILE [-d YYYYMMDD] -t sight|tag"
     echo -e "\t-d YYYYMMDD, is option, default is today=$DATE"
     echo -e "\t-h, this page"
     exit 0
@@ -34,11 +35,17 @@ newdocsFile=$dataDir"/newdocs."$DATE
 inputProfiles=$dataDir"/profiles_"$target".libsvm"
 idfModelFile=$dataDir"/idf_"$target".model"
 threshold="0.10"
+echo "输入文件:"
+echo -e "\tnewdocsFile=$newdocsFile"
+echo -e "\tinputProfiles=$inputProfiles"
+echo -e "\tidfModelFile=$idfModelFile"
+echo -e "\tthreshold=$threshold"
 
 # 输出
 outputDir=$dataDir"/similarity_"$target".out"
 outputFile=$dataDir"/similarity_"$target"."$DATE
-echo "outputfile is $outputfile"
+echo "输出文件:"
+echo -e "outputfile=$outputFile"
 
 if [ ! -f "$newdocsFile" ]; then
     echo "no input file $newdocsFile"

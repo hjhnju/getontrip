@@ -417,7 +417,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $arrTemp['content']     = Base_Util_String::getHtmlEntity(Base_Util_String::delStartEmpty($content));
         $arrTemp['image']       = $hash;
         $arrTemp['url']         = $wikiUrl;
-        $arrTemp['status']      = Keyword_Type_Status::PUBLISHED;
+        $arrTemp['status']      = $status;
         
         $objKeyword = new Keyword_Object_Keyword();
         $objKeyword->fetch(array('id' => $keywordId));

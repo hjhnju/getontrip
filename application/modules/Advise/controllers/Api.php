@@ -9,7 +9,7 @@ class ApiController extends Base_Controller_Api {
     const PAGESIZE = 6;
     
     public function init() {
-        $this->setNeedLogin(true);
+        $this->setNeedLogin(false);
         parent::init();        
     }
     
@@ -25,7 +25,7 @@ class ApiController extends Base_Controller_Api {
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $logic     = new Advise_Logic_Advise();
-        $ret       = $logic->addAdvise($this->userid,$strAdvise);
+        $ret       = $logic->addAdvise($strAdvise);
         $this->ajax(strval($ret));
     }
     
@@ -40,7 +40,7 @@ class ApiController extends Base_Controller_Api {
         $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
         $logic     = new Advise_Logic_Advise();
-        $ret       = $logic->listAdvise($this->userid,$page,$pageSize);
+        $ret       = $logic->listAdvise($page,$pageSize);
         $this->ajax($ret);
     }
     
@@ -56,8 +56,12 @@ class ApiController extends Base_Controller_Api {
         if(empty($commentId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
+        $userid = User_Api::getCurrentUser();
+        if(empty($userid)){
+            return $this->ajaxError(Base_RetCode::SESSION_NOT_LOGIN,Base_RetCode::getMsg(Base_RetCode::SESSION_NOT_LOGIN));
+        }
         $logic = new Report_Logic_Report();
-        $ret   = $logic->add($commentId, $this->userid, $type);
+        $ret   = $logic->add($commentId, $userid, $type);
         if($ret){
             return $this->ajaxError($ret,Advise_RetCode::getMsg($ret));
         }

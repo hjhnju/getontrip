@@ -20,7 +20,7 @@ class Advise_List_Advise extends Base_List {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'userid', 'content', 'status', 'create_time', 'update_time', 'type', 'create_user', 'update_user');
+    protected $fields = array('id', 'userid', 'content', 'status', 'create_time', 'update_time', 'create_user', 'update_user', 'type');
 
     /**
      * 整数类型的字段
@@ -28,13 +28,12 @@ class Advise_List_Advise extends Base_List {
      */
     protected $intProps = array(
         'id'          => 1,
-        'userid'      => 1,
         'status'      => 1,
         'create_time' => 1,
         'update_time' => 1,
-        'type'        => 1,
         'create_user' => 1,
         'update_user' => 1,
+        'type'        => 1,
     );
 
     /**

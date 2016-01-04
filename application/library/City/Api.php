@@ -158,4 +158,15 @@ class City_Api{
         $logicCity = new City_Logic_City();
         return $logicCity->setHotCity($id);
     }
+    
+    /**
+     * 接口10：City_Api::delHotCity($id)
+     * 设置热门城市
+     * @param integer $id
+     * @return boolean
+     */
+    public static function delHotCity($id){
+        $logicCity = new City_Logic_City();
+        return $logicCity->delHotCity($id);
+    }
 }

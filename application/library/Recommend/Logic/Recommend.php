@@ -83,6 +83,16 @@ class Recommend_Logic_Recommend extends Base_Logic{
     public function getArticleDetail($id){
         $objArticle = new Recommend_Object_Article();
         $objArticle->fetch(array('id' => $id));
-        return $objArticle->toArray();
+        $ret =  $objArticle->toArray();
+        
+        $objArticleTag = new Recommend_Object_Result();
+        $objArticleTag->fetch(array('obj_id' => $id,'label_type' => Recommend_Type_Label::TAG));
+        $ret['tagid']    = empty($objArticleTag->labelId)?'':$objArticleTag->labelId;
+        $ret['tagname']  = '';
+        if(!empty($ret['tagid'])){
+            $tag = Tag_Api::getTagInfo($ret['tagid']);
+            $ret['tagname'] = $tag['name'];
+        }
+        return $ret;
     }
 }

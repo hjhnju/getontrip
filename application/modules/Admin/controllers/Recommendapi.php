@@ -71,6 +71,8 @@ class RecommendapiController extends Base_Controller_Api{
                         $obj = Sight_Api::getSightById($groupItem['label_id']);
                         if (!empty($obj)) {
                             $groupItem['name'] = $obj['name'];
+                            $citye = City_Api::getCityById($obj['city_id']);
+                            $groupItem['cityname'] = $obj['name'];
                         }
                         break;
                     case Recommend_Type_Label::GENERAL:
@@ -96,6 +98,8 @@ class RecommendapiController extends Base_Controller_Api{
             }
             $item['title'] = $article['title'];
             $item['subtitle'] = '';  
+            $item['tagid']    = $article['tagid'];
+            $item['tagname']    = $article['tagname'];
             $item['source'] = $article['source'];
             $item['issue'] = $article['issue'];  
             $item['subcontent'] = Base_Util_String::getSubString($article['content'],150);

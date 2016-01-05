@@ -77,7 +77,6 @@ class SearchapiController extends Base_Controller_Api{
         $type   = isset($_REQUEST['type'])?intval($_REQUEST['type']):Search_Type_Label::SIGHT;
         $sight_id  = isset($_REQUEST['sight_id'])?$_REQUEST['sight_id']:array();
         $city_id  = isset($_REQUEST['city_id'])?$_REQUEST['city_id']:array();
-        
         switch ($type) {
             case Search_Type_Label::SIGHT:
                 $objId=$sight_id;
@@ -90,8 +89,10 @@ class SearchapiController extends Base_Controller_Api{
                 break;
         }
         $id     = isset($_REQUEST['id'])?intval($_REQUEST['id']):'';
-        Base_Log::notice("test".json_encode($_REQUEST));
         if(!empty($id) && !empty($objId) && !empty($type)){
+            if(!is_array($objId)){
+                $objId = array($objId);
+            }
             $ret = Search_Api::addLabel($objId, $type, $id);
             return $this->ajax($ret);
         }

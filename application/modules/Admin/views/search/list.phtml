@@ -83,14 +83,19 @@
                     <ul class="alert alert-info" role="alert" id="label_sortable">
                         {%foreach $sightList as $key=>$item%}
                         <li class="badge badge-sm label-danger" role="badge" data-id="{%$item.id%}"> 
-                          <span  class="click" data-id="{%$item.id%}">{%$item.name%}({%$item.obj_num%})</span>
+                          <span  class="click" data-id="{%$item.id%}" data-type="{%$item.type%}">{%$item.name%}({%$item.obj_num%})</span>
                           <button type="button" class="close" data-id="{%$item.id%}"><span class="fa fa-remove"></span></button>
                         </li> 
-                         {%/foreach%}  
+                         {%/foreach%}                           
                    </ul>
-               </div>  
+               </div> 
+               <div class="col-lg-2">
+               <br><br>
+               <button type="button" class="btn btn-success btn-xs addObj"  title="添加对象" data-toggle="tooltip"><i class="fa fa-buysellads"></i></button> 
+               </div> 
                <input type="hidden" id="search-id">
-                
+               <input type="hidden" id="obj-id" value="">
+               <input type="hidden" id="obj-type" value="">
                <table class="table table-striped table-hover table-bordered dataTable" id="editable">
                      <thead>
                          <tr role="row"> 

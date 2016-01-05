@@ -105,11 +105,25 @@ $(document).ready(function() {
                        $li.remove();
                     });
                 }); 
+                
+              //标签
+                $('.click').live('click', function(event) {
+                	var id   = $(this).attr('data-id');
+                	var type = $(this).attr('data-type');
+                    $('#obj-id').val(id);
+                    $('#obj-type').val(type);
+                }); 
 
                 //点击打开添加对象模态框
-                $("#editable button.addObj").live('click', function(event) {
-                    var nRow = $(this).parents('tr')[0];
-                    var data = oTable.api().row(nRow).data();
+                $(".addObj").live('click', function(event) {
+                    //var nRow = $(this).parents('tr')[0];
+                    //var data = oTable.api().row(nRow).data();
+                    //data.id   = $('#obj-id').attr('value');
+                    //data.type = $('#obj-type').attr('value');
+                    var data = new Object();
+                    data.id   = Number($('#obj-id').attr('value'));
+                    data.type = Number($('#obj-type').attr('value'));
+                    
                     $('#type').val(data.type);
                     $('#id').val(data.id);
                     switch (data.type) {

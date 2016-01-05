@@ -522,10 +522,20 @@ class City_Logic_City{
     
     public function setHotCity($id){
         $objHot = new Hot_Object_Hot();
-        $objHot->objId   = $id;
-        $objHot->objType = Hot_Type_Obj::CITY;
-        $objHot->type    = Hot_Type_Hot::HOT;
-        return $objHot->save();
+        $objHot->fetch(array('obj_id' => $id, 'obj_type' => Hot_Type_Obj::CITY, 'type' => Hot_Type_Hot::HOT));
+        if(empty($objHot->id)){
+            $objHot->objId   = $id;
+            $objHot->objType = Hot_Type_Obj::CITY;
+            $objHot->type    = Hot_Type_Hot::HOT;
+            return $objHot->save();
+        }
+        return true;
+    }
+    
+    public function delHotCity($id){
+        $objHot = new Hot_Object_Hot();
+        $objHot->fetch(array('obj_id' => $id, 'obj_type' => Hot_Type_Obj::CITY, 'type' => Hot_Type_Hot::HOT));
+        return $objHot->remove();
     }
 
     

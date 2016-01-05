@@ -25,7 +25,11 @@ class Advise_Logic_Advise{
      * 查询反馈意见，前端使用
      * @return array
      */
-    public function listAdvise($userId, $page, $pageSize){
+    public function listAdvise( $page, $pageSize){
+        $userId             = User_Api::getCurrentUser();
+        if(empty($userId)){
+            $userId =  session_id();;
+        }
         $arrRet     = array();
         $index      = ($page -1)*$pageSize;
         $image      = $this->logicUser->getUserAvatar($userId);      
@@ -114,7 +118,11 @@ class Advise_Logic_Advise{
      * @param array $arrData
      * @return boolean
      */
-    public function addAdvise($userId, $strData){
+    public function addAdvise($strData){
+        $userId             = User_Api::getCurrentUser();
+        if(empty($userId)){
+            $userId =  session_id();;
+        }
         $objAdvise          = new Advise_Object_Advise();
         $objAdvise->userid  = $userId;
         $objAdvise->content = $strData;

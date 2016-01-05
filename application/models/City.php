@@ -6,7 +6,7 @@
  */
 class CityModel extends BaseModel{
     
-    protected $_fields_info = array('id', 'status', 'x', 'y', 'create_time', 'update_time', 'create_user', 'update_user', 'image');
+    protected $_fields_info = array('id', 'status', 'is_china','x', 'y', 'create_time', 'update_time', 'create_user', 'update_user', 'image');
     
     protected $_fields_meta = array('id', 'name', 'pinyin', 'pid', 'provinceid', 'cityid','countryid','continentid');
     

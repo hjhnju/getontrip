@@ -277,7 +277,15 @@ class Comment_Logic_Comment  extends Base_Logic{
         $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getLateKey($objComment->objId, '*'));
         $redis->hDel(Comment_Keys::getCommentKey(),Comment_Keys::getTotalKey($objComment->objId));
         $objComment->status = Comment_Type_Status::DELETED;
-        return $objComment->save();
+        $ret = $objComment->save();
+        
+        $objComment = new Comment_Object_Comment();
+        $objComment->fetch(array('up_id' => $id));
+        if(empty($objComment->id)){
+            $objComment->status = Comment_Type_Status::DELETED;
+            $objComment->save();
+        }
+        return $ret;
     }
     
     public function getUserComments($page,$pageSize,$userId){

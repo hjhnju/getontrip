@@ -95,6 +95,24 @@ class Base_Logic{
     }
     
     /**
+     * 上传音频数据
+     * @param string $filename,文件路径及名称
+     * @param string $data,文件二进制文件
+     * @return string|boolean
+     */
+    public function upAudioData($filename){
+        $oss           = Oss_Adapter::getInstance();
+        $arrTemp       = explode("/",$filename);
+        $name          = $arrTemp[count($arrTemp)-1];
+        $res = $oss->writeFile($name, $filename);
+        if($res){
+            return $name;
+        }else{
+            return false;
+        }
+    }
+    
+    /**
      * 删除图片
      * @param string $name
      * @return boolean

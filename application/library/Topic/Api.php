@@ -20,7 +20,7 @@ class Topic_Api{
     /**
      * 接口2：Topic_Api::addTopic($arrInfo)
      * 添加话题接口
-     * @param array $arrInfo,话题信息，注意标签及景点是数组,eg:array('name'=>xxx,'tags'=>array(1,2))
+     * @param array $arrInfo,话题信息，注意标签及景点是数组,eg:array('title'=>xxx,'tags'=>array(1,2))
      * @return boolean
      */
     public static function addTopic($arrInfo){

@@ -3,7 +3,6 @@
    author:fyy
  */
 $(document).ready(function() {
-
     var List = function() {
         /**
          * 初始化表格 
@@ -62,22 +61,27 @@ $(document).ready(function() {
                         return '<span class="maintd_'+e.obj_id+'" data-rowspan="'+e.group.length+'">'+e.subtitle+'</span>';
                     }
                 } , {
+                    "data": function(e) { 
+                        return '<span class="maintd_'+e.tagid+'" data-rowspan="'+e.group.length+'">'+e.tagname+'</span>';
+                    }
+                } ,{
                     "data":  function(e) { 
                         $parent = $('.maintd_'+e.obj_id).parent().parent(); 
                         var className = 'danger';
-                        for (var i = 1; i < e.group.length; i++) {
+                        //for (var i = 1; i  e.group.length; i++) {
+                        for (var i = e.group.length-1; i >=1; i--) {
                             $tr = $('<tr id="group_'+e.obj_id+'_'+i+'" role="row"></tr>'); 
                             $tr.addClass($parent.attr('class')); 
                             $tr.addClass('group');
                             className = e.group[i].label_type==1?'danger':'warning'; 
-                            $tr.append('<td>'+'<span class="label label-'+className+'">'+e.group[i].name+'</span>'+'</td>'); 
+                            $tr.append('<td>'+'<span class="label label-'+className+'" type="'+e.group[i].label_type+'" id="'+e.group[i].label_id+'" name="'+e.group[i].name+'">'+e.group[i].name+'</span>'+'</td>'); 
                             $parent.after($tr); 
                         } 
                         if (e.group==0) {
                             e.group[0] = e;
                         } 
                         className = e.group[0].label_type==1?'danger':'warning'; 
-                        return '<span class="label label-'+className+'">'+e.group[0].name+'</span>';
+                        return '<span class="label label-'+className+'" type="'+e.group[0].label_type+'" id="'+e.group[0].label_id+'" name="'+e.group[0].name+'">'+e.group[0].name+'</span>';
                      }
                 }, {
                     "data": function(e){ 
@@ -105,18 +109,18 @@ $(document).ready(function() {
                     "data": function(e) {  
                         for (var i = 1; i < e.group.length; i++) {
                             $tr =$('#group_'+e.obj_id+'_'+i);
-                            var str = '<span class="btn btn-default btn-xs opt-status" data-action="ACCEPT"  data-obj_id="'+e.obj_id+'"  data-label_id="'+e.group[i].label_id+'" data-label_type="'+e.group[i].label_type+'" >保存</span>'
+                            var str = '<span class="btn btn-default btn-xs opt-status" data-action="ACCEPT"  data-obj_id="'+e.obj_id+'"  data-label_id="'+e.group[i].label_id+'" data-label_type="'+e.group[i].label_type+'" >接受</span>'
                                +'<span class="btn btn-default btn-xs opt-status" data-action="REJECT"  data-obj_id="'+e.obj_id+'"   data-label_id="'+e.group[i].label_id+'" data-label_type="'+e.group[i].label_type+'" >拒绝</span>'
-                               +'<span class="btn btn-default btn-xs opt-status" data-action="NOT_DEAL"  data-obj_id="'+e.obj_id+'"   data-label_id="'+e.group[i].label_id+'" data-label_type="'+e.group[i].label_type+'">不确定</span>'  ;
+                               +'<span class="btn btn-default btn-xs opt-status" data-action="NOT_DEAL"  data-obj_id="'+e.obj_id+'"   data-label_id="'+e.group[i].label_id+'" data-label_type="'+e.group[i].label_type+'">待处理</span>'  ;
 
                             $tr.append('<td>'+str+'</td>');  
                         }; 
                         if (e.group==0) {
                             e.group[0] = e;
                         } 
-                        return '<span class="btn btn-default btn-xs opt-status" data-action="ACCEPT" data-obj_id="'+e.obj_id+'"  data-label_id="'+e.group[0].label_id+'" data-label_type="'+e.group[0].label_type+'" >保存</span>'
+                        return '<span class="btn btn-default btn-xs opt-status" data-action="ACCEPT" data-obj_id="'+e.obj_id+'"  data-label_id="'+e.group[0].label_id+'" data-label_type="'+e.group[0].label_type+'" >接受</span>'
                                +'<span class="btn btn-default btn-xs opt-status" data-action="REJECT" data-obj_id="'+e.obj_id+'"  data-label_id="'+e.group[0].label_id+'" data-label_type="'+e.group[0].label_type+'" >拒绝</span>'
-                               +'<span class="btn btn-default btn-xs opt-status" data-action="NOT_DEAL" data-obj_id="'+e.obj_id+'" data-label_id="'+e.group[0].label_id+'" data-label_type="'+e.group[0].label_type+'" >不确定</span>'  ;
+                               +'<span class="btn btn-default btn-xs opt-status" data-action="NOT_DEAL" data-obj_id="'+e.obj_id+'" data-label_id="'+e.group[0].label_id+'" data-label_type="'+e.group[0].label_type+'" >待处理</span>'  ;
 
                         //return '<a class="btn btn-primary btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/sight/edit?action=edit&id=' + e.id + '"><i class="fa fa-eye"></i></a>' ;
                     }
@@ -136,7 +140,7 @@ $(document).ready(function() {
             });
 
             api = oTable.api();
-        }
+        }       
 
         /**
          * 绑定事件
@@ -158,6 +162,22 @@ $(document).ready(function() {
                     var all = $(this).parent().find('span.opt-status');
                     all.removeClass('checked btn-danger');
                     $(this).addClass('checked  btn-danger');
+                });   
+                
+              //景点框后的清除按钮，清除所选的景点
+                $('.label').live('click', function(e) {
+                	var id   = $(this).attr('id');
+                	var name = $(this).attr('name');
+                	var type = $(this).attr('type');
+                	if(type == 1){
+                		$("#form-sight").val(name);
+                    	$("#form-sight").attr('data-sight_id', id);
+                	}else{
+                		 $("#form-tag").val(name);
+                         $("#form-tag").attr('data-tag_id', id);
+                	}
+                     //触发dt的重新加载数据的方法
+                    api.ajax.reload();
                 });
 
                 //保存
@@ -194,7 +214,7 @@ $(document).ready(function() {
                                 //刷新当前页
                                 oTable.fnRefresh();
                                 //打开新的链接
-                               // window.open(sogou + '?type=2&query=' + query, "_blank");
+                                window.open("/admin/topic/edit?action=edit&id="+response.data);
                             }
                             else{
                                 toastr.warning(response.statusInfo); 
@@ -233,7 +253,7 @@ $(document).ready(function() {
                 $("#form-sight").attr('data-sight_id', '');
                 //触发dt的重新加载数据的方法
                 api.ajax.reload();
-            });
+            });          
 
 
             //标签输入框自动完成

@@ -22,13 +22,11 @@ class CityapiController extends Base_Controller_Api{
 
         $arrInfo = isset($_REQUEST['params'])?$_REQUEST['params']: array();
        /* $pid = isset($_REQUEST['pid'])?$_REQUEST['pid']:"";
-        $type = isset($_REQUEST['raw']);
+        $type = isset($_REQUEST['raw']);*/
         
-        if(!empty($pid)){
-             $arrInfo=array('pid' => $pid); 
-        } else{
-             $arrInfo = array();
-        }*/
+        if(isset($_REQUEST['is_china'])){
+             $arrInfo = array_merge($arrInfo,array('is_china' => intval($_REQUEST['is_china']))); 
+        }
         $List =City_Api::queryCity($arrInfo,$page, $pageSize);
         
         foreach ($List['list'] as $key => $val){
@@ -41,6 +39,48 @@ class CityapiController extends Base_Controller_Api{
  
 		    return $this->ajax($retList);
          
+    }
+    
+    public function listhotAction(){
+        $arrRet  = array();
+        $china   = isset($_REQUEST['is_china'])?intval($_REQUEST['is_china']): 0;
+        $List    = City_Api::getHotCityIds();
+        if(!empty($china)){
+            $List = isset($List['inland'])?$List['inland']:array();
+        }else{
+            $List = isset($List['outer'])?$List['outer']:array();
+        }
+    
+        foreach ($List as $key => $val){
+            $city = City_Api::getCityById($val);
+            $arrRet[$key]['id']          = $val;
+            $arrRet[$key]['name']        = $city['name'];
+            $arrRet[$key]['is_china']    = $china;
+            $arrRet[$key]['create_time'] = $city['create_time'];
+            $arrRet[$key]['update_time'] = $city['update_time'];
+        }
+    
+        $retList['recordsFiltered'] = count($arrRet);
+        $retList['recordsTotal']    = count($arrRet);
+        $retList['data']            = $arrRet;
+    
+        return $this->ajax($retList);
+         
+    }
+    public function delHotAction(){
+        $id = isset($_REQUEST['cityId'])?intval($_REQUEST['cityId']):'';
+        if(!empty($id)){
+            $ret = City_Api::delHotCity($id);
+        }
+        return $this->ajax();
+    }
+    
+    public function addHotAction(){
+        $arrIds  = isset($_REQUEST['city_id_inner'])?$_REQUEST['city_id_inner']:$_REQUEST['city_id_outer'];
+        foreach ($arrIds as $id){
+            $ret = City_Api::setHotCity($id);
+        }
+        return $this->ajax($ret);;
     }
 
 

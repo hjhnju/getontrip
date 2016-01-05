@@ -18,12 +18,12 @@ $(document).ready(function() {
                 "searching": false, //是否开启本地分页
                 "ordering": false,
                 "ajax": {
-                    "url": "/admin/searchapi/list",
+                    "url": "/admin/cityapi/listhot",
                     "type": "POST",
                     "data": function(d) {
                         //添加额外的参数传给服务器 
-                        if ($("#search-id").val()) {
-                            d.id = Number($.trim($("#search-id").val()));
+                        if ($("#form-is_china").val()) {
+                            d.is_china = Number($.trim($("#form-is_china").val()));
                         }
                     }
                 },
@@ -40,12 +40,6 @@ $(document).ready(function() {
                     "data": 'id'
                 }, {
                     "data": 'name'
-                }, {
-                    "data": 'typename'
-                }, {
-                    "data": 'obj_id'
-                }, {
-                    "data": 'obj'
                 }, {
                     "data": function(e) {
                         if (e.create_time) {
@@ -88,15 +82,15 @@ $(document).ready(function() {
                 });
 
                 //状态下拉列表 
-                $('#form-status,#form-type').selectpicker();
+                $('#form-is_china').selectpicker();
 
                 //删除标签
                 $('#label_sortable').delegate('.close', 'click', function(event) {
-                    if (confirm("确定删除搜索标签么？删除后不可恢复！") == false) {
+                    if (confirm("确定删除热门城市么？") == false) {
                         return false;
                     }
                     var id = $(this).attr('data-id');
-                    var publish = new Remoter('/admin/searchapi/delTag');
+                    var publish = new Remoter('/admin/cityapi/delHot');
                     publish.remote({
                         tagId: id,
                     });
@@ -105,95 +99,51 @@ $(document).ready(function() {
                        $li.remove();
                     });
                 }); 
-                
-              //标签
-                $('.click').live('click', function(event) {
-                	var id   = $(this).attr('data-id');
-                	var type = $(this).attr('data-type');
-                    $('#obj-id').val(id);
-                    $('#obj-type').val(type);
-                }); 
 
                 //点击打开添加对象模态框
-                $(".addObj").live('click', function(event) {
-                    //var nRow = $(this).parents('tr')[0];
-                    //var data = oTable.api().row(nRow).data();
-                    //data.id   = $('#obj-id').attr('value');
-                    //data.type = $('#obj-type').attr('value');
-                    var data = new Object();
-                    data.id   = Number($('#obj-id').attr('value'));
-                    data.type = Number($('#obj-type').attr('value'));
-                    
-                    $('#type').val(data.type);
+                $("#editable button.addObj").live('click', function(event) {
+                    var nRow = $(this).parents('tr')[0];
+                    var data = oTable.api().row(nRow).data();
+                    $('#type').val(data.is_china);
                     $('#id').val(data.id);
-                    switch (data.type) {
-                        case 1:
+                    switch (data.is_china) {
+                        case 0:
                             {
-                                $('#add-city').hide();
-                                $('#add-sight').show();
+                                $('#add-city-inner').hide();
+                                $('#add-city-outer').show();
                                 break;
                             }
-                        case 2:
+                        case 1:
                             {
-                                $('#add-city').show();
-                                $('#add-sight').hide();
+                                $('#add-city-inner').show();
+                                $('#add-city-outer').hide();
                                 break;
                             }
                         default:
                             {
-                                $('#add-city').show();
-                                $('#add-sight').show();
+                                $('#add-city-inner').show();
+                                $('#add-city-outer').hide();
                                 break;
                             }
                     }
-                    var listLabel = new Remoter('/admin/searchapi/listLabel');
+                    var listLabel = new Remoter('/admin/cityapi/listhot');
                     listLabel.remote({
-                        id: data.id
+                    	is_china : Number($.trim($("#form-is_china").val())),
                     });                   
                     listLabel.on('success', function(data) {
-                        data = data.data.length ? data.data[0]:!1;
+                        data = data.data.length ? data.data : !1;
                         if (!data) return;
-
-                        $('#myModal input[name="sight_id"]').attr("checked", false);
-                        $('#myModal input[name="city_id"]').attr("checked", false);
-
-                        for (var i = 0; i < data.objs.length; i++) {
-                            $('#myModal input[value="' + data.objs[i].id + '"]:checkbox').attr("checked", true);
-                            $('#myModal input[value="' + data.objs[i].id + '"]:checkbox').parent().attr('class', 'checked');
+                        $('#myModal input[name="city_id_inner"]').attr("checked", false);
+                        $('#myModal input[name="city_id_outer"]').attr("checked", false);
+                        for (var i = 0; i < data.length; i++) {
+                        	$('#myModal input[value="' + data[i].id + '"]:checkbox').attr("checked", true);
+                            $('#myModal input[value="' + data[i].id + '"]:checkbox').parent().attr('class', 'checked');
                         };
                         $('#myModal').modal();
                     });
 
                 });
 
-                //上传图片，得到url
-                $('#add-image').click(function(event) {
-                    $('#uploadpicModal .modal-title').html('设置搜索推荐顶部图片');
-                    $('#uploadpicModal').modal();
-                });
-                
-                $('#myModal').on('hide.bs.modal', function () {
-                	$('#myModal input[name="sight_id"]').attr("checked", false);
-                    $('#myModal input[name="city_id"]').attr("checked", false);
-                 });
-
-                $("#upload-img").click(function(event) {
-                    imageHtml = $('.fileupload-preview').html();
-                    $.ajaxFileUpload({
-                        url: '/upload/pic?filename=' + $('#form-filename').val(),
-                        secureuri: false,
-                        fileElementId: 'imageBtn',
-                        dataType: 'json',
-                        success: function(res, status) {
-                            $('#image').val(res.data.image);
-                            $('#imageView').html(imageHtml);
-                            $('#imageView').removeClass('imageView');
-                        },
-                        error: function(data, status, e) {
-                            alert(status.statusInfo);
-                        }
-                    })
-                });
 
                 //删除标签关联的对象
                 $('#editable').delegate('button.delLabel', 'click', function(event) {
@@ -202,9 +152,9 @@ $(document).ready(function() {
                     }
                     var nRow = $(this).parents('tr')[0];
                     var data = oTable.api().row(nRow).data();
-                    var del = new Remoter('/admin/searchapi/delLabel');
+                    var del = new Remoter('/admin/cityapi/delHot');
                     del.remote({
-                        labelId: data.id,
+                        cityId: data.id,
                         objId: data.obj_id
                     });
                     del.on('success', function(data) {
@@ -213,37 +163,6 @@ $(document).ready(function() {
                     });
                 });
 
-                //修改排序操作   
-                $("#label_sortable").sortable({
-                    //revert: true,
-                    start: function(d, li) {
-                        oldNum = $(li.item).index() + 1
-                    },
-                    stop: function(d, li) {
-                        newNum = $(li.item).index() + 1
-                        if (oldNum === newNum) {
-                            return;
-                        }
-                        changeWeight($(li.item).attr('data-id'), newNum);
-                    }
-                });
-
-                function changeWeight(id, to) {
-                    $.ajax({
-                        "url": "/admin/searchapi/changeWeight",
-                        "data": {
-                            id: id,
-                            to: to
-                        },
-                        "type": "post",
-                        "error": function(e) {
-                            alert("服务器未正常响应，请重试");
-                        },
-                        "success": function(response) {
-                            toastr.success('排序成功');
-                        }
-                    });
-                }
             },
             addObj: function() {
                 $.validator.setDefaults({
@@ -251,7 +170,7 @@ $(document).ready(function() {
                         //序列化表单  
                         var param = $("#myModal #Form").serializeObject();
                         $.ajax({
-                            "url": "/admin/searchapi/addLabel",
+                            "url": "/admin/cityapi/addHot",
                             "data": param,
                             "type": "post",
                             "dataType": "json",
@@ -298,17 +217,10 @@ $(document).ready(function() {
           过滤事件
          */
         var filter = function() {
-            $('#form-status,#form-type').change(function(event) {
+            $('#form-is_china').change(function(event) {
                 //触发dt的重新加载数据的方法
                 api.ajax.reload();
             });
-
-            //选择标签
-                $('#label_sortable').delegate('.click', 'click', function(event) {
-                    var id = $(this).attr('data-id');
-                    $("#search-id").val(id);
-                    api.ajax.reload();
-                });
         }
 
 

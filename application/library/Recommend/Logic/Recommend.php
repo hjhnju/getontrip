@@ -71,18 +71,64 @@ class Recommend_Logic_Recommend extends Base_Logic{
      * @param array $arrInfo
      */
     public function dealArticle($id, $arrInfo){
+        $arrSightIds = array();
+        $arrTags     = array();
         foreach ($arrInfo as $val){
             $objRecommendRet = new Recommend_Object_Result();
             $objRecommendRet->fetch(array('obj_id' => $id,'label_id' => $val['label_id'],'label_type' => $val['label_type']));
             $objRecommendRet->status = $val['status'];
             $ret = $objRecommendRet->save();
+            
+            //确认后需要添加话题
+            if($val['status'] == Recommend_Type_Status::ACCEPT){
+                if($val['label_type'] == Recommend_Type_Label::SIGHT){
+                    $arrSightIds[] = $val['label_id'];
+                }else{
+                    $arrTags[]     = $val['label_id'];
+                } 
+            }
         }
+        $article  = $this->getArticleDetail($id);
+        if(empty($arrTags) && !empty($article['tagid'])){
+            $arrTags[] = $article['tagid'];
+        };
+        $arrFrom = array();
+        if(isset($article['author']) && !empty($article['author'])){
+            $arrFrom[] = $article['author'];
+        }
+        if(isset($article['title']) && !empty($article['title'])){
+            $arrFrom[] = $article['title'];
+        }
+        if(isset($article['source']) && !empty($article['source'])){
+            $arrFrom[] = $article['source'];
+        }
+        
+        $arrInfo  = array(
+             'title'       => isset($article['title'])?trim($article['title']):'',
+             'subtitle'    => isset($article['subtitle'])?trim($article['subtitle']):'',
+             'tags'        => $arrTags,
+             'sights'      => $arrSightIds,
+             'content'     => $article['content'],
+             'url'         => isset($article['url'])?$article['url']:'',
+             'from_detail' => implode(",",$arrFrom).$article['issue'], 
+         );
+        $ret = Topic_Api::addTopic($arrInfo);
         return $ret;
     }
     
     public function getArticleDetail($id){
         $objArticle = new Recommend_Object_Article();
         $objArticle->fetch(array('id' => $id));
-        return $objArticle->toArray();
+        $ret =  $objArticle->toArray();
+        
+        $objArticleTag = new Recommend_Object_Result();
+        $objArticleTag->fetch(array('obj_id' => $id,'label_type' => Recommend_Type_Label::TAG));
+        $ret['tagid']    = empty($objArticleTag->labelId)?'':$objArticleTag->labelId;
+        $ret['tagname']  = '';
+        if(!empty($ret['tagid'])){
+            $tag = Tag_Api::getTagInfo($ret['tagid']);
+            $ret['tagname'] = $tag['name'];
+        }
+        return $ret;
     }
 }

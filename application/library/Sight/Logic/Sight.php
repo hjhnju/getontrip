@@ -209,7 +209,7 @@ class Sight_Logic_Sight extends Base_Logic{
     public function querySightByPrefix($query,$page,$pageSize){
         $arrRet = array();
         $filter = "`name` like '$query"."%'";
-        $listSight = new Sight_List_Sight();
+        $listSight = new Sight_List_Meta();
         $listSight->setFilterString($filter);
         $listSight->setPage($page);
         $listSight->setPagesize($pageSize);

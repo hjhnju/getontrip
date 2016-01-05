@@ -109,18 +109,18 @@ $(document).ready(function() {
                     "data": function(e) {  
                         for (var i = 1; i < e.group.length; i++) {
                             $tr =$('#group_'+e.obj_id+'_'+i);
-                            var str = '<span class="btn btn-default btn-xs opt-status" data-action="ACCEPT"  data-obj_id="'+e.obj_id+'"  data-label_id="'+e.group[i].label_id+'" data-label_type="'+e.group[i].label_type+'" >保存</span>'
+                            var str = '<span class="btn btn-default btn-xs opt-status" data-action="ACCEPT"  data-obj_id="'+e.obj_id+'"  data-label_id="'+e.group[i].label_id+'" data-label_type="'+e.group[i].label_type+'" >接受</span>'
                                +'<span class="btn btn-default btn-xs opt-status" data-action="REJECT"  data-obj_id="'+e.obj_id+'"   data-label_id="'+e.group[i].label_id+'" data-label_type="'+e.group[i].label_type+'" >拒绝</span>'
-                               +'<span class="btn btn-default btn-xs opt-status" data-action="NOT_DEAL"  data-obj_id="'+e.obj_id+'"   data-label_id="'+e.group[i].label_id+'" data-label_type="'+e.group[i].label_type+'">不确定</span>'  ;
+                               +'<span class="btn btn-default btn-xs opt-status" data-action="NOT_DEAL"  data-obj_id="'+e.obj_id+'"   data-label_id="'+e.group[i].label_id+'" data-label_type="'+e.group[i].label_type+'">待处理</span>'  ;
 
                             $tr.append('<td>'+str+'</td>');  
                         }; 
                         if (e.group==0) {
                             e.group[0] = e;
                         } 
-                        return '<span class="btn btn-default btn-xs opt-status" data-action="ACCEPT" data-obj_id="'+e.obj_id+'"  data-label_id="'+e.group[0].label_id+'" data-label_type="'+e.group[0].label_type+'" >保存</span>'
+                        return '<span class="btn btn-default btn-xs opt-status" data-action="ACCEPT" data-obj_id="'+e.obj_id+'"  data-label_id="'+e.group[0].label_id+'" data-label_type="'+e.group[0].label_type+'" >接受</span>'
                                +'<span class="btn btn-default btn-xs opt-status" data-action="REJECT" data-obj_id="'+e.obj_id+'"  data-label_id="'+e.group[0].label_id+'" data-label_type="'+e.group[0].label_type+'" >拒绝</span>'
-                               +'<span class="btn btn-default btn-xs opt-status" data-action="NOT_DEAL" data-obj_id="'+e.obj_id+'" data-label_id="'+e.group[0].label_id+'" data-label_type="'+e.group[0].label_type+'" >不确定</span>'  ;
+                               +'<span class="btn btn-default btn-xs opt-status" data-action="NOT_DEAL" data-obj_id="'+e.obj_id+'" data-label_id="'+e.group[0].label_id+'" data-label_type="'+e.group[0].label_type+'" >待处理</span>'  ;
 
                         //return '<a class="btn btn-primary btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/sight/edit?action=edit&id=' + e.id + '"><i class="fa fa-eye"></i></a>' ;
                     }
@@ -214,7 +214,7 @@ $(document).ready(function() {
                                 //刷新当前页
                                 oTable.fnRefresh();
                                 //打开新的链接
-                               // window.open(sogou + '?type=2&query=' + query, "_blank");
+                                window.open("/admin/topic/edit?action=edit&id="+response.data);
                             }
                             else{
                                 toastr.warning(response.statusInfo); 

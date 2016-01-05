@@ -12,7 +12,7 @@ class Recommend_Type_Status extends Base_Type {
     const NOT_DEAL  = 1; 
      
     /**
-     * 2 已确认
+     * 2 已接受
      * @var integer
      */
     const ACCEPT = 2;
@@ -29,7 +29,7 @@ class Recommend_Type_Status extends Base_Type {
      */
     public static $names = array(
         self::NOT_DEAL      => '未处理',
-        self::ACCEPT        => '已确认',
+        self::ACCEPT        => '已接受',
         self::REJECT        => '已拒绝',
     );
 }

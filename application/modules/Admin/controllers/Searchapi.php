@@ -74,29 +74,33 @@ class SearchapiController extends Base_Controller_Api{
      * 添加搜索标签关系
      */
     public function addLabelAction(){
-        $type   = isset($_REQUEST['type'])?intval($_REQUEST['type']):Search_Type_Label::SIGHT;
-        $sight_id  = isset($_REQUEST['sight_id'])?$_REQUEST['sight_id']:array();
-        $city_id  = isset($_REQUEST['city_id'])?$_REQUEST['city_id']:array();
-        switch ($type) {
-            case Search_Type_Label::SIGHT:
-                $objId=$sight_id;
-                break;
-             case Search_Type_Label::CITY:
-                $objId=$city_id;
-                break;
-            default:
-                $objId=$sight_id;
-                break;
-        }
-        $id     = isset($_REQUEST['id'])?intval($_REQUEST['id']):'';
-        if(!empty($id) && !empty($objId) && !empty($type)){
-            if(!is_array($objId)){
-                $objId = array($objId);
+        $arrObjs   = array();
+        $arrType   = array();
+        $arrSight  = isset($_REQUEST['sight_id'])?$_REQUEST['sight_id']:array();
+        $arrCitys  = isset($_REQUEST['city_id'])?$_REQUEST['city_id']:array();
+        $id        = isset($_REQUEST['id'])?intval($_REQUEST['id']):'';
+        $ret       = false;
+        if(!empty($arrSight)){
+            if(!is_array($arrSight)){
+                $arrSight = array($arrSight);
             }
-            $ret = Search_Api::addLabel($objId, $type, $id);
-            return $this->ajax($ret);
+            foreach ($arrSight as $val){
+                $arrObjs[] = $val;
+                $arrType[] = Search_Type_Label::SIGHT;
+            }
+            
         }
-        return $this->ajaxError();
+        if(!empty($arrCitys)){
+            if(!is_array($arrCitys)){
+                $arrCitys = array($arrCitys);
+            }
+            foreach ($arrCitys as $val){
+                $arrObjs[] = $val;
+                $arrType[] = Search_Type_Label::CITY;
+            }
+        }
+        $ret = Search_Api::addLabel($arrObjs, $arrType, $id);
+        return $this->ajax($ret);
     }
     
     /**

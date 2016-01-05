@@ -21,7 +21,7 @@ class Search_Logic_Label extends Base_Logic{
      * @param integer $labelId
      * @return boolean
      */
-    public function addLabel($arrObjs, $type, $labelId){
+    public function addLabel($arrObjs, $arrType, $labelId){
         $listSearchLabel = new Search_List_Label();
         $listSearchLabel->setFilter(array('label_id' => $labelId));
         $listSearchLabel->setPagesize(PHP_INT_MAX);
@@ -32,10 +32,10 @@ class Search_Logic_Label extends Base_Logic{
             $objSearchLabel->remove();
         }
                
-        foreach ($arrObjs as $objId){
+        foreach ($arrObjs as $key => $objId){
             $objSearchLabel = new Search_Object_Label();
             $objSearchLabel->objId   = $objId;
-            $objSearchLabel->type    = $type;
+            $objSearchLabel->type    = $arrType[$key];
             $objSearchLabel->labelId = $labelId;
             $ret =  $objSearchLabel->save();
         }
@@ -79,7 +79,7 @@ class Search_Logic_Label extends Base_Logic{
                     $arrObjInfo[$key]['name'] = $city['name'];
                 }else{
                     $sight = Sight_Api::getSightById($data['obj_id']);
-                    $arrObjInfo[$key]['name'] = $sight['name'];
+                    $arrObjInfo[$key]['name'] = isset($sight['name'])?$sight['name']:'';
                 }
             }
             if(isset($data['type'])){
@@ -144,7 +144,7 @@ class Search_Logic_Label extends Base_Logic{
                 $arrSearchLabel['list'][$key]['obj'] = $city['name'];
             }else{
                 $sight = Sight_Api::getSightById($val['obj_id']);
-                $arrSearchLabel['list'][$key]['obj'] = $sight['name'];
+                $arrSearchLabel['list'][$key]['obj'] = isset($sight['name'])?$sight['name']:'';
             }
         }
         return $arrSearchLabel;

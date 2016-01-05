@@ -142,7 +142,7 @@ $(document).ready(function() {
                         default:
                             {
                                 $('#add-city').show();
-                                $('#add-sight').hide();
+                                $('#add-sight').show();
                                 break;
                             }
                     }
@@ -171,6 +171,11 @@ $(document).ready(function() {
                     $('#uploadpicModal .modal-title').html('设置搜索推荐顶部图片');
                     $('#uploadpicModal').modal();
                 });
+                
+                $('#myModal').on('hide.bs.modal', function () {
+                	$('#myModal input[name="sight_id"]').attr("checked", false);
+                    $('#myModal input[name="city_id"]').attr("checked", false);
+                 });
 
                 $("#upload-img").click(function(event) {
                     imageHtml = $('.fileupload-preview').html();

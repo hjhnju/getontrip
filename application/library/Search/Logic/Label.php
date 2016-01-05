@@ -71,6 +71,7 @@ class Search_Logic_Label extends Base_Logic{
             $listSearchLabel->setFilter(array('label_id' => $val['id']));
             $listSearchLabel->setPagesize(PHP_INT_MAX);
             $arrSearchLabel = $listSearchLabel->toArray();
+            $data           = array();
             foreach ($arrSearchLabel['list'] as $key => $data){
                 $arrObjInfo[$key]['id'] = $data['obj_id'];
                 if(Search_Type_Label::CITY == $data['type']){

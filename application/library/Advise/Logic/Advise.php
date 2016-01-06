@@ -106,10 +106,14 @@ class Advise_Logic_Advise{
      */
     public function getAdviseList($page,$pageSize,$arrParams = array()){
         $arrRet     = array();
+        $filter     = '`content` !="'.self::WELCOME.'"';
         $listAdvise = new Advise_List_Advise();
+        foreach ($arrParams as $key => $val){
+            $filter .=" and `".$key."`=".$val;
+        }
         $listAdvise->setPage($page);
         $listAdvise->setPagesize($pageSize);
-        $listAdvise->setFilter($arrParams);
+        $listAdvise->setFilterString($filter);
         $arrRet =  $listAdvise->toArray();
         foreach ($arrRet['list'] as $key => $val){
             if($val['status'] !== Advise_Type_Status::SETTLED){

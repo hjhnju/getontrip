@@ -274,6 +274,9 @@ class Base_Extract {
         //去除开头空格
         $content = mb_ereg_replace('^(\s|　|&nbsp;|\xc2\xa0)*', '', $content);
         
+        //去掉内容为空的图片
+        $content = preg_replace( '/<img.*?src="".*?>/is', '', $content );
+        
         $content = preg_replace( '/<p.*?>/is', '<p>', $content );
         $content = preg_replace( '/<b\s.*?>/is', '<b>', $content );
         $content = preg_replace( '/<br.*?>/is', '</p><p>', $content );
@@ -327,7 +330,10 @@ class Base_Extract {
         
         //去掉没有内容的图片描述
         $content = mb_ereg_replace('<p class="imagedesc">(\s|　|&nbsp;|\xc2\xa0)*<\/p>', '', $content);
-         
+        
+        //去掉内容为空的图片
+        $content = preg_replace( '/<img.*?src="".*?>/is', '', $content );
+        
         //div标签转成p标签
         $content = preg_replace( '/<div.*?>/is', '<p>', $content );
         $content = preg_replace( '/<\/div>/is', '</p>', $content );

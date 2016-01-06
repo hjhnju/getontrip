@@ -45,13 +45,14 @@ class Base_Logic{
      */
     public function uploadPic($url,$refer=''){
         $oss      = Oss_Adapter::getInstance();        
-        $ch = curl_init();
+        $ch       = curl_init();
         curl_setopt($ch,CURLOPT_URL,$url);
         curl_setopt($ch, CURLOPT_REFERER, $refer);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER , true);
-        $content = curl_exec($ch); 
+        $content = curl_exec($ch);
         curl_close($ch);
-        if(empty($url) || empty($content)){
+        $im = @imagecreatefromstring($content);        
+        if(empty($url) || empty($content) || empty($im)){
             return '';
         }   
         $hash     = md5(microtime(true));

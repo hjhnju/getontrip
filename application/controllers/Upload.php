@@ -84,6 +84,49 @@ class UploadController extends Base_Controller_Page {
         Base_Log::warn($msg);
         $this->ajaxError();
     }
+    
+    /**
+     * 上传音频
+     */
+    public function audioAction() {
+        if (empty($_FILES['file'])) {
+            return $this->ajaxError(Base_RetCode::PARAM_ERROR);
+        }
+    
+        //特殊处理剪贴板的图片 改为$_FILES['file']['type']
+        $ext = explode("/",$_FILES['file']['type']);
+        if (!isset($ext[1])||!in_array($ext[1], array('mp3'))) {
+            return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
+        }
+        $hash = md5(microtime(true));
+        $hash = substr($hash, 8, 16);
+        $filename = $hash.".".$ext[1];
+    
+        $oss = Oss_Adapter::getInstance();
+        $res = $oss->writeFile($filename, $_FILES['file']['tmp_name']);
+        if ($res) {
+            @unlink($_FILES['file']['tmp_name']);
+            $data = array(
+                'name' => $filename,
+                'url'  => "/audio/".$filename,
+            );
+            $res = array(
+                'status' => 0,
+                'statusInfo' => '',
+                'data' => $data,
+            );
+            echo json_encode($res);
+            return false;
+        }
+    
+        $msg = array(
+            'name' => $filename,
+            'file' => $_FILES['file']['name'],
+        );
+        Base_Log::warn($msg);
+        $this->ajaxError();
+    }
+    
 
 
     /**

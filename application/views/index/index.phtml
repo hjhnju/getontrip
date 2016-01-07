@@ -8,50 +8,96 @@
 </script>
 <style type="text/css" media="screen">
  
-    .mobile .ours{
-        height: initial;
-    }
-
 </style>
 {%/block%}
 
-{%block name="content"%}
- <div class="tuzhi container {%if $isMobile%}mobile{%/if%} ">
+{%block name="content"%} 
+{%if $isMobile%}
+<div class="container mobile">
      <div class="tuzhi_img abs" id="tuzhi_img_box">
          <!-- <img src="{%$feroot%}/home/img/tuzhi_index.png" alt="" class="click-through abs">     -->
      </div>
      <div class="tuzhi_box centered" id="tuzhi_box">
-        <div class="download rel">
-            <a class="apple_logo" href="/download" target="_blank"><img src="{%$feroot%}/home/img/apple.png" alt="" class="slogan_img"></a>
-            <!-- <div class="hy abs"></div> -->
-            <div class="erweima "><img src="{%$feroot%}/home/img/erweima.png" alt="" class="slogan_img"></div>
-            <!-- <div class="more_than abs"></div> -->
-        </div>
-         <div class="ours abs" id="ours">
-             
-                 <div class="slogan abs">
-                    <img src="{%$feroot%}/home/img/map-marker.png" alt="" class="slogan_img">
-                    
-         了解景点、城市的历史、人文、科学、地理等知识
-                 </div> 
+        <div class="download_box clearfix">
+           <div class="download_apple rel">
+                <a class="apple_logo" href="/download" target="_blank"><img src="{%$feroot%}/home/img/apple_download.png" alt="" class="slogan_img"></a>
+                <span class="text">享受品质旅行</span>
+            </div> 
+            <div class="download rel">
+                <div class="erweima "><img src="{%$feroot%}/home/img/erweima.png" alt="" class="slogan_img"></div>
+                <span class="text">长按扫描二维码</span>
+            </div> 
+        </div> 
+         <div class="ours rel" id="ours"> 
                 <div class="logo abs">
                     <!-- <div class="logo_img"></div> -->
-                    <img src="{%$feroot%}/home/img/app-logo.png" alt="" class="logo_img">
+                    <img src="{%$feroot%}/home/img/logo_pc.png" alt="" class="logo_img">
                     <div class="logo_text">
-                        <span class="app_name">途知</span>
-                        <span class="app_slogan">深度旅行</span> 
+                        了解景点背后的故事
+                    </div> 
+                </div> 
+                <div class="iphone_box">
+                    <img src="{%$feroot%}/home/img/iphone6Gold.png" alt="" class="iphone6Gold">
+                </div>  
+         </div>
+     </div>
+ </div> 
+ <div class="foot">
+          Copyright © 2015-2016 途知. All rights reserved. 
+ </div> 
+      
+ {%else%}
+  <div class="tuzhi container {%if $isMobile%}mobile{%/if%} ">
+     <div class="tuzhi_img " id="tuzhi_img_box">
+         <!-- <img src="{%$feroot%}/home/img/tuzhi_index.png" alt="" class="click-through abs">     -->
+     </div>
+     <div class="copyright">
+          Copyright © 2015-2016 途知. All rights reserved. 
+     </div> 
+     <div class="footer"> 
+     </div> 
+     <div class="content centered">
+        <ul class="menus clearfix">
+            <li class="index active"><a href="/index">首页</a></li>
+            <li class="interest"><a href="/interest">有趣生动</a></li>
+            <li class="overall"><a href="/overall">覆盖全面</a></li>
+            <li class="diversified"><a href="/diversified">形式多样</a></li>
+        </ul>
+        <div class="tuzhi_box" id="tuzhi_box"> 
+         <div class="ours rel" id="ours"> 
+                <div class="logo_pc">
+                    <!-- <div class="logo_img"></div> -->
+                    <img src="{%$feroot%}/home/img/logo_pc.png" alt="" class="logo_img">
+                    <div class="logo_text">
+                        了解景点背后的故事
                     </div> 
                 </div>
-                <div class="phone1 abs">
-                    <img src="{%$feroot%}/home/img/phone1.png" alt="" class="logo_img">
-                </div>
-                <div class="phone2 abs">
-                     <img src="{%$feroot%}/home/img/phone2.png" alt="" class="">  
-                </div> 
-                <div class="phone3"></div>
+               <div class="download_box abs">
+                   <div class="logo rel">
+                       <!-- <div class="logo_img"></div> -->
+                        <img src="{%$feroot%}/home/img/app-logo.png" alt="" class="logo_img">
+                        <div class="logo_text">
+                            享受品质旅行 
+                        </div>
+                        <div class="logo_text2 abs">
+                            途知陪你了解景点背后的故事：一起发现旅途中的一砖一瓦、一山一水、一方百姓背后的历史故事、人文地理、风土人情。
+                        </div>  
+                    </div> 
+                   <div class="download">
+                        <a class="apple_logo" href="/download" target="_blank"><img src="{%$feroot%}/home/img/apple_download.png" alt="" class="slogan_img"></a> 
+                        <div class="erweima "><img src="{%$feroot%}/home/img/erweima.png" alt="" class="slogan_img"></div> 
+                   </div> 
+               </div>
+               <div class="phone1 abs">
+                    <img src="{%$feroot%}/home/img/iphone6Gold.png" alt="" class="logo_img"> 
+                </div>  
          
            
          </div> 
      </div> 
+     </div>
+ 
  </div>
+
+ {%/if%}
 {%/block%}

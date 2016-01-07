@@ -1,0 +1,68 @@
+{%extends file="common/page.phtml"%}
+{%block name="script"%}
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/home/css/interest.css" /> 
+<script>
+    require(['home/index'], function (main) {
+        //main.init();
+    }); 
+</script>
+<style type="text/css" media="screen">
+ 
+</style>
+{%/block%}
+
+{%block name="content"%}  
+<div class="tuzhi interest container">
+     <div class="tuzhi_img " id="tuzhi_img_box"> 
+     </div>
+     <div class="copyright">
+          Copyright © 2015-2016 途知. All rights reserved. 
+     </div> 
+     <div class="footer"> 
+     </div> 
+     <div class="content centered">
+        <ul class="menus clearfix">
+            <li class="index"><a href="/index">首页</a></li>
+            <li class="interest active"><a href="/interest">有趣生动</a></li>
+            <li class="overall"><a href="/overall">覆盖全面</a></li>
+            <li class="diversified"><a href="/diversified">形式多样</a></li>
+        </ul>
+        <div class="tuzhi_box" id="tuzhi_box">  
+         <div class="ours rel" id="ours"> 
+                <div class="logo_pc clearfix">
+                    <!-- <div class="logo_img"></div> -->
+                    <img src="{%$feroot%}/home/img/app-logo.png" alt="" class="logo_img">
+                    <div class="logo_text">
+                        说走就走，好看好玩有品味
+                    </div> 
+                </div>
+               <div class="phone1 abs">
+                    <img src="{%$feroot%}/home/img/iphone6Gold_interest.png" alt="" class="logo_img">
+                </div>
+                <div class="download_box abs">
+                    <div class="logo rel"> 
+                        <div class="logo_text">
+                            有趣生动的内容 
+                        </div>
+                        <div class="logo_text2 abs">
+                            不喜欢走马观花的旅行？想要更全面更深度的了解<br>
+                            想去的城市和景点里的人文情怀和历史文化？<br>
+                            当然，还有最不能缺少的有趣故事！<br>
+                            途知生动地告诉你，旅行中不做一个伪专家会更讨喜。
+                        </div>  
+                    </div> 
+                   <div class="download ">
+                        <a class="apple_logo" href="/download" target="_blank"><img src="{%$feroot%}/home/img/apple_download.png" alt="" class="slogan_img"></a> 
+                        <div class="erweima "><img src="{%$feroot%}/home/img/erweima.png" alt="" class="slogan_img"></div> 
+                   </div> 
+                </div>
+                 
+         
+           
+         </div> 
+     </div> 
+     </div>
+ 
+</div>
+ 
+{%/block%}

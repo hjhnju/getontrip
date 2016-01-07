@@ -81,11 +81,11 @@
                   </div>  
                       <div class="col-xs-2 pull-right">   
                           <div class="input-group ">
-                            <select name="" id="form-status">
-                                <option value="">全部状态</option>  
+                            <select name="" id="form-status">                                  
                                {%foreach $statusArray as $key=>$item%} 
                                     <option value="{%$key%}">{%$item%}</option> 
                                {%/foreach%}  
+                               <option value="">全部状态</option>
                             </select>
                          </div>
                        </div>  

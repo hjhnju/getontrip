@@ -45,6 +45,8 @@ class KeywordapiController extends Base_Controller_Api{
               else{ 
                    $tmpList[$i]['sight_name']  = $sightArray[$sight_id];
               } 
+              
+              $tmpList[$i]['audio'] = isset($tmpList[$i]['audio'])?$_SERVER['HTTP_HOST'].'/audio/'.$tmpList[$i]['audio']:'';
 
               //处理状态名称
               $tmpList[$i]['status_name'] = Keyword_Type_Status::getTypeName($tmpList[$i]['status']);

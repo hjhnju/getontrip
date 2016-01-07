@@ -8,7 +8,7 @@ class ArticlerecommendAction extends Yaf_Action_Abstract {
     
     public function execute() {
         $statusArray=Recommend_Type_Status::$names;
-        $statusArray=array_reverse($statusArray,true);
+        //$statusArray=array_reverse($statusArray,true);
         $this->getView()->assign('statusArray', $statusArray); 
     }
 }

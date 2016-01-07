@@ -127,7 +127,7 @@ class Recommend_Logic_Recommend extends Base_Logic{
         $ret['tagname']  = '';
         if(!empty($ret['tagid'])){
             $tag = Tag_Api::getTagInfo($ret['tagid']);
-            $ret['tagname'] = $tag['name'];
+            $ret['tagname'] = isset($tag['name'])?trim($tag['name']):'';
         }
         return $ret;
     }

@@ -34,24 +34,38 @@ class Advise_Logic_Advise{
         $index      = ($page -1)*$pageSize;
         $image      = $this->logicUser->getUserAvatar($userId);      
         $listAdvise = new Advise_List_Advise();
+        $listAdvise->setFilter(array('userid' => $userId));
+        $total = $listAdvise->getTotal();
+        if(empty($total)){
+            $objAdvise = new Advise_Object_Advise();
+            $objAdvise->userid      = $userId;
+            $objAdvise->type        = strval(Advise_Type_Type::ADVISE);
+            $objAdvise->content     = self::WELCOME;
+            $objAdvise->create_time = date('Y-m-d H:i',time());
+            $objAdvise->save();
+        }elseif($total == 1){
+            $arrAdvise = $listAdvise->toArray();
+            if($arrAdvise['list'][0]['type'] == Advise_Type_Type::ADVISE){
+                $objAdvise = new Advise_Object_Advise();
+                $objAdvise->fetch(array('userid' => $userId));
+                $objAdvise->createTime = time();
+                $objAdvise->save();
+            }
+        }
+        
+        $listAdvise = new Advise_List_Advise();
         $listAdvise->setFilter(array('userid' => $userId,'type' => Advise_Type_Type::ADVISE));
         $listAdvise->setPage($page);
-        if($page == 1){
-            $listAdvise->setPagesize($pageSize - 1);
-            $temp['id']          = '';
-            $temp['image']       = '';
-            $temp['type']        = strval(Advise_Type_Type::ANSWER);
-            $temp['content']     = self::WELCOME;
-            $temp['create_time'] = date('Y-m-d H:i',time());
-            $arrRet[] = $temp;
-        }else{
-            $listAdvise->setPagesize($pageSize);
-        }
+        $listAdvise->setPagesize($pageSize);
         $ret =  $listAdvise->toArray();
         foreach ($ret['list'] as $val){
             $temp = array();
             $temp['id']          = strval($val['id']);
-            $temp['type']        = strval(Advise_Type_Type::ADVISE);
+            if($val['content'] == self::WELCOME){
+                $temp['type']        = strval(Advise_Type_Type::ANSWER);
+            }else{
+                $temp['type']        = strval(Advise_Type_Type::ADVISE);
+            }
             $temp['image']       = $image;
             $temp['content']     = $val['content'];
             $temp['create_time'] = date('Y-m-d H:i',$val['create_time']);           
@@ -92,10 +106,14 @@ class Advise_Logic_Advise{
      */
     public function getAdviseList($page,$pageSize,$arrParams = array()){
         $arrRet     = array();
+        $filter     = '`content` !="'.self::WELCOME.'"';
         $listAdvise = new Advise_List_Advise();
+        foreach ($arrParams as $key => $val){
+            $filter .=" and `".$key."`=".$val;
+        }
         $listAdvise->setPage($page);
         $listAdvise->setPagesize($pageSize);
-        $listAdvise->setFilter($arrParams);
+        $listAdvise->setFilterString($filter);
         $arrRet =  $listAdvise->toArray();
         foreach ($arrRet['list'] as $key => $val){
             if($val['status'] !== Advise_Type_Status::SETTLED){

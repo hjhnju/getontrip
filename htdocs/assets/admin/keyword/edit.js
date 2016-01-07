@@ -13,6 +13,59 @@ $(document).ready(function() {
          */
         var bindEvents = {
             init: function() {
+            	//上传图片，得到url
+                $("#upload-img").click(function(event) {
+                    $.ajaxFileUpload({
+                        url: '/upload/pic',
+                        secureuri: false,
+                        fileElementId: 'imageBtn',
+                        dataType: 'json',
+                        success: function(res, status) { //当文件上传成功后，需要向数据库中插入数据
+                            $('#image').val(res.data.image);
+                            $('#imageView').html('<img src="/pic/' + res.data.image.getNewImgByImg(190, 80, 'f') + '"  alt=""/>');
+                            $('#imageView').removeClass('imageView');
+                            $('#crop-img').removeClass('hidden');
+                            localStorage.image = res.data.image;
+                        },
+                        error: function(data, status, e) {
+                            alert(status.statusInfo);
+                        }
+                    })
+                });
+                
+              //上传音频，得到url
+                $("#audioupload").live('change',function(e){
+                	$(".aaa").detach();
+                	$(this).after('<br class="aaa">');
+                    $(this).after('<a href="#" class="btn btn-success fileupload-exists aaa" data-dismiss="fileupload" id="up-audio"><i class="fa fa-cloud-upload aaa"></i> 上传</a>');
+                    $(this).after('<a href="#" class="btn btn-danger fileupload-exists aaa" data-dismiss="fileupload" id="rm-audio"><i class="fa fa-trash aaa"></i> 移除</a>');
+                });
+                
+                //上传音频，得到url
+                $("#up-audio").live('click',function(event) {
+                    $.ajaxFileUpload({
+                        url: '/upload/audio',
+                        secureuri: false,
+                        fileElementId: 'audioupload',
+                        dataType: 'json',
+                        success: function(res, status) { //当文件上传成功后，需要向数据库中插入数据
+                            $('#audio').val(res.data.name);
+                        	$('#label_audio').html(res.data.name);
+                            localStorage.audio = res.data.name;
+                        },
+                        error: function(res) {
+                            alert(res);
+                        }
+                    })
+                });
+                
+                //确保图片上传后存上
+                $(window).bind('beforeunload', function() {
+                    if (localStorage.image) {
+                        return '等等!!你刚刚上传了图片，不点最下面的保存就丢了!';
+                    }
+                });
+            	
 
                 //定位地图模态框
                 $('#position').click(function(e) {

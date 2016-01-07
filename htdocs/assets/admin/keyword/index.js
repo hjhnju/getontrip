@@ -65,6 +65,13 @@ $(document).ready(function() {
                         }
                     }, {
                         "data": "sight_name"
+                    },{
+                        "data": function(e) {
+                            if (e.audio) {
+                                return '<audio src="http://' + e.audio+ '"  controls="controls"></audio>';
+                            }
+                            return '暂无';
+                        }
                     }, {
                         "data": 'x'
                     }, {

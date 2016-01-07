@@ -1,0 +1,65 @@
+{%extends file="common/page.phtml"%}
+{%block name="script"%}
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/home/css/interest.css" /> 
+<script>
+    require(['home/index'], function (main) {
+        //main.init();
+    }); 
+</script>
+<style type="text/css" media="screen">
+  
+</style>
+{%/block%}
+
+{%block name="content"%}  
+<div class="tuzhi overall container">
+     <div class="tuzhi_img " id="tuzhi_img_box"> 
+     </div>
+     <div class="copyright">
+          Copyright © 2015-2016 途知. All rights reserved. 
+     </div> 
+     <div class="footer"> 
+     </div> 
+     <div class="content centered">
+        <ul class="menus clearfix">
+            <li class="index"><a href="/index">首页</a></li>
+            <li class="interest"><a href="/interest">有趣生动</a></li>
+            <li class="overall active"><a href="/overall">覆盖全面</a></li>
+            <li class="diversified"><a href="/diversified">形式多样</a></li>
+        </ul>
+        <div class="tuzhi_box" id="tuzhi_box">  
+         <div class="ours rel" id="ours"> 
+                <div class="logo_pc clearfix">
+                    <!-- <div class="logo_img"></div> -->
+                    <img src="{%$feroot%}/home/img/app-logo.png" alt="" class="logo_img">
+                    <div class="logo_text">
+                        随时随地，带你去看大千世界
+                    </div> 
+                </div>
+               <div class="phone1 abs">
+                    <img src="{%$feroot%}/home/img/iphone6Gold_overall.png" alt="" class="logo_img">
+                </div>
+              <!-- <div class="download_box">
+                 
+                   
+               </div>   -->
+             <div class="download_box abs">
+               <div class="logo rel"> 
+                    <div class="logo_text">
+                        国内国外覆盖全面 
+                    </div>
+                    <div class="logo_text2 abs"> 
+                        立志踏遍祖国，梦想环游世界，常把“读万卷书行万里路”作为座右铭的你，或许也希望有一天仗剑走天涯？那就让途知作为你的先锋，陪你一起国内海外任 意穿梭，那种一掌知天下的快乐，你感受一下～
+                    </div>  
+                </div>
+                <div class="download">
+                    <a class="apple_logo" href="/download" target="_blank"><img src="{%$feroot%}/home/img/apple_download.png" alt="" class="slogan_img"></a><div class="erweima "><img src="{%$feroot%}/home/img/erweima.png" alt="" class="slogan_img"></div> 
+                </div> 
+            </div>
+         </div> 
+     </div> 
+     </div>
+ 
+</div>
+ 
+{%/block%}

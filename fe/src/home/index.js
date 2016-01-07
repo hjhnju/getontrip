@@ -25,7 +25,7 @@ define(function(require) {
     function init() {
 
         //Fun.changeSize();
-        bindEvents.init();
+        //bindEvents.init();
     }
 
 

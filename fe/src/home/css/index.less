@@ -1,294 +1,542 @@
-@import "../../common/css/mcommon.less";
-body {
-    background-color: #eaeaea;
-}
-
-#main-wraper {
-    background-color: #eaeaea;
-    min-height: 650px;
-}
-
-.abs {
-    position: absolute;
-}
-
-.rel {
-    position: relative;
-}
-
-.centered {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.click-through {
-    pointer-events: none;
-}
-
-.tuzhi {
-    height: 100%;
-    min-height: 650px;
-    min-width: 768px;
-    background-color: #eaeaea;
-    font-family: "Microsoft YaHei", 'Helvetica Neue', Helvetica, STHeiTi, sans-serif;
-    .tuzhi_img {
-        overflow: hidden;
-        background-color: #eaeaea;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        min-height: 650px;
-        overflow: hidden;
-        background-image: url('../img/tuzhi_index.png');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center center;
-    }
-    .tuzhi_box {
-        position: relative;
-        box-sizing: border-box;
-        margin-left: auto;
-        margin-right: auto;
-        z-index: 1;
-        padding: 30px 0px;
-        height: 100%;
-        width: 750px;
-        min-width: 750px;
-    }
-    .download {
-        height: 150px;
-        width: 13.3%;
-        float: right;
-        height: auto;
-        margin-right: 8px;
-        .apple_logo,
-        .apple_logo:hover {
-            width: 103px;
-            height: 34px;
-            right: 19px;
-            background-image: url('../img/apple.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center center;
-            cursor: pointer;
-            display: block;
-            width: 100%;
-            height: auto;
-            img {
-                width: 100%;
-            }
-        }
-        .hy {
-            width: 1px;
-            height: 24px;
-            right: 76px;
-            background-color: #768587;
-            top: 8px;
-        }
-        .erweima {
-            background-image: url('../img/erweima.png');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center center;
-            right: 21px;
-            width: 100px;
-            height: 100px;
-            top: 42px;
-            width: 100%;
-            height: auto;
-            margin-top: 10px;
-            img {
-                width: 100%;
-            }
-        }
-        .more_than {
-            width: 200px;
-            height: 24px;
-            background-image: url('../img/more_than.png');
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            right: 15px;
-            top: 45px;
-        }
-    }
-    .ours {
-        top: 260px;
-        z-index: 10;
-        width: 750px;
-        min-width: 750px;
-        top: inherit;
-        bottom: 0px;
-        height:400px;
-        .slogan {
-            width: 350px;
-            height: 30px;
-            /* padding-left: 18px; */
-            top: 50%;
-            left: 50px;
-            /* background-image: url(../img/map-marker.png);
-            background-repeat: no-repeat;
-            background-position: left center; */
-            color: #232424;
-            font-weight: 500;
-            font-family: "Microsoft YaHei", 'Helvetica Neue', Helvetica, STHeiTi, sans-serif;
-            font-size: 14px;
-            line-height: 30px;
-            display: block;
-            width: 45%;
-            height: initial;
-            line-height: 1.7;
-            top: 35%;
-            white-space: nowrap;
-            .slogan_img {
-                height: 100%;
-                float: left;
-                margin-right: 0.5%;
-            }
-        }
-        .logo {
-            width: 200px;
-            left: 50px;
-            bottom: 0px;
-            width: 27%;
-            line-height: 1.7;
-            bottom: 20%;
-            color: #212223;
-            .logo_img {
-                /*    background-image: url('../img/app-logo.png');
+ @import "../../common/css/mcommon.less";
+ html {
+     background-color: #1c1c1c;
+     font-size: 100%;
+ }
+ 
+ body {
+     background-color: #fff;
+     font-weight: normal;
+ }
+ 
+ #main-wraper {
+     background-color: transparent;
+     min-height: 650px;
+ }
+ 
+ .abs {
+     position: absolute;
+ }
+ 
+ .rel {
+     position: relative;
+ }
+ 
+ .centered {
+     margin-left: auto;
+     margin-right: auto;
+ }
+ 
+ .click-through {
+     pointer-events: none;
+ }
+ 
+ .tuzhi {
+     height: 100%;
+     min-height: 650px;
+     min-width: 1000px;
+     background-color: #eaeaea;
+     font-family: "Microsoft YaHei", 'Helvetica Neue', Helvetica, STHeiTi, sans-serif;
+     .tuzhi_img {
+         overflow: hidden;
+         background-color: #eaeaea;
+         left: 0;
+         top: 0;
+         width: 100%;
+         height: 100%;
+         min-height: 650px;
+         overflow: hidden;
+         background-image: url('../img/pc_index_bg1.png');
+         background-size: cover;
+         background-repeat: no-repeat;
+         background-position: center center;
+     }
+     .content {
+         position: absolute;
+         box-sizing: border-box;
+         margin-left: auto;
+         margin-right: auto;
+         z-index: 2;
+         width: 900px;
+         height: 630px;
+         height: 91%;
+         width: 70%;
+         min-width: 900px;
+         left: 0;
+         right: 0;
+         bottom: 0;
+         .display(flex);
+         .menus {
+             width: 4%;
+             width: 36px;
+             min-width: 36px;
+             max-width: 36px;
+             float: left;
+             margin-top: 35px;
+             .flex(1);
+             li {
+                 word-wrap: break-word;
+                 width: 84%;
+                 width: 30px;
+                 height: 116px;
+                 float: right;
+                 text-align: center;
+                 font-size: 16px;
+                 margin-bottom: 3px;
+                 line-height: 18px;
+                 .border-radius(3pt);
+                 .border-top-right-radius(0px);
+                 .border-bottom-right-radius(0px);
+                 .transition(all 0.4s cubic-bezier(0.31, -0.105, 0.43, 1.4));
+                 a {
+                     color: rgba(255, 255, 255, 0.5);
+                     padding: 14px 3px;
+                     display: block;
+                     font-size: 16px;
+                     line-height: 22px;
+                 }
+                 &.active {
+                     width: 100%;
+                     width: 36px;
+                     border: 1px solid #fff;
+                     border-right: none;
+                     a {
+                         color: #fff;
+                     }
+                 }
+                 &:hover {
+                     width: 100%;
+                     width: 36px;
+                     border: 1px solid #fff;
+                     border-right: none;
+                     .transition(all 0.4s cubic-bezier(0.31, -0.105, 0.43, 1.4));
+                     a {
+                         color: #fff;
+                     }
+                 }
+                 &.index {
+                     background-color: #729dbf;
+                     a {
+                         padding: 32px 3px;
+                     }
+                 }
+                 &.interest {
+                     background-color: #dd8941;
+                 }
+                 &.overall {
+                     background-color: #cc8890;
+                 }
+                 &.diversified {
+                     background-color: #4fc1ce;
+                 }
+             }
+         }
+     }
+     .tuzhi_box {
+         .flex(1);
+         box-sizing: border-box;
+         margin-left: auto;
+         margin-right: auto;
+         z-index: 1;
+         width: 854px;
+         width: 96%;
+         height: 100%;
+         min-width: 854px;
+         padding: 0px;
+         background-image: url('../img/tuzhi_index1.png');
+         background-size: cover;
+         background-repeat: no-repeat;
+         background-position: top center;
+         background-origin: content-box;
+         float: left;
+         box-shadow: 1px 1px 13px rgba(87, 86, 86, 0.43);
+     }
+     .ours {
+         z-index: 10;
+         width: 100%;
+         min-width: 854px;
+         bottom: 0px;
+         height: 100%;
+         padding-top: 34px;
+         .logo_pc {
+             margin: 0 auto;
+             width: 24%;
+             color: #fff;
+             text-align: center;
+             img {
+                 width: 52%;
+             }
+             .logo_text {
+                 font-size: 20px;
+                 font-size: 1.25rem;
+                 line-height: 50px;
+                 letter-spacing: 3px;
+             }
+         }
+         .logo {
+             width: 43%;
+             left: 7%;
+             bottom: 0px;
+             line-height: 1.7;
+             bottom: 70px;
+             color: #212223;
+             .flex(1);
+             height: 155px;
+             bottom: 0px;
+             left: 0px; 
+             .logo_img {
+                 float: left;
+                 width: 47px;
+                 height: 47px;
+             }
+             .logo_text {
+                 float: left;
+                 width: 56%;
+                 margin-left: 20px;
+                 line-height: 47px;
+                 color: #fff;
+                 font-size: 24px;
+                 font-size: 1.5rem;
+                 font-weight: bold;
+                 letter-spacing: 3px;
+             }
+             .logo_text2 {
+                 float: left;
+                 width: 100%;
+                 font-size: 16px;
+                 font-size: 1rem;
+                 line-height: 28px;
+                 color: #fff;
+                 letter-spacing: 3px;
+                 margin-top: 0px;
+                 text-align: justify;
+                 bottom: 0px;
+             }
+         }
+         .phone1 {
+             display: block;
+             left: 69%;
+             bottom: 70px;
+             width: 21%;
+             img {
+                 width: 100%;
+             }
+         }
+         .download {
+             height: 150px;
+             width: 12%;
+             height: auto;
+             left: 53%;
+             bottom: 72px;
+             .flex(1);
+             max-width: 108px;
+             min-width: 108px;
+             margin-left: 15px;
+             .apple_logo,
+             .apple_logo:hover {
+                 width: 103px;
+                 height: 34px;
+                 right: 19px;
+                 /* background-image: url('../img/apple.png'); */
+                 background-size: contain;
+                 background-repeat: no-repeat;
+                 background-position: center center;
+                 cursor: pointer;
+                 display: block;
+                 width: 100%;
+                 height: auto;
+                 img {
+                     width: 100%;
+                 }
+             }
+             .hy {
+                 width: 1px;
+                 height: 24px;
+                 right: 76px;
+                 background-color: #768587;
+                 top: 8px;
+             }
+             .erweima {
+                 background-image: url('../img/erweima.png');
+                 background-size: cover;
+                 background-repeat: no-repeat;
+                 background-position: center center;
+                 right: 21px;
+                 width: 100px;
+                 height: 100px;
+                 top: 42px;
+                 width: 100%;
+                 height: auto;
+                 margin-top: 10px;
+                 img {
+                     width: 100%;
+                 }
+             }
+             .more_than {
+                 width: 200px;
+                 height: 24px;
+                 background-image: url('../img/more_than.png');
+                 background-position: center center;
+                 background-repeat: no-repeat;
+                 background-size: cover;
+                 right: 15px;
+                 top: 45px;
+             }
+         }
+         .download_box {
+             bottom: 70px;
+             width: 62%;
+             left: 5%;
+             .display(flex);
+         }
+     }
+ }
+ 
+ .footer {
+     background-color: #1c1c1c;
+     position: absolute;
+     z-index: 1;
+     width: 100%;
+     height: 70px;
+     bottom: 0px;
+ }
+ 
+ .copyright {
+     font-size: 10px;
+     text-align: center;
+     height: 70px;
+     line-height: 70px;
+     color: rgba(233, 233, 233, 0.3);
+     position: absolute;
+     z-index: 3;
+     height: 70px;
+     width: 100%;
+     bottom: 0px;
+ }
+ 
+ .mobile {
+     height: 100%;
+     min-width: initial;
+     height: initial;
+     background-color: #1c1c1c;
+     .tuzhi_img {
+         overflow: hidden;
+         background-color: #eaeaea;
+         left: 0;
+         top: 0;
+         width: 100%;
+         height: 100%;
+         min-height: 650px;
+         overflow: hidden;
+         background-image: url('../img/tuzhi_ph_index2.png');
+         background-size: cover;
+         background-repeat: no-repeat;
+         background-position: center center;
+     }
+     .tuzhi_box {
+         padding-bottom: 0px;
+         width: 100%;
+         min-width: initial;
+         max-width: 414pt;
+         position: relative;
+         box-sizing: border-box;
+         margin-left: auto;
+         margin-right: auto;
+         z-index: 1;
+         padding: 0px;
+         padding-top: 13pt;
+     }
+     .download_box {
+         width: 100%;
+         /*float: left; */
+     }
+     .download {
+         width: 21%;
+         right: 10pt;
+         max-width: 80pt;
+         min-width: 80pt;
+         margin-right: 0px;
+         float: right;
+         height: auto;
+         .erweima {
+             background-image: url('../img/erweima.png');
              background-size: cover;
              background-repeat: no-repeat;
-             background-position: center center; */
-                width: 39%;
-                height: 100%;
-            }
-            .logo_text {
-                float: right;
-                width: 56%;
-                margin-left: 5%;
-                .app_name {
-                    display: block;
-                    font-size: 40px;
-                    text-align: left;
-                    font-weight: 500;
-                    line-height: 36px;
-                    letter-spacing: 7px;
-                }
-                .app_slogan {
-                    font-size: 22px;
-                    font-weight: 500;
-                    letter-spacing: 5px;
-                    display: block;
-                    line-height: 60px;
-                }
-            }
+             background-position: center center;
+             right: 21px;
+             width: 100px;
+             height: 100px;
+             top: 42px;
+             width: 100%;
+             height: auto;
+             margin-top: 0px;
+             img {
+                 width: 100%;
+             }
+         }
+         .text {
+             font-size: 12px;
+             line-height: 20pt;
+             color: rgba(255, 255, 255, 0.5);
+             display: block;
+             text-align: center;
+         }
+     }
+     .download_apple {
+         width: 21%;
+         left: 10pt;
+         max-width: 80pt;
+         min-width: 80pt;
+         float: left;
+         .text {
+             font-size: 13px;
+             line-height: 24pt;
+             color: #fff;
+             display: block;
+             text-align: center;
+         }
+         .apple_logo,
+         .apple_logo:hover {
+             cursor: pointer;
+             display: block;
+             width: 100%;
+             height: auto;
+             img {
+                 width: 100%;
+             }
+         }
+     }
+     .ours {
+         width: 100%;
+         bottom: -10pt;
+         min-width: initial;
+         height: initial;
+         margin-top: 10pt;
+         .logo {
+             // background-image: url('../img/logo_ph.png');
+             //background-size: cover;
+             //background-position: center center;
+             position: initial;
+             margin: 0 auto;
+             margin-bottom: 20 px;
+             width: 170px;
+             color: #fff;
+             width: 60%;
+             text-align: center;
+             .logo_img {
+                 width: 39%;
+                 height: 100%;
+             }
+             .logo_text {
+                 float: inherit;
+                 text-align: center;
+                 font-size: 20px;
+                 line-height: 50pt;
+                 width: 100%;
+                 margin-left: 0;
+                 .app_name {
+                     font-size: 30px;
+                 }
+                 .app_slogan {
+                     font-size: 16px;
+                     line-height: 1.5;
+                 }
+             }
+         }
+         .slogan {
+             display: none;
+         }
+         .phone1 {
+             display: none;
+         }
+         .phone2 {
+             display: none;
+         }
+         .phone3 {
+             display: block;
+             margin: 0 auto;
+             background-image: url('../img/phone3.png');
+             background-repeat: no-repeat;
+             background-size: cover;
+             height: 390px;
+             width: 70%;
+         }
+         .iphone_box {
+             width: 70%;
+             margin: 0 auto;
+             .iphone6Gold {
+                 width: 100%;
+             }
+         }
+     }
+ }
+ 
+ .foot {
+     font-size: 10px;
+     text-align: center;
+     height: 48pt;
+     line-height: 48pt;
+     color: rgba(233, 233, 233, 0.3);
+     background-color: #1c1c1c;
+ }
+ 
+ @media only screen and (min-width: 414px) {
+     .mobile {
+         .download_apple {
+             .text {
+                 letter-spacing: 2pt;
+             }
+         }
+         .download {
+             .text {
+                 letter-spacing: 2pt;
+             }
+         }
+     }
+ }
+ 
+ @media (min-width: 375px) and (max-width: 413px) {
+     .mobile {
+         .download_apple {
+             width: 21%;
+             min-width: 21%;
+         }
+         .download {
+             width: 23%;
+             max-width: 23%;
+             min-width: 23%;
+         }
+     }
+ }
+ /* @media (min-width: 321px) and (max-width: 374px) {
+    .mobile{ 
+        .download_apple{
+           width:21%; 
+           min-width: 21%;
         }
-        .phone1 {
-            background-image: url('../img/phone1.png');
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            width: 163px;
-            height: 290px;
-            right: 186px;
-            bottom: 0px;
-            display: block;
-            width: 22.1%;
-            right: 21%;
-            background-size: contain;
-            height: initial;
-            bottom: 20%;
-            img {
-                width: 100%;
-            }
-        }
-        .phone2 {
-            background-image: url('../img/phone2.png');
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            width: 145px;
-            height: 255px;
-            right: 21px;
-            bottom: 0px;
-            display: block;
-            width: 19.6%;
-            right: 0px;
-            background-size: contain;
-            height: initial;
-            bottom: 20%;
-            img {
-                width: 100%;
-            }
-        }
-        .phone3 {
-            display: none;
+        .download{
+           width:23%;
+           max-width: 23%;
+           min-width: 23%;
         }
     }
-}
-
-.mobile {
-    min-width: initial;
-    .tuzhi_img {
-        background-image: url('../img/tuzhi_ph_index.png');
-    }
-    .tuzhi_box {
-        padding-bottom: 0px;
-        width: 100%;
-        min-width: initial;
-    }
-    .download {
-        width: 21%;
-    }
-    .ours {
-            width: 80%;
-        bottom: 0px;
-        min-width: initial;
-        height:initial;
-        .logo {
-            // background-image: url('../img/logo_ph.png');
-            //background-size: cover;
-            //background-position: center center;
-            position: initial;
-            margin: 0 auto;
-            margin-bottom: 20 px;
-            width: 170px;
-            color: #fff;
-            width: 50%;
-            .logo_text {
-                .app_name {
-                    font-size: 30px;
-                }
-                .app_slogan {
-                    font-size: 16px;
-                    line-height: 1.5;
-                }
-            }
-        }
-        .slogan {
-            display: none;
-        }
-        .phone1 {
-            display: none;
-        }
-        .phone2 {
-            display: none;
-        }
-        .phone3 {
-            display: block;
-            margin: 0 auto;
-            background-image: url('../img/phone3.png');
-            background-repeat: no-repeat;
-            background-size: cover;
-            height: 390px;
-            width: 70%;
-        }
-    }
-}
-
-
-/* @media only screen and (max-width: 320px) {
+} */
+ 
+ @media (min-width: 320px) and (max-width: 374px) {
+     .mobile {
+         .download_apple {
+             width: 25%;
+             max-width: 25%;
+             min-width: 25%;
+         }
+         .download {
+             width: 27%;
+             max-width: 27%;
+             min-width: 27%;
+         }
+     }
+ }
+ /* @media only screen and (max-width: 320px) {
     .mobile {
         .tuzhi_box {
             padding-top: 10px;

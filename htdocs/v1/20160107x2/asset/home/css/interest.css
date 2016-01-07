@@ -151,7 +151,7 @@ body{background-color:#fff;font-weight:400}
 .tuzhi .ours{z-index:10;width:100%;min-width:854px;bottom:0;height:100%;padding-top:34px}
 .tuzhi .ours .logo_pc{margin:0 auto;width:24%;color:#fff;text-align:center}
 .tuzhi .ours .logo_pc img{width:52%}
-.tuzhi .ours .logo_pc .logo_text{font-size:20px;font-size:1.25rem;line-height:50px}
+.tuzhi .ours .logo_pc .logo_text{font-size:20px;font-size:1.25rem;line-height:50px;letter-spacing:3px}
 .tuzhi .ours .logo{width:43%;left:7%;line-height:1.7;bottom:70px;color:#212223;-moz-box-flex:1;-webkit-box-flex:1;-webkit-flex:1;-moz-flex:1;-ms-flex:1;flex:1;height:155px;bottom:0;left:0}
 .tuzhi .ours .logo .logo_img{float:left;width:47px;height:47px}
 .tuzhi .ours .logo .logo_text{float:left;width:56%;margin-left:20px;line-height:47px;color:#fff;font-size:24px;font-size:1.5rem;font-weight:700;letter-spacing:3px}
@@ -171,7 +171,7 @@ body{background-color:#fff;font-weight:400}
 .interest .tuzhi_img{background-image:url(../img/pc_index_bg_interest.png)}
 .interest .tuzhi_box{background-image:url(../img/tuzhi_index_interest.png)}
 .interest .ours{z-index:10;width:100%;min-width:854px;bottom:0;height:100%;padding-top:50px}
-.interest .ours .logo_pc{margin:0 auto;width:440px;color:#fff;text-align:center}
+.interest .ours .logo_pc{margin:0 auto;width:480px;color:#fff;text-align:center}
 .interest .ours .logo_pc img{width:47px;height:47px;float:right}
 .interest .ours .logo_pc .logo_text{font-size:30px;line-height:47px;float:right;margin-right:20px;color:#000;font-weight:900}
 .interest .ours .logo{width:52%;right:19%;left:inherit;min-width:460px;bottom:0;right:2%}
@@ -184,7 +184,7 @@ body{background-color:#fff;font-weight:400}
 .diversified .tuzhi_box{background-image:url(../img/tuzhi_index_diversified.png);background-position:bottom center}
 .diversified .download{right:5%;left:inherit}
 .diversified .ours{z-index:10;width:100%;min-width:854px;bottom:0;height:100%;padding-top:50px}
-.diversified .ours .logo_pc{width:480px}
+.diversified .ours .logo_pc{width:500px}
 .diversified .ours .logo_pc img{width:47px;height:47px;float:right}
 .diversified .ours .logo_pc .logo_text{font-size:30px;line-height:47px;float:right;margin-right:20px;color:#000;font-weight:900}
 .diversified .ours .logo{width:52%;right:19%;min-width:460px;left:inherit;right:2%}
@@ -197,7 +197,7 @@ body{background-color:#fff;font-weight:400}
 .overall .tuzhi_box{background-image:url(../img/tuzhi_index_overall.png);background-position:bottom center}
 .overall .download{left:4%}
 .overall .ours{z-index:10;width:100%;min-width:854px;bottom:0;height:100%;padding-top:50px}
-.overall .ours .logo_pc{width:480px}
+.overall .ours .logo_pc{width:500px}
 .overall .ours .logo_pc img{width:47px;height:47px;float:right}
 .overall .ours .logo_pc .logo_text{font-size:30px;line-height:47px;float:right;margin-right:20px;color:#000;font-weight:900}
 .overall .ours .logo{left:0;width:50%}

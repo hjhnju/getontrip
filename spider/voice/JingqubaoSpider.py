@@ -1,4 +1,4 @@
-#>!usr/bin python3
+#!usr/bin python3
 # -*- coding: utf-8 -*-
 # 景区宝数据抓取
 # @author hejunhua
@@ -51,12 +51,12 @@ class JingqubaoSpider(object):
             req  = urllib.request.Request("http://v2.jingqubao.com/index.php?", params)
             resp = urllib.request.urlopen(req)
             jstr = resp.read()
-            jstr = jstr.encode('utf-8')
+            jstr = jstr.decode('utf-8')
 
             if not os.path.exists(os.path.dirname(fname)):
                 os.makedirs(os.path.dirname(fname))
             with open(fname, "w") as f:
-                f.write(json)
+                f.write(jstr)
                 f.close
 
         retList = []

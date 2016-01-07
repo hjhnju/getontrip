@@ -1,7 +1,7 @@
 <?php
 require_once "config.php";
 $arrLabel = array();
-$fp_label = file(WORK_PATH.INDEX_LABEL_SIGHT);
+$fp_label = file(WORK_PATH.INDEX_LABEL_TAG);
 foreach ($fp_label as $val){
     $arrTemp = explode("\t",$val);
     $arrSub  = explode(":",$arrTemp[1]);

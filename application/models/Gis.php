@@ -9,8 +9,7 @@ class GisModel
     protected $conn = '';
 
     public function __construct(){
-        //$this->db   = Base_Pg::getPDOInstance('getontrip');
-        $this->conn = Base_Pg::getInstance("getontrip");
+        $this->conn = Base_Pg::getInstance("getontripoff");
     }
 
     /**
@@ -90,9 +89,10 @@ class GisModel
         return $ret;
     }
     
-    public function testPg(){
+    public function getNear($x,$y,$page,$pageSize){
         $arrRet = array();
-        $sql    = "select p.id ,ST_Distance('POINT(116.327353 40.001376)'::geography, p.the_geom) as dis from cities p order by dis asc;";
+        $from   = ($page-1)*$pageSize;
+        $sql    = "SELECT id,earth_distance(ll_to_earth(x, y), ll_to_earth($x,$y)) as dis FROM sight  ORDER BY dis ASC limit $pageSize offset $from;";
         try {
             $resultSet = pg_query($this->conn,$sql);
             while ($row = pg_fetch_row($resultSet)){
@@ -104,5 +104,41 @@ class GisModel
             Base_Log::error($ex->getMessage());
         }
         return $arrRet;
+    }
+    
+    public function insertSight($id){
+        $objSight = new Sight_Object_Sight();
+        $objSight->fetch(array('id' => $id));
+        if(empty($objSight->id) || empty($objSight->x) || empty($objSight->y)){
+            return false;
+        }
+        $sql = "insert into sight values($objSight->id,$objSight->cityId,$objSight->x,$objSight->y)";
+        try {
+            $ret = pg_exec($this->conn,$sql);
+        } catch (Exception $ex) {
+            Base_Log::error($ex->getMessage());
+        }
+        if(!$ret){
+            return false;
+        }
+        return true;        
+    }
+    
+    public function insertLandscape($id){
+        $objKeyword = new Keyword_Object_Keyword();
+        $objKeyword->fetch(array('id' => $id));
+        if(empty($objKeyword->id) || empty($objKeyword->x) || empty($objKeyword->y)){
+            return false;
+        }
+        $sql = "insert into landscape values($objKeyword->id,$objKeyword->sightId,$objKeyword->x,$objKeyword->y)";        
+        try {
+            $ret = pg_query($this->conn,$sql);
+        } catch (Exception $ex) {
+            Base_Log::error($ex->getMessage());
+        }
+        if(!$ret){
+            return false;
+        }
+        return true; 
     }
 }

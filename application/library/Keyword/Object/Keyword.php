@@ -26,7 +26,7 @@ class Keyword_Object_Keyword extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'sight_id', 'name', 'url', 'create_time', 'update_time', 'status', 'create_user', 'update_user', 'weight', 'x', 'y', 'content', 'image', 'audio', 'alias', 'level');
+    protected $fields = array('id', 'sight_id', 'name', 'url', 'create_time', 'update_time', 'status', 'create_user', 'update_user', 'weight', 'x', 'y', 'content', 'image', 'audio', 'alias', 'level', 'type', 'audio_len');
 
     /**
      * 字段与属性隐射关系
@@ -50,6 +50,8 @@ class Keyword_Object_Keyword extends Base_Object {
         'audio'       => 'audio',
         'alias'       => 'alias',
         'level'       => 'level',
+        'type'        => 'type',
+        'audio_len'   => 'audioLen',
     );
 
     /**
@@ -66,6 +68,7 @@ class Keyword_Object_Keyword extends Base_Object {
         'update_user' => 1,
         'weight'      => 1,
         'level'       => 1,
+        'type'        => 1,
     );
 
     /**
@@ -177,5 +180,17 @@ class Keyword_Object_Keyword extends Base_Object {
      * @var integer
      */
     public $level;
+
+    /**
+     * 1:必玩
+     * @var integer
+     */
+    public $type;
+
+    /**
+     * 音频的时长
+     * @var string
+     */
+    public $audioLen;
 
 }

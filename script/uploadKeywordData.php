@@ -100,9 +100,9 @@ foreach ($match[1] as $key => $id){
             if(strstr($property,"scenicName")){
                 $name = $tmp[1];
             }elseif(strstr($property,"lng")){
-                $y    = $tmp[1];
-            }elseif(strstr($property,"lat")){
                 $x    = $tmp[1];
+            }elseif(strstr($property,"lat")){
+                $y    = $tmp[1];
             }
         }
         if(file_exists($directory."/$data.amr")){

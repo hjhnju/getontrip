@@ -290,7 +290,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
     public function getKeywordList($sightId,$page,$pageSize,$arrParma = array()){
         $listKeyword  = new Keyword_List_Keyword();
         $arrFilter = array_merge(array('sight_id' => $sightId),$arrParma);
-        $listKeyword->setFields(array('id','name','url','content','image'));
+        $listKeyword->setFields(array('id','name','url','content','image','audio','audio_len','type','x','y'));
         $listKeyword->setOrder("`weight` asc");
         $listKeyword->setFilter($arrFilter);
         $listKeyword->setPage($page);
@@ -299,23 +299,14 @@ class Keyword_Logic_Keyword extends Base_Logic{
         foreach ($arrRet['list'] as $key => $val){
             $arrRet['list'][$key]['id']      = strval($val['id']);
             $arrRet['list'][$key]['content'] = Base_Util_String::delStartEmpty(Base_Util_String::getHtmlEntity($val['content']));
-            $arrRet['list'][$key]['url']      = trim($val['url']);
-            $listKeywordCatalog = new Keyword_List_Catalog();
-            $listKeywordCatalog->setFields(array('name','url'));
-            $listKeywordCatalog->setFilter(array('keyword_id' => $val['id']));
-            $listKeywordCatalog->setOrder('`id` asc');
-            $listKeywordCatalog->setPagesize(self::WIKI_CATALOG_NUM);
-            $arrCatalog = $listKeywordCatalog->toArray();
-            //$arrLen     = array();
-            foreach ($arrCatalog['list'] as $index => $data){
-                $arrCatalog['list'][$index]['name']    = Base_Util_String::trimall($data['name']);
-                $arrCatalog['list'][$index]['section'] = trim($data['url']);
-                unset($arrCatalog['list'][$index]['url']);
-                //$arrLen[] = strlen($data['name']);
-            }
-            //array_multisort($arrLen, SORT_DESC , $arrCatalog['list']);
-            $arrRet['list'][$key]['catalog'] = $arrCatalog['list'];
+            $arrRet['list'][$key]['url']     = trim($val['url']);
+            $arrRet['list'][$key]['audio']   = empty($val['audio'])?'':"/audio/".trim($val['audio']);
+            $arrRet['list'][$key]['audio_len']   = trim($val['audio_len']);
+            $arrRet['list'][$key]['desc']    = intval($val['type'])==1?'必玩':'';
+            $arrRet['list'][$key]['x']    = strval($val['x']);
+            $arrRet['list'][$key]['y']    = strval($val['y']);
             $arrRet['list'][$key]['image']   = Base_Image::getUrlByName($val['image']);
+            unset($arrRet['list'][$key]['type']);
         }
         return $arrRet['list'];
     }

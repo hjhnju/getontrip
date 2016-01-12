@@ -8,10 +8,9 @@ import http.cookiejar
 import hashlib
 import os,sys
 import shutil
+import codecs
 
 class Utils(object):
-
-
 
     def run(self):
         # url = 'http://c.hiphotos.baidu.com/image/pic/item/6d81800a19d8bc3e7bb5ec0a868ba61ea9d345b5.jpg'
@@ -70,6 +69,21 @@ class Utils(object):
             md5obj.update(f.read())
             hash = md5obj.hexdigest()
             return hash
+
+    def stripBOM(self, context):
+        bom = codecs.BOM_UTF8.decode("utf-8")
+        if context.startswith(bom):
+            return context[len(bom):]
+        else:
+            return context
+
+    def saveTupleList(self, tupleList, fname):
+        with open(fname, 'w') as f:
+            for t in tupleList:
+                line = "\t".join(map(str,t)) + "\n"
+                f.write(line)
+            f.close()
+            
 
 if __name__ == '__main__':
     util = Utils()

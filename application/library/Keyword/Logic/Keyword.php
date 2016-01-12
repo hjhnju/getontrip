@@ -34,7 +34,16 @@ class Keyword_Logic_Keyword extends Base_Logic{
         }
         $arr = array_merge($arr,$arrInfo);
         if(!empty($arr)){
-            $list->setFilter($arr);
+            if(isset($arr['query'])){
+                $filter = "name like '%".$arr['query']."%'";
+                unset($arr['query']);
+                foreach ($arr as $key => $val){
+                    $filter .= " and $key='".$val."'";
+                }
+                $list->setFilterString($filter);
+            }else{
+                $list->setFilter($arr);
+            }
         }
                
         $list->setPage($page);
@@ -202,37 +211,24 @@ class Keyword_Logic_Keyword extends Base_Logic{
         return $maxWeight + 1;
     }
     
-    /**
-     * 修改某景点下的词条的权重
-     * @param integer $id 词条ID
-     * @param integer $to 需要排的位置
-     * @return boolean
-     */
-    public function changeWeight($id,$to){
+    public function changeWeight($sightId,$id,$to){
         $objKeyword = new Keyword_Object_Keyword();
-        $objKeyword->fetch(array('id' => $id));
+        $objKeyword->fetch(array('sight_id' => $sightId,'id' => $id));
         $from       = $objKeyword->weight;
-        $objKeyword->weight = $to;       
-        
-        $bAsc = ($to > $from)?1:0;
-        $min  = min(array($from,$to));
-        $max  = max(array($from,$to));
+        $objKeyword->weight = $to;
+    
         $listKeyword = new Keyword_List_Keyword();
+        $filter ="`sight_id` =".$sightId." and `weight` >= $to and `weight` != $from";
+        $listKeyword->setFilterString($filter);
         $listKeyword->setPagesize(PHP_INT_MAX);
-        $listKeyword->setFilter(array('sight_id' => $objKeyword->sightId));
-        $listKeyword->setOrder('weight asc');
         $arrKeyword = $listKeyword->toArray();
-        $arrKeyword = array_slice($arrKeyword['list'],$min-1+$bAsc,$max-$min); 
-        $ret = $objKeyword->save();
-        foreach ($arrKeyword as $key => $val){
-            $objKeyword->fetch(array('id' => $val['id']));
-            if($bAsc){
-                $objKeyword->weight = $min + $key ;
-            }else{
-                $objKeyword->weight = $max - $key;
-            }
-            $objKeyword->save();
+        foreach ($arrKeyword['list'] as $key => $val){
+            $objTmpKeyword = new Keyword_Object_Keyword();
+            $objTmpKeyword->fetch(array('id' => $val['id']));
+            $objTmpKeyword->weight += 1;
+            $objTmpKeyword->save();
         }
+        $ret = $objKeyword->save();
         return $ret;
     }
     
@@ -519,5 +515,95 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $redis->hSet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::LANDSCAPE, $count);
         }
         return $count;
+    }
+    
+    public function getRecommend($page, $pageSize, $city='', $status = ''){
+         $arrRet    = array();
+         $arrRawData= array();
+         $arrData   = array();
+         $RAW_DATA  = "/home/work/publish/data/51data/scenics.txt";
+         $RET_DATA  = "/home/work/publish/data/51data/findSight/unsolved.txt";
+         $UNSOVED   = "/home/work/publish/data/51data/findSight/unsolvable.txt";
+         $from      = ($page-1)*$pageSize;
+         $to        = $page*$pageSize;
+         //首先将原始数据内容加载入内存
+         $arrRaw    = file($RAW_DATA);
+         foreach ($arrRaw as $val){
+             $tmp = explode("\t",$val);
+             if(!empty($city)){
+                 if(strstr($city,$tmp[2]) == false){
+                     continue;
+                 }
+             }
+             $arrRawData[$tmp[0]] = array(
+                 'name' => $tmp[1],
+                 'city' => $tmp[2],
+                 'file' => $tmp[3],
+             );
+         }
+         $arrTmp   = file($RET_DATA);
+         foreach ($arrTmp as $key => $val){
+             $val = explode("\t",$val);
+             if($status !== ''){
+                 if(intval($val[2]) !== $status){
+                     continue;
+                 }
+             }
+             if(!isset($arrRet[$val[0]])){
+                 $arrRet[$val[0]] = array(array('id' => $val[1],'status' => $val[2]));
+             }else{
+                 $arrRet[$val[0]] = array_merge($arrRet[$val[0]],array(array('id' => $val[1],'status' => $val[2])));
+             }
+         }
+         
+         $arrTmp   = file($UNSOVED);
+         foreach ($arrTmp as $key => $val){
+             $val = explode("\t",$val);
+             $arrRet[$val[0]] = array(array('id' => '','status' => 2));
+         }
+         
+         
+         $arrTmp    = $arrRet;
+         $total     = count($arrTmp);
+         $index     = 0;
+         $realIndex = 0;
+         foreach ($arrTmp as $key => $val){
+             if($index<$from || $index>=$to){
+                 $index += 1;
+                 continue;
+             }
+             $arrData[$realIndex]['id']   = $key;
+             $arrData[$realIndex]['name'] = $arrRawData[$key]['name'];
+             $arrData[$realIndex]['city'] = $arrRawData[$key]['city'];
+             $arrData[$realIndex]['sights'] = array();
+             foreach ($val as $data){
+                 $objSightMeta = new Sight_Object_Meta();
+                 $objSightMeta->fetch(array('id' => $data['id']));
+                 if(!empty($objSightMeta->name)){
+                     $arrData[$realIndex]['sights'][] = array('id' =>$data['id'],'name'=>$objSightMeta->name,'city'=>$objSightMeta->city,'status' => $data['status']);
+                 }
+             }
+             $index     += 1;
+             $realIndex += 1;
+         }
+         $arrRet  = array(
+            'page'     => $page,
+            'pagesize' => $pageSize,
+            'pageall'  => ceil($total/$pageSize),
+            'total'    => $total,
+            'list'     => $arrData,
+         );
+         return $arrRet;
+    }
+    
+    public function dealRecommend($id,$sightId,$status){
+        if(intval($status) == 1){
+            
+        }
+        $RET_DATA   = "/home/work/publish/data/51data/findSight/unsolved.txt";
+        $origin_str = file_get_contents($RET_DATA);
+        $update_str = preg_replace("/$id\t$sightId\t(.*?)\r\n/", "$id\t$sightId\t$status\r\n", $origin_str);
+        $ret        = file_put_contents($RET_DATA, $update_str);
+        return $ret;
     }
 }

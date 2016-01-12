@@ -26,7 +26,7 @@ class Keyword_Object_Keyword extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'sight_id', 'name', 'url', 'create_time', 'update_time', 'status', 'create_user', 'update_user', 'weight', 'x', 'y', 'content', 'image', 'audio');
+    protected $fields = array('id', 'sight_id', 'name', 'url', 'create_time', 'update_time', 'status', 'create_user', 'update_user', 'weight', 'x', 'y', 'content', 'image', 'audio', 'alias', 'level');
 
     /**
      * 字段与属性隐射关系
@@ -48,6 +48,8 @@ class Keyword_Object_Keyword extends Base_Object {
         'content'     => 'content',
         'image'       => 'image',
         'audio'       => 'audio',
+        'alias'       => 'alias',
+        'level'       => 'level',
     );
 
     /**
@@ -63,6 +65,7 @@ class Keyword_Object_Keyword extends Base_Object {
         'create_user' => 1,
         'update_user' => 1,
         'weight'      => 1,
+        'level'       => 1,
     );
 
     /**
@@ -162,5 +165,17 @@ class Keyword_Object_Keyword extends Base_Object {
      * @var string
      */
     public $audio;
+
+    /**
+     * 景观别名
+     * @var string
+     */
+    public $alias;
+
+    /**
+     * 级别 1:一级景观，2:二级景观,二级景观时,sight_id为一级景观id
+     * @var integer
+     */
+    public $level;
 
 }

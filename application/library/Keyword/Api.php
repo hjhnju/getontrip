@@ -65,15 +65,16 @@ class Keyword_Api{
     }
     
     /**
-     * 接口6：Keyword_Api::changeWeight($id,$to)
+     * 接口6：Keyword_Api::changeWeight($sightId,$id,$to)
      * 修改某景点下的词条的权重
+     * @param integer $sightId 景点ID
      * @param integer $id 词条ID
      * @param integer $to 需要排的位置 
      * @return boolean
      */
-    public static function changeWeight($id,$to){
+    public static function changeWeight($sightId,$id,$to){
         $logic = new Keyword_Logic_Keyword();
-        return $logic->changeWeight($id,$to);
+        return $logic->changeWeight($sightId,$id,$to);
     }
     
     /**
@@ -86,5 +87,29 @@ class Keyword_Api{
     public static function getKeywordNum($sighId, $status = Keyword_Type_Status::PUBLISHED){
         $logic = new Keyword_Logic_Keyword();
         return $logic->getKeywordNum($sighId, $status);
+    }
+    
+    /**
+     * 接口8:Keyword_Api::getRecommend($page, $pageSize)
+     * 获取景观的推荐景点
+     * @param integer $page
+     * @param integer $pageSize
+     * @param integer $status
+     */
+    public static function getRecommend($page, $pageSize, $city = '', $status = ''){
+        $logic = new Keyword_Logic_Keyword();
+        return $logic->getRecommend($page, $pageSize, $city, $status);
+    }
+    
+    /**
+     * 接口9:Keyword_Api::dealRecommend($id,$sightId,$status)
+     * 处理推荐景观
+     * @param unknown $id
+     * @param unknown $sightId
+     * @param unknown $status
+     */
+    public static function dealRecommend($id,$sightId,$status){
+        $logic = new Keyword_Logic_Keyword();
+        return $logic->dealRecommend($id,$sightId,$status);
     }
 }

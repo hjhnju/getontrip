@@ -192,4 +192,13 @@ class ApiController extends Base_Controller_Api{
         }
         return $this->ajaxError($ret,User_RetCode::getMsg($ret));
     }
+    
+    /**
+     * 接口9:/api/1.0/user/checkLogin
+     * 检验用户登录状态，并获取用户ID，未登录返回''
+     */
+    public function checkLoginAction(){
+        $ret = User_Api::getCurrentUser();
+        return $this->ajax($ret);
+    }
 }

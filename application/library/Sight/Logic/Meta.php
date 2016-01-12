@@ -31,7 +31,11 @@ class Sight_Logic_Meta extends Base_Logic{
         $objSightMeta = new Sight_Object_Meta();
         foreach ($arrInfo as $key => $val){
             $key = $this->getprop($key);
-            $objSightMeta->$key = $val;
+            if($key == 'alias'){
+                $objSightMeta->$key = implode(",",$val);
+            }else{
+                $objSightMeta->$key = $val;
+            }
         }
         $objSightMeta->save();
         return $objSightMeta->id;
@@ -140,10 +144,14 @@ class Sight_Logic_Meta extends Base_Logic{
             return false;
         }
         foreach ($arrInfo as $key => $val){
-            $objSightMeta->$key = $val;
+            $key = $this->getprop($key);
+            if($key == 'alias'){
+                $objSightMeta->$key = implode(",",$val);
+            }else{
+                $objSightMeta->$key = $val;
+            }
         }
         return $objSightMeta->save();
-        return $ret;
     }
 
 

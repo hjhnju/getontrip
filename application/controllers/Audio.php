@@ -16,8 +16,6 @@ class AudioController extends Base_Controller_Page {
      */
     public function indexAction() {
         $hash = $this->_request->get('hash');
-        //$tmp  = explode(".", $hash);
-        //$hash = $tmp[0];
         if (empty($hash)) {
             header("HTTP/1.1 404 Not Found");
             exit;

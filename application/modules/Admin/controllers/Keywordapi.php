@@ -22,7 +22,10 @@ class KeywordapiController extends Base_Controller_Api{
         //$status = isset($_REQUEST['status'])?intval($_REQUEST['status']):3;
         //
         $arrInfo =isset($_REQUEST['params'])?$_REQUEST['params']:array();
-        
+        $query   = isset($_REQUEST['query'])?trim($_REQUEST['query']):'';
+        if(!empty($query)){
+            $arrInfo = array_merge($arrInfo,array('query' => $query));
+        }
         $List =Keyword_Api::queryKeywords($page,$pageSize,$arrInfo);
         
 
@@ -57,6 +60,9 @@ class KeywordapiController extends Base_Controller_Api{
         $retList['recordsFiltered'] =$List['total'];
         $retList['recordsTotal'] = $List['total']; 
         $retList['data'] =$List['list']; 
+        if(isset($_REQUEST['query'])){
+            return $this->ajax($retList['data']);
+        }
         return $this->ajax($retList);
     }
 
@@ -127,5 +133,39 @@ class KeywordapiController extends Base_Controller_Api{
         }
         return $this->ajaxError();
     }
+    
+    /**
+     * 修改某景点下的词条的权重
+     * @return [type] [description]
+     */
+    public function RecommendAction(){
+        $start=isset($_REQUEST['start'])?$_REQUEST['start']:0;
 
+        $pageSize=isset($_REQUEST['length'])?$_REQUEST['length']:10;
+        
+        $status  = isset($_REQUEST['params']['status'])?intval($_REQUEST['params']['status']):'';
+        $city    = isset($_REQUEST['params']['city'])?trim($_REQUEST['params']['city']):'';
+        if($status == 3){
+            $status = '';
+        }
+        $page=($start/$pageSize)+1;
+        $dbRet = Keyword_Api::getRecommend($page, $pageSize,$city,$status);
+        $List['list'] =  $dbRet['list'];
+        
+        $retList['recordsFiltered'] =$dbRet['total'];
+        $retList['recordsTotal'] = $dbRet['total'];
+        $retList['data'] =$List['list'];
+        return $this->ajax($retList);
+    }
+    
+    public function dealRecommendAction(){
+        $id      = isset($_REQUEST['id'])?intval($_REQUEST['id']):'';
+        $sightId = isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
+        $status  = isset($_REQUEST['status'])?intval($_REQUEST['status']):'';
+        if(!empty($id) && !empty($sightId) && !empty($status)){
+            Keyword_Api::dealRecommend($id, $sightId, $status);
+            return $this->ajax();
+        }
+        return $this->ajaxError();
+    }
 }

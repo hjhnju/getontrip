@@ -62,6 +62,7 @@ class User_Logic_User extends Base_Logic{
             $arrRet['bakimg'] = Base_Image::getUrlByName($arrRet['backimage']);
         }
         return array(
+            'id'        => strval($userId),
             'nick_name' => isset($arrRet['nick_name'])?trim($arrRet['nick_name']):'',
             'image'     => isset($arrRet['image'])?trim($arrRet['image']):'',
             'bakimg'    => isset($arrRet['bakimg'])?trim($arrRet['bakimg']):'',

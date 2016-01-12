@@ -280,20 +280,19 @@ class Sight_Api{
         $logicSight = new Sight_Logic_Meta();
         return $logicSight->getCityObjList($arrInfo, $page, $pageSize);
     }
-
+    
     /**
-     * 接口24：Sight_Api::editMeta($id,$arrInfo)
-     * 编辑景点元数据
-     * @param string $arrInfo
-     * @param integer $page
-     * @param integer $pageSize
-     * @return array
+     * 接口24：Sight_Api::editSightMeta($id, $arrInfo)
+     * 修改景点元数据信息
+     * @param integer $id
+     * @param array $arrInfo
+     * @return boolen
      */
-    public static function editMeta($id,$arrInfo){
+    public static function editSightMeta($id, $arrInfo){
         $logicSight = new Sight_Logic_Meta();
-        return $logicSight->editMeta($id,$arrInfo);
+        return $logicSight->editMeta($id, $arrInfo);
     }
-
+    
     /**
      * 接口25：Sight_Api::isExistById($id)
      * 根据景点ID判断是否保存到sight表里面
@@ -306,21 +305,16 @@ class Sight_Api{
         $logicSight = new Sight_Logic_Sight();
         return $logicSight->isExistById($id);
     }
-
     
     /**
      * 接口26：Sight_Api::addSightMeta($arrInfo)
-     * 编辑景点元数据
-     * @param string $arrInfo
-     * @param integer $page
-     * @param integer $pageSize
-     * @return array
+     * 添加景点元数据信息
+     * @param array $arrInfo
+     * @return boolen
      */
     public static function addSightMeta($arrInfo){
         $logicSight = new Sight_Logic_Meta();
         return $logicSight->addSightMeta($arrInfo);
-    }
-    
-
+    }  
     
 }

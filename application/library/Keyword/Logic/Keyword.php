@@ -6,7 +6,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
     protected $_fields;
     
     public function __construct(){
-        $this->_fields = array('id','sight_id','name','url','content','image','audio','create_time','update_time','status','x','y');
+        $this->_fields = array('id','sight_id','name','url','content','image','audio','create_time','update_time','status','x','y','level');
     }
     
     /**
@@ -76,10 +76,10 @@ class Keyword_Logic_Keyword extends Base_Logic{
         if($bCheck){
             $obj->weight = $this->getKeywordWeight($arrInfo['sight_id']);
             $ret = $obj->save();            
-            if(isset($arrInfo['status']) && $arrInfo['status'] == Keyword_Type_Status::PUBLISHED){
+            //if(isset($arrInfo['status']) && $arrInfo['status'] == Keyword_Type_Status::PUBLISHED){
                 $logicWiki = new Keyword_Logic_Keyword();
-                $logicWiki->getKeywordSource($obj->id,Keyword_Type_Status::PUBLISHED);
-            }
+                $logicWiki->getKeywordSource($obj->id,$obj->status);
+            //}
         }
         if($ret){
             return $obj->id;
@@ -539,7 +539,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
                  'name' => $tmp[1],
                  'city' => $tmp[2],
                  'file' => $tmp[3],
-             );
+            );
          }
          $arrTmp   = file($RET_DATA);
          foreach ($arrTmp as $key => $val){
@@ -556,19 +556,26 @@ class Keyword_Logic_Keyword extends Base_Logic{
              }
          }
          
-         $arrTmp   = file($UNSOVED);
-         foreach ($arrTmp as $key => $val){
-             $val = explode("\t",$val);
-             $arrRet[$val[0]] = array(array('id' => '','status' => 2));
+         if($status == '' || $status == 0){
+             $arrTmp   = file($UNSOVED);
+             foreach ($arrTmp as $key => $val){
+                 $val = explode("\t",$val);
+                 $arrRet[$val[0]] = array(array('id' => '','status' => 2));
+             }
          }
          
-         
          $arrTmp    = $arrRet;
-         $total     = count($arrTmp);
+         $total     = 0;
          $index     = 0;
          $realIndex = 0;
          foreach ($arrTmp as $key => $val){
-             if($index<$from || $index>=$to){
+             if(isset($arrRawData[$key]['name'])){
+                 $total += 1;
+             }
+         }
+         
+         foreach ($arrTmp as $key => $val){
+             if($index<$from || !isset($arrRawData[$key]['name'])){
                  $index += 1;
                  continue;
              }
@@ -585,6 +592,9 @@ class Keyword_Logic_Keyword extends Base_Logic{
              }
              $index     += 1;
              $realIndex += 1;
+             if($realIndex>=$pageSize){
+                 break;
+             }
          }
          $arrRet  = array(
             'page'     => $page,
@@ -597,13 +607,34 @@ class Keyword_Logic_Keyword extends Base_Logic{
     }
     
     public function dealRecommend($id,$sightId,$status){
-        if(intval($status) == 1){
-            
+        $RAW_DATA   = "/home/work/publish/data/51data/scenics.txt";
+        $str = file_get_contents($RAW_DATA);
+        preg_match_all("/$id\t(.*?)\t/s",$str,$match);
+        foreach ($match[1] as $val){
+            $name = $val;
         }
+        
         $RET_DATA   = "/home/work/publish/data/51data/findSight/unsolved.txt";
-        $origin_str = file_get_contents($RET_DATA);
-        $update_str = preg_replace("/$id\t$sightId\t(.*?)\r\n/", "$id\t$sightId\t$status\r\n", $origin_str);
+        $origin_str = file_get_contents($RET_DATA);        
+        $update_str = preg_replace("/$id\t$sightId\t(.*?)\t/", "$id\t$sightId\t$status\t", $origin_str);
         $ret        = file_put_contents($RET_DATA, $update_str);
+        
+        if(intval($status) == 2){
+            $origin_str = file_get_contents($RET_DATA);
+            preg_match_all("/$id\s(.*?)\s(.*?)\r\n/s",$origin_str,$match);
+            $bTest = true;
+            foreach ($match[2] as $val){
+                if(intval($val)!==2){
+                    $bTest = false;
+                }
+            }
+            if($bTest){
+                $fpUnsolvable = fopen("/home/work/publish/data/51data/findSight/unsolvable.txt","a");
+                $string = sprintf("%d\t%s\r\n",intval($id),$name);
+                fwrite($fpUnsolvable, $string);
+                fclose($fpUnsolvable);
+            }
+        }
         return $ret;
     }
 }

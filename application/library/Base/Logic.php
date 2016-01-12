@@ -104,7 +104,13 @@ class Base_Logic{
     public function upAudioData($filename){
         $oss           = Oss_Adapter::getInstance();
         $arrTemp       = explode("/",$filename);
-        $name          = $arrTemp[count($arrTemp)-1];
+        $name          = md5(microtime(true));
+        $name          = substr($name, 8, 16);
+        
+        $ext      = explode(".",$filename);
+        $count    = count($ext);
+        $name    .= ".".trim($ext[$count-1]);
+        
         $res = $oss->writeFile($name, $filename);
         if($res){
             return $name;

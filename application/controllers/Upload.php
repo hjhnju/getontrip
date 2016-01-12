@@ -95,7 +95,7 @@ class UploadController extends Base_Controller_Page {
     
         //特殊处理剪贴板的图片 改为$_FILES['file']['type']
         $ext = explode("/",$_FILES['file']['type']);
-        if (!isset($ext[1])||!in_array($ext[1], array('mp3'))) {
+        if (!isset($ext[1])||!in_array($ext[1], array('mp3','amr'))) {
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $hash = md5(microtime(true));

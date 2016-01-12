@@ -10,7 +10,8 @@ class KeywordapiController extends Base_Controller_Api{
     }
     
     public function listAction(){
-         //第一条数据的起始位置，比如0代表第一条数据
+
+        //第一条数据的起始位置，比如0代表第一条数据
         $start=isset($_REQUEST['start'])?$_REQUEST['start']:0;
        
         $pageSize=isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX;
@@ -117,12 +118,16 @@ class KeywordapiController extends Base_Controller_Api{
      * 修改某景点下的词条的权重
      * @return [type] [description]
      */
-    public function changeWeightAction(){
-       $id = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0; 
-       $to = isset($_REQUEST['to'])? intval($_REQUEST['to']) : 0;
+    public function changeWeightAction(){ 
         
-       $dbRet = Keyword_Api::changeWeight($id,$to);
-       if ($dbRet) {
+        $sightId =isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
+        $id =isset($_REQUEST['id'])?intval($_REQUEST['id']):'';
+        $to =isset($_REQUEST['to'])?intval($_REQUEST['to']):'';
+        if(empty($sightId)||empty($id)||empty($to)){
+            return $this->ajaxError();
+        }
+        $dbRet =  Keyword_Api::changeWeight($sightId, $id, $to);
+        if ($dbRet) {
             return $this->ajax();
         }
         return $this->ajaxError();

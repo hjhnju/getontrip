@@ -52,13 +52,20 @@ class Keyword_Logic_Keyword extends Base_Logic{
     }
     
     /**
-     * 添加词条信息
+     * 添加词条信息,有的话更新
      * @param array $arrInfo
      * @return boolean
      */
     public function addKeywords($arrInfo){
         $bCheck = false;
         $obj    = new Keyword_Object_Keyword();
+        if(isset($arrInfo['sight_id']) && isset($arrInfo['name'])){
+            $obj->fetch(array('sight_id' => $arrInfo['sight_id'],'name' => $arrInfo['name']));
+            if(!empty($obj->id)){
+                unset($arrInfo['sight_id']);
+                unset($arrInfo['name']);
+            }
+        }
         foreach ($arrInfo as $key => $val){
             if(in_array($key,$this->_fields)){  
                 $key = $this->getprop($key); 

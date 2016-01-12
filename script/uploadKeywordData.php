@@ -53,6 +53,11 @@ foreach ($match[1] as $key => $id){
             'y'        => $y,
             'audio'    => $audio,
         );
+        $objKeyword = new Keyword_Object_Keyword();
+        $objKeyword->fetch(array('sight_id' =>$arrInfo['sight_id'],'name' => $name));
+        if(!empty($objKeyword->id)){
+            continue;
+        }
         $id = $logicKeyword->addKeywords($arrInfo);
         $objKeyword = new Keyword_Object_Keyword();
         $objKeyword->fetch(array('id' => $id));
@@ -61,15 +66,15 @@ foreach ($match[1] as $key => $id){
             $objKeyword->save();
         }
         
-        $RET_DATA   = "/home/work/publish/data/51data/findSight/unsolved.txt";
-        $origin_str = file_get_contents($RET_DATA);
-        $update_str = preg_replace("/$match[0][$key]/", "$match[1][$key]\t$match[2][$key]\t1\t1\r\n", $origin_str);
-        $ret        = file_put_contents($RET_DATA, $update_str);
+        //$RET_DATA   = "/home/work/publish/data/51data/findSight/unsolved.txt";
+        //$origin_str = file_get_contents($RET_DATA);
+        //$update_str = preg_replace("/$match[0][$key]/", "$match[1][$key]\t$match[2][$key]\t1\t1\r\n", $origin_str);
+        //$ret        = file_put_contents($RET_DATA, $update_str);
     }
 }
 
 //自动确认景点的，需要一次上传数据操作
-$origin_str     = file_get_contents($resultPath."confirm.txt","w");
+/*$origin_str     = file_get_contents($resultPath."confirm.txt");
 preg_match_all("/(\d+)\s(\d+)\r\n/s",$origin_str,$match);
 $logicKeyword   = new Keyword_Logic_Keyword();
 foreach ($match[1] as $key => $id){
@@ -125,4 +130,4 @@ foreach ($match[1] as $key => $id){
             $objKeyword->save();
         }
     }
-}
+}*/

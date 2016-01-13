@@ -168,4 +168,14 @@ class KeywordapiController extends Base_Controller_Api{
         }
         return $this->ajaxError();
     }
+    
+    public function addaliasAction(){
+        $from = isset($_REQUEST['from'])?intval($_REQUEST['from']):'';
+        $to   = isset($_REQUEST['to'])?intval($_REQUEST['to']):'';
+        if(!empty($from) && !empty($to)){
+            $ret = Keyword_Api::addalias($from, $to);
+            return $this->ajax($ret);
+        }
+        return $this->ajaxError();
+    }
 }

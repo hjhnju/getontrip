@@ -111,7 +111,7 @@ $(document).ready(function() {
                         }
                     }, {
                         "data": function(e) {
-                            return '<button class="btn btn-warning  btn-xs confirm" title="确认url" data-toggle="tooltip"><i class="fa fa-check-square-o"></i></button><a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>';
+                            return '<button class="btn btn-warning  btn-xs confirm" title="确认url" data-toggle="tooltip"><i class="fa fa-check-square-o"></i></button><a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>'+ '<button type="button" class="btn btn-danger btn-xs alias"  title="设为别名" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-pencil"></i></button>';
                         }
                     }
                 ],
@@ -186,6 +186,28 @@ $(document).ready(function() {
                             }
                         }
                     });
+                });
+                
+              //确认url操作
+                $('#editable button.alias').live('click', function(e) {
+                	var toid=prompt("请输入景观ID","");                 
+                    if(toid){
+                    	var fromid = $(this).val();
+                    	$.ajax({
+                            "url": "/admin/Keywordapi/addalias",
+                            "data": {
+                                from: fromid,
+                                to: toid
+                            },
+                            "type": "post",
+                            "error": function(e) {
+                                alert("服务器未正常响应，请重试");
+                            },
+                            "success": function(response) {
+                                api.ajax.reload();
+                            }
+                        });
+                     }
                 });
 
                 //修改权重操作 

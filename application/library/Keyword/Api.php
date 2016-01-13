@@ -112,4 +112,9 @@ class Keyword_Api{
         $logic = new Keyword_Logic_Keyword();
         return $logic->dealRecommend($id,$sightId,$status);
     }
+    
+    public static function addalias($from, $to){
+        $logic = new Keyword_Logic_Keyword();
+        return $logic->addalias($from, $to);
+    }
 }

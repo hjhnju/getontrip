@@ -635,4 +635,34 @@ class Keyword_Logic_Keyword extends Base_Logic{
         }
         return $ret;
     }
+    
+    public function addalias($from, $to){
+        $objTo   = new Keyword_Object_Keyword();
+        $objTo->fetch(array('id' => $to));
+        $objTo->setFileds(array('x','y','content','image','audio','audio_len'));
+        $arrTo   = $objTo->toArray();
+        $objFrom = new Keyword_Object_Keyword();
+        $objFrom->fetch(array('id' => $from));
+        foreach ($arrTo as $key => $val){
+            if(empty($val)){
+                $key = $this->getprop($key);
+                $objTo->$key = $objFrom->$key;
+            }else{
+                if($key=='audio' || $key == 'image'){
+                    $this->delPic($objFrom->$key);
+                }
+            }
+        }
+        $alias      = $objTo->alias;
+        if(empty($alias)){
+            $objTo->alias = $objFrom->name;
+        }else{
+            $arrAlias   = explode(",",$alias);
+            $arrAlias[] = $objFrom->name;
+            $objTo->alias = implode(",",$arrAlias);
+        }
+        $objTo->save();
+        $ret = $objFrom->remove();
+        return $ret;
+    }
 }

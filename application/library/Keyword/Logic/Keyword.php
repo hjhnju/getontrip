@@ -83,10 +83,16 @@ class Keyword_Logic_Keyword extends Base_Logic{
         if($bCheck){
             $obj->weight = $this->getKeywordWeight($arrInfo['sight_id']);
             $ret = $obj->save();            
-            //if(isset($arrInfo['status']) && $arrInfo['status'] == Keyword_Type_Status::PUBLISHED){
-                $logicWiki = new Keyword_Logic_Keyword();
-                $logicWiki->getKeywordSource($obj->id,$obj->status);
-            //}
+            $logicWiki = new Keyword_Logic_Keyword();
+            $logicWiki->getKeywordSource($obj->id,$obj->status);
+        }
+        
+        if(isset($arrInfo['status']) && (intval($arrInfo['status']) == Keyword_Type_Status::PUBLISHED)){
+            $model = new GisModel();
+            $model->insertLandscape($obj->id);
+        }elseif(isset($arrInfo['status']) && (intval($arrInfo['status']) == Keyword_Type_Status::NOTPUBLISHED)){
+            $model = new GisModel();
+            $model->delLandscape($obj->id);
         }
         if($ret){
             return $obj->id;
@@ -121,8 +127,14 @@ class Keyword_Logic_Keyword extends Base_Logic{
         if($bCheck){
             $ret =  $obj->save();
             if(isset($arrInfo['status']) && (intval($arrInfo['status']) == Keyword_Type_Status::PUBLISHED)){
+                $model = new GisModel();
+                $model->insertLandscape($id);
+                
                 $logicWiki = new Keyword_Logic_Keyword();
                 $logicWiki->getKeywordSource($id,Keyword_Type_Status::PUBLISHED);
+            }elseif(isset($arrInfo['status']) && (intval($arrInfo['status']) == Keyword_Type_Status::NOTPUBLISHED)){
+                $model = new GisModel();
+                $model->delLandscape($id);
             }
         }
         if($ret){
@@ -137,6 +149,9 @@ class Keyword_Logic_Keyword extends Base_Logic{
      * @return boolean
      */
     public function delKeyword($id){
+        $model = new GisModel();
+        $model->delLandscape($id);
+        
         $listCatalog = new Keyword_List_Catalog();
         $listCatalog->setFilter(array('keyword_id' => $id));
         $listCatalog->setPagesize(PHP_INT_MAX);

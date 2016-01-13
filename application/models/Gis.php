@@ -9,7 +9,12 @@ class GisModel
     protected $conn = '';
 
     public function __construct(){
-        $this->conn = Base_Pg::getInstance("getontripoff");
+        if(ini_get('yaf.environ') == 'dev'){
+            $this->conn = Base_Pg::getInstance("getontripoff");
+        }else{
+            $this->conn = Base_Pg::getInstance("getontrip");
+        }
+        
     }
     
     
@@ -139,7 +144,7 @@ class GisModel
     }
     
     public function getLocation(){
-        $getIp=$_SERVER["REMOTE_ADDR"];
+        $getIp   = Base_Util_Ip::getClientIp();
         $content = file_get_contents("http://api.map.baidu.com/location/ip?ak=7IZ6fgGEGohCrRKUE9Rj4TSQ&ip={$getIp}&coor=bd09ll");
         $ret = json_decode($content);
         return array(

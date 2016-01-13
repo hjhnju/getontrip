@@ -349,7 +349,10 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $arrItems    = array();
         
         $wikiUrl     = $keyword['url'];
-        $html        = file_get_html($wikiUrl);
+        $html        = @file_get_html($wikiUrl);
+        if(empty($html)){
+            return false;
+        }
         $image       = $html->find('img');
         $name        = '';
         foreach ($image as $e){

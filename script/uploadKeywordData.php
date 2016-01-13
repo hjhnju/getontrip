@@ -30,6 +30,9 @@ foreach ($match[1] as $key => $id){
         if(intval($data) == intval($id)){
             $level = 1;
         }
+        if(!file_exists($directory."/$data.properties")){
+            continue;
+        }
         $arrProperty  = file($directory."/$data.properties");
         foreach ($arrProperty as $property){
             $tmp = explode("=",$property);
@@ -41,9 +44,7 @@ foreach ($match[1] as $key => $id){
                 $x    = $tmp[1];
             }
         }
-        if(file_exists($directory."/$data.amr")){
-            $audio = $logicKeyword->upAudioData($directory."/$data.amr");
-        }
+        
         $arrInfo = array(
             'name'     => $name,
             'url'      => 'http://baike.baidu.com/item/'.$name,
@@ -51,12 +52,14 @@ foreach ($match[1] as $key => $id){
             'level'    => $level,
             'x'        => $x,
             'y'        => $y,
-            'audio'    => $audio,
         );
         $objKeyword = new Keyword_Object_Keyword();
         $objKeyword->fetch(array('sight_id' =>$arrInfo['sight_id'],'name' => $name));
         if(!empty($objKeyword->id)){
             continue;
+        }
+        if(file_exists($directory."/$data.amr")){
+            $arrInfo['audio'] = $logicKeyword->upAudioData($directory."/$data.amr");
         }
         $id = $logicKeyword->addKeywords($arrInfo);
         $objKeyword = new Keyword_Object_Keyword();
@@ -74,7 +77,7 @@ foreach ($match[1] as $key => $id){
 }
 
 //自动确认景点的，需要一次上传数据操作
-$origin_str     = file_get_contents($resultPath."confirm.txt");
+/*$origin_str     = file_get_contents($resultPath."confirm.txt");
 preg_match_all("/(\d+)\s(\d+)\r\n/s",$origin_str,$match);
 $logicKeyword   = new Keyword_Logic_Keyword();
 foreach ($match[1] as $key => $id){
@@ -99,6 +102,9 @@ foreach ($match[1] as $key => $id){
         if(intval($data) == intval($id)){
             $level = 1;
         }
+        if(!file_exists($directory."/$data.properties")){
+            continue;
+        }
         $arrProperty  = file($directory."/$data.properties");
         foreach ($arrProperty as $property){
             $tmp = explode("=",$property);
@@ -110,9 +116,6 @@ foreach ($match[1] as $key => $id){
                 $y    = $tmp[1];
             }
         }
-        if(file_exists($directory."/$data.amr")){
-            $audio = $logicKeyword->upAudioData($directory."/$data.amr");
-        }
         $arrInfo = array(
             'name'     => $name,
             'url'      => 'http://baike.baidu.com/item/'.$name,
@@ -120,12 +123,14 @@ foreach ($match[1] as $key => $id){
             'level'    => $level,
             'x'        => $x,
             'y'        => $y,
-            'audio'    => $audio,
         );
         $objKeyword = new Keyword_Object_Keyword();
         $objKeyword->fetch(array('sight_id' =>$arrInfo['sight_id'],'name' => $name));
         if(!empty($objKeyword->id)){
             continue;
+        }
+        if(file_exists($directory."/$data.amr")){
+            $arrInfo['audio'] = $logicKeyword->upAudioData($directory."/$data.amr");
         }
         $id = $logicKeyword->addKeywords($arrInfo);
         $objKeyword = new Keyword_Object_Keyword();
@@ -135,4 +140,4 @@ foreach ($match[1] as $key => $id){
             $objKeyword->save();
         }
     }
-}
+}*/

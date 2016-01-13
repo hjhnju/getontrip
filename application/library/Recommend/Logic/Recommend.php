@@ -45,6 +45,7 @@ class Recommend_Logic_Recommend extends Base_Logic{
         $listArticle->setPage($page);
         $listArticle->setPagesize($pageSize);
         if($bSpecial){
+            $listArticle->setOrder("rate desc");
             return $listArticle->toArray();   
         }
         $listArticle->setFields(array('id','obj_id'));

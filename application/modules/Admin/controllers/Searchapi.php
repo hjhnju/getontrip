@@ -20,8 +20,9 @@ class SearchapiController extends Base_Controller_Api{
         $pageSize = isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX; 
         $page     = ($start/$pageSize)+1;
         $labelId  = isset($_REQUEST['id'])?$_REQUEST['id']:'';
+        $total    = 0;       
+        $list = Search_Api::listLabel(1, PHP_INT_MAX);
         if(empty($labelId)){
-            $list = Search_Api::listLabel(1, PHP_INT_MAX);
             $labelId = isset($list['list'][0]['id'])?$list['list'][0]['id']:'';
         }
         if(!empty($labelId)){ 
@@ -30,8 +31,13 @@ class SearchapiController extends Base_Controller_Api{
             $List['total'] = 0;
             $List['list']  = array();
         } 
-        $retList['recordsFiltered'] =$List['total'];
-        $retList['recordsTotal'] = $List['total']; 
+        foreach ($list['list'] as $val){
+            if($labelId == $val['id']){
+                $total = $val['obj_num'];
+            }
+        }
+        $retList['recordsFiltered'] =$total;
+        $retList['recordsTotal'] = $total; 
         $retList['data'] = $List['list'];        
         return   $this->ajax($retList);
          

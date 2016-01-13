@@ -134,6 +134,7 @@ class Search_Logic_Label extends Base_Logic{
             $logicSight = new Sight_Logic_Sight();
             $location   = $model->getLocation();
             $arrSight = $model->getNearSight($location['x'], $location['y'], $page, $pageSize);
+            $arrData['list']   = array();
             foreach ($arrSight as $index => $val){
                 $sight         = Sight_Api::getSightById($val['id']);
                 $sightId       = $val['id'];

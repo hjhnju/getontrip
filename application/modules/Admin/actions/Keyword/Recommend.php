@@ -6,7 +6,7 @@
  */
 class RecommendAction extends Yaf_Action_Abstract {
     public function execute() { 
-        $this->redirect("http://123.57.46.229:8301/admin/keyword/recommend");
+        $this->redirect("http://123.57.138.0:8301/admin/keyword/recommend");
     	$statusTypeArray = array(
     	    0 => '未处理',
     	    1 => '已接受',

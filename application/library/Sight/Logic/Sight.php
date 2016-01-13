@@ -217,7 +217,7 @@ class Sight_Logic_Sight extends Base_Logic{
         foreach ($ret['list'] as $val){
             $arrRet[] = array(
                 'id'   => $val['id'],
-                'name' => $val['name'],
+                'name' => $val['name']."  ".$val['city'],
             );
         }
         return $arrRet;

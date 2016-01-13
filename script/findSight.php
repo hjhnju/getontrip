@@ -52,20 +52,35 @@ foreach ($arrData as $val){
     $id      = intval($tmp[0]);
     $sight   = $tmp[1];
     $oldSight = $sight;
-    $objSightMeta = new Sight_Object_Meta();
-    $objSightMeta->fetch(array('name' => $sight));
-    if(empty($objSightMeta->id)){
+    $listSightMeta = new Sight_List_Meta();
+    $listSightMeta->setFilter(array('name' => $sight,'sight_id' => -1));
+    $listSightMeta->setPagesize(PHP_INT_MAX);
+    $arrSightMeta  = $listSightMeta->toArray();
+    if(empty($arrSightMeta['list'])){
         $objSight = new Sight_Object_Sight();
         $objSight->fetch(array('name' => $sight));
-        if(!empty($objSight->id)){
-            $str = sprintf("%d\t%d\r\n",$id,$objSight->id);
-            fwrite($fpConfirm, $str);
-            continue;
+        if(!empty ($objSight->id)){
+            $objCityMeta = new City_Object_Meta();
+            $objCityMeta->fetch(array('id' =>$objSight->cityId));
+            if(strstr($objCityMeta->name,$tmp[2])!==false){
+                $str = sprintf("%d\t%d\r\n",$id,$objSight->id);
+                fwrite($fpConfirm, $str);
+                continue;
+            }
         }
     }else{
-        $str = sprintf("%d\t%d\r\n",$id,$objSightMeta->id);
-        fwrite($fpConfirm, $str);
-        continue;
+        $bTest = false;
+        foreach ($arrSightMeta['list'] as $data){
+            if(strstr($data['city'],$tmp[2])!==false){
+                $str = sprintf("%d\t%d\r\n",$id,$data['id']);
+                fwrite($fpConfirm, $str);
+                $bTest = true;
+                break;
+            }
+        }
+        if($bTest){
+            continue;
+        }
     }
     
     foreach ($arrRawData as $val){
@@ -73,6 +88,7 @@ foreach ($arrData as $val){
             $arrIds[] = $val['id'];
         }
     }
+    $arrIds = array_unique($arrIds);
     if(empty($arrIds)){
         foreach ($arrFilter as $filter){
             $sight = str_replace($filter, "", $sight);

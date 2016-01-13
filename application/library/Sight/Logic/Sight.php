@@ -296,6 +296,9 @@ class Sight_Logic_Sight extends Base_Logic{
         foreach ($keys as $key){
             $redis->delete($key);
         }
+        //删除postgresql中数据
+        $model = new GisModel();
+        $ret   = $model->delSight($id);
         return $ret;
     }
     
@@ -323,6 +326,9 @@ class Sight_Logic_Sight extends Base_Logic{
             }
         }
         if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
+            $model = new GisModel();
+            $model->insertSight($objSight->id);
+            
             $data = $this->modelSight->query(array('name' => $arrInfo['name']), 1, 1);
             $url  = "http://123.57.67.165:8301/InitData?sightId=".$data[0]['id']."&type=All&num=".Base_Config::getConfig('thirddata')->initnum;
             $http = Base_Network_Http::instance()->url($url);
@@ -367,6 +373,9 @@ class Sight_Logic_Sight extends Base_Logic{
         }
         $ret = $objSight->save();
         if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::PUBLISHED)){
+            $model = new GisModel();
+            $model->insertSight($sightId);
+            
             $data = $this->modelSight->query(array('id' => $sightId), 1, 1);
             $url  = "http://123.57.67.165:8301/InitData?sightId=".$data[0]['id']."&type=All&num=".Base_Config::getConfig('thirddata')->initnum;
             $http = Base_Network_Http::instance()->url($url);
@@ -387,6 +396,9 @@ class Sight_Logic_Sight extends Base_Logic{
         }
         $ret = $objSight->save();
         if($ret && $bDoPublish){
+            $model = new GisModel();
+            $model->insertSight($sightId);
+            
             $data = $this->modelSight->query(array('id' => $sightId), 1, 1);
             $url  = "http://123.57.67.165:8301/InitData?sightId=".$data[0]['id']."&type=All&num=".Base_Config::getConfig('thirddata')->initnum;
             $http = Base_Network_Http::instance()->url($url);

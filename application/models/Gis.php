@@ -115,7 +115,7 @@ class GisModel
         }
         $sql = "insert into sight values($objSight->id,$objSight->cityId,$objSight->x,$objSight->y)";
         try {
-            $ret = pg_exec($this->conn,$sql);
+            $ret = @pg_exec($this->conn,$sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
         }
@@ -123,6 +123,32 @@ class GisModel
             return false;
         }
         return true;        
+    }
+    
+    public function delSight($id){
+        $sql = "delete from sight where id=".$id;
+        try {
+            $ret = @pg_exec($this->conn,$sql);
+        } catch (Exception $ex) {
+            Base_Log::error($ex->getMessage());
+        }
+        if(!$ret){
+            return false;
+        }
+        return true;
+    }
+    
+    public function delLandscape($id){
+        $sql = "delete from landscape where id=".$id;
+        try {
+            $ret = @pg_exec($this->conn,$sql);
+        } catch (Exception $ex) {
+            Base_Log::error($ex->getMessage());
+        }
+        if(!$ret){
+            return false;
+        }
+        return true;
     }
     
     public function insertLandscape($id){
@@ -133,7 +159,7 @@ class GisModel
         }
         $sql = "insert into landscape values($objKeyword->id,$objKeyword->sightId,$objKeyword->x,$objKeyword->y)";        
         try {
-            $ret = pg_query($this->conn,$sql);
+            $ret = @pg_query($this->conn,$sql);
         } catch (Exception $ex) {
             Base_Log::error($ex->getMessage());
         }

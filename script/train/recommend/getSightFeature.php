@@ -21,6 +21,7 @@ $fp_label = fopen(WORK_PATH.INDEX_LABEL_SIGHT,"w");
 
 $listSight = new Sight_List_Meta();
 //$listSight->setFilterString("`level` != '' and sight_id = '' or country !='中国' and weight <= 5");
+$listSight->setFilter(array('city_id' => 2));
 $listSight->setOrder("`id` asc");
 $listSight->setPagesize(PHP_INT_MAX);
 $arrSight  = $listSight->toArray();
@@ -57,7 +58,16 @@ foreach ($arrSight['list'] as $sight){
             $strSightVoc = implode("\t",$arrSightVoc);
             $strBuffer .= sprintf(PRE_DESC."%d\t%s\r\n",$sight['id'],$strSightVoc);
         }
-    }    
+    }  
+    
+    //景点百科
+    if(!empty($sight['wiki'])){
+        $arrSightVoc = Base_Util_String::ChineseAnalyzerAll($sight['wiki']);
+        if(!empty($arrSightVoc)){
+            $strSightVoc = implode("\t",$arrSightVoc);
+            $strBuffer .= sprintf(PRE_WIKI."%d\t%s\r\n",$sight['id'],$strSightVoc);
+        }
+    }
 
     //子景点描述内容及子景点景观
     $tmpListSight = new Sight_List_Meta();
@@ -70,6 +80,14 @@ foreach ($arrSight['list'] as $sight){
             if(!empty($arrSightVoc)){
                 $strSightVoc = implode("\t",$arrSightVoc);
                 $strBuffer .= sprintf(PRE_SUB_SIGHT."%d\t%s\r\n",$data['id'],$strSightVoc);
+            }
+        }
+        
+        if(!empty($data['wiki'])){
+            $arrSightVoc = Base_Util_String::ChineseAnalyzerAll($sight['wiki']);
+            if(!empty($arrSightVoc)){
+                $strSightVoc = implode("\t",$arrSightVoc);
+                $strBuffer .= sprintf(PRE_SUB_WIKI."%d\t%s\r\n",$sight['id'],$strSightVoc);
             }
         }
         
@@ -86,7 +104,6 @@ foreach ($arrSight['list'] as $sight){
                 }
             }
         }
-        
     }
     
     //景观内容

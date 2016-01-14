@@ -26,7 +26,7 @@ class Sight_Object_Meta extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'name', 'level', 'image', 'describe', 'impression', 'address', 'type', 'continent', 'country', 'province', 'city', 'region', 'is_china', 'x', 'y', 'url', 'status', 'weight', 'city_id', 'sight_id', 'create_time', 'update_time', 'alias');
+    protected $fields = array('id', 'name', 'level', 'image', 'describe', 'impression', 'address', 'type', 'continent', 'country', 'province', 'city', 'region', 'is_china', 'x', 'y', 'url', 'status', 'weight', 'city_id', 'sight_id', 'create_time', 'update_time', 'alias', 'wiki');
 
     /**
      * 字段与属性隐射关系
@@ -57,6 +57,7 @@ class Sight_Object_Meta extends Base_Object {
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
         'alias'       => 'alias',
+        'wiki'        => 'wiki',
     );
 
     /**
@@ -225,5 +226,11 @@ class Sight_Object_Meta extends Base_Object {
      * @var string
      */
     public $alias;
+
+    /**
+     * 百度百科内容
+     * @var string
+     */
+    public $wiki;
 
 }

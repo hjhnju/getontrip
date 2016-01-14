@@ -16,9 +16,8 @@ class AudioController extends Base_Controller_Page {
      */
     public function indexAction() {
         $hash = $this->_request->get('hash');
-        //$tmp  = explode(".", $hash);
-        //$hash = $tmp[0];
-        if (empty($hash)) {
+        $ext = explode(".",$hash);
+        if (empty($hash) || !isset($ext[1])) {
             header("HTTP/1.1 404 Not Found");
             exit;
         }
@@ -28,7 +27,12 @@ class AudioController extends Base_Controller_Page {
             header("HTTP/1.1 404 Not Found");
             exit;
         }
-        header('Content-type: audio/mpeg');
+        ob_clean();
+        if($ext[1] =='mp3'){
+            header('Content-type: audio/mpeg') ;
+        }elseif($ext[1] =='amr'){
+            header('Content-type: audio/amr') ;
+        }
         echo $audio;
         exit;
     }

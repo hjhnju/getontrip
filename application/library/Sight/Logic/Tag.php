@@ -122,6 +122,7 @@ class Sight_Logic_Tag extends Base_Logic{
         $book  = Book_Api::getBookNum($sightId);
         $video = Video_Api::getVideoNum($sightId);
         if(!empty($wiki)){
+            //array_unshift($arrTopTag,array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '景观')); 
             $arrCommonTag[] = array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '景观');
         }
         if(!empty($book)){

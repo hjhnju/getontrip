@@ -6,7 +6,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
     protected $_fields;
     
     public function __construct(){
-        $this->_fields = array('id','sight_id','name','url','content','image','audio','create_time','update_time','status','x','y');
+        $this->_fields = array('id','sight_id','name','url','content','image','audio','create_time','update_time','status','x','y','level');
     }
     
     /**
@@ -52,13 +52,20 @@ class Keyword_Logic_Keyword extends Base_Logic{
     }
     
     /**
-     * 添加词条信息
+     * 添加词条信息,有的话更新
      * @param array $arrInfo
      * @return boolean
      */
     public function addKeywords($arrInfo){
         $bCheck = false;
         $obj    = new Keyword_Object_Keyword();
+        if(isset($arrInfo['sight_id']) && isset($arrInfo['name'])){
+            $obj->fetch(array('sight_id' => $arrInfo['sight_id'],'name' => $arrInfo['name']));
+            if(!empty($obj->id)){
+                unset($arrInfo['sight_id']);
+                unset($arrInfo['name']);
+            }
+        }
         foreach ($arrInfo as $key => $val){
             if(in_array($key,$this->_fields)){  
                 $key = $this->getprop($key); 
@@ -76,10 +83,16 @@ class Keyword_Logic_Keyword extends Base_Logic{
         if($bCheck){
             $obj->weight = $this->getKeywordWeight($arrInfo['sight_id']);
             $ret = $obj->save();            
-            if(isset($arrInfo['status']) && $arrInfo['status'] == Keyword_Type_Status::PUBLISHED){
-                $logicWiki = new Keyword_Logic_Keyword();
-                $logicWiki->getKeywordSource($obj->id,Keyword_Type_Status::PUBLISHED);
-            }
+            $logicWiki = new Keyword_Logic_Keyword();
+            $logicWiki->getKeywordSource($obj->id,$obj->status);
+        }
+        
+        if(isset($arrInfo['status']) && (intval($arrInfo['status']) == Keyword_Type_Status::PUBLISHED)){
+            $model = new GisModel();
+            $model->insertLandscape($obj->id);
+        }elseif(isset($arrInfo['status']) && (intval($arrInfo['status']) == Keyword_Type_Status::NOTPUBLISHED)){
+            $model = new GisModel();
+            $model->delLandscape($obj->id);
         }
         if($ret){
             return $obj->id;
@@ -114,8 +127,14 @@ class Keyword_Logic_Keyword extends Base_Logic{
         if($bCheck){
             $ret =  $obj->save();
             if(isset($arrInfo['status']) && (intval($arrInfo['status']) == Keyword_Type_Status::PUBLISHED)){
+                $model = new GisModel();
+                $model->insertLandscape($id);
+                
                 $logicWiki = new Keyword_Logic_Keyword();
                 $logicWiki->getKeywordSource($id,Keyword_Type_Status::PUBLISHED);
+            }elseif(isset($arrInfo['status']) && (intval($arrInfo['status']) == Keyword_Type_Status::NOTPUBLISHED)){
+                $model = new GisModel();
+                $model->delLandscape($id);
             }
         }
         if($ret){
@@ -130,6 +149,9 @@ class Keyword_Logic_Keyword extends Base_Logic{
      * @return boolean
      */
     public function delKeyword($id){
+        $model = new GisModel();
+        $model->delLandscape($id);
+        
         $listCatalog = new Keyword_List_Catalog();
         $listCatalog->setFilter(array('keyword_id' => $id));
         $listCatalog->setPagesize(PHP_INT_MAX);
@@ -290,7 +312,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
     public function getKeywordList($sightId,$page,$pageSize,$arrParma = array()){
         $listKeyword  = new Keyword_List_Keyword();
         $arrFilter = array_merge(array('sight_id' => $sightId),$arrParma);
-        $listKeyword->setFields(array('id','name','url','content','image'));
+        $listKeyword->setFields(array('id','name','url','content','image','audio','audio_len','type','x','y'));
         $listKeyword->setOrder("`weight` asc");
         $listKeyword->setFilter($arrFilter);
         $listKeyword->setPage($page);
@@ -299,23 +321,14 @@ class Keyword_Logic_Keyword extends Base_Logic{
         foreach ($arrRet['list'] as $key => $val){
             $arrRet['list'][$key]['id']      = strval($val['id']);
             $arrRet['list'][$key]['content'] = Base_Util_String::delStartEmpty(Base_Util_String::getHtmlEntity($val['content']));
-            $arrRet['list'][$key]['url']      = trim($val['url']);
-            $listKeywordCatalog = new Keyword_List_Catalog();
-            $listKeywordCatalog->setFields(array('name','url'));
-            $listKeywordCatalog->setFilter(array('keyword_id' => $val['id']));
-            $listKeywordCatalog->setOrder('`id` asc');
-            $listKeywordCatalog->setPagesize(self::WIKI_CATALOG_NUM);
-            $arrCatalog = $listKeywordCatalog->toArray();
-            //$arrLen     = array();
-            foreach ($arrCatalog['list'] as $index => $data){
-                $arrCatalog['list'][$index]['name']    = Base_Util_String::trimall($data['name']);
-                $arrCatalog['list'][$index]['section'] = trim($data['url']);
-                unset($arrCatalog['list'][$index]['url']);
-                //$arrLen[] = strlen($data['name']);
-            }
-            //array_multisort($arrLen, SORT_DESC , $arrCatalog['list']);
-            $arrRet['list'][$key]['catalog'] = $arrCatalog['list'];
+            $arrRet['list'][$key]['url']     = trim($val['url']);
+            $arrRet['list'][$key]['audio']   = empty($val['audio'])?'':"/audio/".trim($val['audio']);
+            $arrRet['list'][$key]['audio_len']   = trim($val['audio_len']);
+            $arrRet['list'][$key]['desc']    = intval($val['type'])==1?'必玩':'';
+            $arrRet['list'][$key]['x']    = strval($val['x']);
+            $arrRet['list'][$key]['y']    = strval($val['y']);
             $arrRet['list'][$key]['image']   = Base_Image::getUrlByName($val['image']);
+            unset($arrRet['list'][$key]['type']);
         }
         return $arrRet['list'];
     }
@@ -336,7 +349,10 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $arrItems    = array();
         
         $wikiUrl     = $keyword['url'];
-        $html        = file_get_html($wikiUrl);
+        $html        = @file_get_html($wikiUrl);
+        if(empty($html)){
+            return false;
+        }
         $image       = $html->find('img');
         $name        = '';
         foreach ($image as $e){
@@ -539,7 +555,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
                  'name' => $tmp[1],
                  'city' => $tmp[2],
                  'file' => $tmp[3],
-             );
+            );
          }
          $arrTmp   = file($RET_DATA);
          foreach ($arrTmp as $key => $val){
@@ -556,19 +572,26 @@ class Keyword_Logic_Keyword extends Base_Logic{
              }
          }
          
-         $arrTmp   = file($UNSOVED);
-         foreach ($arrTmp as $key => $val){
-             $val = explode("\t",$val);
-             $arrRet[$val[0]] = array(array('id' => '','status' => 2));
+         if($status == '' || $status == 0){
+             $arrTmp   = file($UNSOVED);
+             foreach ($arrTmp as $key => $val){
+                 $val = explode("\t",$val);
+                 $arrRet[$val[0]] = array(array('id' => '','status' => 2));
+             }
          }
          
-         
          $arrTmp    = $arrRet;
-         $total     = count($arrTmp);
+         $total     = 0;
          $index     = 0;
          $realIndex = 0;
          foreach ($arrTmp as $key => $val){
-             if($index<$from || $index>=$to){
+             if(isset($arrRawData[$key]['name'])){
+                 $total += 1;
+             }
+         }
+         
+         foreach ($arrTmp as $key => $val){
+             if($index<$from || !isset($arrRawData[$key]['name'])){
                  $index += 1;
                  continue;
              }
@@ -585,6 +608,9 @@ class Keyword_Logic_Keyword extends Base_Logic{
              }
              $index     += 1;
              $realIndex += 1;
+             if($realIndex>=$pageSize){
+                 break;
+             }
          }
          $arrRet  = array(
             'page'     => $page,
@@ -597,13 +623,64 @@ class Keyword_Logic_Keyword extends Base_Logic{
     }
     
     public function dealRecommend($id,$sightId,$status){
-        if(intval($status) == 1){
-            
+        $RAW_DATA   = "/home/work/publish/data/51data/scenics.txt";
+        $str = file_get_contents($RAW_DATA);
+        preg_match_all("/$id\t(.*?)\t/s",$str,$match);
+        foreach ($match[1] as $val){
+            $name = $val;
         }
+        
         $RET_DATA   = "/home/work/publish/data/51data/findSight/unsolved.txt";
-        $origin_str = file_get_contents($RET_DATA);
-        $update_str = preg_replace("/$id\t$sightId\t(.*?)\r\n/", "$id\t$sightId\t$status\r\n", $origin_str);
+        $origin_str = file_get_contents($RET_DATA);        
+        $update_str = preg_replace("/$id\t$sightId\t(.*?)\t/", "$id\t$sightId\t$status\t", $origin_str);
         $ret        = file_put_contents($RET_DATA, $update_str);
+        
+        if(intval($status) == 2){
+            $origin_str = file_get_contents($RET_DATA);
+            preg_match_all("/$id\s(.*?)\s(.*?)\r\n/s",$origin_str,$match);
+            $bTest = true;
+            foreach ($match[2] as $val){
+                if(intval($val)!==2){
+                    $bTest = false;
+                }
+            }
+            if($bTest){
+                $fpUnsolvable = fopen("/home/work/publish/data/51data/findSight/unsolvable.txt","a");
+                $string = sprintf("%d\t%s\r\n",intval($id),$name);
+                fwrite($fpUnsolvable, $string);
+                fclose($fpUnsolvable);
+            }
+        }
+        return $ret;
+    }
+    
+    public function addalias($from, $to){
+        $objTo   = new Keyword_Object_Keyword();
+        $objTo->fetch(array('id' => $to));
+        $objTo->setFileds(array('x','y','content','image','audio','audio_len'));
+        $arrTo   = $objTo->toArray();
+        $objFrom = new Keyword_Object_Keyword();
+        $objFrom->fetch(array('id' => $from));
+        foreach ($arrTo as $key => $val){
+            if(empty($val)){
+                $key = $this->getprop($key);
+                $objTo->$key = $objFrom->$key;
+            }else{
+                if($key=='audio' || $key == 'image'){
+                    $this->delPic($objFrom->$key);
+                }
+            }
+        }
+        $alias      = $objTo->alias;
+        if(empty($alias)){
+            $objTo->alias = $objFrom->name;
+        }else{
+            $arrAlias   = explode(",",$alias);
+            $arrAlias[] = $objFrom->name;
+            $objTo->alias = implode(",",$arrAlias);
+        }
+        $objTo->save();
+        $ret = $objFrom->remove();
         return $ret;
     }
 }

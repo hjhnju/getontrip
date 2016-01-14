@@ -189,18 +189,22 @@ $(document).ready(function() {
                     //提取当前文章的所有状态
                     var obj_id = $(this).attr('data-id');
                     var items = [];
+                    var test  = false;
                     $.each($('#editable span.opt-status.checked[data-obj_id="'+obj_id+'"]'),function(i,ele){
                         var data = {
                             action : $(ele).attr('data-action'), 
                             label_id : $(ele).attr('data-label_id'),
                             label_type : $(ele).attr('data-label_type'),
                         };
+                       if($(ele).attr('data-action') == 'ACCEPT'){
+                    	   test = true;
+                       }
                        items.push(data);
                     }) 
                     if (items.length==0) {
                          toastr.warning('请选择一个状态'); 
                          return;
-                    }
+                    }             
                     $.ajax({
                         "url": "/admin/recommendapi/dealArticle",
                         "data": {id:obj_id,params:items},
@@ -214,7 +218,9 @@ $(document).ready(function() {
                                 //刷新当前页
                                 oTable.fnRefresh();
                                 //打开新的链接
-                                window.open("/admin/topic/edit?action=edit&id="+response.data);
+                                if(test == true){
+                                	window.open("/admin/topic/edit?action=edit&id="+response.data);
+                                }
                             }
                             else{
                                 toastr.warning(response.statusInfo); 

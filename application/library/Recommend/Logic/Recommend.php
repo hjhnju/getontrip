@@ -103,7 +103,9 @@ class Recommend_Logic_Recommend extends Base_Logic{
         if(isset($article['source']) && !empty($article['source'])){
             $arrFrom[] = $article['source'];
         }
-        
+        if(empty($arrSightIds) && empty($arrTags)){
+            return false;
+        }
         $arrInfo  = array(
              'title'       => isset($article['title'])?trim($article['title']):'',
              'subtitle'    => isset($article['subtitle'])?trim($article['subtitle']):'',

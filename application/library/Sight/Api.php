@@ -282,13 +282,13 @@ class Sight_Api{
     }
     
     /**
-     * 接口24：Sight_Api::editSightMeta($id, $arrInfo)
+     * 接口24：Sight_Api::editMeta($id, $arrInfo)
      * 修改景点元数据信息
      * @param integer $id
      * @param array $arrInfo
      * @return boolen
      */
-    public static function editSightMeta($id, $arrInfo){
+    public static function editMeta($id, $arrInfo){
         $logicSight = new Sight_Logic_Meta();
         return $logicSight->editMeta($id, $arrInfo);
     }

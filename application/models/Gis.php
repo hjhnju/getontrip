@@ -76,7 +76,7 @@ class GisModel
     public function getNearSight($x,$y,$page,$pageSize){
         $arrRet = array();
         $from   = ($page-1)*$pageSize;
-        $sql    = "SELECT id,earth_distance(ll_to_earth(x, y), ll_to_earth($x,$y)) as dis FROM sight  ORDER BY dis ASC limit $pageSize offset $from;";
+        $sql    = "SELECT id,earth_distance(ll_to_earth(y, x), ll_to_earth($y,$x)) as dis FROM sight  ORDER BY dis ASC limit $pageSize offset $from;";
         try {
             $resultSet = pg_query($this->conn,$sql);
             while ($row = pg_fetch_row($resultSet)){

@@ -1,6 +1,6 @@
 <?php
 /**
- * 美食商店关系表 列表类
+ * 商店信息表 列表类
  * @author huwei
  */
 class Food_List_Shop extends Base_List {
@@ -20,7 +20,7 @@ class Food_List_Shop extends Base_List {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'food_id', 'shop_id', 'create_time', 'update_time');
+    protected $fields = array('id', 'food_id', 'title', 'image', 'addr', 'phone', 'url', 'status', 'score', 'type', 'x', 'y', 'create_user', 'update_user', 'create_time', 'update_time', 'price');
 
     /**
      * 整数类型的字段
@@ -29,7 +29,10 @@ class Food_List_Shop extends Base_List {
     protected $intProps = array(
         'id'          => 1,
         'food_id'     => 1,
-        'shop_id'     => 1,
+        'status'      => 1,
+        'type'        => 1,
+        'create_user' => 1,
+        'update_user' => 1,
         'create_time' => 1,
         'update_time' => 1,
     );

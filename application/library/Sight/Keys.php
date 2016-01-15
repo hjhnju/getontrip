@@ -12,11 +12,15 @@ class Sight_Keys {
 
     const BOOK      = 'book';
     
+    const FOOD      = 'food';
+    
     const TOPIC     = 'topic';
     
     const VIDEO     = 'video';
     
     const LANDSCAPE = 'landscape';
+    
+    const SPECIALTY = 'specialty';
     
     public static function getSightTopicKey($id){
         return sprintf(self::REDIS_SIGHT_TOPIC_KEY, $id);

@@ -5,7 +5,7 @@ class Food_Logic_Food extends Base_Logic{
     
     const DEFAULT_WEIGHT = 0;
     
-    protected $fields = array('sight_id', 'title', 'url', 'image', 'from', 'len', 'type', 'status', 'create_time', 'update_time', 'create_user', 'update_user');
+    protected $fields = array('destination_id', 'title', 'image', 'content', 'status', 'create_time', 'update_time', 'create_user', 'update_user');
     
     public function __construct(){
         
@@ -21,13 +21,16 @@ class Food_Logic_Food extends Base_Logic{
      */
     public function getFoods($page,$pageSize,$arrParam = array()){
         $arrFood['list']   = array();
-        $arrRet['list']     = array();
-        $title    = '';
-        if(isset($arrParam['sight_id'])){
-            $sightId    = $arrParam['sight_id'];
+        $arrRet['list']         = array();
+        $title                  = '';
+        $destId                 = '';
+        $type                   = '';
+        if(isset($arrParam['destination_id'])){
+            $destId     = $arrParam['destination_id'];
+            $type       = $arrParam['destination_type'];
             $arrFoodIds = array();            
-            $listSightFood = new Sight_List_Food();
-            $listSightFood->setFilter(array('sight_id' => $sightId));
+            $listSightFood = new Destination_List_Food();
+            $listSightFood->setFilter(array('destination_id' => $destId,'destination_type' => $type));
             if(isset($arrParam['order'])){
                 $listSightFood->setOrder($arrParam['order']);
                 unset($arrParam['order']);
@@ -39,7 +42,7 @@ class Food_Logic_Food extends Base_Logic{
                 unset($arrParam['title']);
             }
             foreach ($ret['list'] as $val){
-                $arrParam = array_merge($arrParam,array('id' => $val['Food_id']));                
+                $arrParam = array_merge($arrParam,array('id' => $val['food_id']));                
                 $objFood = new Food_Object_Food();
                 $objFood->fetch($arrParam);
                 $arrTmpFood = $objFood->toArray();
@@ -77,61 +80,73 @@ class Food_Logic_Food extends Base_Logic{
                 $arrFood['list'][$key] = $val['id'];   
             }
         }
-        $arrRet['page'] = $arrFood['page'];
-        $arrRet['pagesize'] = $arrFood['pagesize'];
-        $arrRet['pageall'] = $arrFood['pageall'];
-        $arrRet['total'] = $arrFood['total'];
         foreach($arrFood['list'] as $key => $val){
             $temp = array();
             $arrFood['list'][$key] = Food_Api::getFoodInfo($val);
-            $arrFood['list'][$key]['sights'] = array();
-            $listSightFood = new Sight_List_Food();
-            $listSightFood->setFilter(array('Food_id' => $val));
+            $arrFood['list'][$key]['dest'] = array();
+            $listSightFood = new Destination_List_Food();
+            $listSightFood->setFilter(array('food_id' => $val));
             $listSightFood->setPagesize(PHP_INT_MAX);
             $arrSightFood  = $listSightFood->toArray();
             foreach ($arrSightFood['list'] as $data){
-                $sight          = Sight_Api::getSightById($data['sight_id']);
-                $temp['id']     = $data['sight_id'];
-                $temp['name']   = $sight['name'];
+                if($data['destination_type'] == Destination_Type_Type::SIGHT){
+                    $dest  = Sight_Api::getSightById($data['destination_id']);
+                }else{
+                    $dest  = City_Api::getCityById($data['destination_id']);
+                }
+                $temp['id']     = $data['destination_id'];
+                $temp['type']   = $data['destination_type'];
+                $temp['name']   = $dest['name'];
                 $temp['weight'] = $data['weight'];
+                if(!empty($temp)){
+                    $arrFood['list'][$key]['dest'][] = $temp;
+                }
+                if(($destId ==$temp['id']) && ($type == $temp['type'])){
+                    $arrFood['list'][$key]['weight'] = $temp['weight'];
+                }
             }
-            if(!empty($temp)){
-                $arrFood['list'][$key]['sights'][] = $temp;
+
+            $temp  = array();
+            $arrFood['list'][$key]['shop'] = array();
+            $arrFoodShop = Food_Api::getShopList($page, $pageSize, array('food_id' =>$val));
+            foreach ($arrFoodShop['list'] as $data){
+                $temp['name']   = $data['title'];
+                if(!empty($temp)){
+                    $arrFood['list'][$key]['shop'][] = $temp;
+                }
             }
-            
         }
         return $arrFood;
     }
     
     /**
-     * 获取视频信息,供前端使用
+     * 获取特产信息,供前端使用
      * @param integer $sightId，景点ID
      * @param integer $page,页码
      * @param integer $pageSize
      * @param array   $arrParam,过滤条件
      * @return array
      */
-    public function getFoodList($sightId,$page,$pageSize,$arrParam = array()){
+    public function getFoodList($destId,$type,$page,$pageSize,$arrParam = array()){
         $arrRet         = array();
-        $listSightFood = new Sight_List_Food();
-        $listSightFood->setFilter(array('sight_id' => $sightId));
-        $listSightFood->setOrder('`weight` asc');
-        $listSightFood->setPagesize(PHP_INT_MAX);
-        $ret = $listSightFood->toArray();
+        $listDestinationFood = new Destination_List_Food();
+        $listDestinationFood->setFilter(array('destination_id' => $destId,'destination_type' => $type));
+        $listDestinationFood->setOrder('`weight` asc');
+        $listDestinationFood->setPagesize(PHP_INT_MAX);
+        $ret = $listDestinationFood->toArray();
         foreach ($ret['list'] as $val){
             $objFood = new Food_Object_Food();
-            $arrParam = array_merge($arrParam,array('id' => $val['Food_id']));
+            $arrParam = array_merge($arrParam,array('id' => $val['food_id']));
             $objFood->fetch($arrParam);
             $arrFood = $objFood->toArray();
             if(!empty($arrFood)){
-                $temp['id']    = strval($arrFood['id']);
-                $Food         = Food_Api::getFoodInfo($arrFood['id']);
-                $temp['title'] = Base_Util_String::getHtmlEntity($Food['title']);
-                $temp['image'] = Base_Image::getUrlByName($Food['image']);
-                $temp['url']   = Base_Config::getConfig('web')->root.'/Food/detail?id='.$temp['id'];
-                $temp['type']    = strval($Food['type']);
-                $logicCollect    = new Collect_Logic_Collect();
-                $temp['collected'] = strval($logicCollect->checkCollect(Collect_Type::Food, $arrFood['id']));
+                $temp['id']      = strval($arrFood['id']);
+                $Food       = Food_Api::getFoodInfo($arrFood['id']);
+                $temp['topicNum']= strval('10');
+                $temp['title']    = trim($Food['title']);
+                $temp['desc']    = trim($Food['content']);
+                $temp['image']   = isset($Food['image'])?Base_Image::getUrlByName($Food['image']):'';
+                $temp['url']     = Base_Config::getConfig('web')->root.'/food/detail?id='.$temp['id'];
                 $arrRet[] = $temp;
             }
         }
@@ -146,23 +161,12 @@ class Food_Logic_Food extends Base_Logic{
      */
     public function getAiqiyiSource($sightId,$page){
         
-    }    
+    }
     
     public function getFoodByInfo($FoodId){
         $objFood = new Food_Object_Food();
         $objFood->fetch(array('id' => $FoodId));
         $arrFood = $objFood->toArray();
-        
-        $listSightFood = new Sight_List_Food();
-        $listSightFood->setFilter(array('Food_id' => $FoodId));
-        $listSightFood->setPagesize(PHP_INT_MAX);
-        $arrSightFood  = $listSightFood->toArray();
-        foreach ($arrSightFood['list'] as $val){
-            $temp['id']   = $val['sight_id'];
-            $sight        = Sight_Api::getSightById($val['sight_id']);
-            $temp['name'] = $sight['name'];
-            $arrFood['sights'][] = $temp;
-        }
         return $arrFood;
     }
     
@@ -176,20 +180,20 @@ class Food_Logic_Food extends Base_Logic{
             $arrFood[$key]['image']       = isset($Food['image'])?Base_Image::getUrlByName($Food['image']):'';
             $arrFood[$key]['url']         = isset($Food['url'])?trim($Food['url']):'';
             $arrFood[$key]['content']     = isset($Food['from'])?trim($Food['from']):'';
-            $arrFood[$key]['search_type'] = 'Food';
+            $arrFood[$key]['search_type'] = 'food';
         }
         return array('data' => $arrFood, 'num' => $num);
     }
     
-    public function getAllFoodNum($sightId){
+    public function getAllFoodNum($sightId,$type){
         $maxWeight  = 0;    
-        $listSightFood = new Sight_List_Food();
-        $listSightFood->setFilter(array('sight_id' => $sightId));
+        $listSightFood = new Destination_List_Food();
+        $listSightFood->setFilter(array('destination_id' => $sightId,'destination_type'=>$type));
         $listSightFood->setPagesize(PHP_INT_MAX);
         $arrSightFood  = $listSightFood->toArray();
         foreach ($arrSightFood['list'] as $val){
             $objFood = new Food_Object_Food();
-            $objFood->fetch(array('id' => $val['Food_id']));
+            $objFood->fetch(array('id' => $val['food_id']));
             if($objFood->status == Food_Type_Status::PUBLISHED){
                 if($val['weight'] > $maxWeight){
                     $maxWeight = $val['weight'];
@@ -202,26 +206,26 @@ class Food_Logic_Food extends Base_Logic{
     public function getFoodNum($sighId, $status = Food_Type_Status::PUBLISHED){
         if($status == Food_Type_Status::PUBLISHED){
             $redis = Base_Redis::getInstance();
-            $ret   = $redis->hGet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::Food);
+            $ret   = $redis->hGet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::FOOD);
             if(!empty($ret)){
                 return $ret;
             }
         }
         $count          = 0;
-        $listSightFood = new Sight_List_Food();
-        $listSightFood->setFilter(array('sight_id' => $sighId));
+        $listSightFood = new Destination_List_Food();
+        $listSightFood->setFilter(array('destination_id' => $sighId));
         $listSightFood->setPagesize(PHP_INT_MAX);
         $arrSightFood  = $listSightFood->toArray();
         foreach ($arrSightFood['list'] as $val){
             $objFood = new Food_Object_Food();
-            $objFood->fetch(array('id' => $val['Food_id']));
+            $objFood->fetch(array('id' => $val['food_id']));
             if($objFood->status == $status){
                 $count += 1;
             }
         }
         if($status == Food_Type_Status::PUBLISHED){
             $redis = Base_Redis::getInstance();
-            $redis->hSet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::Food,$count);
+            $redis->hSet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::FOOD,$count);
         }
         return $count;
     }
@@ -232,6 +236,25 @@ class Food_Logic_Food extends Base_Logic{
      * @param array $arrParam
      */
     public function editFood($id, $arrParam){
+        $arrSight   = array();
+        $arrCity    = array();
+        $arrShop = array();
+        if(isset($arrParam['sight_id'])){
+            $arrSight = $arrParam['sight_id'];
+            unset($arrParam['sight_id']);
+        }
+        if(isset($arrParam['city_id'])){
+            $arrCity = $arrParam['city_id'];
+            unset($arrParam['city_id']);
+        }
+        if(isset($arrParam['shop'])){
+            if(is_array($arrParam['shop'])){
+                $arrShop = $arrParam['shop'];
+            }else{
+                $arrShop = array($arrParam['shop']);
+            }
+            unset($arrParam['shop']);
+        }
         $this->updateRedis($id);
         if(isset($arrParam['status'])){
             $arrSightIds = array();
@@ -240,21 +263,21 @@ class Food_Logic_Food extends Base_Logic{
             $objFood = new Food_Object_Food();
             $objFood->fetch(array('id' => $id));
             $objFood->status = $arrParam['status'];
-            $listSightFood = new Sight_List_Food();
-            $listSightFood->setFilter(array('Food_id' => $id));
+            $listSightFood = new Destination_List_Food();
+            $listSightFood->setFilter(array('food_id' => $id));
             $listSightFood->setPagesize(PHP_INT_MAX);
             $arrSightFood  = $listSightFood->toArray();
             foreach ($arrSightFood['list'] as $val){
-                $objSightFood = new Sight_Object_Food();
+                $objSightFood = new Destination_Object_Food();
                 $objSightFood->fetch(array('id' => $val['id']));
                 
                 $redis = Base_Redis::getInstance();
-                $redis->hDel(Sight_Keys::getSightTongjiKey($val['sight_id']),Sight_Keys::Food);
+                $redis->hDel(Sight_Keys::getSightTongjiKey($val['destination_id']),Sight_Keys::FOOD);
                 
                 if($arrParam['status'] == Food_Type_Status::BLACKLIST){
                     $ret = $objSightFood->remove();
                 }else{
-                    $objSightFood->weight = $this->getAllFoodNum($val['sight_id']);
+                    $objSightFood->weight = $this->getAllFoodNum($val['destination_id'],$objSightFood->destinationType);
                     $objSightFood->save();
                 }
             }
@@ -263,19 +286,27 @@ class Food_Logic_Food extends Base_Logic{
             }
         }
         
-        $arrSight = array();
-        if(isset($arrParam['sight_id'])){
-            $listSightFood = new Sight_List_Food();
-            $listSightFood->setFilter(array('Food_id' => $id));
+        if(!empty($arrCity) || !empty($arrSight)){
+            $listSightFood = new Destination_List_Food();
+            $listSightFood->setFilter(array('food_id' => $id));
             $listSightFood->setPagesize(PHP_INT_MAX);
             $arrSightFood  = $listSightFood->toArray();
             foreach ($arrSightFood['list'] as $val){
-                $objSightFood = new Sight_Object_Food();
+                $objSightFood = new Destination_Object_Food();
                 $objSightFood->fetch(array('id' => $val['id']));
                 $objSightFood->remove();
             }
-            $arrSight = $arrParam['sight_id'];
-            unset($arrParam['sight_id']);
+        }
+        if(!empty($arrShop)){
+            $listFoodShop = new Food_List_Shop();
+            $listFoodShop->setFilter(array('food_id' => $id));
+            $listFoodShop->setPagesize(PHP_INT_MAX);
+            $arrFoodShop  = $listFoodShop->toArray();
+            foreach ($arrFoodShop['list'] as $val){
+                $objFoodShop = new Food_Object_Shop();
+                $objFoodShop->fetch(array('id' => $val['id']));
+                $objFoodShop->remove();
+            }
         }
         $objFood = new Food_Object_Food();
         $objFood->fetch(array('id' => $id));
@@ -291,11 +322,28 @@ class Food_Logic_Food extends Base_Logic{
         }
         
         foreach ($arrSight as $sightId){
-            $objSightFood = new Sight_Object_Food();
-            $objSightFood->sightId = $sightId;
-            $objSightFood->FoodId = $id;
-            $objSightFood->weight  = $this->getAllFoodNum($sightId);
+            $objSightFood = new Destination_Object_Food();
+            $objSightFood->destinationId = $sightId;
+            $objSightFood->destinationType = Destination_Type_Type::SIGHT;
+            $objSightFood->foodId    = $id;
+            $objSightFood->weight  = $this->getAllFoodNum($sightId,Destination_Type_Type::SIGHT);
             $objSightFood->save();
+        }
+        
+        foreach ($arrCity as $cityId){
+            $objCityFood = new Destination_Object_Food();
+            $objCityFood->destinationId = $cityId;
+            $objCityFood->destinationType = Destination_Type_Type::CITY;
+            $objCityFood->foodId    = $id;
+            $objCityFood->weight  = $this->getAllFoodNum($cityId,Destination_Type_Type::CITY);
+            $objCityFood->save();
+        }
+        
+        foreach ($arrShop as $shop){
+            $objFoodShop = new Food_Object_Shop();
+            $objFoodShop->fetch(array('id' => intval($shop)));
+            $objFoodShop->foodId = $objFood->id;
+            $objFoodShop->save();
         }
         return $objFood->save();
     }
@@ -305,10 +353,24 @@ class Food_Logic_Food extends Base_Logic{
      * @param array $arrParam
      */
     public function addFood($arrParam){
-        $arrSight = array();
+        $arrSight   = array();
+        $arrCity    = array();
+        $arrShop = array();
         if(isset($arrParam['sight_id'])){
             $arrSight = $arrParam['sight_id'];
             unset($arrParam['sight_id']);
+        }
+        if(isset($arrParam['city_id'])){
+            $arrCity = $arrParam['city_id'];
+            unset($arrParam['city_id']);
+        }
+        if(isset($arrParam['shop'])){
+            if(is_array($arrParam['shop'])){
+                $arrShop = $arrParam['shop'];
+            }else{
+                $arrShop = array($arrParam['shop']);
+            }
+            unset($arrParam['shop']);
         }
         $objFood = new Food_Object_Food();
         foreach ($arrParam as $key => $val){
@@ -317,15 +379,29 @@ class Food_Logic_Food extends Base_Logic{
                 $objFood->$key = $val;
             }
         }
-        $objFood->guid   = md5($arrParam['title'].$arrParam['url']);
-        $ret =             $objFood->save();
+        $objFood->save();
         
         foreach ($arrSight as $sightId){
-            $objSightFood = new Sight_Object_Food();
-            $objSightFood->sightId = $sightId;
-            $objSightFood->FoodId = $objFood->id;
-            $objSightFood->weight  = $this->getAllFoodNum($sightId);
-            $objSightFood->save();            
+            $objDestinationFood = new Destination_Object_Food();
+            $objDestinationFood->destinationId   = $sightId;
+            $objDestinationFood->destinationType = Destination_Type_Type::SIGHT;
+            $objDestinationFood->foodId = $objFood->id;
+            $objDestinationFood->weight  = $this->getAllFoodNum($sightId,Destination_Type_Type::SIGHT);
+            $objDestinationFood->save();            
+        }
+        foreach ($arrCity as $cityId){
+            $objDestinationFood = new Destination_Object_Food();
+            $objDestinationFood->destinationId   = $cityId;
+            $objDestinationFood->destinationType = Destination_Type_Type::CITY;
+            $objDestinationFood->foodId = $objFood->id;
+            $objDestinationFood->weight  = $this->getAllFoodNum($sightId,Destination_Type_Type::CITY);
+            $objDestinationFood->save();
+        }
+        foreach ($arrShop as $shop){
+            $objFoodShop = new Food_Object_Shop();
+            $objFoodShop->fetch(array('id' => intval($shop)));
+            $objFoodShop->foodId = $objFood->id;
+            $objFoodShop->save();
         }
         $this->updateRedis($objFood->id);
         return $objFood->id;
@@ -339,12 +415,12 @@ class Food_Logic_Food extends Base_Logic{
         $arrSightIds    = array();
         $weight         = array();
         $this->updateRedis($id);
-        $listSightFood = new Sight_List_Food();
-        $listSightFood->setFilter(array('Food_id' => $id));
+        $listSightFood = new Destination_List_Food();
+        $listSightFood->setFilter(array('food_id' => $id));
         $listSightFood->setPagesize(PHP_INT_MAX);
         $arrSightFood  = $listSightFood->toArray();
         foreach ($arrSightFood['list'] as $val){
-            $objSightFood = new Sight_Object_Food();
+            $objSightFood = new Destination_Object_Food();
             $objSightFood->fetch(array('id' => $val['id']));
             $weight[]      = $objSightFood->weight;
             $arrSightIds[] = $objSightFood->sightId;
@@ -359,12 +435,12 @@ class Food_Logic_Food extends Base_Logic{
         $ret = $objFood->remove();
         
         foreach ($arrSightIds as $key => $id){
-            $listSightFood = new Sight_List_Food();
+            $listSightFood = new Destination_List_Food();
             $listSightFood->setFilterString("`weight` >".$weight[$key]);
             $listSightFood->setPagesize(PHP_INT_MAX);
             $arrSightFood  = $listSightFood->toArray();
             foreach ($arrSightFood['list'] as $val){
-                $objSightFood = new Sight_Object_Food();
+                $objSightFood = new Destination_Object_Food();
                 $objSightFood->fetch(array('id' => $val['id']));
                 $objSightFood->weight -= 1;
                 $objSightFood->save();
@@ -394,24 +470,24 @@ class Food_Logic_Food extends Base_Logic{
      * @param integer $to 需要排的位置
      * @return boolean
      */
-    public function changeWeight($sightId,$id,$to){
+    public function changeWeight($destId,$type,$id,$to){
         $strFoodids = '';
         $model = new FoodModel();
-        $ret   = $model->getSightFood($sightId, Food_Type_Status::PUBLISHED);
+        $ret   = $model->getDestFood($destId, $type, Food_Type_Status::PUBLISHED);
         $strFoodids = implode(",",$ret);
         
-        $objSightFood = new Sight_Object_Food();
-        $objSightFood->fetch(array('sight_id' => $sightId,'Food_id' => $id));
+        $objSightFood = new Destination_Object_Food();
+        $objSightFood->fetch(array('destination_id' => $destId,'food_id' => $id,'destination_type' => $type));
         $from       = $objSightFood->weight;
-        $objSightFood->weight = $to;        
-    
-        $listSightFood = new Sight_List_Food();
-        $filter ="`sight_id` =".$sightId." and `Food_id` in (".$strFoodids.") and `weight` >= $to and `weight` != $from";
-        $listSightFood->setFilterString($filter);       
+        $objSightFood->weight = $to;  
+            
+        $listSightFood = new Destination_List_Food();
+        $filter ="`destination_id` =".$destId." and `destination_type` =".$type." and `food_id` in (".$strFoodids.") and `weight` >= $to and `weight` != $from";
+        $listSightFood->setFilterString($filter); 
         $listSightFood->setPagesize(PHP_INT_MAX);
         $arrSightFood = $listSightFood->toArray();
         foreach ($arrSightFood['list'] as $key => $val){
-            $objTmpSightFood = new Sight_Object_Food();
+            $objTmpSightFood = new Destination_Object_Food();
             $objTmpSightFood->fetch(array('id' => $val['id']));
             $objTmpSightFood->weight += 1;
             $objTmpSightFood->save();
@@ -422,16 +498,16 @@ class Food_Logic_Food extends Base_Logic{
     
     public function updateRedis($FoodId){
         $redis = Base_Redis::getInstance();
-        $listSightFood = new Sight_List_Food();
-        $listSightFood->setFilter(array('Food_id' => $FoodId));
+        $listSightFood = new Destination_List_Food();
+        $listSightFood->setFilter(array('food_id' => $FoodId));
         $listSightFood->setPagesize(PHP_INT_MAX);
         $arrSightFood  = $listSightFood->toArray();
         foreach ($arrSightFood['list'] as $val){
-            $redis->hDel(Sight_Keys::getSightTongjiKey($val['sight_id']),Sight_Keys::Food);
+            $redis->hDel(Sight_Keys::getSightTongjiKey($val['destination_id']),Sight_Keys::FOOD);
             
-            $objSight = new Sight_Object_Sight();
-            $objSight->fetch(array('id' => $val['sight_id']));
-            $redis->hDel(City_Keys::getCityFoodNumKey(),$objSight->cityId);
+            //$objSight = new Sight_Object_Sight();
+            //$objSight->fetch(array('id' => $val['destination_id']));
+            //$redis->hDel(City_Keys::getCitySightNumKey(),$objSight->cityId);
         }
     }
 }

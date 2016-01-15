@@ -5,7 +5,7 @@ class Specialty_Logic_Specialty extends Base_Logic{
     
     const DEFAULT_WEIGHT = 0;
     
-    protected $fields = array('sight_id', 'title', 'url', 'image', 'from', 'len', 'type', 'status', 'create_time', 'update_time', 'create_user', 'update_user');
+    protected $fields = array('destination_id', 'title', 'image', 'content', 'status', 'create_time', 'update_time', 'create_user', 'update_user');
     
     public function __construct(){
         
@@ -21,13 +21,16 @@ class Specialty_Logic_Specialty extends Base_Logic{
      */
     public function getSpecialtys($page,$pageSize,$arrParam = array()){
         $arrSpecialty['list']   = array();
-        $arrRet['list']     = array();
-        $title    = '';
-        if(isset($arrParam['sight_id'])){
-            $sightId    = $arrParam['sight_id'];
+        $arrRet['list']         = array();
+        $title                  = '';
+        $destId                 = '';
+        $type                   = '';
+        if(isset($arrParam['destination_id'])){
+            $destId     = $arrParam['destination_id'];
+            $type       = $arrParam['destination_type'];
             $arrSpecialtyIds = array();            
-            $listSightSpecialty = new Sight_List_Specialty();
-            $listSightSpecialty->setFilter(array('sight_id' => $sightId));
+            $listSightSpecialty = new Destination_List_Specialty();
+            $listSightSpecialty->setFilter(array('destination_id' => $destId,'destination_type' => $type));
             if(isset($arrParam['order'])){
                 $listSightSpecialty->setOrder($arrParam['order']);
                 unset($arrParam['order']);
@@ -39,7 +42,7 @@ class Specialty_Logic_Specialty extends Base_Logic{
                 unset($arrParam['title']);
             }
             foreach ($ret['list'] as $val){
-                $arrParam = array_merge($arrParam,array('id' => $val['Specialty_id']));                
+                $arrParam = array_merge($arrParam,array('id' => $val['specialty_id']));                
                 $objSpecialty = new Specialty_Object_Specialty();
                 $objSpecialty->fetch($arrParam);
                 $arrTmpSpecialty = $objSpecialty->toArray();
@@ -77,61 +80,73 @@ class Specialty_Logic_Specialty extends Base_Logic{
                 $arrSpecialty['list'][$key] = $val['id'];   
             }
         }
-        $arrRet['page'] = $arrSpecialty['page'];
-        $arrRet['pagesize'] = $arrSpecialty['pagesize'];
-        $arrRet['pageall'] = $arrSpecialty['pageall'];
-        $arrRet['total'] = $arrSpecialty['total'];
         foreach($arrSpecialty['list'] as $key => $val){
             $temp = array();
             $arrSpecialty['list'][$key] = Specialty_Api::getSpecialtyInfo($val);
-            $arrSpecialty['list'][$key]['sights'] = array();
-            $listSightSpecialty = new Sight_List_Specialty();
-            $listSightSpecialty->setFilter(array('Specialty_id' => $val));
+            $arrSpecialty['list'][$key]['dest'] = array();
+            $listSightSpecialty = new Destination_List_Specialty();
+            $listSightSpecialty->setFilter(array('specialty_id' => $val));
             $listSightSpecialty->setPagesize(PHP_INT_MAX);
             $arrSightSpecialty  = $listSightSpecialty->toArray();
             foreach ($arrSightSpecialty['list'] as $data){
-                $sight          = Sight_Api::getSightById($data['sight_id']);
-                $temp['id']     = $data['sight_id'];
-                $temp['name']   = $sight['name'];
+                if($data['destination_type'] == Destination_Type_Type::SIGHT){
+                    $dest  = Sight_Api::getSightById($data['destination_id']);
+                }else{
+                    $dest  = City_Api::getCityById($data['destination_id']);
+                }
+                $temp['id']     = $data['destination_id'];
+                $temp['type']   = $data['destination_type'];
+                $temp['name']   = $dest['name'];
                 $temp['weight'] = $data['weight'];
-            }
-            if(!empty($temp)){
-                $arrSpecialty['list'][$key]['sights'][] = $temp;
+                if(!empty($temp)){
+                    $arrSpecialty['list'][$key]['dest'][] = $temp;
+                }
+                if(($destId ==$temp['id']) && ($type == $temp['type'])){
+                    $arrSpecialty['list'][$key]['weight'] = $temp['weight'];
+                }
             }
             
+            $temp  = array();
+            $arrSpecialty['list'][$key]['product'] = array();
+            $arrSpecialtyProduct = Specialty_Api::getProductList($page, $pageSize, array('specialty_id' =>$val));
+            foreach ($arrSpecialtyProduct['list'] as $data){
+                $temp['name']   = $data['title'];
+                if(!empty($temp)){
+                    $arrSpecialty['list'][$key]['product'][] = $temp;
+                }
+            }                       
         }
         return $arrSpecialty;
     }
     
     /**
-     * 获取视频信息,供前端使用
+     * 获取特产信息,供前端使用
      * @param integer $sightId，景点ID
      * @param integer $page,页码
      * @param integer $pageSize
      * @param array   $arrParam,过滤条件
      * @return array
      */
-    public function getSpecialtyList($sightId,$page,$pageSize,$arrParam = array()){
+    public function getSpecialtyList($destId,$type,$page,$pageSize,$arrParam = array()){
         $arrRet         = array();
-        $listSightSpecialty = new Sight_List_Specialty();
-        $listSightSpecialty->setFilter(array('sight_id' => $sightId));
-        $listSightSpecialty->setOrder('`weight` asc');
-        $listSightSpecialty->setPagesize(PHP_INT_MAX);
-        $ret = $listSightSpecialty->toArray();
+        $listDestinationSpecialty = new Destination_List_Specialty();
+        $listDestinationSpecialty->setFilter(array('destination_id' => $destId,'destination_type' => $type));
+        $listDestinationSpecialty->setOrder('`weight` asc');
+        $listDestinationSpecialty->setPagesize(PHP_INT_MAX);
+        $ret = $listDestinationSpecialty->toArray();
         foreach ($ret['list'] as $val){
             $objSpecialty = new Specialty_Object_Specialty();
-            $arrParam = array_merge($arrParam,array('id' => $val['Specialty_id']));
+            $arrParam = array_merge($arrParam,array('id' => $val['specialty_id']));
             $objSpecialty->fetch($arrParam);
             $arrSpecialty = $objSpecialty->toArray();
             if(!empty($arrSpecialty)){
-                $temp['id']    = strval($arrSpecialty['id']);
-                $Specialty         = Specialty_Api::getSpecialtyInfo($arrSpecialty['id']);
-                $temp['title'] = Base_Util_String::getHtmlEntity($Specialty['title']);
-                $temp['image'] = Base_Image::getUrlByName($Specialty['image']);
-                $temp['url']   = Base_Config::getConfig('web')->root.'/Specialty/detail?id='.$temp['id'];
-                $temp['type']    = strval($Specialty['type']);
-                $logicCollect    = new Collect_Logic_Collect();
-                $temp['collected'] = strval($logicCollect->checkCollect(Collect_Type::Specialty, $arrSpecialty['id']));
+                $temp['id']      = strval($arrSpecialty['id']);
+                $Specialty       = Specialty_Api::getSpecialtyInfo($arrSpecialty['id']);
+                $temp['topicNum']= strval('10');
+                $temp['title']    = trim($Specialty['title']);
+                $temp['desc']    = trim($Specialty['content']);
+                $temp['image']   = isset($Specialty['image'])?Base_Image::getUrlByName($Specialty['image']):'';
+                $temp['url']     = Base_Config::getConfig('web')->root.'/specialty/detail?id='.$temp['id'];
                 $arrRet[] = $temp;
             }
         }
@@ -146,23 +161,12 @@ class Specialty_Logic_Specialty extends Base_Logic{
      */
     public function getAiqiyiSource($sightId,$page){
         
-    }    
+    }
     
     public function getSpecialtyByInfo($SpecialtyId){
         $objSpecialty = new Specialty_Object_Specialty();
         $objSpecialty->fetch(array('id' => $SpecialtyId));
         $arrSpecialty = $objSpecialty->toArray();
-        
-        $listSightSpecialty = new Sight_List_Specialty();
-        $listSightSpecialty->setFilter(array('Specialty_id' => $SpecialtyId));
-        $listSightSpecialty->setPagesize(PHP_INT_MAX);
-        $arrSightSpecialty  = $listSightSpecialty->toArray();
-        foreach ($arrSightSpecialty['list'] as $val){
-            $temp['id']   = $val['sight_id'];
-            $sight        = Sight_Api::getSightById($val['sight_id']);
-            $temp['name'] = $sight['name'];
-            $arrSpecialty['sights'][] = $temp;
-        }
         return $arrSpecialty;
     }
     
@@ -176,20 +180,20 @@ class Specialty_Logic_Specialty extends Base_Logic{
             $arrSpecialty[$key]['image']       = isset($Specialty['image'])?Base_Image::getUrlByName($Specialty['image']):'';
             $arrSpecialty[$key]['url']         = isset($Specialty['url'])?trim($Specialty['url']):'';
             $arrSpecialty[$key]['content']     = isset($Specialty['from'])?trim($Specialty['from']):'';
-            $arrSpecialty[$key]['search_type'] = 'Specialty';
+            $arrSpecialty[$key]['search_type'] = 'specialty';
         }
         return array('data' => $arrSpecialty, 'num' => $num);
     }
     
-    public function getAllSpecialtyNum($sightId){
+    public function getAllSpecialtyNum($sightId,$type){
         $maxWeight  = 0;    
-        $listSightSpecialty = new Sight_List_Specialty();
-        $listSightSpecialty->setFilter(array('sight_id' => $sightId));
+        $listSightSpecialty = new Destination_List_Specialty();
+        $listSightSpecialty->setFilter(array('destination_id' => $sightId,'destination_type'=>$type));
         $listSightSpecialty->setPagesize(PHP_INT_MAX);
         $arrSightSpecialty  = $listSightSpecialty->toArray();
         foreach ($arrSightSpecialty['list'] as $val){
             $objSpecialty = new Specialty_Object_Specialty();
-            $objSpecialty->fetch(array('id' => $val['Specialty_id']));
+            $objSpecialty->fetch(array('id' => $val['specialty_id']));
             if($objSpecialty->status == Specialty_Type_Status::PUBLISHED){
                 if($val['weight'] > $maxWeight){
                     $maxWeight = $val['weight'];
@@ -202,26 +206,26 @@ class Specialty_Logic_Specialty extends Base_Logic{
     public function getSpecialtyNum($sighId, $status = Specialty_Type_Status::PUBLISHED){
         if($status == Specialty_Type_Status::PUBLISHED){
             $redis = Base_Redis::getInstance();
-            $ret   = $redis->hGet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::Specialty);
+            $ret   = $redis->hGet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::SPECIALTY);
             if(!empty($ret)){
                 return $ret;
             }
         }
         $count          = 0;
-        $listSightSpecialty = new Sight_List_Specialty();
-        $listSightSpecialty->setFilter(array('sight_id' => $sighId));
+        $listSightSpecialty = new Destination_List_Specialty();
+        $listSightSpecialty->setFilter(array('destination_id' => $sighId));
         $listSightSpecialty->setPagesize(PHP_INT_MAX);
         $arrSightSpecialty  = $listSightSpecialty->toArray();
         foreach ($arrSightSpecialty['list'] as $val){
             $objSpecialty = new Specialty_Object_Specialty();
-            $objSpecialty->fetch(array('id' => $val['Specialty_id']));
+            $objSpecialty->fetch(array('id' => $val['specialty_id']));
             if($objSpecialty->status == $status){
                 $count += 1;
             }
         }
         if($status == Specialty_Type_Status::PUBLISHED){
             $redis = Base_Redis::getInstance();
-            $redis->hSet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::Specialty,$count);
+            $redis->hSet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::SPECIALTY,$count);
         }
         return $count;
     }
@@ -232,6 +236,25 @@ class Specialty_Logic_Specialty extends Base_Logic{
      * @param array $arrParam
      */
     public function editSpecialty($id, $arrParam){
+        $arrSight   = array();
+        $arrCity    = array();
+        $arrProduct = array();
+        if(isset($arrParam['sight_id'])){
+            $arrSight = $arrParam['sight_id'];
+            unset($arrParam['sight_id']);
+        }
+        if(isset($arrParam['city_id'])){
+            $arrCity = $arrParam['city_id'];
+            unset($arrParam['city_id']);
+        }
+        if(isset($arrParam['product'])){
+            if(is_array($arrParam['product'])){
+                $arrProduct = $arrParam['product'];
+            }else{
+                $arrProduct = array($arrParam['product']);
+            }
+            unset($arrParam['product']);
+        }
         $this->updateRedis($id);
         if(isset($arrParam['status'])){
             $arrSightIds = array();
@@ -240,21 +263,21 @@ class Specialty_Logic_Specialty extends Base_Logic{
             $objSpecialty = new Specialty_Object_Specialty();
             $objSpecialty->fetch(array('id' => $id));
             $objSpecialty->status = $arrParam['status'];
-            $listSightSpecialty = new Sight_List_Specialty();
-            $listSightSpecialty->setFilter(array('Specialty_id' => $id));
+            $listSightSpecialty = new Destination_List_Specialty();
+            $listSightSpecialty->setFilter(array('specialty_id' => $id));
             $listSightSpecialty->setPagesize(PHP_INT_MAX);
             $arrSightSpecialty  = $listSightSpecialty->toArray();
             foreach ($arrSightSpecialty['list'] as $val){
-                $objSightSpecialty = new Sight_Object_Specialty();
+                $objSightSpecialty = new Destination_Object_Specialty();
                 $objSightSpecialty->fetch(array('id' => $val['id']));
                 
                 $redis = Base_Redis::getInstance();
-                $redis->hDel(Sight_Keys::getSightTongjiKey($val['sight_id']),Sight_Keys::Specialty);
+                $redis->hDel(Sight_Keys::getSightTongjiKey($val['destination_id']),Sight_Keys::SPECIALTY);
                 
                 if($arrParam['status'] == Specialty_Type_Status::BLACKLIST){
                     $ret = $objSightSpecialty->remove();
                 }else{
-                    $objSightSpecialty->weight = $this->getAllSpecialtyNum($val['sight_id']);
+                    $objSightSpecialty->weight = $this->getAllSpecialtyNum($val['destination_id'],$objSightSpecialty->destinationType);
                     $objSightSpecialty->save();
                 }
             }
@@ -263,19 +286,27 @@ class Specialty_Logic_Specialty extends Base_Logic{
             }
         }
         
-        $arrSight = array();
-        if(isset($arrParam['sight_id'])){
-            $listSightSpecialty = new Sight_List_Specialty();
-            $listSightSpecialty->setFilter(array('Specialty_id' => $id));
+        if(!empty($arrCity) || !empty($arrSight)){
+            $listSightSpecialty = new Destination_List_Specialty();
+            $listSightSpecialty->setFilter(array('specialty_id' => $id));
             $listSightSpecialty->setPagesize(PHP_INT_MAX);
             $arrSightSpecialty  = $listSightSpecialty->toArray();
             foreach ($arrSightSpecialty['list'] as $val){
-                $objSightSpecialty = new Sight_Object_Specialty();
+                $objSightSpecialty = new Destination_Object_Specialty();
                 $objSightSpecialty->fetch(array('id' => $val['id']));
                 $objSightSpecialty->remove();
             }
-            $arrSight = $arrParam['sight_id'];
-            unset($arrParam['sight_id']);
+        }
+        if(!empty($arrProduct)){
+            $listSpecialtyProduct = new Specialty_List_Product();
+            $listSpecialtyProduct->setFilter(array('specialty_id' => $id));
+            $listSpecialtyProduct->setPagesize(PHP_INT_MAX);
+            $arrSpecialtyProduct  = $listSpecialtyProduct->toArray();
+            foreach ($arrSpecialtyProduct['list'] as $val){
+                $objSpecialtyProduct = new Specialty_Object_Product();
+                $objSpecialtyProduct->fetch(array('id' => $val['id']));
+                $objSpecialtyProduct->remove();
+            }
         }
         $objSpecialty = new Specialty_Object_Specialty();
         $objSpecialty->fetch(array('id' => $id));
@@ -291,11 +322,28 @@ class Specialty_Logic_Specialty extends Base_Logic{
         }
         
         foreach ($arrSight as $sightId){
-            $objSightSpecialty = new Sight_Object_Specialty();
-            $objSightSpecialty->sightId = $sightId;
-            $objSightSpecialty->SpecialtyId = $id;
-            $objSightSpecialty->weight  = $this->getAllSpecialtyNum($sightId);
+            $objSightSpecialty = new Destination_Object_Specialty();
+            $objSightSpecialty->destinationId = $sightId;
+            $objSightSpecialty->destinationType = Destination_Type_Type::SIGHT;
+            $objSightSpecialty->specialtyId    = $id;
+            $objSightSpecialty->weight  = $this->getAllSpecialtyNum($sightId,Destination_Type_Type::SIGHT);
             $objSightSpecialty->save();
+        }
+        
+        foreach ($arrCity as $cityId){
+            $objCitySpecialty = new Destination_Object_Specialty();
+            $objCitySpecialty->destinationId = $cityId;
+            $objCitySpecialty->destinationType = Destination_Type_Type::CITY;
+            $objCitySpecialty->specialtyId    = $id;
+            $objCitySpecialty->weight  = $this->getAllSpecialtyNum($cityId,Destination_Type_Type::CITY);
+            $objCitySpecialty->save();
+        }
+        
+        foreach ($arrProduct as $product){
+            $objSpecialtyProduct = new Specialty_Object_Product();
+            $objSpecialtyProduct->fetch(array('id' => intval($product)));
+            $objSpecialtyProduct->specialtyId = $objSpecialty->id;
+            $objSpecialtyProduct->save();
         }
         return $objSpecialty->save();
     }
@@ -305,10 +353,24 @@ class Specialty_Logic_Specialty extends Base_Logic{
      * @param array $arrParam
      */
     public function addSpecialty($arrParam){
-        $arrSight = array();
+        $arrSight   = array();
+        $arrCity    = array();
+        $arrProduct = array();
         if(isset($arrParam['sight_id'])){
             $arrSight = $arrParam['sight_id'];
             unset($arrParam['sight_id']);
+        }
+        if(isset($arrParam['city_id'])){
+            $arrCity = $arrParam['city_id'];
+            unset($arrParam['city_id']);
+        }
+        if(isset($arrParam['product'])){
+            if(is_array($arrParam['product'])){
+                $arrProduct = $arrParam['product'];
+            }else{
+                $arrProduct = array($arrParam['product']);
+            }
+            unset($arrParam['product']);
         }
         $objSpecialty = new Specialty_Object_Specialty();
         foreach ($arrParam as $key => $val){
@@ -317,15 +379,29 @@ class Specialty_Logic_Specialty extends Base_Logic{
                 $objSpecialty->$key = $val;
             }
         }
-        $objSpecialty->guid   = md5($arrParam['title'].$arrParam['url']);
-        $ret =             $objSpecialty->save();
+        $objSpecialty->save();
         
         foreach ($arrSight as $sightId){
-            $objSightSpecialty = new Sight_Object_Specialty();
-            $objSightSpecialty->sightId = $sightId;
-            $objSightSpecialty->SpecialtyId = $objSpecialty->id;
-            $objSightSpecialty->weight  = $this->getAllSpecialtyNum($sightId);
-            $objSightSpecialty->save();            
+            $objDestinationSpecialty = new Destination_Object_Specialty();
+            $objDestinationSpecialty->destinationId   = $sightId;
+            $objDestinationSpecialty->destinationType = Destination_Type_Type::SIGHT;
+            $objDestinationSpecialty->specialtyId = $objSpecialty->id;
+            $objDestinationSpecialty->weight  = $this->getAllSpecialtyNum($sightId,Destination_Type_Type::SIGHT);
+            $objDestinationSpecialty->save();            
+        }
+        foreach ($arrCity as $cityId){
+            $objDestinationSpecialty = new Destination_Object_Specialty();
+            $objDestinationSpecialty->destinationId   = $cityId;
+            $objDestinationSpecialty->destinationType = Destination_Type_Type::CITY;
+            $objDestinationSpecialty->specialtyId = $objSpecialty->id;
+            $objDestinationSpecialty->weight  = $this->getAllSpecialtyNum($sightId,Destination_Type_Type::CITY);
+            $objDestinationSpecialty->save();
+        }
+        foreach ($arrProduct as $product){
+            $objSpecialtyProduct = new Specialty_Object_Product();
+            $objSpecialtyProduct->fetch(array('id' => intval($product)));
+            $objSpecialtyProduct->specialtyId = $objSpecialty->id;
+            $objSpecialtyProduct->save();
         }
         $this->updateRedis($objSpecialty->id);
         return $objSpecialty->id;
@@ -339,12 +415,12 @@ class Specialty_Logic_Specialty extends Base_Logic{
         $arrSightIds    = array();
         $weight         = array();
         $this->updateRedis($id);
-        $listSightSpecialty = new Sight_List_Specialty();
-        $listSightSpecialty->setFilter(array('Specialty_id' => $id));
+        $listSightSpecialty = new Destination_List_Specialty();
+        $listSightSpecialty->setFilter(array('specialty_id' => $id));
         $listSightSpecialty->setPagesize(PHP_INT_MAX);
         $arrSightSpecialty  = $listSightSpecialty->toArray();
         foreach ($arrSightSpecialty['list'] as $val){
-            $objSightSpecialty = new Sight_Object_Specialty();
+            $objSightSpecialty = new Destination_Object_Specialty();
             $objSightSpecialty->fetch(array('id' => $val['id']));
             $weight[]      = $objSightSpecialty->weight;
             $arrSightIds[] = $objSightSpecialty->sightId;
@@ -359,12 +435,12 @@ class Specialty_Logic_Specialty extends Base_Logic{
         $ret = $objSpecialty->remove();
         
         foreach ($arrSightIds as $key => $id){
-            $listSightSpecialty = new Sight_List_Specialty();
+            $listSightSpecialty = new Destination_List_Specialty();
             $listSightSpecialty->setFilterString("`weight` >".$weight[$key]);
             $listSightSpecialty->setPagesize(PHP_INT_MAX);
             $arrSightSpecialty  = $listSightSpecialty->toArray();
             foreach ($arrSightSpecialty['list'] as $val){
-                $objSightSpecialty = new Sight_Object_Specialty();
+                $objSightSpecialty = new Destination_Object_Specialty();
                 $objSightSpecialty->fetch(array('id' => $val['id']));
                 $objSightSpecialty->weight -= 1;
                 $objSightSpecialty->save();
@@ -394,24 +470,24 @@ class Specialty_Logic_Specialty extends Base_Logic{
      * @param integer $to 需要排的位置
      * @return boolean
      */
-    public function changeWeight($sightId,$id,$to){
+    public function changeWeight($destId,$type,$id,$to){
         $strSpecialtyids = '';
         $model = new SpecialtyModel();
-        $ret   = $model->getSightSpecialty($sightId, Specialty_Type_Status::PUBLISHED);
+        $ret   = $model->getDestSpecialty($destId, $type, Specialty_Type_Status::PUBLISHED);
         $strSpecialtyids = implode(",",$ret);
         
-        $objSightSpecialty = new Sight_Object_Specialty();
-        $objSightSpecialty->fetch(array('sight_id' => $sightId,'Specialty_id' => $id));
+        $objSightSpecialty = new Destination_Object_Specialty();
+        $objSightSpecialty->fetch(array('destination_id' => $destId,'specialty_id' => $id,'destination_type' => $type));
         $from       = $objSightSpecialty->weight;
-        $objSightSpecialty->weight = $to;        
-    
-        $listSightSpecialty = new Sight_List_Specialty();
-        $filter ="`sight_id` =".$sightId." and `Specialty_id` in (".$strSpecialtyids.") and `weight` >= $to and `weight` != $from";
-        $listSightSpecialty->setFilterString($filter);       
+        $objSightSpecialty->weight = $to;  
+            
+        $listSightSpecialty = new Destination_List_Specialty();
+        $filter ="`destination_id` =".$destId." and `destination_type` =".$type." and `specialty_id` in (".$strSpecialtyids.") and `weight` >= $to and `weight` != $from";
+        $listSightSpecialty->setFilterString($filter); 
         $listSightSpecialty->setPagesize(PHP_INT_MAX);
         $arrSightSpecialty = $listSightSpecialty->toArray();
         foreach ($arrSightSpecialty['list'] as $key => $val){
-            $objTmpSightSpecialty = new Sight_Object_Specialty();
+            $objTmpSightSpecialty = new Destination_Object_Specialty();
             $objTmpSightSpecialty->fetch(array('id' => $val['id']));
             $objTmpSightSpecialty->weight += 1;
             $objTmpSightSpecialty->save();
@@ -422,16 +498,16 @@ class Specialty_Logic_Specialty extends Base_Logic{
     
     public function updateRedis($SpecialtyId){
         $redis = Base_Redis::getInstance();
-        $listSightSpecialty = new Sight_List_Specialty();
-        $listSightSpecialty->setFilter(array('Specialty_id' => $SpecialtyId));
+        $listSightSpecialty = new Destination_List_Specialty();
+        $listSightSpecialty->setFilter(array('specialty_id' => $SpecialtyId));
         $listSightSpecialty->setPagesize(PHP_INT_MAX);
         $arrSightSpecialty  = $listSightSpecialty->toArray();
         foreach ($arrSightSpecialty['list'] as $val){
-            $redis->hDel(Sight_Keys::getSightTongjiKey($val['sight_id']),Sight_Keys::Specialty);
+            $redis->hDel(Sight_Keys::getSightTongjiKey($val['destination_id']),Sight_Keys::SPECIALTY);
             
-            $objSight = new Sight_Object_Sight();
-            $objSight->fetch(array('id' => $val['sight_id']));
-            $redis->hDel(City_Keys::getCitySpecialtyNumKey(),$objSight->cityId);
+            //$objSight = new Sight_Object_Sight();
+            //$objSight->fetch(array('id' => $val['destination_id']));
+            //$redis->hDel(City_Keys::getCitySightNumKey(),$objSight->cityId);
         }
     }
 }

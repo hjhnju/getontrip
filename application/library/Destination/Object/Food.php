@@ -1,14 +1,14 @@
 <?php
 /**
- * 景点美食关系表
+ * 目的地美食关系表
  * @author huwei
  */
-class Sight_Object_Food extends Base_Object {
+class Destination_Object_Food extends Base_Object {
     /**
      * 数据表名
      * @var string
      */
-    protected $table = 'sight_food';
+    protected $table = 'destination_food';
 
     /**
      * 主键
@@ -20,25 +20,26 @@ class Sight_Object_Food extends Base_Object {
      * 类名
      * @var string
      */
-    const CLASSNAME = 'Sight_Object_Food';
+    const CLASSNAME = 'Destination_Object_Food';
 
     /**
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'sight_id', 'food_id', 'weight', 'create_time', 'update_time');
+    protected $fields = array('id', 'destination_id', 'destination_type', 'food_id', 'weight', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
      * @var array
      */
     public $properties = array(
-        'id'          => 'id',
-        'sight_id'    => 'sightId',
-        'food_id'     => 'foodId',
-        'weight'      => 'weight',
-        'create_time' => 'createTime',
-        'update_time' => 'updateTime',
+        'id'              => 'id',
+        'destination_id'  => 'destinationId',
+        'destination_type'=> 'destinationType',
+        'food_id'         => 'foodId',
+        'weight'          => 'weight',
+        'create_time'     => 'createTime',
+        'update_time'     => 'updateTime',
     );
 
     /**
@@ -46,17 +47,18 @@ class Sight_Object_Food extends Base_Object {
      * @var array
      */
     protected $intProps = array(
-        'id'          => 1,
-        'sight_id'    => 1,
-        'food_id'     => 1,
-        'weight'      => 1,
-        'create_time' => 1,
-        'update_time' => 1,
+        'id'              => 1,
+        'destination_id'  => 1,
+        'destination_type'=> 1,
+        'food_id'         => 1,
+        'weight'          => 1,
+        'create_time'     => 1,
+        'update_time'     => 1,
     );
 
     /**
      * @param array $data
-     * @return Sight_Object_Food
+     * @return Destination_Object_Food
      */
     public static function init($data) {
         return parent::initObject(self::CLASSNAME, $data);
@@ -69,13 +71,19 @@ class Sight_Object_Food extends Base_Object {
     public $id;
 
     /**
-     * 景点id
+     * 目的地id
      * @var integer
      */
-    public $sightId;
+    public $destinationId;
 
     /**
-     * 书籍id
+     * 目的地类型
+     * @var integer
+     */
+    public $destinationType;
+
+    /**
+     * 美食id
      * @var integer
      */
     public $foodId;

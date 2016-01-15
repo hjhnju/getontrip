@@ -105,11 +105,12 @@ class UploadController extends Base_Controller_Page {
         $oss = Oss_Adapter::getInstance();
         $res = $oss->writeFile($filename, $_FILES['file']['tmp_name']);
         if ($res) {
-            @unlink($_FILES['file']['tmp_name']);
             $data = array(
                 'name' => $filename,
                 'url'  => "/audio/".$filename,
+                'len'  => Base_Audio::getInstance()->getLen($_FILES['file']['tmp_name']),
             );
+            @unlink($_FILES['file']['tmp_name']);
             $res = array(
                 'status' => 0,
                 'statusInfo' => '',

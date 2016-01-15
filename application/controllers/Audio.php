@@ -28,11 +28,7 @@ class AudioController extends Base_Controller_Page {
             exit;
         }
         ob_clean();
-        if($ext[1] =='mp3'){
-            header('Content-type: audio/mpeg') ;
-        }elseif($ext[1] =='amr'){
-            header('Content-type: audio/amr') ;
-        }
+        header('Content-type: audio/mpeg') ;
         echo $audio;
         exit;
     }

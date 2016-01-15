@@ -103,7 +103,15 @@ class Recommend_Logic_Recommend extends Base_Logic{
         if(isset($article['source']) && !empty($article['source'])){
             $arrFrom[] = $article['source'];
         }
-        if(empty($arrSightIds) && empty($arrTags)){
+        $bTest = true;
+        foreach ($arrTags as $tag){
+            $objTag = Tag_Api::getTagInfo($tag);
+            if($tag['type'] == Tag_Type_Tag::GENERAL){
+                $bTest = false;
+                break;
+            }
+        }
+        if(empty($arrSightIds) && $bTest){
             return false;
         }
         $arrInfo  = array(

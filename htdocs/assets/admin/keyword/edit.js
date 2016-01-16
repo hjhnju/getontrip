@@ -51,6 +51,7 @@ $(document).ready(function() {
                         success: function(res, status) { //当文件上传成功后，需要向数据库中插入数据
                             $('#audio').val(res.data.name);
                         	$('#label_audio').html(res.data.name);
+                        	$('#audio_len').val(res.data.len);
                             localStorage.audio = res.data.name;
                         },
                         error: function(res) {

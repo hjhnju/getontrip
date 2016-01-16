@@ -6,7 +6,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
     protected $_fields;
     
     public function __construct(){
-        $this->_fields = array('id','sight_id','name','url','content','image','audio','create_time','update_time','status','x','y','level');
+        $this->_fields = array('id','sight_id','name','url','content','image','audio','audio_len','create_time','update_time','status','x','y','level');
     }
     
     /**
@@ -309,7 +309,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
      * @param integer $pageSize
      * @return array
      */
-    public function getKeywordList($sightId,$page,$pageSize,$arrParma = array()){
+    public function getKeywordList($sightId,$x,$y,$page,$pageSize,$arrParma = array()){
         $listKeyword  = new Keyword_List_Keyword();
         $arrFilter = array_merge(array('sight_id' => $sightId),$arrParma);
         $listKeyword->setFields(array('id','name','url','content','image','audio','audio_len','type','x','y'));
@@ -327,6 +327,19 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $arrRet['list'][$key]['desc']    = intval($val['type'])==1?'必玩':'';
             $arrRet['list'][$key]['x']    = strval($val['x']);
             $arrRet['list'][$key]['y']    = strval($val['y']);
+            if(!empty($x) && !empty($y)){
+                $dis   = Base_Util_Number::getEarthDist($x, $y, $val['x'], $val['y']);
+                if($dis < 1000){
+                    $arrRet['list'][$key]['dis']      = strval(ceil($dis));
+                    $arrRet['list'][$key]['dis_unit'] = "m";
+                }else{
+                    $arrRet['list'][$key]['dis']      = strval(ceil($dis/1000));
+                    $arrRet['list'][$key]['dis_unit'] = "km";
+                }
+            }else{
+                $arrRet['list'][$key]['dis']      = '';
+                $arrRet['list'][$key]['dis_unit'] = '';
+            }            
             $arrRet['list'][$key]['image']   = Base_Image::getUrlByName($val['image']);
             unset($arrRet['list'][$key]['type']);
         }

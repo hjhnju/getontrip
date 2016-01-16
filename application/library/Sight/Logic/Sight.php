@@ -382,6 +382,10 @@ class Sight_Logic_Sight extends Base_Logic{
             $http->timeout(2);
             $http->exec();
         }
+        if($ret && isset($arrInfo['status']) && ($arrInfo['status'] == Sight_Type_Status::NOTPUBLISHED)){
+            $model = new GisModel();
+            $model->delSight($sightId);        
+        }
         return $ret;
     }
     
@@ -393,6 +397,8 @@ class Sight_Logic_Sight extends Base_Logic{
             $objSight->status = Sight_Type_Status::PUBLISHED;
         }else{
             $objSight->status = Sight_Type_Status::NOTPUBLISHED;
+            $model = new GisModel();
+            $model->delSight($sightId);
         }
         $ret = $objSight->save();
         if($ret && $bDoPublish){

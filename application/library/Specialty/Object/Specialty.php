@@ -26,7 +26,7 @@ class Specialty_Object_Specialty extends Base_Object {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'title', 'content', 'image', 'price', 'url', 'status', 'create_user', 'update_user', 'create_time', 'update_time');
+    protected $fields = array('id', 'title', 'content', 'image', 'status', 'create_user', 'update_user', 'create_time', 'update_time', 'type');
 
     /**
      * 字段与属性隐射关系
@@ -37,13 +37,12 @@ class Specialty_Object_Specialty extends Base_Object {
         'title'       => 'title',
         'content'     => 'content',
         'image'       => 'image',
-        'price'       => 'price',
-        'url'         => 'url',
         'status'      => 'status',
         'create_user' => 'createUser',
         'update_user' => 'updateUser',
         'create_time' => 'createTime',
         'update_time' => 'updateTime',
+        'type'        => 'type',
     );
 
     /**
@@ -57,6 +56,7 @@ class Specialty_Object_Specialty extends Base_Object {
         'update_user' => 1,
         'create_time' => 1,
         'update_time' => 1,
+        'type'        => 1,
     );
 
     /**
@@ -74,7 +74,7 @@ class Specialty_Object_Specialty extends Base_Object {
     public $id;
 
     /**
-     * 标题
+     * 特产名
      * @var string
      */
     public $title;
@@ -90,18 +90,6 @@ class Specialty_Object_Specialty extends Base_Object {
      * @var string
      */
     public $image;
-
-    /**
-     * 价格
-     * @var 
-     */
-    public $price;
-
-    /**
-     * 购买链接
-     * @var string
-     */
-    public $url;
 
     /**
      * 状态
@@ -132,5 +120,11 @@ class Specialty_Object_Specialty extends Base_Object {
      * @var integer
      */
     public $updateTime;
+
+    /**
+     * 特产类型,1:必买
+     * @var integer
+     */
+    public $type;
 
 }

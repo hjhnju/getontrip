@@ -75,8 +75,28 @@ class Specialty_Api{
      * @param integer $to 需要排的位置
      * @return boolean
      */
-    public static function changeWeight($sightId,$id,$to){
+    public static function changeWeight($sightId,$type,$id,$to){
         $logicSpecialty = new Specialty_Logic_Specialty();
-        return $logicSpecialty->changeWeight($sightId,$id,$to);
+        return $logicSpecialty->changeWeight($sightId,$type,$id,$to);
+    }
+    
+    public static function getProductList($page,$pageSize,$arrParam = array()){
+        $logicProduct = new Specialty_Logic_Product();
+        return $logicProduct->getProductList($page, $pageSize, $arrParam);
+    }
+    
+    public static function getProductById($id){
+        $logicProduct = new Specialty_Logic_Product();
+        return $logicProduct->getProductById($id);
+    }
+    
+    public static function addProduct($arrInfo){
+        $logicProduct = new Specialty_Logic_Product();
+        return $logicProduct->addProduct($arrInfo);
+    }
+    
+    public static function editProduct($id,$arrInfo){
+        $logicProduct = new Specialty_Logic_Product();
+        return $logicProduct->editProduct($id, $arrInfo);
     }
 }

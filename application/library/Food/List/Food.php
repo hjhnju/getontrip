@@ -20,7 +20,7 @@ class Food_List_Food extends Base_List {
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'title', 'content', 'image', 'status', 'create_user', 'update_user', 'create_time', 'update_time');
+    protected $fields = array('id', 'title', 'content', 'image', 'status', 'create_user', 'update_user', 'create_time', 'update_time', 'type');
 
     /**
      * 整数类型的字段
@@ -33,6 +33,7 @@ class Food_List_Food extends Base_List {
         'update_user' => 1,
         'create_time' => 1,
         'update_time' => 1,
+        'type'        => 1,
     );
 
     /**

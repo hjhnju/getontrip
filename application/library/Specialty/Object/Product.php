@@ -1,14 +1,14 @@
 <?php
 /**
- * 商店信息表
+ * 特产商品表
  * @author huwei
  */
-class Shop_Object_Shop extends Base_Object {
+class Specialty_Object_Product extends Base_Object {
     /**
      * 数据表名
      * @var string
      */
-    protected $table = 'shop';
+    protected $table = 'specialty_product';
 
     /**
      * 主键
@@ -20,13 +20,13 @@ class Shop_Object_Shop extends Base_Object {
      * 类名
      * @var string
      */
-    const CLASSNAME = 'Shop_Object_Shop';
+    const CLASSNAME = 'Specialty_Object_Product';
 
     /**
      * 对象包含的所有字段
      * @var array
      */
-    protected $fields = array('id', 'title', 'image', 'addr', 'phone', 'status', 'score', 'type', 'create_user', 'update_user', 'create_time', 'update_time');
+    protected $fields = array('id', 'specialty_id', 'title', 'content', 'image', 'price', 'url', 'status', 'create_user', 'update_user', 'create_time', 'update_time');
 
     /**
      * 字段与属性隐射关系
@@ -34,13 +34,13 @@ class Shop_Object_Shop extends Base_Object {
      */
     public $properties = array(
         'id'          => 'id',
+        'specialty_id'=> 'specialtyId',
         'title'       => 'title',
+        'content'     => 'content',
         'image'       => 'image',
-        'addr'        => 'addr',
-        'phone'       => 'phone',
+        'price'       => 'price',
+        'url'         => 'url',
         'status'      => 'status',
-        'score'       => 'score',
-        'type'        => 'type',
         'create_user' => 'createUser',
         'update_user' => 'updateUser',
         'create_time' => 'createTime',
@@ -53,8 +53,8 @@ class Shop_Object_Shop extends Base_Object {
      */
     protected $intProps = array(
         'id'          => 1,
+        'specialty_id'=> 1,
         'status'      => 1,
-        'type'        => 1,
         'create_user' => 1,
         'update_user' => 1,
         'create_time' => 1,
@@ -63,59 +63,59 @@ class Shop_Object_Shop extends Base_Object {
 
     /**
      * @param array $data
-     * @return Shop_Object_Shop
+     * @return Specialty_Object_Product
      */
     public static function init($data) {
         return parent::initObject(self::CLASSNAME, $data);
     }
 
     /**
-     *  id
+     *  特产商品id
      * @var integer
      */
     public $id;
 
     /**
-     * 名称
+     * 特产ID
+     * @var integer
+     */
+    public $specialtyId;
+
+    /**
+     * 特产的商品名
      * @var string
      */
     public $title;
 
     /**
-     * 图片
+     * 商品内容
+     * @var string
+     */
+    public $content;
+
+    /**
+     * 商品图片
      * @var string
      */
     public $image;
 
     /**
-     * 地址
-     * @var string
+     * 商品价格
+     * @var 
      */
-    public $addr;
+    public $price;
 
     /**
-     * 电话
+     * 商品购买链接
      * @var string
      */
-    public $phone;
+    public $url;
 
     /**
      * 状态
      * @var integer
      */
     public $status;
-
-    /**
-     * 评分
-     * @var 
-     */
-    public $score;
-
-    /**
-     * 店铺类型
-     * @var integer
-     */
-    public $type;
 
     /**
      * 创建人ID

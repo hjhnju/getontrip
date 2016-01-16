@@ -122,6 +122,7 @@ class RecommendapiController extends Base_Controller_Api{
     {
         $id =isset($_REQUEST['id'])?intval($_REQUEST['id']):0; 
         $arrInfo = isset($_REQUEST['params'])?$_REQUEST['params']:array();
+        
         if (empty($arrInfo)) {
             return $this->ajaxError(-1,'请选择一个状态');
         }
@@ -131,7 +132,6 @@ class RecommendapiController extends Base_Controller_Api{
                array_splice($arrInfo, $i, 1); 
             }
         }
- 
         $ret = Recommend_Api::dealArticle($id, $arrInfo);
 
         if (!$ret) {

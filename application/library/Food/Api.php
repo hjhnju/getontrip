@@ -21,9 +21,9 @@ class Food_Api{
      * @param integer $status
      * @return number
      */
-    public static function getFoodNum($sighId, $status = Food_Type_Status::PUBLISHED){
+    public static function getFoodNum($sightId, $status = Food_Type_Status::PUBLISHED){
         $logicFood = new Food_Logic_Food();
-        return $logicFood->getFoodNum($sighId, $status);
+        return $logicFood->getFoodNum($sightId, $status);
     }
     
     /**
@@ -75,8 +75,28 @@ class Food_Api{
      * @param integer $to 需要排的位置
      * @return boolean
      */
-    public static function changeWeight($sightId,$id,$to){
+    public static function changeWeight($sightId,$type,$id,$to){
         $logicFood = new Food_Logic_Food();
-        return $logicFood->changeWeight($sightId,$id,$to);
+        return $logicFood->changeWeight($sightId,$type,$id,$to);
+    }
+    
+    public static function getShopList($page, $pageSize, $arrParam){
+        $logicShop = new Food_Logic_Shop();
+        return $logicShop->getShops($page, $pageSize, $arrParam);
+    }
+    
+    public static function addShop($arrInfo){
+        $logicShop = new Food_Logic_Shop();
+        return $logicShop->addShop($arrInfo);
+    }
+    
+    public static function editShop($id, $arrInfo){
+        $logicShop = new Food_Logic_Shop();
+        return $logicShop->editShop($id, $arrInfo);
+    }
+    
+    public static function getShopById($id){
+        $logicShop = new Food_Logic_Shop();
+        return $logicShop->getShopById($id);
     }
 }

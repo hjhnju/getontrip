@@ -233,7 +233,7 @@ class Search_Logic_Search{
                 $temp['name']  = $arrSight['name'];
                 $temp['image'] = isset($arrSight['image'])?Base_Image::getUrlByName($arrSight['image']):'';
                 if(!empty($x) && !empty($y)){
-                    $temp['dis']   = Base_Util_Number::getEarthDist($x, $y, $arrSight['x'], $arrSight['y']);
+                    $temp['dis']   = $val['dis'];//Base_Util_Number::getEarthDist($x, $y, $arrSight['x'], $arrSight['y']);
                     if($temp['dis'] < 1000){
                         $temp['dis']      = strval(ceil($temp['dis']));
                         $temp['dis_unit'] = "m";

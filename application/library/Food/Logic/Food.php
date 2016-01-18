@@ -5,7 +5,7 @@ class Food_Logic_Food extends Base_Logic{
     
     const DEFAULT_WEIGHT = 0;
     
-    protected $fields = array('destination_id', 'title', 'image', 'content', 'status', 'create_time', 'update_time', 'create_user', 'update_user');
+    protected $fields = array('destination_id', 'title', 'image', 'content', 'status', 'create_time', 'update_time', 'create_user', 'update_user','type');
     
     public function __construct(){
         
@@ -129,6 +129,7 @@ class Food_Logic_Food extends Base_Logic{
      */
     public function getFoodList($destId,$type,$page,$pageSize,$arrParam = array()){
         $arrRet         = array();
+        $logicShop      = new Food_Logic_Shop();
         $listDestinationFood = new Destination_List_Food();
         $listDestinationFood->setFilter(array('destination_id' => $destId,'destination_type' => $type));
         $listDestinationFood->setOrder('`weight` asc');
@@ -140,13 +141,14 @@ class Food_Logic_Food extends Base_Logic{
             $objFood->fetch($arrParam);
             $arrFood = $objFood->toArray();
             if(!empty($arrFood)){
-                $temp['id']      = strval($arrFood['id']);
-                $Food       = Food_Api::getFoodInfo($arrFood['id']);
-                $temp['topicNum']= strval('10');
+                $temp['id']       = strval($arrFood['id']);
+                $Food             = Food_Api::getFoodInfo($arrFood['id']);
+                $temp['shopNum']  = strval($logicShop->getShopNum(array('food_id' => $arrFood['id'],'status' => Food_Type_Shop::PUBLISHED)));
+                $temp['topicNum'] = strval('10');
                 $temp['title']    = trim($Food['title']);
-                $temp['desc']    = trim($Food['content']);
-                $temp['image']   = isset($Food['image'])?Base_Image::getUrlByName($Food['image']):'';
-                $temp['url']     = Base_Config::getConfig('web')->root.'/food/detail?id='.$temp['id'];
+                $temp['desc']     = trim($Food['content']);
+                $temp['image']    = isset($Food['image'])?Base_Image::getUrlByName($Food['image']):'';
+                $temp['url']      = Base_Config::getConfig('web')->root.'/food/detail?id='.$temp['id'];
                 $arrRet[] = $temp;
             }
         }

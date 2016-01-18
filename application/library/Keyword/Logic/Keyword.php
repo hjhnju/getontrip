@@ -6,7 +6,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
     protected $_fields;
     
     public function __construct(){
-        $this->_fields = array('id','sight_id','name','url','content','image','audio','audio_len','create_time','update_time','status','x','y','level');
+        $this->_fields = array('id','sight_id','name','url','content','image','audio','audio_len','create_time','update_time','status','x','y','level','type');
     }
     
     /**

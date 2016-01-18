@@ -71,8 +71,8 @@ class RecommendapiController extends Base_Controller_Api{
                         $obj = Sight_Api::getSightById($groupItem['label_id']);
                         if (!empty($obj)) {
                             $groupItem['name'] = $obj['name'];
-                            $citye = City_Api::getCityById($obj['city_id']);
-                            $groupItem['cityname'] = $obj['name'];
+                            $city = City_Api::getCityById($obj['city_id']);
+                            $groupItem['name'] .= " ".$city['name'];
                         }
                         break;
                     case Recommend_Type_Label::GENERAL:

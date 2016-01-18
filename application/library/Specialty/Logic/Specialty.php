@@ -5,7 +5,7 @@ class Specialty_Logic_Specialty extends Base_Logic{
     
     const DEFAULT_WEIGHT = 0;
     
-    protected $fields = array('destination_id', 'title', 'image', 'content', 'status', 'create_time', 'update_time', 'create_user', 'update_user');
+    protected $fields = array('destination_id', 'title', 'image', 'content', 'status', 'create_time', 'update_time', 'create_user', 'update_user','type');
     
     public function __construct(){
         

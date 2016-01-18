@@ -43,4 +43,10 @@ class Food_Logic_Shop extends Base_Logic{
         $objShop->fetch(array('id' => $id));
         return $objShop->toArray();
     }
+    
+    public function getShopNum($arrPram){
+        $listShop = new Food_List_Shop();
+        $listShop->setFilter($arrPram);
+        return $listShop->getTotal();
+    }
 }

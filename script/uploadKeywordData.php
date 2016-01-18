@@ -5,7 +5,7 @@ $basePath     = "/home/work/publish/data/51data/";
 $resultPath   = $basePath."findSight/";
 
 //人工确定景点的上传景观数据
-$origin_str     = file_get_contents($resultPath."unsolved.txt","w");
+/*$origin_str     = file_get_contents($resultPath."unsolved.txt","w");
 preg_match_all("/(\d+)\s(\d+)\s1\s0\r\n/s",$origin_str,$match);
 $logicKeyword   = new Keyword_Logic_Keyword();
 foreach ($match[1] as $key => $id){
@@ -74,10 +74,10 @@ foreach ($match[1] as $key => $id){
         //$update_str = preg_replace("/$match[0][$key]/", "$match[1][$key]\t$match[2][$key]\t1\t1\r\n", $origin_str);
         //$ret        = file_put_contents($RET_DATA, $update_str);
     }
-}
+}*/
 
 //自动确认景点的，需要一次上传数据操作
-/*$origin_str     = file_get_contents($resultPath."confirm.txt");
+$origin_str     = file_get_contents($resultPath."confirm.txt");
 preg_match_all("/(\d+)\s(\d+)\r\n/s",$origin_str,$match);
 $logicKeyword   = new Keyword_Logic_Keyword();
 foreach ($match[1] as $key => $id){
@@ -127,10 +127,19 @@ foreach ($match[1] as $key => $id){
         $objKeyword = new Keyword_Object_Keyword();
         $objKeyword->fetch(array('sight_id' =>$arrInfo['sight_id'],'name' => $name));
         if(!empty($objKeyword->id)){
+            if(file_exists($directory."/$data.mp3")){
+                if(strstr($objKeyword->audio,"mp3") == false){
+                    $logicKeyword->delPic($objKeyword->audio);
+                    $objKeyword->audio    = $logicKeyword->upAudioData($directory."/$data.mp3");
+                    $objKeyword->audioLen = Base_Audio::getInstance()->getLen($directory."/$data.mp3");
+                    $objKeyword->save();
+                }               
+            }
             continue;
         }
-        if(file_exists($directory."/$data.amr")){
-            $arrInfo['audio'] = $logicKeyword->upAudioData($directory."/$data.amr");
+        if(file_exists($directory."/$data.mp3")){
+            $arrInfo['audio']     = $logicKeyword->upAudioData($directory."/$data.mp3");
+            $arrInfo['audio_len'] = Base_Audio::getInstance()->getLen($directory."/$data.mp3");
         }
         $id = $logicKeyword->addKeywords($arrInfo);
         $objKeyword = new Keyword_Object_Keyword();
@@ -140,4 +149,4 @@ foreach ($match[1] as $key => $id){
             $objKeyword->save();
         }
     }
-}*/
+}

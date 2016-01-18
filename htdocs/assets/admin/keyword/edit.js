@@ -140,7 +140,11 @@ $(document).ready(function() {
                     //序列化表单  
                     var param = $("#Form").serializeObject();
                     param.status=$('#status').val();
-                    
+                    if($('#type').is(':checked')){
+                    	param.type = 1;
+                    }else{
+                    	param.type = 0;
+                    }
                     var url;
                     if (!$('#id').val()) {
                         url = "/admin/keywordapi/add";

@@ -99,6 +99,13 @@ $(document).ready(function() {
                             }
                         }
                     }, {
+                        'data': function(e) {
+                            if (e.type == 1) {
+                                return '是';
+                            }
+                            return '否';
+                        }
+                    },{
                         "data": function(e) {
                             if (e.status == 2) {
                                 return '<span class="span-status" data-id="' + e.id + '"><i class="fa fa-2x fa-check color-check"></i></span>'
@@ -111,7 +118,10 @@ $(document).ready(function() {
                         }
                     }, {
                         "data": function(e) {
-                            return '<button class="btn btn-warning  btn-xs confirm" title="确认url" data-toggle="tooltip"><i class="fa fa-check-square-o"></i></button><a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>'+ '<button type="button" class="btn btn-danger btn-xs alias"  title="设为别名" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-pencil"></i></button>';
+                        	if(e.type == 1){
+                        		return '<button class="btn btn-warning  btn-xs confirm" title="确认url" data-toggle="tooltip"><i class="fa fa-check-square-o"></i></button><a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>'+ '<button type="button" class="btn btn-danger btn-xs alias"  title="设为别名" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-eyedropper"></i></button>'+ '<button type="button" class="btn btn-warning btn-xs type"  title="取消必玩" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-adjust"></i></button>';
+                        	}
+                            return '<button class="btn btn-warning  btn-xs confirm" title="确认url" data-toggle="tooltip"><i class="fa fa-check-square-o"></i></button><a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>'+ '<button type="button" class="btn btn-danger btn-xs alias"  title="设为别名" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-eyedropper"></i></button>'+ '<button type="button" class="btn btn-warning btn-xs type"  title="设为必玩" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-adjust"></i></button>';
                         }
                     }
                 ],
@@ -188,7 +198,7 @@ $(document).ready(function() {
                     });
                 });
                 
-              //确认url操作
+              //添加别名操作
                 $('#editable button.alias').live('click', function(e) {
                 	var toid=prompt("请输入景观ID","");                 
                     if(toid){
@@ -208,6 +218,30 @@ $(document).ready(function() {
                             }
                         });
                      }
+                });
+                
+              //设为必玩
+                $('#editable button.type').live('click', function(e) { 
+                	var nRow = $(this).parents('tr')[0];
+                    var data = oTable.api().row(nRow).data();
+                    var type = 1;
+                    if(data.type == 1){
+                    	type = 0;
+                    }
+                	$.ajax({
+                        "url": "/admin/Keywordapi/save",
+                        "data": {
+                            id: data.id,
+                            type:type
+                        },
+                        "type": "post",
+                        "error": function(e) {
+                            alert("服务器未正常响应，请重试");
+                        },
+                        "success": function(response) {
+                            api.ajax.reload();
+                        }
+                    });
                 });
 
                 //修改权重操作 

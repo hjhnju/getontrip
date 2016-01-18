@@ -82,6 +82,13 @@
 
                     }
                  },{
+                     "data": function(e) {
+                    	 if (e.type == 1) {
+                             return '<span class="maintd_'+e.id+'" data-rowspan="'+e.dest.length+'">是'; 
+                         } 
+                        return '<span class="maintd_'+e.id+'" data-rowspan="'+e.dest.length+'">否';
+                    }
+                 },{
                      'data': function(e) {
                          var str = '';
                          if (e.shop.length) {
@@ -125,7 +132,10 @@
                      }
                  }, {
                      "data": function(e) {
-                         return '<span class="maintd_'+e.id+'" data-rowspan="'+e.dest.length+'">'+'<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/food/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a></span>';
+                    	 if(e.type == 1){
+                    		 return '<span class="maintd_'+e.id+'" data-rowspan="'+e.dest.length+'">'+'<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/food/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a></span>'+ '<button type="button" class="btn btn-warning btn-xs type"  title="取消必吃" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-adjust"></i></button>';;
+                    	 }
+                         return '<span class="maintd_'+e.id+'" data-rowspan="'+e.dest.length+'">'+'<a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/food/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a></span>'+ '<button type="button" class="btn btn-warning btn-xs type"  title="设为必吃" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-adjust"></i></button>';;
                      }
                  }],
                  "initComplete": function(setting, json) {
@@ -228,6 +238,31 @@
                      });
 
                  });
+                 
+                 
+                 //设为必吃
+                   $('#editable button.type').live('click', function(e) { 
+                   	var nRow = $(this).parents('tr')[0];
+                       var data = oTable.api().row(nRow).data();
+                       var type = 1;
+                       if(data.type == 1){
+                       	type = 0;
+                       }
+                   	$.ajax({
+                           "url": "/admin/foodapi/save",
+                           "data": {
+                               id: data.id,
+                               type:type
+                           },
+                           "type": "post",
+                           "error": function(e) {
+                               alert("服务器未正常响应，请重试");
+                           },
+                           "success": function(response) {
+                               api.ajax.reload();
+                           }
+                       });
+                   });
 
                  //黑名单操作操作
                  $('#editable button.to-black,#editable button.cel-black').live('click', function(e) {

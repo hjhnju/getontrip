@@ -144,7 +144,11 @@ $(document).ready(function() {
 
                     //序列化表单  
                     var param = $("#Form").serializeObject();
-
+                    if($('#type').is(':checked')){
+                    	param.type = 1;
+                    }else{
+                    	param.type = 0;
+                    }
                     //特殊处理景点
                     sight_id_array = [];
                     $('#sight_alert span button').each(function() {

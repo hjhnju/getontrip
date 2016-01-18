@@ -25,7 +25,10 @@ $(document).ready(function() {
                         }
                         if ($("#form-sight").val()) {
                             d.params.sight = $.trim($("#form-sight").attr('data-sight_id'));
-                        } 
+                        }
+                        if ($("#form-city").val()) {
+                            d.params.city = $.trim($("#form-city").attr('data-city_id'));
+                        }
                         if ($("#form-tag").val()) {
                             d.params.tag = $.trim($("#form-tag").attr('data-tag_id'));
                         }
@@ -257,6 +260,30 @@ $(document).ready(function() {
             $('#clear-sight').click(function(event) {
                 $("#form-sight").val('');
                 $("#form-sight").attr('data-sight_id', '');
+                //触发dt的重新加载数据的方法
+                api.ajax.reload();
+            });         
+            
+          //景点输入框自动完成
+            $('#form-city').typeahead({
+                display: 'name',
+                val: 'id',
+                ajax: {
+                    url: '/admin/cityapi/getCityList',
+                    triggerLength: 1
+                },
+                itemSelected: function(item, val, text) {
+                    $("#form-city").val(text);
+                    $("#form-city").attr('data-city_id', val);
+                    //触发dt的重新加载数据的方法
+                    api.ajax.reload();
+                }
+            });
+
+            //景点框后的清除按钮，清除所选的景点
+            $('#clear-city').click(function(event) {
+                $("#form-city").val('');
+                $("#form-city").attr('data-city_id', '');
                 //触发dt的重新加载数据的方法
                 api.ajax.reload();
             });          

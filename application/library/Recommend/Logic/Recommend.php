@@ -9,10 +9,21 @@ class Recommend_Logic_Recommend extends Base_Logic{
      * @param integer $pageSize
      * @param array $arrInfo
      */
-    public function listArticles($page, $pageSize, $type, $arrInfo = array()){
+    public function listArticles($page, $pageSize, $type, $arrInfo = array()){ 
         $listArticle = new Recommend_List_Result();
         $strFilter   = "";
         $bSpecial    = false;
+        if(isset($arrInfo['city'])){
+            $modelSight = new SightModel();
+            $ret = $modelSight->getSightByCity(1, PHP_INT_MAX, $arrInfo['city']);
+            foreach ($ret as $val){
+                $arrSight[] = $val['id'];
+            }
+            $strSights = implode(",",$arrSight);
+            $strFilter = "`label_type` =".Recommend_Type_Label::SIGHT." and label_id in (".$strSights.")";
+            unset($arrInfo['city']);
+            $bSpecial = true;
+        }
         if(isset($arrInfo['sight'])){
             $strFilter = "`label_type` =".Recommend_Type_Label::SIGHT." and label_id=".$arrInfo['sight'];
             unset($arrInfo['sight']);
@@ -74,6 +85,7 @@ class Recommend_Logic_Recommend extends Base_Logic{
     public function dealArticle($id, $arrInfo){
         $arrSightIds = array();
         $arrTags     = array();
+        $from        = '';
         foreach ($arrInfo as $val){
             $objRecommendRet = new Recommend_Object_Result();
             $objRecommendRet->fetch(array('obj_id' => $id,'label_id' => $val['label_id'],'label_type' => $val['label_type']));
@@ -102,6 +114,7 @@ class Recommend_Logic_Recommend extends Base_Logic{
         }
         if(isset($article['source']) && !empty($article['source'])){
             $arrFrom[] = $article['source'];
+            $from = Source_Api::getSourceByName($article['source']);
         }
         $bTest = true;
         foreach ($arrTags as $tag){
@@ -122,6 +135,7 @@ class Recommend_Logic_Recommend extends Base_Logic{
              'content'     => $article['content'],
              'url'         => isset($article['url'])?$article['url']:'',
              'from_detail' => implode(",",$arrFrom).$article['issue'], 
+             'from'        => isset($from['id'])?$from['id']:'',
          );
         $ret = Topic_Api::addTopic($arrInfo);
         return $ret;

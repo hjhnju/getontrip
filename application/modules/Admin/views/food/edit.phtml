@@ -77,7 +77,7 @@
                     <div class="form-group ">
                           <label for="content" class="control-label col-lg-2">是否必吃*</label>
                           <div class="col-lg-9">
-                            <input  class="form-control" type="checkbox" name="type" id="type" rows=5  value="1" {%if $post.type==1 %}{%"checked"%}{%/if%}/>必吃                           
+                            <input  class="form-control" type="checkbox" name="type" id="type" rows=5  value="1" {%if isset($post.type) && ($post.type==1) %}{%"checked"%}{%/if%}/>必吃                           
                           </div>
                    </div> 
 

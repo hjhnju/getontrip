@@ -5,6 +5,8 @@ class Food_Logic_Food extends Base_Logic{
     
     const DEFAULT_WEIGHT = 0;
     
+    const REDIS_RECOMMEND_TIME = 86400;
+    
     protected $fields = array('destination_id', 'title', 'image', 'content', 'status', 'create_time', 'update_time', 'create_user', 'update_user','type');
     
     public function __construct(){
@@ -144,9 +146,10 @@ class Food_Logic_Food extends Base_Logic{
                 $temp['id']       = strval($arrFood['id']);
                 $Food             = Food_Api::getFoodInfo($arrFood['id']);
                 $temp['shopNum']  = strval($logicShop->getShopNum(array('food_id' => $arrFood['id'],'status' => Food_Type_Shop::PUBLISHED)));
-                $temp['topicNum'] = strval('10');
+                $temp['topicNum'] = strval($this->getRecommendTopicNum($arrFood['id']));
                 $temp['title']    = trim($Food['title']);
-                $temp['desc']     = trim($Food['content']);
+                $temp['content']  = trim($Food['content']);
+                $temp['desc']     = intval($Food['type'])==1?'必玩':'';
                 $temp['image']    = isset($Food['image'])?Base_Image::getUrlByName($Food['image']):'';
                 $temp['url']      = Base_Config::getConfig('web')->root.'/food/detail?id='.$temp['id'];
                 $arrRet[] = $temp;
@@ -498,10 +501,10 @@ class Food_Logic_Food extends Base_Logic{
         return $ret;
     }
     
-    public function updateRedis($FoodId){
+    public function updateRedis($foodId){
         $redis = Base_Redis::getInstance();
         $listSightFood = new Destination_List_Food();
-        $listSightFood->setFilter(array('food_id' => $FoodId));
+        $listSightFood->setFilter(array('food_id' => $foodId));
         $listSightFood->setPagesize(PHP_INT_MAX);
         $arrSightFood  = $listSightFood->toArray();
         foreach ($arrSightFood['list'] as $val){
@@ -511,5 +514,114 @@ class Food_Logic_Food extends Base_Logic{
             //$objSight->fetch(array('id' => $val['destination_id']));
             //$redis->hDel(City_Keys::getCitySightNumKey(),$objSight->cityId);
         }
+    }
+    
+    public function getRecommendTopicIds($foodId,$page,$pageSize){
+        $redis     = Base_Redis::getInstance();
+        $arrResult = array();
+        $ret       = $redis->get(Food_Keys::getFoodRecommend($foodId));
+        if(!empty($ret)){
+            $arrTmp =  explode(",",$ret);
+            return array_slice($arrTmp,($page-1)*$pageSize,$pageSize);
+        }
+        $food =  $this->getFoodByInfo($foodId);
+        $arrRet = Base_Search::RecommendTopic($food['title'].$food['content'],1,PHP_INT_MAX);
+        foreach ($arrRet as $val){
+            $arrResult[] = $val['id'];
+        }
+        $redis->setex(Food_Keys::getFoodRecommend($foodId),self::REDIS_RECOMMEND_TIME,implode(",",$arrResult));
+        return array_slice($arrResult,($page-1)*$pageSize,$pageSize);;
+    }
+    
+    public function getRecommendTopicNum($foodId){
+        $redis     = Base_Redis::getInstance();
+        $arrResult = array();
+        $ret       = $redis->get(Food_Keys::getFoodRecommend($foodId));
+        if(!empty($ret)){
+            $arrTmp =  explode(",",$ret);
+            return count($arrTmp);
+        }
+        $food = $this->getFoodByInfo($foodId);
+        return Base_Search::getRecommendNum($food['title'].$food['content']);
+    }
+    
+    /**
+     * 前端使用的食品详情接口
+     * @param integer $foodId
+     */
+    public function getFoodInfo($foodId, $page, $pageSize){
+        $logicPraise   = new Praise_Logic_Praise();
+        $logicTopic    = new Topic_Logic_Topic();
+        $logicShop     = new Food_Logic_Shop();
+        $objFood       = new Food_Object_Food();
+        $objFood->setFileds(array('id','title','content','image'));
+        $objFood->fetch(array('id' => $foodId));
+        $arrFood = $objFood->toArray();
+        $arrFood['id']        = strval($arrFood['id']); 
+        $arrFood['image']     = isset($arrFood['image'])?Base_Image::getUrlByName($arrFood['image']):'';
+        
+        $arrFood['shopNum'] = $logicShop->getShopNum(array('food_id' => $foodId,'status' => Food_Type_Shop::PUBLISHED));
+        
+        $arrFood['shops']  = array();
+        $arrFood['topics'] = array();
+                
+        $listShop = new Food_List_Shop();
+        $listShop->setFilter(array('food_id' => $foodId,'status' =>Food_Type_Shop::PUBLISHED));
+        $listShop->setPagesize(PHP_INT_MAX);
+        $arrShop  = $listShop->toArray();
+        foreach ($arrShop['list'] as $key => $val){
+            $arrFood['shops'][$key]['id']    = strval($val['id']);
+            $arrFood['shops'][$key]['title'] = trim($val['title']);
+            $arrFood['shops'][$key]['addr']  = trim($val['addr']);
+            $arrFood['shops'][$key]['score'] = strval($val['score']);
+            $arrFood['shops'][$key]['price'] = strval($val['price']);
+            $arrFood['shops'][$key]['image'] = isset($val['image'])?Base_Image::getUrlByName($val['image']):'';
+        }
+        
+        $arrTopoicIds = $this->getRecommendTopicIds($foodId,$page,$pageSize);
+        foreach ($arrTopoicIds as $key => $val){
+            $topic = Topic_Api::getTopicById($val);
+            $arrFood['topics'][$key]['id']      = strval($topic['id']);
+            $arrFood['topics'][$key]['title']   = trim($topic['title']);
+            $arrFood['topics'][$key]['desc']    = trim($topic['subtitle']);
+            $arrFood['topics'][$key]['image']   = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
+            $arrFood['topics'][$key]['visit']   = $logicTopic->getTotalTopicVistPv($val);           
+            $arrFood['topics'][$key]['praise']  = strval($logicPraise->getPraiseNum($val));
+        }
+        return $arrFood;
+    }
+    
+    public function getFoodTopics($id, $page, $pageSize){
+        $logicPraise   = new Praise_Logic_Praise();
+        $logicTopic    = new Topic_Logic_Topic();
+        $arrRet        = array();
+        $arrTopoicIds = $this->getRecommendTopicIds($id,$page,$pageSize);
+        foreach ($arrTopoicIds as $key => $val){
+            $topic = Topic_Api::getTopicById($val);
+            $arrRet[$key]['id']      = strval($topic['id']);
+            $arrRet[$key]['title']   = trim($topic['title']);
+            $arrRet[$key]['desc']    = trim($topic['subtitle']);
+            $arrRet[$key]['image']   = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
+            $arrRet[$key]['visit']   = $logicTopic->getTotalTopicVistPv($val);
+            $arrRet[$key]['praise']  = strval($logicPraise->getPraiseNum($val));
+        }
+        return $arrRet;
+    }
+    
+    public function getFoodShops($id, $page, $pageSize){
+        $arrRet   = array();
+        $listShop = new Food_List_Shop();
+        $listShop->setFilter(array('food_id' => $id,'status' =>Food_Type_Shop::PUBLISHED));
+        $listShop->setPagesize(PHP_INT_MAX);
+        $arrShop  = $listShop->toArray();
+        foreach ($arrShop['list'] as $key => $val){
+            $arrRet[$key]['id']    = strval($val['id']);
+            $arrRet[$key]['title'] = trim($val['title']);
+            $arrRet[$key]['addr']  = trim($val['addr']);
+            $arrRet[$key]['score'] = strval($val['score']);
+            $arrRet[$key]['price'] = strval($val['price']);
+            $arrRet[$key]['image'] = isset($val['image'])?Base_Image::getUrlByName($val['image']):'';
+        }
+        return $arrRet;
     }
 }

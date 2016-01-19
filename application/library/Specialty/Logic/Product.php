@@ -45,4 +45,10 @@ class Specialty_Logic_Product extends Base_Logic{
         }
         return $objProduct->save();
     }
+    
+    public function getProductNum($arrPram){
+        $listProduct = new Specialty_List_Product();
+        $listProduct->setFilter($arrPram);
+        return $listProduct->getTotal();
+    }
 }

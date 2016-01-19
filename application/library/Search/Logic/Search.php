@@ -357,4 +357,51 @@ class Search_Logic_Search{
             return $arrRet;
         }     
     }
+    
+    public function getNearSight($page,$pageSize,$x,$y){
+        $model = new GisModel();
+        $arrData = array();
+        $logicSight = new Sight_Logic_Sight();
+        $arrSight = $model->getNearSight($x, $y, $page, $pageSize);
+        foreach ($arrSight as $val){
+            $sightId       = $val['id'];
+            $arrSight      = $logicSight->getSightById($sightId);
+            $temp['id']    = strval($sightId);
+            $temp['type']  = strval(Search_Type_Label::SIGHT);
+            $temp['name']  = $arrSight['name'];
+            $temp['image'] = isset($arrSight['image'])?Base_Image::getUrlByName($arrSight['image']):'';
+            if(!empty($x) && !empty($y)){
+                $temp['dis']   = $val['dis'];//Base_Util_Number::getEarthDist($x, $y, $arrSight['x'], $arrSight['y']);
+                if($temp['dis'] < 1000){
+                    $temp['dis']      = strval(ceil($temp['dis']));
+                    $temp['dis_unit'] = "m";
+                }else{
+                    $temp['dis']      = strval(ceil($temp['dis']/1000));
+                    $temp['dis_unit'] = "km";
+                }
+            }else{
+                $temp['dis']   = '';
+                $temp['dis_unit'] = '';
+            }
+            $strTopicIds   = $this->logicTopic->getTopicIdBySight($sightId);
+            $arrTopicIds   = explode(",",$strTopicIds);
+            $count         = 0;
+            foreach ($arrTopicIds as $id){
+                if(empty($id)){
+                    continue;
+                }
+                $count    += $this->logicComment->getTotalCommentNum($id);
+            }
+            $topic_num     = $this->logicSight->getTopicNum($sightId,array('status' => Topic_Type_Status::PUBLISHED));
+            $wiki_num      = Keyword_Api::getKeywordNum($sightId);
+            $book_num      = Book_Api::getBookNum($sightId);
+            $video_num     = Video_Api::getVideoNum($sightId);
+            $collect       = $this->logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $sightId);
+            $temp['param1']  =  sprintf("%d个内容",$topic_num + $wiki_num + $book_num + $video_num);
+            $temp['param2']  =  sprintf("%d条评论",$count);
+            $temp['param3']  =  sprintf("%d人收藏",$collect);
+            $arrData[] = $temp;
+       }
+       return $arrData;
+    }
 }

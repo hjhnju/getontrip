@@ -75,7 +75,6 @@ class Base_Search {
         }else{
             $url .='&hl.fragsize=17&hl.simple.pre='.urlencode('').'&hl.simple.post='.urlencode('');
         }
-        //var_dump(Base_Solr::getInstance().$url);die;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, Base_Solr::getInstance().$url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -120,5 +119,84 @@ class Base_Search {
             }          
         }
         return array('num' => strval($arrRet['response']['numFound']),'data' => $arrRet['response']['docs']);
+    }
+    
+    /**
+     * 提供话题的推荐,eg:Base_Search::RecommendTopic('测试',1,10)
+     * @param string  $word,检索关键词
+     * @param integer $page
+     * @param integer $pageSize
+     */
+    public static function RecommendTopic($word,$page = 1,$pageSize = self::PAGE_SIZE){
+        $searchSizeMax = 10000;
+        $query         = '';
+        if($pageSize  >= $searchSizeMax){
+            $pageSize  = $searchSizeMax;
+        }
+        $arrRet = array();
+        $from   = ($page-1)*$pageSize;
+        $arrParams = array(
+            'title',
+            'content',
+        );        
+        foreach ($arrParams as $val){
+            $query .= $val.":$word  or ";
+        }
+        $query  = substr($query,0,-3);
+        $query  = urlencode($query);
+        
+        $url    = '/solr/topic/select?q='.$query.'&wt=json&fl=id&start='.$from."&rows=".$pageSize;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, Base_Solr::getInstance().$url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        $ret = curl_exec($ch);
+    
+        if(false == $ret){
+            curl_setopt($ch, CURLOPT_URL, Base_Solr::getInstance().$url);
+            $ret = curl_exec($ch);
+        }    
+        curl_close($ch);
+        $arrRet = json_decode($ret,true);
+        if(!isset($arrRet['response']['docs'])){
+            return array();
+        }    
+        return $arrRet['response']['docs'];
+    }
+    
+    /**
+     * 提供话题的推荐,eg:Base_Search::getRecommendNum('测试')
+     * @param string  $word,检索关键词
+     */
+    public static function getRecommendNum($word){
+        $query         = '';
+        $arrRet = array();
+        $arrParams = array(
+            'title',
+            'content',
+        );
+        foreach ($arrParams as $val){
+            $query .= $val.":$word  or ";
+        }
+        $query  = substr($query,0,-3);
+        $query  = urlencode($query);
+        
+        $url    = '/solr/topic/select?q='.$query.'&wt=json';
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, Base_Solr::getInstance().$url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        $ret = curl_exec($ch);
+        
+        if(false == $ret){
+            curl_setopt($ch, CURLOPT_URL, Base_Solr::getInstance().$url);
+            $ret = curl_exec($ch);
+        }
+        curl_close($ch);
+        $arrRet = json_decode($ret,true);
+        if(!isset($arrRet['response']['numFound'])){
+            return 0;
+        }
+        return $arrRet['response']['numFound'];
     }
 }

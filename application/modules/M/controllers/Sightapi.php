@@ -145,7 +145,7 @@ class SightapiController extends Base_Controller_Api {
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $logic      = new Food_Logic_Food();
-        $ret        = $logic->getFoodList($sightId,$page,$pageSize,array('status' => Food_Type_Status::PUBLISHED));
+        $ret        = $logic->getFoodList($sightId,Destination_Type_Type::SIGHT,$page,$pageSize,array('status' => Food_Type_Status::PUBLISHED));
         $this->ajax($ret);
     }
     
@@ -166,6 +166,25 @@ class SightapiController extends Base_Controller_Api {
         }
         $logic      = new Specialty_Logic_Specialty();
         $ret        = $logic->getSpecialtyList($sightId,$type = Destination_Type_Type::SIGHT, $page,$pageSize,array('status' => Specialty_Type_Status::PUBLISHED));
+        $this->ajax($ret);
+    }
+    
+    /**
+     * 接口7:/m/sightapi/nearSight
+     * 特产列表接口
+     * @param integer page
+     * @param integer pageSize
+     * @param double x
+     * @param double y
+     * @return json
+     */
+    public function nearSightAction(){
+        $page       = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
+        $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
+        $x          = isset($_REQUEST['x'])?doubleval($_REQUEST['x']):'';   
+        $y          = isset($_REQUEST['y'])?doubleval($_REQUEST['y']):'';
+        $logic      = new Search_Logic_Search();
+        $ret        = $logic->getNearSight($page, $pageSize, $x, $y);
         $this->ajax($ret);
     }
 }

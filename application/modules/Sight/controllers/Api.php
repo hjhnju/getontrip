@@ -145,7 +145,7 @@ class ApiController extends Base_Controller_Api {
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $logic      = new Food_Logic_Food();
-        $ret        = $logic->getFoodList($sightId,$page,$pageSize,array('status' => Food_Type_Status::PUBLISHED));
+        $ret        = $logic->getFoodList($sightId,Destination_Type_Type::SIGHT,$page,$pageSize,array('status' => Food_Type_Status::PUBLISHED));
         $this->ajax($ret);
     }
     
@@ -165,7 +165,7 @@ class ApiController extends Base_Controller_Api {
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
         $logic      = new Specialty_Logic_Specialty();
-        $ret        = $logic->getSpecialtyList($sightId,$type = Destination_Type_Type::SIGHT, $page,$pageSize,array('status' => Specialty_Type_Status::PUBLISHED));
+        $ret        = $logic->getSpecialtyList($sightId,Destination_Type_Type::SIGHT, $page,$pageSize,array('status' => Specialty_Type_Status::PUBLISHED));
         $this->ajax($ret);
     }
 }

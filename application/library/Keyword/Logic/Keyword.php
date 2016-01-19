@@ -302,6 +302,23 @@ class Keyword_Logic_Keyword extends Base_Logic{
         return $arrRet;
     }
     
+    public function getSpecialKeywordId($sightId){
+        $sight = Sight_Api::getSightById($sightId);
+        $objKeyword = new Keyword_Object_Keyword();
+        $objKeyword->fetch(array('name' => $sight['name'],'status' => Keyword_Type_Status::PUBLISHED));
+        if(!empty($objKeyword->id)){
+            return $objKeyword->id;
+        }
+        $listKeyword = new Keyword_List_Keyword();
+        $listKeyword->setFilter(array('sight_id' => $sightId,'status' => Keyword_Type_Status::PUBLISHED));
+        $listKeyword->setOrder("`weight` asc");
+        $arrKeyword  = $listKeyword->toArray();
+        if(isset($arrKeyword['list'][0])){
+            return $arrKeyword['list'][0]['id'];
+        }
+        return '';
+    }
+    
     /**
      * 获取景点百科信息，并拼接上百科目录,供前端使用
      * @param integer $sightId
@@ -311,39 +328,60 @@ class Keyword_Logic_Keyword extends Base_Logic{
      */
     public function getKeywordList($sightId,$x,$y,$page,$pageSize,$arrParma = array()){
         $listKeyword  = new Keyword_List_Keyword();
-        $arrFilter = array_merge(array('sight_id' => $sightId),$arrParma);
-        $listKeyword->setFields(array('id','name','url','content','image','audio','audio_len','type','x','y'));
-        $listKeyword->setOrder("`weight` asc");
-        $listKeyword->setFilter($arrFilter);
-        $listKeyword->setPage($page);
-        $listKeyword->setPagesize($pageSize);
-        $arrRet = $listKeyword->toArray();
-        foreach ($arrRet['list'] as $key => $val){
-            $arrRet['list'][$key]['id']      = strval($val['id']);
-            $arrRet['list'][$key]['content'] = Base_Util_String::delStartEmpty(Base_Util_String::getHtmlEntity($val['content']));
-            $arrRet['list'][$key]['url']     = trim($val['url']);
-            $arrRet['list'][$key]['audio']   = empty($val['audio'])?'':"/audio/".trim($val['audio']);
-            $arrRet['list'][$key]['audio_len']   = trim($val['audio_len']);
-            $arrRet['list'][$key]['desc']    = intval($val['type'])==1?'必玩':'';
-            $arrRet['list'][$key]['x']    = strval($val['x']);
-            $arrRet['list'][$key]['y']    = strval($val['y']);
+        $modelGis     = new GisModel();
+        $arrResult    = array();
+        if(empty($x) || empty($y)){
+            $listKeyword  = new Keyword_List_Keyword();
+            $listKeyword->setFilter(array('sight_id' => $sightId,'status' => Keyword_Type_Status::PUBLISHED));
+            $listKeyword->setOrder("`weight` asc");
+            $listKeyword->setPage($page);
+            $listKeyword->setPagesize(PHP_INT_MAX);
+            $arrRet = $listKeyword->toArray();
+            $arrRet = $arrRet['list'];
+        }else{
+            $arrRet       = $modelGis->getNearLandscape($x, $y, $sightId, $page, $pageSize);
+            $id           = $this->getSpecialKeywordId($sightId);
+            $dis          = '';
+            foreach ($arrRet as $key => $val){
+                if($val['id'] == $id){
+                    $dis = $val['dis'];
+                    unset($arrRet[$key]);
+                    break;
+                }
+            }
+            if($page == 1){
+                array_unshift($arrRet,array('id' => $id,'dis' => $dis));
+            } 
+        }
+
+        foreach ($arrRet as $key => $val){
+            $keyword    = $this->getKeywordByInfo($val['id']);
+            $tmpKeyword = array();
+            $tmpKeyword['id']               = strval($keyword['id']);
+            $tmpKeyword['name']             = trim($keyword['name']);
+            $tmpKeyword['content']          = Base_Util_String::delStartEmpty(Base_Util_String::getHtmlEntity($keyword['content']));
+            $tmpKeyword['url']              = trim($keyword['url']);
+            $tmpKeyword['audio']            = empty($keyword['audio'])?'':"/audio/".trim($keyword['audio']);
+            $tmpKeyword['audio_len']        = isset($keyword['audio_len'])?trim($keyword['audio_len']):'';
+            $tmpKeyword['desc']             = intval($keyword['type'])==1?'必玩':'';
+            $tmpKeyword['x']                = strval($keyword['x']);
+            $tmpKeyword['y']                = strval($keyword['y']);
             if(!empty($x) && !empty($y)){
-                $dis   = Base_Util_Number::getEarthDist($x, $y, $val['x'], $val['y']);
-                if($dis < 1000){
-                    $arrRet['list'][$key]['dis']      = strval(ceil($dis));
-                    $arrRet['list'][$key]['dis_unit'] = "m";
+                if($val['dis'] < 1000){
+                    $tmpKeyword['dis']      = strval(ceil($val['dis']));
+                    $tmpKeyword['dis_unit'] = "m";
                 }else{
-                    $arrRet['list'][$key]['dis']      = strval(ceil($dis/1000));
-                    $arrRet['list'][$key]['dis_unit'] = "km";
+                    $tmpKeyword['dis']      = strval(ceil($val['dis']/1000));
+                    $tmpKeyword['dis_unit'] = "km";
                 }
             }else{
-                $arrRet['list'][$key]['dis']      = '';
-                $arrRet['list'][$key]['dis_unit'] = '';
-            }            
-            $arrRet['list'][$key]['image']   = Base_Image::getUrlByName($val['image']);
-            unset($arrRet['list'][$key]['type']);
+                $tmpKeyword['dis']          = '';
+                $tmpKeyword['dis_unit']     = '';
+            }     
+            $tmpKeyword['image']   = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
+            $arrResult[]           = $tmpKeyword;
         }
-        return $arrRet['list'];
+        return $arrResult;
     }
     
     

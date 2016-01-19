@@ -5,6 +5,8 @@ class Specialty_Logic_Specialty extends Base_Logic{
     
     const DEFAULT_WEIGHT = 0;
     
+    const REDIS_RECOMMEND_TIME = 86400;
+    
     protected $fields = array('destination_id', 'title', 'image', 'content', 'status', 'create_time', 'update_time', 'create_user', 'update_user','type');
     
     public function __construct(){
@@ -130,6 +132,7 @@ class Specialty_Logic_Specialty extends Base_Logic{
     public function getSpecialtyList($destId,$type,$page,$pageSize,$arrParam = array()){
         $arrRet         = array();
         $listDestinationSpecialty = new Destination_List_Specialty();
+        $logicProduct  = new Specialty_Logic_Product();
         $listDestinationSpecialty->setFilter(array('destination_id' => $destId,'destination_type' => $type));
         $listDestinationSpecialty->setOrder('`weight` asc');
         $listDestinationSpecialty->setPagesize(PHP_INT_MAX);
@@ -140,13 +143,14 @@ class Specialty_Logic_Specialty extends Base_Logic{
             $objSpecialty->fetch($arrParam);
             $arrSpecialty = $objSpecialty->toArray();
             if(!empty($arrSpecialty)){
-                $temp['id']      = strval($arrSpecialty['id']);
-                $Specialty       = Specialty_Api::getSpecialtyInfo($arrSpecialty['id']);
-                $temp['topicNum']= strval('10');
+                $temp['id']       = strval($arrSpecialty['id']);
+                $Specialty        = Specialty_Api::getSpecialtyInfo($arrSpecialty['id']);
+                $temp['topicNum'] = strval($this->getRecommendTopicNum($arrSpecialty['id']));
+                $temp['productNum']   = strval($logicProduct->getProductNum(array('specialty_id' => $arrSpecialty['id'],'status' => Specialty_Type_Product::PUBLISHED)));
                 $temp['title']    = trim($Specialty['title']);
-                $temp['desc']    = trim($Specialty['content']);
-                $temp['image']   = isset($Specialty['image'])?Base_Image::getUrlByName($Specialty['image']):'';
-                $temp['url']     = Base_Config::getConfig('web')->root.'/specialty/detail?id='.$temp['id'];
+                $temp['desc']     = trim($Specialty['content']);
+                $temp['image']    = isset($Specialty['image'])?Base_Image::getUrlByName($Specialty['image']):'';
+                $temp['url']      = Base_Config::getConfig('web')->root.'/specialty/detail?id='.$temp['id'];
                 $arrRet[] = $temp;
             }
         }
@@ -496,10 +500,10 @@ class Specialty_Logic_Specialty extends Base_Logic{
         return $ret;
     }
     
-    public function updateRedis($SpecialtyId){
+    public function updateRedis($specialtyId){
         $redis = Base_Redis::getInstance();
         $listSightSpecialty = new Destination_List_Specialty();
-        $listSightSpecialty->setFilter(array('specialty_id' => $SpecialtyId));
+        $listSightSpecialty->setFilter(array('specialty_id' => $specialtyId));
         $listSightSpecialty->setPagesize(PHP_INT_MAX);
         $arrSightSpecialty  = $listSightSpecialty->toArray();
         foreach ($arrSightSpecialty['list'] as $val){
@@ -509,5 +513,112 @@ class Specialty_Logic_Specialty extends Base_Logic{
             //$objSight->fetch(array('id' => $val['destination_id']));
             //$redis->hDel(City_Keys::getCitySightNumKey(),$objSight->cityId);
         }
+    }
+    
+    public function getRecommendTopicNum($specialtyId){
+        $redis     = Base_Redis::getInstance();
+        $arrResult = array();
+        $ret       = $redis->get(Specialty_Keys::getSpecialtyRecommend($specialtyId));
+        if(!empty($ret)){
+            $arrTmp =  explode(",",$ret);
+            return count($arrTmp);
+        }
+        $specialty = $this->getSpecialtyByInfo($specialtyId);
+        return Base_Search::getRecommendNum($specialty['title'].$specialty['content']);
+    }
+    
+    public function getRecommendTopicIds($specialtyId,$page,$pageSize){
+        $redis     = Base_Redis::getInstance();
+        $arrResult = array();
+        $ret       = $redis->get(Specialty_Keys::getSpecialtyRecommend($specialtyId));
+        if(!empty($ret)){
+            //$arrTmp =  explode(",",$ret);
+            //return array_slice($arrTmp,($page-1)*$pageSize,$pageSize);
+        }
+        $specialty =  $this->getSpecialtyByInfo($specialtyId);
+        $arrRet = Base_Search::RecommendTopic($specialty['title'].$specialty['content'],1,PHP_INT_MAX);
+        foreach ($arrRet as $val){
+            $arrResult[] = $val['id'];
+        }
+        $redis->setex(Specialty_Keys::getSpecialtyRecommend($specialtyId),self::REDIS_RECOMMEND_TIME,implode(",",$arrResult));
+        return array_slice($arrResult,($page-1)*$pageSize,$pageSize);;
+    }
+    
+    /**
+     * 前端使用的食品详情接口
+     * @param integer $specialtyId
+     */
+    public function getSpecialtyInfo($specialtyId, $page, $pageSize){
+        $logicPraise   = new Praise_Logic_Praise();
+        $logicTopic    = new Topic_Logic_Topic();
+        $logicProduct  = new Specialty_Logic_Product();
+        $objSpecialty       = new Specialty_Object_Specialty();
+        $objSpecialty->setFileds(array('id','title','content','image'));
+        $objSpecialty->fetch(array('id' => $specialtyId));
+        $arrSpecialty = $objSpecialty->toArray();
+        $arrSpecialty['id']        = strval($arrSpecialty['id']);
+        $arrSpecialty['image']     = isset($arrSpecialty['image'])?Base_Image::getUrlByName($arrSpecialty['image']):'';
+        
+        $arrSpecialty['productNum']   = $logicProduct->getProductNum(array('specialty_id' => $specialtyId,'status' => Specialty_Type_Product::PUBLISHED));
+        
+        $arrSpecialty['products']  = array();
+        $arrSpecialty['topics']    = array();
+    
+        $listProduct = new Specialty_List_Product();
+        $listProduct->setFilter(array('specialty_id' => $specialtyId,'status' =>Specialty_Type_Product::PUBLISHED));
+        $listProduct->setPagesize(PHP_INT_MAX);
+        $arrProduct  = $listProduct->toArray();
+        foreach ($arrProduct['list'] as $key => $val){
+            $arrSpecialty['products'][$key]['id']    = strval($val['id']);
+            $arrSpecialty['products'][$key]['title'] = trim($val['title']);
+            $arrSpecialty['products'][$key]['url']   = strval($val['url']);
+            $arrSpecialty['products'][$key]['price'] = strval($val['price']);
+            $arrSpecialty['products'][$key]['image'] = isset($val['image'])?Base_Image::getUrlByName($val['image']):'';
+        }
+    
+        $arrTopoicIds = $this->getRecommendTopicIds($specialtyId,$page,$pageSize);
+        foreach ($arrTopoicIds as $key => $val){
+            $topic = Topic_Api::getTopicById($val);
+            $arrSpecialty['topics'][$key]['id']      = strval($topic['id']);
+            $arrSpecialty['topics'][$key]['title']   = trim($topic['title']);
+            $arrSpecialty['topics'][$key]['desc']    = trim($topic['subtitle']);
+            $arrSpecialty['topics'][$key]['image']   = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
+            $arrSpecialty['topics'][$key]['visit']   = $logicTopic->getTotalTopicVistPv($val);
+            $arrSpecialty['topics'][$key]['praise']  = strval($logicPraise->getPraiseNum($val));
+        }
+        return $arrSpecialty;
+    }
+    
+    public function getSpecialtyTopics($id, $page, $pageSize){
+        $logicPraise   = new Praise_Logic_Praise();
+        $logicTopic    = new Topic_Logic_Topic();
+        $arrRet        = array();
+        $arrTopoicIds = $this->getRecommendTopicIds($id,$page,$pageSize);
+        foreach ($arrTopoicIds as $key => $val){
+            $topic = Topic_Api::getTopicById($val);
+            $arrRet[$key]['id']      = strval($topic['id']);
+            $arrRet[$key]['title']   = trim($topic['title']);
+            $arrRet[$key]['desc']    = trim($topic['subtitle']);
+            $arrRet[$key]['image']   = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
+            $arrRet[$key]['visit']   = $logicTopic->getTotalTopicVistPv($val);
+            $arrRet[$key]['praise']  = strval($logicPraise->getPraiseNum($val));
+        }
+        return $arrRet;
+    }
+    
+    public function getSpecialtyProducts($id, $page, $pageSize){
+        $arrRet   = array();
+        $listProduct = new Specialty_List_Product();
+        $listProduct->setFilter(array('food_id' => $id,'status' =>Specialty_Type_Product::PUBLISHED));
+        $listProduct->setPagesize(PHP_INT_MAX);
+        $arrProduct  = $listProduct->toArray();
+        foreach ($arrProduct['list'] as $key => $val){
+            $arrRet[$key]['id']    = strval($val['id']);
+            $arrRet[$key]['title'] = trim($val['title']);
+            $arrRet[$key]['url']   = strval($val['url']);
+            $arrRet[$key]['price'] = strval($val['price']);
+            $arrRet[$key]['image'] = isset($val['image'])?Base_Image::getUrlByName($val['image']):'';
+        }
+        return $arrRet;
     }
 }

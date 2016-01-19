@@ -1,0 +1,60 @@
+{%extends file="../../../views/common/page.phtml"%}
+{%block name="link"%} 
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/m/sight/css/nearby.css" /> 
+ <style type="text/css" media="screen">
+ 
+ 
+ 
+ </style>
+ 
+ 
+{%/block%} 
+{%block name="content"%}
+<div class="container" id="wrapper">
+  <div id="scroller">
+    <div id="pullDown" class="hidden">
+       <span class="pullDownIcon"></span>
+       <span class="pullDownLabel"></span>
+    </div>
+    <ul class="sight_list" id="sight_list">
+       <div class="tuzhi-loading-text">定位中...</div>
+       <!-- <div class="tuzhi-loading">&nbsp;</div> -->
+       <!-- <li class="sight_item" style="background-image: url(/pic/f81c65200d56ce3a.jpg)">
+          <a class="sight_link"> 
+             <div class="img_mask"></div>
+             <div class="title">什刹海</div>
+             <div class="detail">
+                <div class="distance">
+                  <i class="location"></i>
+                  <span class="number">123</span>
+                  <span class="text">km</span>
+                </div>
+                <div class="like clearfix"> 
+                  <span class="number fr">12</span>
+                  <i class="content fr"></i>
+                  <i class="ver fr"></i> 
+                  <span class="number fr">34</span>
+                  <i class="collect fr"></i>
+                </div>
+              </div>
+           </a>
+       </li>  -->
+
+       <!-- <div class="error-text">啊哦，定位失败!<a href="javascript:void(0)" class="refresh-btn" onclick="location.reload();">&nbsp;</a></div> -->
+     </ul>
+     <div id="pullUp"  class="hidden">
+          <span class="pullUpIcon"></span><span class="pullUpLabel"></span>
+     </div>
+  </div>
+</div>
+   
+
+{%/block%}
+{%block name="script"%}
+<script src="http://webapi.amap.com/maps?v=1.3&key=f102b992de0917e82f23af99e4a69a5e" type="text/javascript" ></script> 
+<script> 
+    require(['m/sight/nearby'], function (main) {
+        main.init();
+    }); 
+</script>
+{%/block%}

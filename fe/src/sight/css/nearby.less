@@ -1,0 +1,148 @@
+@import "../../common/css/mcommon.less";
+
+
+#wrapper {
+  position: absolute;
+  z-index: 1;
+  top: 0px;
+  bottom: 0px;
+  left: 0;
+  width: 100%; 
+  overflow: hidden;
+  background-color: #2a2d2e;
+}
+
+.sight_list {
+    color: #fff;
+    background-color: #2a2d2e;
+    li:nth-child(odd) {
+        background-color: #f8afc3;
+    }
+    li:nth-child(even) {
+        background-color: #9cf0ed;
+    }
+    li:last-child {
+        margin-bottom: 0pt;
+    }
+    .sight_item {
+        height: 190pt;
+        margin-bottom: 2pt;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        position: relative;
+        .error-text {
+            color: #333;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20pt;
+            line-height: 20pt;
+        }
+        .refresh-btn {
+            background-image: url(img/refresh.png);
+            margin-left: 2pt;
+            width: 20pt;
+            height: 20pt;
+            display: inline-block;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        .sight_link {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: pointer;
+            color: #fff;
+            :hover {
+                color: #fff;
+            }
+        }
+        .img_mask {
+            background-color: rgba(104, 104, 104, 0.5);
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            bottom: 0;
+            height: 190pt;
+            left: 0;
+            right: 0;
+            opacity: 0.7;
+        }
+        .title {
+            position: absolute;
+            z-index: 2;
+            padding: 0pt 9pt;
+            width: 100%;
+            bottom: 30pt;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 22pt;
+        }
+        .detail {
+            position: absolute;
+            z-index: 2;
+            height: 25pt;
+            width: 100%;
+            padding: 0pt 9pt;
+            bottom: 5pt;
+            .display(flex);
+            .number {
+                font-size: 13px;
+                line-height: 16pt;
+                display: block;
+            }
+            .text {
+                font-size: 10px;
+                line-height: 16pt;
+                display: block;
+            }
+            .distance {
+                .display(flex);
+                .flex(1);
+                padding-top: 5pt;
+                .location {
+                    margin-right: 3pt;
+                    display: block;
+                    height: 16pt;
+                    width: 13pt;
+                    background-image: url(../img/location_search@3x.png);
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    background-size: cover;
+                    .flex(1);
+                    max-width: 13pt;
+                }
+            }
+            .like {
+                .flex(1);
+                padding-top: 5pt;
+                i {
+                    margin-right: 3pt;
+                    display: block;
+                    height: 14pt;
+                    width: 15pt;
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    background-size: contain;
+                    .flex(1);
+                    max-width: 15pt;
+                }
+                .collect {
+                    background-image: url(../img/icon_star@3x.png);
+                }
+                .content {
+                    background-image: url(../img/content_hotSight@3x.png);
+                    background-size: 12pt 13pt;
+                }
+                .ver {
+                    display: block;
+                    width: 1pt;
+                    max-width: 1pt;
+                    background-color: #fff;
+                    height: 14pt;
+                    margin: 0pt 10pt;
+                }
+            }
+        }
+    }
+}

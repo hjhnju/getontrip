@@ -1,0 +1,72 @@
+{%extends file="../../../views/common/page.phtml"%}
+{%block name="link"%} 
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/common/extra/jplayer/jquery.jplayer.css" /> 
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/m/sight/css/landscape.css" /> 
+ <style type="text/css" media="screen">
+ 
+.jp-progress{
+  margin: 0px 10px;
+}
+
+
+
+
+
+
+ </style> 
+ 
+{%/block%} 
+{%block name="content"%} 
+<div class="container" id="wrapper">
+   <div class="img_bg"  style="background-image: url(/pic/{%$landscape.image%})">
+       <div class="img_mask"></div>
+       <!-- <div class="name">{%$landscape.name%}</div> -->
+       <div class="content">{%$landscape.content%}御花园位于北京紫禁城中轴线上，坤宁宫后方，明代称为宫后苑，清代称御花园，是汉族园林建筑之精华。始建于明永乐十八年 (1420年)，以后曾有增修，现仍保留初建时的基本格局。全园南北纵80m，东西宽140m，占地面积12000㎡。园内主体建筑钦安殿为重檐盝顶式，坐落于紫禁城的南北中轴线上，以其为中心，向前方及两侧铺展亭台楼阁。园内青翠的松、柏、竹间点缀着山石，形成四季长青的园林景观 [1]  ，体现天人合一的汉族传统文化。御花园位于北京紫禁城中轴线上，坤宁宫后方，明代称为宫后苑，清代称御花园，是汉族园林建筑之精华。始建于明永乐十八年 (1420年)，以后曾有增修，现仍保留初建时的基本格局。全园南北纵80m，东西宽140m，占地面积12000㎡。园内主体建筑钦安殿为重檐盝顶式，坐落于紫禁城的南北中轴线上，以其为中心，向前方及两侧铺展亭台楼阁。园内青翠的松、柏、竹间点缀着山石，形成四季长青的园林景观 [1]  ，体现天人合一的汉族传统文化。御花园位于北京紫禁城中轴线上，坤宁宫后方，明代称为宫后苑，清代称御花园，是汉族园林建筑之精华。始建于明永乐十八年 (1420年)，以后曾有增修，现仍保留初建时的基本格局。全园南北纵80m，东西宽140m，占地面积12000㎡。园内主体建筑钦安殿为重檐盝顶式，坐落于紫禁城的南北中轴线上，以其为中心，向前方及两侧铺展亭台楼阁。园内青翠的松、柏、竹间点缀着山石，形成四季长青的园林景观 [1]  ，体现天人合一的汉族传统文化。御花园位于北京紫禁城中轴线上，坤宁宫后方，明代称为宫后苑，清代称御花园，是汉族园林建筑之精华。始建于明永乐十八年 (1420年)，以后曾有增修，现仍保留初建时的基本格局。全园南北纵80m，东西宽140m，占地面积12000㎡。园内主体建筑钦安殿为重檐盝顶式，坐落于紫禁城的南北中轴线上，以其为中心，向前方及两侧铺展亭台楼阁。园内青翠的松、柏、竹间点缀着山石，形成四季长青的园林景观 [1]  ，体现天人合一的汉族传统文化。</div>
+       <div class="more">查看更多</div>
+       <div id="jPlayerBox"></div>
+       <div id="jp_container_1" class="jp-audio" role="application" aria-label="media player"> 
+          <div class="jp-type-single">
+            <div class="jp-gui jp-interface"> 
+              <div class="jp-controls-holder">
+                <div class="jp-controls"> 
+                  <button class="jp-play" role="button" tabindex="0">播放</button>  
+                </div>
+                <div class="jp-progress-box">
+                  <div class="jp-current-time" role="timer" aria-label="time">&nbsp;</div>
+                  <div class="jp-progress"> 
+                    <div class="jp-seek-bar">
+                      <div class="jp-play-bar"></div>
+                    </div>
+                    <div class="jp-play-ball"></div> 
+                  </div>
+                  <div class="jp-duration-time" role="timer" aria-label="duration">{%$landscape.audio_len%}</div>
+                </div>
+                
+                
+                
+                
+                <!-- <div class="jp-toggles">
+                  <button class="jp-repeat" role="button" tabindex="0">repeat</button>
+                </div> -->
+              </div>
+            </div>
+            
+            <div class="jp-no-solution">
+              <span>需要升级</span>
+              请升级浏览器到最新版本或者升级您的 <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash 插件</a>.
+            </div>
+          </div>
+       </div>
+   </div> 
+</div>
+</div>
+
+{%/block%}
+{%block name="script"%}
+<script src="http://webapi.amap.com/maps?v=1.3&key=f102b992de0917e82f23af99e4a69a5e" type="text/javascript" ></script> 
+<script> 
+    require(['m/sight/landscape'], function (main) {
+        main.init('{%$landscape.audio%}');
+    }); 
+</script>
+{%/block%}

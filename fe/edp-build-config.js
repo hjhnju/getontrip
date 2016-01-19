@@ -7,22 +7,33 @@ var time = ''
     + date.getFullYear()
     + ('' + (date.getMonth() + 101)).substr(1)
     + ('' + (date.getDate() + 100)).substr(1);
-time='20150812';
+time='20160112';
 exports.output = path.resolve( __dirname, '../htdocs/v1', time + 'x2' );
 
 exports.getProcessors = function () {
     var lessProcessor = new LessCompiler({
         files: [
             'src/home/css/index.less',
+            'src/home/css/interest.less',
             'src/topic/css/detail.less',
-            'src/topic/css/mdetail.less'
+            'src/topic/css/mdetail.less',
+            'src/m/sight/css/map.less',
+            'src/m/sight/css/guide.less',
+            'src/m/sight/css/nearby.less',
+            'src/m/sight/css/landscape.less'
+
         ]
     });
     var cssProcessor = new CssCompressor({
         files: [
             'src/home/css/index.less', 
-             'src/topic/css/detail.less',
-             'src/topic/css/mdetail.less'
+            'src/home/css/interest.less',
+            'src/topic/css/detail.less',
+            'src/topic/css/mdetail.less',
+            'src/m/sight/css/map.less',
+            'src/m/sight/css/guide.less',
+            'src/m/sight/css/nearby.less',
+            'src/m/sight/css/landscape.less'
         ]
     });
     var moduleProcessor = new ModuleCompiler({
@@ -38,7 +49,11 @@ exports.getProcessors = function () {
     var jsProcessor = new JsCompressor({
         files: [ 
             'src/home/index.js',
-            'src/topic/detail.js'
+            'src/topic/detail.js',
+            'src/m/sight/map.js',
+            'src/m/sight/guide.js',
+            'src/m/sight/nearby.js',
+            'src/m/sight/landscape.js'
         ]
     });
     var html2JsProcessor = new Html2JsCompiler({

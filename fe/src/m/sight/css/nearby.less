@@ -1,0 +1,149 @@
+@import "../../../common/css/mcommon.less";
+
+
+#wrapper {
+  position: absolute;
+  z-index: 1;
+  top: 0px;
+  bottom: 0px;
+  left: 0;
+  width: 100%; 
+  overflow: hidden;
+  background-color: #2a2d2e;
+}
+
+.sight_list {
+    color: #fff;
+    background-color: #2a2d2e;
+    li:nth-child(odd) {
+        background-color: #f8afc3;
+    }
+    li:nth-child(even) {
+        background-color: #9cf0ed;
+    }
+    li:last-child {
+        margin-bottom: 0px;
+    }
+    .sight_item {
+        height: 190px;
+        margin-bottom: 2px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        position: relative;
+        .error-text {
+            color: #333;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+            line-height: 20px;
+        }
+        .refresh-btn {
+            background-image: url(img/refresh.png);
+            margin-left: 2px;
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        .sight_link {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: pointer;
+            color: #fff;
+            :hover {
+                color: #fff;
+            }
+        }
+        .img_mask {
+            background-color: rgba(104, 104, 104, 0.5);
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            bottom: 0;
+            height: 190px;
+            left: 0;
+            right: 0;
+            opacity: 0.7;
+        }
+        .title {
+            position: absolute;
+            z-index: 2;
+            padding: 0px 9px;
+            width: 100%;
+            bottom: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 22px;
+        }
+        .detail {
+            position: absolute;
+            z-index: 2;
+            height: 25px;
+            width: 100%;
+            padding: 0px 9px;
+            bottom: 5px;
+            .display(flex);
+            .number {
+                font-size: 13px;
+                line-height: 16px;
+                display: block;
+            }
+            .text {
+                font-size: 10px;
+                line-height: 16px;
+                display: block;
+            }
+            .distance {
+                .display(flex);
+                .flex(1);
+                padding-top: 5px;
+                max-width: 80px;
+                .location {
+                    margin-right: 3px;
+                    display: block;
+                    height: 16px;
+                    width: 13px;
+                    background-image: url(../img/location_search@3x.png);
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    background-size: cover;
+                    .flex(1);
+                    max-width: 13px;
+                }
+            }
+            .like {
+                .flex(1);
+                padding-top: 5px;
+                i {
+                    margin-right: 3px;
+                    display: block;
+                    height: 14px;
+                    width: 15px;
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    background-size: contain;
+                    .flex(1);
+                    max-width: 15px;
+                }
+                .collect {
+                    background-image: url(../img/icon_star@3x.png);
+                }
+                .content {
+                    background-image: url(../img/content_hotSight@3x.png);
+                    background-size: 12px 13px;
+                }
+                .ver {
+                    display: block;
+                    width: 1px;
+                    max-width: 1px;
+                    background-color: #fff;
+                    height: 14px;
+                    margin: 0px 10px;
+                }
+            }
+        }
+    }
+}

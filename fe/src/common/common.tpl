@@ -7,12 +7,12 @@
 -->
 
 <!-- target: Loading -->
-<div class="xjd-loading">&nbsp;</div>
+<div class="tuzhi-loading">&nbsp;</div>
 <!-- /target -->
 
 <!-- target: Error -->
-<div class="xjd-error">
-    <div class="xjd-error-msg">${msg}</div>
+<div class="tuzhi-error">
+    <div class="tuzhi-error-msg">${msg}</div>
 </div>
 <!-- /target -->
 

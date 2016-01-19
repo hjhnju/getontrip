@@ -1,0 +1,139 @@
+@import "../../../common/css/mcommon.less";
+.container {
+    height: 100%;
+}
+
+#jPlayerBox {
+    height: 60px;
+    width: 100%;
+    position: fixed;
+    bottom: 0pt;
+}
+
+#jp_container_1 {
+    height: 66px;
+    width: 100%;
+    position: fixed;
+    bottom: 0pt;
+    z-index: 9000;
+}
+
+.jp-audio {
+    padding: 13px 22px;
+}
+
+.jp-audio .jp-controls-holder {
+    height: 40px;
+    .display(flex);
+}
+
+.jp-audio .jp-controls {
+    margin: initial;
+    margin-right: 15px;
+    padding: 0px;
+    width: 40px;
+    height: 40px;
+}
+
+.jp-type-single .jp-controls button {
+    height: 40px;
+    width: 40px;
+    margin: 0px;
+}
+
+.jp-progress-box {
+    .display(flex);
+    .flex(1);
+}
+
+.jp-current-time {
+    line-height: 40px;
+    font-size: 12px;
+}
+
+.jp-duration {
+    line-height: 40px;
+    font-size: 12px;
+}
+
+.jp-duration-time {
+    line-height: 40px;
+    font-size: 12px;
+    color: #1c1c1c;
+}
+
+.jp-progress {
+    height: 40px;
+    padding-top: 19px;
+    margin-top: 0px;
+    position: relative;
+}
+
+.jp-seek-bar {
+    height: 1.62px;
+    width: 100%;
+}
+
+.jp-play-ball {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    z-index: 1001;
+    left: 0px;
+    top: 13.5px;
+    border: 3.5px solid #f2fa73;
+    .border-radius(7px);
+    background-color: #ffffff;
+}
+
+.img_bg {
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    .img_mask {
+        background-color: rgba(81, 81, 81, 0.9);
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+        left: 0;
+        right: 0;
+        opacity: 0.7;
+        z-index: 1;
+    }
+    .content {
+        position: relative;
+        z-index: 2;
+        color: #fff;
+        font-size: 17px;
+        line-height: 28px;
+        letter-spacing: 1.28px;
+        text-align: justify;
+        padding: 28px 26px 0px;
+        height: 560px;
+        overflow: hidden;
+    }
+    .more {
+        position: relative;
+        z-index: 2;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 14px;
+        line-height: 28px;
+        text-align: center;
+        width: 100%;
+        display: none;
+        top: 28px;
+    }
+    .name {
+        position: absolute;
+        z-index: 2;
+        color: #fff;
+        font-weight: bold;
+        width: 100%;
+        text-align: center;
+        font-size: 22px;
+    }
+}

@@ -85,6 +85,7 @@ class Food_Logic_Food extends Base_Logic{
         foreach($arrFood['list'] as $key => $val){
             $temp = array();
             $arrFood['list'][$key] = Food_Api::getFoodInfo($val);
+            $arrFood['list'][$key]['content'] = Base_Util_String::getSubString($arrFood['list'][$key]['content'],20);
             $arrFood['list'][$key]['dest'] = array();
             $listSightFood = new Destination_List_Food();
             $listSightFood->setFilter(array('food_id' => $val));
@@ -575,6 +576,7 @@ class Food_Logic_Food extends Base_Logic{
             $arrFood['shops'][$key]['addr']  = trim($val['addr']);
             $arrFood['shops'][$key]['score'] = strval($val['score']);
             $arrFood['shops'][$key]['price'] = strval($val['price']);
+            $arrFood['shops'][$key]['url']   = trim($val['url']);
             $arrFood['shops'][$key]['image'] = isset($val['image'])?Base_Image::getUrlByName($val['image']):'';
         }
         
@@ -584,6 +586,7 @@ class Food_Logic_Food extends Base_Logic{
             $arrFood['topics'][$key]['id']      = strval($topic['id']);
             $arrFood['topics'][$key]['title']   = trim($topic['title']);
             $arrFood['topics'][$key]['desc']    = trim($topic['subtitle']);
+            $arrFood['topics'][$key]['url']     = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topic['id']);
             $arrFood['topics'][$key]['image']   = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
             $arrFood['topics'][$key]['visit']   = $logicTopic->getTotalTopicVistPv($val);           
             $arrFood['topics'][$key]['praise']  = strval($logicPraise->getPraiseNum($val));
@@ -601,6 +604,7 @@ class Food_Logic_Food extends Base_Logic{
             $arrRet[$key]['id']      = strval($topic['id']);
             $arrRet[$key]['title']   = trim($topic['title']);
             $arrRet[$key]['desc']    = trim($topic['subtitle']);
+            $arrRet[$key]['url']     = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topic['id']);
             $arrRet[$key]['image']   = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
             $arrRet[$key]['visit']   = $logicTopic->getTotalTopicVistPv($val);
             $arrRet[$key]['praise']  = strval($logicPraise->getPraiseNum($val));
@@ -620,6 +624,7 @@ class Food_Logic_Food extends Base_Logic{
             $arrRet[$key]['addr']  = trim($val['addr']);
             $arrRet[$key]['score'] = strval($val['score']);
             $arrRet[$key]['price'] = strval($val['price']);
+            $arrRet[$key]['url']   = trim($val['url']);
             $arrRet[$key]['image'] = isset($val['image'])?Base_Image::getUrlByName($val['image']):'';
         }
         return $arrRet;

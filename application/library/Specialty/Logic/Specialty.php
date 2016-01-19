@@ -85,6 +85,7 @@ class Specialty_Logic_Specialty extends Base_Logic{
         foreach($arrSpecialty['list'] as $key => $val){
             $temp = array();
             $arrSpecialty['list'][$key] = Specialty_Api::getSpecialtyInfo($val);
+            $arrSpecialty['list'][$key]['content'] = Base_Util_String::getSubString($arrSpecialty['list'][$key]['content'],20);
             $arrSpecialty['list'][$key]['dest'] = array();
             $listSightSpecialty = new Destination_List_Specialty();
             $listSightSpecialty->setFilter(array('specialty_id' => $val));
@@ -582,6 +583,7 @@ class Specialty_Logic_Specialty extends Base_Logic{
             $arrSpecialty['topics'][$key]['id']      = strval($topic['id']);
             $arrSpecialty['topics'][$key]['title']   = trim($topic['title']);
             $arrSpecialty['topics'][$key]['desc']    = trim($topic['subtitle']);
+            $arrSpecialty['topics'][$key]['url']     = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topic['id']);
             $arrSpecialty['topics'][$key]['image']   = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
             $arrSpecialty['topics'][$key]['visit']   = $logicTopic->getTotalTopicVistPv($val);
             $arrSpecialty['topics'][$key]['praise']  = strval($logicPraise->getPraiseNum($val));
@@ -599,6 +601,7 @@ class Specialty_Logic_Specialty extends Base_Logic{
             $arrRet[$key]['id']      = strval($topic['id']);
             $arrRet[$key]['title']   = trim($topic['title']);
             $arrRet[$key]['desc']    = trim($topic['subtitle']);
+            $arrRet[$key]['url']     = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topic['id']);
             $arrRet[$key]['image']   = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
             $arrRet[$key]['visit']   = $logicTopic->getTotalTopicVistPv($val);
             $arrRet[$key]['praise']  = strval($logicPraise->getPraiseNum($val));

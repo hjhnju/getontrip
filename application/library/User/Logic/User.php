@@ -157,11 +157,11 @@ class User_Logic_User extends Base_Logic{
         $arrRet =  $listUser->toArray();
         foreach ($arrRet['list'] as $key => $val){
             $objLogin = new User_Object_Third();
-            $objLogin->fetch(array('id' => $val['id']));
+            $objLogin->fetch(array('user_id' => $val['id']));
             if(!empty($objLogin->id)){
                 $arrRet['list'][$key]['logintime'] = $objLogin->loginTime;
             }else{
-                $arrRet['list'][$key]['logintime'] = '';
+                $arrRet['list'][$key]['logintime'] = $val['update_time'];
             }
         }
         return $arrRet;

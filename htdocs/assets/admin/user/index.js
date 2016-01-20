@@ -60,6 +60,8 @@ $(document).ready(function() {
                         return "未上传";
                     }
                 }, {
+                    "data": "email"
+                },{
                     "data": function(e) {
                         if (e.accept_msg) {
                             return '开启';

@@ -150,7 +150,7 @@ class Food_Logic_Food extends Base_Logic{
                 $temp['topicNum'] = strval($this->getRecommendTopicNum($arrFood['id']));
                 $temp['title']    = trim($Food['title']);
                 $temp['content']  = trim($Food['content']);
-                $temp['desc']     = intval($Food['type'])==1?'必玩':'';
+                $temp['desc']     = intval($Food['type'])==1?'必吃':'';
                 $temp['image']    = isset($Food['image'])?Base_Image::getUrlByName($Food['image']):'';
                 $temp['url']      = Base_Config::getConfig('web')->root.'/food/detail?id='.$temp['id'];
                 $arrRet[] = $temp;
@@ -586,7 +586,7 @@ class Food_Logic_Food extends Base_Logic{
             $arrFood['topics'][$key]['id']      = strval($topic['id']);
             $arrFood['topics'][$key]['title']   = trim($topic['title']);
             $arrFood['topics'][$key]['desc']    = trim($topic['subtitle']);
-            $arrFood['topics'][$key]['url']     = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topic['id']);
+            //$arrFood['topics'][$key]['url']     = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topic['id']);
             $arrFood['topics'][$key]['image']   = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
             $arrFood['topics'][$key]['visit']   = $logicTopic->getTotalTopicVistPv($val);           
             $arrFood['topics'][$key]['praise']  = strval($logicPraise->getPraiseNum($val));
@@ -604,7 +604,7 @@ class Food_Logic_Food extends Base_Logic{
             $arrRet[$key]['id']      = strval($topic['id']);
             $arrRet[$key]['title']   = trim($topic['title']);
             $arrRet[$key]['desc']    = trim($topic['subtitle']);
-            $arrRet[$key]['url']     = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topic['id']);
+            //$arrRet[$key]['url']     = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topic['id']);
             $arrRet[$key]['image']   = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
             $arrRet[$key]['visit']   = $logicTopic->getTotalTopicVistPv($val);
             $arrRet[$key]['praise']  = strval($logicPraise->getPraiseNum($val));

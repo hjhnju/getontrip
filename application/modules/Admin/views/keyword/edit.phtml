@@ -90,7 +90,7 @@
                    <div class="form-group ">
                           <label for="content" class="control-label col-lg-2">是否必玩*</label>
                           <div class="col-lg-9">
-                            <input  class="form-control" type="checkbox" name="type" id="type" rows=5  value="1" {%if $post.type==1 %}{%"checked"%}{%/if%}/>必玩                             
+                            <input  class="form-control" type="checkbox" name="type" id="type" rows=5  value="1" {%if isset($post.type) && ($post.type==1) %}{%"checked"%}{%/if%}/>必玩                             
                           </div>
                    </div> 
                    

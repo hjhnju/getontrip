@@ -105,8 +105,16 @@ $(document).ready(function() {
                     //序列化表单  
                     var param = $("#Form").serializeObject();
                     param.action = action;
+                    
+                    tag_id_array = [];
+                    $('input[data-name="form-generaltag"]:checked').each(function() {
+                        tag_id_array.push(Number($(this).val()));
+                    });
+
+                    param.tags = tag_id_array;
+                    
                     var url = '';
-                    if (!$('#status').val()) {
+                    if (!$('#id').val()) {
                         url = '/admin/cityapi/add';
                     } else {
                         url = "/admin/cityapi/save"

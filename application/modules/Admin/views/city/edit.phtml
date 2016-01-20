@@ -61,7 +61,18 @@
                           <div class="col-lg-5">
                               <input class="form-control" id="name" name="name" minlength="2" type="text" required="" value="{%if isset($post.name)%}{%$post.name%}{%/if%}" readonly="" /><label for="name" class="error"></label>
                           </div>
-                      </div>   
+                      </div> 
+                      
+                      <div class="form-group ">
+                          <label for="tag" class="control-label col-lg-2">通用标签：</label>
+                          <div class="col-lg-10">  
+                              {%foreach $generalTag as $key=>$item%}
+                              <label class="checkbox-inline"> 
+                                <input type='checkbox' name="" data-name="form-generaltag" id="" value="{%$item.id%}" {%if isset($item.selected)%}checked{%/if%}>{%$item.name%} 
+                              </label>
+                              {%/foreach%}  
+                           </div> 
+                      </div>  
                        <div class="form-group ">
                           <label for="xy" class="control-label col-lg-2">坐标*</label>
                           <div class="col-lg-5">

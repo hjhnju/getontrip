@@ -107,6 +107,7 @@ class City_Logic_City{
      */
     public function getCityById($cityId){
         $objCity = new City_Object_Meta();
+        $logicDestTags = new Destination_Logic_Tag();
         $objCity->fetch(array('id' => $cityId));
         $ret = $objCity->toArray();
         if(!empty($ret)){
@@ -123,6 +124,7 @@ class City_Logic_City{
             $objCityInfo->fetch(array('id' => $ret['id']));
             $arrRet      = $objCityInfo->toArray();
             $ret         = array_merge($ret, $arrRet);
+            $ret['tags'] = $logicDestTags->getDestinationTags($cityId, Destination_Type_Type::CITY, 1, PHP_INT_MAX);
         }
         return $ret;
     }
@@ -136,11 +138,34 @@ class City_Logic_City{
     public function editCity($cityId,$arrInfo){
         $objCity = new City_Object_City();
         $objCity->fetch(array('id' => $cityId));
+        $arrTag  = array();
+        if(isset($arrInfo['tags'])){
+            $arrTag = $arrInfo['tags'];
+            unset($arrInfo['tags']);
+        }
         if(empty($objCity->id)){
             return false;
         }
         foreach ($arrInfo as $key => $val){
             $objCity->$key = $val;
+        }
+        
+        $listDestinationTag = new Destination_List_Tag();
+        $listDestinationTag->setFilter(array('destination_id' => $cityId,'destination_type' => Destination_Type_Type::CITY));
+        $listDestinationTag->setPagesize(PHP_INT_MAX);
+        $arrDestinationTag = $listDestinationTag->toArray();
+        foreach ($arrDestinationTag['list'] as $val){
+            $objDestinationTag = new Destination_Object_Tag();
+            $objDestinationTag->fetch(array('id' => $val['id']));
+            $objDestinationTag->remove();
+        }
+        
+        foreach ($arrTag as $id){
+            $objDestinationTag = new Destination_Object_Tag();
+            $objDestinationTag->destinationId   = $cityId;
+            $objDestinationTag->destinationType = Destination_Type_Type::CITY;
+            $objDestinationTag->tagId   = $id;
+            $objDestinationTag->save();
         }
         return $objCity->save();
     }
@@ -166,7 +191,8 @@ class City_Logic_City{
      * @return array
      */
     public function queryCity($arrInfo,$page,$pageSize){ 
-      $modelCity       = new CityModel();
+      $modelCity         = new CityModel();
+      $logicDestTag      = new Destination_Logic_Tag();
         $arrRet          = array();
         $arrRet['total'] = $modelCity->getCityNum($arrInfo);
         $arrRet['pageall'] = ceil($arrRet['total'] / $pageSize);
@@ -183,6 +209,7 @@ class City_Logic_City{
             $arrRet['list'][$key]['pidname'] = $ret['pidname'];
             $arrRet['list'][$key]['countryname'] = $ret['countryname'];
             $arrRet['list'][$key]['continentname'] = $ret['continentname'];
+            $arrRet['list'][$key]['tags']    = $logicDestTag->getDestinationTags($val['id'], Destination_Type_Type::CITY);
         }
         return $arrRet;
     }

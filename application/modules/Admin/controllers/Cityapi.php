@@ -96,7 +96,6 @@ class CityapiController extends Base_Controller_Api{
           return $this->ajaxError(); 
        }
        $_REQUEST['status'] = $this->getStatusByActionStr($_REQUEST['action']);
-
        $bRet = City_Api::editCity($cityId,$_REQUEST); 
 
        if($bRet){

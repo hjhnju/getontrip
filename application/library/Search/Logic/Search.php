@@ -228,12 +228,12 @@ class Search_Logic_Search{
             foreach ($arrSight as $val){
                 $sightId       = $val['id'];
                 $arrSight      = $logicSight->getSightById($sightId);
-                $city          = City_Api::getCityById($sightId);
+                //$city          = City_Api::getCityById($sightId);
                 $temp['id']    = strval($sightId);
                 $temp['type']  = strval(Search_Type_Label::SIGHT);
                 $temp['name']  = $arrSight['name'];
-                $temp['cityid']   = strval($city['id']);
-                $temp['cityname'] = $city['name'];
+                //$temp['cityid']   = strval($city['id']);
+                //$temp['cityname'] = $city['name'];
                 $temp['image'] = isset($arrSight['image'])?Base_Image::getUrlByName($arrSight['image']):'';
                 if(!empty($x) && !empty($y)){
                     $temp['dis']   = $val['dis'];//Base_Util_Number::getEarthDist($x, $y, $arrSight['x'], $arrSight['y']);

@@ -12,7 +12,11 @@ class EditAction extends Yaf_Action_Abstract {
 
         $postid = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
         
-        $products = Specialty_Api::getProductList(1, PHP_INT_MAX,array('status' => Specialty_Type_Product::PUBLISHED));
+        $products = Specialty_Api::getProductList(1, PHP_INT_MAX,array('status' => Specialty_Type_Product::PUBLISHED,'specialty_id'=>''));
+        if(!empty($postid)){
+            $tmp = Specialty_Api::getProductList(1, PHP_INT_MAX,array('status' => Specialty_Type_Product::PUBLISHED,'specialty_id'=>$postid));
+            $products['list'] = array_merge($products['list'],$tmp['list']);
+        }
         
         if($postid==''){
             $this->getView()->assign('post', '');

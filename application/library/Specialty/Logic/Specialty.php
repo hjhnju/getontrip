@@ -311,7 +311,8 @@ class Specialty_Logic_Specialty extends Base_Logic{
             foreach ($arrSpecialtyProduct['list'] as $val){
                 $objSpecialtyProduct = new Specialty_Object_Product();
                 $objSpecialtyProduct->fetch(array('id' => $val['id']));
-                $objSpecialtyProduct->remove();
+                $objSpecialtyProduct->specialtyId = '';
+                $objSpecialtyProduct->save();
             }
         }
         $objSpecialty = new Specialty_Object_Specialty();
@@ -346,10 +347,13 @@ class Specialty_Logic_Specialty extends Base_Logic{
         }
         
         foreach ($arrProduct as $product){
-            $objSpecialtyProduct = new Specialty_Object_Product();
-            $objSpecialtyProduct->fetch(array('id' => intval($product)));
-            $objSpecialtyProduct->specialtyId = $objSpecialty->id;
-            $objSpecialtyProduct->save();
+            $objSpecialtyProduct = new Specialty_Object_Product();            
+            $objSpecialtyProduct->fetch(array('id' => intval($product),'specialty_id' => $id));
+            if(empty($objSpecialtyProduct->id)){
+                $objSpecialtyProduct->specialtyId = $objSpecialty->id;
+                $objSpecialtyProduct->id          = intval($product);
+                $objSpecialtyProduct->save();
+            }
         }
         return $objSpecialty->save();
     }

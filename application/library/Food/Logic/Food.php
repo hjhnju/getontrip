@@ -311,7 +311,8 @@ class Food_Logic_Food extends Base_Logic{
             foreach ($arrFoodShop['list'] as $val){
                 $objFoodShop = new Food_Object_Shop();
                 $objFoodShop->fetch(array('id' => $val['id']));
-                $objFoodShop->remove();
+                $objFoodShop->foodId = '';
+                $objFoodShop->save();
             }
         }
         $objFood = new Food_Object_Food();
@@ -347,9 +348,12 @@ class Food_Logic_Food extends Base_Logic{
         
         foreach ($arrShop as $shop){
             $objFoodShop = new Food_Object_Shop();
-            $objFoodShop->fetch(array('id' => intval($shop)));
-            $objFoodShop->foodId = $objFood->id;
-            $objFoodShop->save();
+            $objFoodShop->fetch(array('id' => intval($shop),'food_id' => $id));
+            if(empty($objFoodShop->id)){
+                $objFoodShop->foodId = $objFood->id;
+                $objFoodShop->id     = intval($shop);
+                $objFoodShop->save();
+            }
         }
         return $objFood->save();
     }

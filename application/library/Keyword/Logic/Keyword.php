@@ -351,7 +351,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
             }
             if($page == 1){
                 array_unshift($arrRet,array('id' => $id,'dis' => $dis));
-                array_slice($arrRet,0,$pageSize);
+                $arrRet = array_slice($arrRet,0,$pageSize);
             } 
         }
 

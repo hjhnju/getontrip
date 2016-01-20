@@ -561,7 +561,8 @@ class Food_Logic_Food extends Base_Logic{
         $arrFood['id']        = strval($arrFood['id']); 
         $arrFood['image']     = isset($arrFood['image'])?Base_Image::getUrlByName($arrFood['image']):'';
         
-        $arrFood['shopNum'] = $logicShop->getShopNum(array('food_id' => $foodId,'status' => Food_Type_Shop::PUBLISHED));
+        $arrFood['shopNum']  = strval($logicShop->getShopNum(array('food_id' => $foodId,'status' => Food_Type_Shop::PUBLISHED)));
+        $arrFood['topicNum'] = strval($this->getRecommendTopicNum($foodId));
         
         $arrFood['shops']  = array();
         $arrFood['topics'] = array();
@@ -616,7 +617,8 @@ class Food_Logic_Food extends Base_Logic{
         $arrRet   = array();
         $listShop = new Food_List_Shop();
         $listShop->setFilter(array('food_id' => $id,'status' =>Food_Type_Shop::PUBLISHED));
-        $listShop->setPagesize(PHP_INT_MAX);
+        $listShop->setPage($page);
+        $listShop->setPagesize($pageSize);
         $arrShop  = $listShop->toArray();
         foreach ($arrShop['list'] as $key => $val){
             $arrRet[$key]['id']    = strval($val['id']);

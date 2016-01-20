@@ -561,7 +561,8 @@ class Specialty_Logic_Specialty extends Base_Logic{
         $arrSpecialty['id']        = strval($arrSpecialty['id']);
         $arrSpecialty['image']     = isset($arrSpecialty['image'])?Base_Image::getUrlByName($arrSpecialty['image']):'';
         
-        $arrSpecialty['productNum']   = $logicProduct->getProductNum(array('specialty_id' => $specialtyId,'status' => Specialty_Type_Product::PUBLISHED));
+        $arrSpecialty['productNum']   = strval($logicProduct->getProductNum(array('specialty_id' => $specialtyId,'status' => Specialty_Type_Product::PUBLISHED)));
+        $arrSpecialty['topicNum']     = strval($this->getRecommendTopicNum($specialtyId));
         
         $arrSpecialty['products']  = array();
         $arrSpecialty['topics']    = array();
@@ -613,8 +614,9 @@ class Specialty_Logic_Specialty extends Base_Logic{
     public function getSpecialtyProducts($id, $page, $pageSize){
         $arrRet   = array();
         $listProduct = new Specialty_List_Product();
-        $listProduct->setFilter(array('food_id' => $id,'status' =>Specialty_Type_Product::PUBLISHED));
-        $listProduct->setPagesize(PHP_INT_MAX);
+        $listProduct->setFilter(array('specialty_id' => $id,'status' =>Specialty_Type_Product::PUBLISHED));
+        $listProduct->setPage($page);
+        $listProduct->setPagesize($pageSize);
         $arrProduct  = $listProduct->toArray();
         foreach ($arrProduct['list'] as $key => $val){
             $arrRet[$key]['id']    = strval($val['id']);

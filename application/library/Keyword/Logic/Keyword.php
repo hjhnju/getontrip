@@ -335,7 +335,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $listKeyword->setFilter(array('sight_id' => $sightId,'status' => Keyword_Type_Status::PUBLISHED));
             $listKeyword->setOrder("`weight` asc");
             $listKeyword->setPage($page);
-            $listKeyword->setPagesize(PHP_INT_MAX);
+            $listKeyword->setPagesize($pageSize);
             $arrRet = $listKeyword->toArray();
             $arrRet = $arrRet['list'];
         }else{
@@ -365,8 +365,8 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $tmpKeyword['audio']            = empty($keyword['audio'])?'':"/audio/".trim($keyword['audio']);
             $tmpKeyword['audio_len']        = isset($keyword['audio_len'])?trim($keyword['audio_len']):'';
             $tmpKeyword['desc']             = intval($keyword['type'])==1?'必玩':'';
-            $tmpKeyword['x']                = strval($keyword['x']);
-            $tmpKeyword['y']                = strval($keyword['y']);
+            $tmpKeyword['x']                = isset($keyword['x'])?strval($keyword['x']):'';
+            $tmpKeyword['y']                = isset($keyword['y'])?strval($keyword['y']):'';
             if(!empty($x) && !empty($y)){
                 if($val['dis'] < 1000){
                     $tmpKeyword['dis']      = strval(ceil($val['dis']));

@@ -569,7 +569,8 @@ class Food_Logic_Food extends Base_Logic{
                 
         $listShop = new Food_List_Shop();
         $listShop->setFilter(array('food_id' => $foodId,'status' =>Food_Type_Shop::PUBLISHED));
-        $listShop->setPagesize(PHP_INT_MAX);
+        $listShop->setPage($page);
+        $listShop->setPagesize($pageSize);
         $arrShop  = $listShop->toArray();
         foreach ($arrShop['list'] as $key => $val){
             $arrFood['shops'][$key]['id']    = strval($val['id']);

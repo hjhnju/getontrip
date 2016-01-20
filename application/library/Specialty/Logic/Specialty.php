@@ -569,7 +569,8 @@ class Specialty_Logic_Specialty extends Base_Logic{
     
         $listProduct = new Specialty_List_Product();
         $listProduct->setFilter(array('specialty_id' => $specialtyId,'status' =>Specialty_Type_Product::PUBLISHED));
-        $listProduct->setPagesize(PHP_INT_MAX);
+        $listProduct->setPage($page);
+        $listProduct->setPagesize($pageSize);
         $arrProduct  = $listProduct->toArray();
         foreach ($arrProduct['list'] as $key => $val){
             $arrSpecialty['products'][$key]['id']    = strval($val['id']);

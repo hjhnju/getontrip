@@ -21,9 +21,9 @@ class Specialty_Api{
      * @param integer $status
      * @return number
      */
-    public static function getSpecialtyNum($sighId, $status = Specialty_Type_Status::PUBLISHED){
+    public static function getSpecialtyNum($sighId, $type = Destination_Type_Type::SIGHT, $status = Specialty_Type_Status::PUBLISHED){
         $logicSpecialty = new Specialty_Logic_Specialty();
-        return $logicSpecialty->getSpecialtyNum($sighId, $status);
+        return $logicSpecialty->getSpecialtyNum($sighId, $type, $status);
     }
     
     /**

@@ -10,8 +10,7 @@ class KeywordapiController extends Base_Controller_Api{
     }
     
     public function listAction(){
-
-        //第一条数据的起始位置，比如0代表第一条数据
+         //第一条数据的起始位置，比如0代表第一条数据
         $start=isset($_REQUEST['start'])?$_REQUEST['start']:0;
        
         $pageSize=isset($_REQUEST['length'])?$_REQUEST['length']:PHP_INT_MAX;
@@ -37,7 +36,7 @@ class KeywordapiController extends Base_Controller_Api{
             for($i=0;$i<count($tmpList);$i++){ 
 
               //处理景点名称 
-              $sight_id = $tmpList[$i]['sight_id']; 
+              /*$sight_id = $tmpList[$i]['sight_id']; 
               if (!array_key_exists($sight_id,$sightArray)) {  
                     //根据ID查找景点名称
                     $sightInfo =(array) Sight_Api::getSightById($sight_id);
@@ -48,7 +47,18 @@ class KeywordapiController extends Base_Controller_Api{
               }
               else{ 
                    $tmpList[$i]['sight_name']  = $sightArray[$sight_id];
-              } 
+              } */
+              if(intval($tmpList[$i]['level']) == Keyword_Type_Level::SIGHT){
+                  $sight = Sight_Api::getSightById($tmpList[$i]['sight_id']);
+                  $tmpList[$i]['sight_name'] = isset($sight['name'])?$sight['name']:'';
+                  
+              }elseif(intval($tmpList[$i]['level']) == Keyword_Type_Level::CITY){
+                  $city = City_Api::getCityById($tmpList[$i]['sight_id']);
+                  $tmpList[$i]['sight_name'] = isset($city['name'])?$city['name']:'';
+              }elseif(intval($tmpList[$i]['level']) == Keyword_Type_Level::LANDSCAPE){
+                  $keyword= Keyword_Api::queryById($tmpList[$i]['sight_id']);
+                  $tmpList[$i]['sight_name'] = isset($keyword['name'])?$keyword['name']:'';
+              }
               
               $tmpList[$i]['audio'] = isset($tmpList[$i]['audio'])?$_SERVER['HTTP_HOST'].'/audio/'.$tmpList[$i]['audio']:'';
 
@@ -124,16 +134,12 @@ class KeywordapiController extends Base_Controller_Api{
      * 修改某景点下的词条的权重
      * @return [type] [description]
      */
-    public function changeWeightAction(){ 
+    public function changeWeightAction(){
+       $id = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0; 
+       $to = isset($_REQUEST['to'])? intval($_REQUEST['to']) : 0;
         
-        $sightId =isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
-        $id =isset($_REQUEST['id'])?intval($_REQUEST['id']):'';
-        $to =isset($_REQUEST['to'])?intval($_REQUEST['to']):'';
-        if(empty($sightId)||empty($id)||empty($to)){
-            return $this->ajaxError();
-        }
-        $dbRet =  Keyword_Api::changeWeight($sightId, $id, $to);
-        if ($dbRet) {
+       $dbRet = Keyword_Api::changeWeight($id,$to);
+       if ($dbRet) {
             return $this->ajax();
         }
         return $this->ajaxError();
@@ -182,5 +188,9 @@ class KeywordapiController extends Base_Controller_Api{
             return $this->ajax($ret);
         }
         return $this->ajaxError();
+    }
+    
+    public function getDestListAction(){
+        var_dump($_REQUEST);die;
     }
 }

@@ -21,9 +21,9 @@ class Food_Api{
      * @param integer $status
      * @return number
      */
-    public static function getFoodNum($sightId, $status = Food_Type_Status::PUBLISHED){
+    public static function getFoodNum($sightId, $type = Destination_Type_Type::SIGHT, $status = Food_Type_Status::PUBLISHED){
         $logicFood = new Food_Logic_Food();
-        return $logicFood->getFoodNum($sightId, $status);
+        return $logicFood->getFoodNum($sightId, $type, $status);
     }
     
     /**

@@ -209,17 +209,17 @@ class Food_Logic_Food extends Base_Logic{
         return $maxWeight + 1;
     }
     
-    public function getFoodNum($sighId, $status = Food_Type_Status::PUBLISHED){
-        if($status == Food_Type_Status::PUBLISHED){
+    public function getFoodNum($sighId, $type = Destination_Type_Type::SIGHT, $status = Food_Type_Status::PUBLISHED){
+        /*if($status == Food_Type_Status::PUBLISHED){
             $redis = Base_Redis::getInstance();
             $ret   = $redis->hGet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::FOOD);
             if(!empty($ret)){
                 return $ret;
             }
-        }
+        }*/
         $count          = 0;
         $listSightFood = new Destination_List_Food();
-        $listSightFood->setFilter(array('destination_id' => $sighId));
+        $listSightFood->setFilter(array('destination_id' => $sighId,'destination_type' => $type));
         $listSightFood->setPagesize(PHP_INT_MAX);
         $arrSightFood  = $listSightFood->toArray();
         foreach ($arrSightFood['list'] as $val){
@@ -229,10 +229,10 @@ class Food_Logic_Food extends Base_Logic{
                 $count += 1;
             }
         }
-        if($status == Food_Type_Status::PUBLISHED){
+        /*if($status == Food_Type_Status::PUBLISHED){
             $redis = Base_Redis::getInstance();
             $redis->hSet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::FOOD,$count);
-        }
+        }*/
         return $count;
     }
     

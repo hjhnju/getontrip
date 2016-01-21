@@ -33,6 +33,9 @@ $(document).ready(function() {
                         if ($("#form-status").val()) {
                             d.params.status = $.trim($("#form-status").val());
                         }
+                        if ($("#form-level").val()) {
+                            d.params.level = $.trim($("#form-level").val());
+                        }
                     }
                 },
                 "columnDefs": [{
@@ -63,7 +66,15 @@ $(document).ready(function() {
                             }
                             return '暂无';
                         }
-                    }, {
+                    }, {"data": function(e) {
+                    	if (e.level == 1) {
+                    		return '城市';
+                    	}else if (e.level == 2) {
+                    		return '景点';
+                    	}else{
+                    		return '景观';
+                    	}}
+                    },{
                         "data": "sight_name"
                     }, {"data": function(e) {
                     	if (e.audio) {
@@ -148,6 +159,8 @@ $(document).ready(function() {
 
                 //状态下拉列表 
                 $('#form-status').selectpicker();
+                $('#form-level').selectpicker();
+
 
                 //删除操作
                 $('#editable button.delete').live('click', function(e) {
@@ -397,6 +410,10 @@ $(document).ready(function() {
             });
 
             $('#form-status').change(function(event) {
+                //触发dt的重新加载数据的方法
+                api.ajax.reload();
+            });
+            $('#form-level').change(function(event) {
                 //触发dt的重新加载数据的方法
                 api.ajax.reload();
             });

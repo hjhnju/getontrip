@@ -77,6 +77,14 @@ $(document).ready(function() {
                     $("#txtSearch").val($.trim($("#name").val()));
                     $('#mapModal .btn-search').click();
                 });
+                
+              //选择类型
+                $('#sight_tag').selectpicker();
+                $('#sight_tag').change(function(event) {
+                    var type = $(this).val();
+                    $('.sight_city .sight_tag').addClass('hide');
+                    $('.sight_city .sight_tag[data-type="' + type + '"]').removeClass('hide');
+                });
 
 
                 //模态框 点击确定之后立即触发该事件。
@@ -92,7 +100,7 @@ $(document).ready(function() {
                     $("#xy").val(valXY);
 
                     //手工关闭模态框
-                    $('#mapModal').modal('hide');
+                   $('#mapModal').modal('hide');
                 });
                 
                 //景点输入框自动完成
@@ -105,6 +113,19 @@ $(document).ready(function() {
                     },
                     itemSelected: function(item, val, text) {
                         $("#sight_name").val(text);
+                        $("#sight_id").val(val);
+                    }
+                });
+                
+                $('#city_name').typeahead({
+                    display: 'name',
+                    val: 'id',
+                    ajax: {
+                        url: '/admin/cityapi/getCityList',
+                        triggerLength: 1
+                    },
+                    itemSelected: function(item, val, text) {
+                        $("#city_name").val(text);
                         $("#sight_id").val(val);
                     }
                 });
@@ -145,6 +166,16 @@ $(document).ready(function() {
                     }else{
                     	param.type = 0;
                     }
+                    
+                    if($('#sight_tag').val() == 'sight'){
+                    	param.level = 2;
+                    }else if($('#sight_tag').val() == 'city'){
+                    	param.level = 3;
+                    }
+                    if($('#sight_id').val()){
+                    	param.sight_id = $('#sight_id').val();
+                    } 
+                    
                     var url;
                     if (!$('#id').val()) {
                         url = "/admin/keywordapi/add";

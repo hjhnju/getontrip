@@ -94,6 +94,27 @@ class GisModel
         return $arrRet;
     }
     
+    public function getCityNearSight($cityId, $x, $y, $page, $pageSize){
+        $arrRet = array();
+        $from   = ($page-1)*$pageSize;
+        if(empty($x) && empty($y)){
+            $sql    = "SELECT id FROM sight where city_id = $cityId limit $pageSize offset $from;";
+        }else{
+            $sql    = "SELECT id,earth_distance(ll_to_earth(y, x), ll_to_earth($y,$x)) as dis FROM sight   where city_id = $cityId ORDER BY dis ASC limit $pageSize offset $from;";
+        }
+        try {
+            $resultSet = pg_query($this->conn,$sql);
+            while ($row = pg_fetch_row($resultSet)){
+                $tmp['id']  = $row[0];
+                $tmp['dis'] = isset($row[1])?$row[1]:'';
+                $arrRet[] = $tmp;
+            }
+        } catch (Exception $ex) {
+            Base_Log::error($ex->getMessage());
+        }
+        return $arrRet;
+    }
+    
     public function getNearLandscape($x,$y,$sight_id, $page,$pageSize){
         $arrRet = array();
         $from   = ($page-1)*$pageSize;

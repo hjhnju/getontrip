@@ -209,17 +209,17 @@ class Specialty_Logic_Specialty extends Base_Logic{
         return $maxWeight + 1;
     }
     
-    public function getSpecialtyNum($sighId, $status = Specialty_Type_Status::PUBLISHED){
-        if($status == Specialty_Type_Status::PUBLISHED){
+    public function getSpecialtyNum($sighId, $type = Destination_Type_Type::SIGHT, $status = Specialty_Type_Status::PUBLISHED){
+        /*if($status == Specialty_Type_Status::PUBLISHED){
             $redis = Base_Redis::getInstance();
             $ret   = $redis->hGet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::SPECIALTY);
             if(!empty($ret)){
                 return $ret;
             }
-        }
+        }*/
         $count          = 0;
         $listSightSpecialty = new Destination_List_Specialty();
-        $listSightSpecialty->setFilter(array('destination_id' => $sighId));
+        $listSightSpecialty->setFilter(array('destination_id' => $sighId,'destination_type' => $type));
         $listSightSpecialty->setPagesize(PHP_INT_MAX);
         $arrSightSpecialty  = $listSightSpecialty->toArray();
         foreach ($arrSightSpecialty['list'] as $val){
@@ -229,10 +229,10 @@ class Specialty_Logic_Specialty extends Base_Logic{
                 $count += 1;
             }
         }
-        if($status == Specialty_Type_Status::PUBLISHED){
+        /*if($status == Specialty_Type_Status::PUBLISHED){
             $redis = Base_Redis::getInstance();
             $redis->hSet(Sight_Keys::getSightTongjiKey($sighId),Sight_Keys::SPECIALTY,$count);
-        }
+        }*/
         return $count;
     }
     

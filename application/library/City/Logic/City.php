@@ -66,6 +66,39 @@ class City_Logic_City{
         return $arrSight;
     }
     
+    public function getCityLandscape($cityId,$x, $y, $page,$pageSize){
+        $modelGis   = new GisModel();
+        $logicSight = new Sight_Logic_Sight();
+        $logicCollect = new Collect_Logic_Collect();
+        $arrRet   = $modelGis->getCityNearSight($cityId, $x, $y, $page, $pageSize);
+        foreach($arrRet as $key => $val){
+            $topic_num     = $logicSight->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
+            $wiki_num      = Keyword_Api::getKeywordNum($val['id']);
+            $book_num      = Book_Api::getBookNum($val['id']);
+            $video_num     = Video_Api::getVideoNum($val['id']);
+            $arrRet[$key]['id']          = strval($val['id']);
+            $arrRet[$key]['image']       = Base_Image::getUrlByName($val['image']);
+            $arrRet[$key]['contentNum']  = strval($topic_num + $wiki_num + $book_num + $video_num);
+            $arrRet[$key]['collectNum']  = strval($logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $val['id']));
+            
+            if(!empty($x) && !empty($y)){
+                if($val['dis'] < 1000){
+                    $arrRet[$key]['dis']      = strval(ceil($val['dis']));
+                    $arrRet[$key]['dis_unit'] = "m";
+                }else{
+                    $arrRet[$key]['dis']      = strval(ceil($val['dis']/1000));
+                    $arrRet[$key]['dis_unit'] = "km";
+                }
+            }else{
+                $arrRet[$key]['dis']   = '';
+                $arrRet[$key]['dis_unit'] = '';
+            }
+            $arrRet[$key]['audio'] = '';
+            $arrRet[$key]['audio_len'] = '';
+        }
+        return $arrRet;
+    }
+    
     /**
      * 获取城市信息，供前端使用
      * @return array

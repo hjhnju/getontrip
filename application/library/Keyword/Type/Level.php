@@ -28,8 +28,8 @@ class Keyword_Type_Level extends Base_Type {
      * @var array
      */
     public static $names = array(
-        self::CITY         => '城市级',
         self::SIGHT        => '景点级',
+        self::CITY         => '城市级',
         self::LANDSCAPE    => '景观级',
     );
 }

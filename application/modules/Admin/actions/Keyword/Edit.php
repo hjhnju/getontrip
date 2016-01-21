@@ -23,12 +23,16 @@ class EditAction extends Yaf_Action_Abstract {
         $postInfo=Keyword_Api::queryById($postid);
      
         if(!empty($postInfo)){  
-           if($postid['level'] == Keyword_Type_Level::SIGHT){
+           $level = intval($postInfo['level']);
+           if($level== Keyword_Type_Level::SIGHT){
                $sightInfo  = Sight_Api::getSightById($postInfo['sight_id']);
                $postInfo["sight_name"]=$sightInfo["name"];
-           }elseif($postid['level'] == Keyword_Type_Level::CITY){
+           }elseif($level == Keyword_Type_Level::CITY){
                $cityInfo   = City_Api::getCityById($postInfo['sight_id']);
                $postInfo["sight_name"]=$cityInfo["name"];
+           }elseif($level == Keyword_Type_Level::LANDSCAPE){
+               $keywordInfo   = Keyword_Api::queryById($postInfo['sight_id']);
+               $postInfo["sight_name"]=isset($keywordInfo["name"])?$keywordInfo["name"]:'';
            }
             //处理状态值
            $postInfo["status_name"]=Keyword_Type_Status::getTypeName($postInfo['status']);

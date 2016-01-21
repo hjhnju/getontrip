@@ -170,7 +170,7 @@ $(document).ready(function() {
                     if($('#sight_tag').val() == 'sight'){
                     	param.level = 2;
                     }else if($('#sight_tag').val() == 'city'){
-                    	param.level = 3;
+                    	param.level = 1;
                     }
                     if($('#sight_id').val()){
                     	param.sight_id = $('#sight_id').val();

@@ -67,10 +67,10 @@
                                </select>
                              </div>     
                           </label>  
-                          <div class="col-lg-3 sight_tag {%if isset($post.level) && ($post.level eq 3)%}hide{%/if%}" data-type="sight"> 
+                          <div class="col-lg-3 sight_tag {%if isset($post.level) && ($post.level ne 2)%}hide{%/if%}" data-type="sight"> 
                                <input class="form-control" id="sight_name" type="text"  autocomplete="off"  placeholder="输入景点后请在下拉框选择" value="{%if isset($post.sight_name) %}{%$post.sight_name%}{%/if%}"/>
                           </div>
-                           <div class="col-lg-3 sight_tag {%if !isset($post.level) || ($post.level eq 1)%}hide{%/if%}"  data-type="city">
+                           <div class="col-lg-3 sight_tag {%if !isset($post.level) || ($post.level ne 1)%}hide{%/if%}"  data-type="city">
                            	   <input class="form-control" id="city_name" type="text"  autocomplete="off"  placeholder="输入城市后请在下拉框选择"  value="{%if isset($post.sight_name) %}{%$post.sight_name%}{%/if%}"/>
                            </div>
                            <input type="hidden" name="sight_id" id="sight_id" >

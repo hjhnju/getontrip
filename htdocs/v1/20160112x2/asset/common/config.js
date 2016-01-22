@@ -1,6 +1,6 @@
 define('common/config', [], function () {
     var rootUrl = '' + window.location.protocol + '//' + window.location.host;
-    var version = '/api/1.0';
+    var version = '/api/1.1';
     var URL = {
             VERSION: version,
             ROOT: rootUrl,

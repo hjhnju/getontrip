@@ -13,7 +13,7 @@ define(function() {
      */
     var rootUrl = '' + window.location.protocol + '//' + window.location.host;
     //rootUrl = 'http://123.57.46.229:8321';
-    var version = '/api/1.0';
+    var version = '/api/1.1';
 
     /**
      * URL对象，存储这个页面的全部URL

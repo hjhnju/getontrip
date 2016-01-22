@@ -51,7 +51,7 @@ class SightController extends Base_Controller_Page {
         
         //当前景点下的所有标签
         $logic      = new Sight_Logic_Tag();
-        $tags   = $logic->getTagsBySight($sight_id);
+        $tags   = $logic->getTagsBySight($sight_id,'1.1');
         //判断是否包含landscape
         $isExist = false;
         foreach ($tags as $key => $item) {

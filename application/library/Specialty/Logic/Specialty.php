@@ -134,8 +134,15 @@ class Specialty_Logic_Specialty extends Base_Logic{
         $arrRet         = array();
         $listDestinationSpecialty = new Destination_List_Specialty();
         $logicProduct  = new Specialty_Logic_Product();
-        $listDestinationSpecialty->setFilter(array('destination_id' => $destId,'destination_type' => $type));
+        if($type == Destination_Type_Type::SIGHT){
+            $sight = Sight_Api::getSightById($destId);
+            $filter = "`destination_id` = $destId and `destination_type` = $type or `destination_type` = ".Destination_Type_Type::CITY." and `destination_id` =".$sight['city_id'];
+            $listDestinationSpecialty->setFilterString($filter);
+        }else{
+            $listDestinationSpecialty->setFilter(array('destination_id' => $destId,'destination_type' => $type));
+        }
         $listDestinationSpecialty->setOrder('`weight` asc');
+        //$listDestinationSpecialty->setGroup("id");
         $listDestinationSpecialty->setPagesize(PHP_INT_MAX);
         $ret = $listDestinationSpecialty->toArray();
         foreach ($ret['list'] as $val){
@@ -227,6 +234,21 @@ class Specialty_Logic_Specialty extends Base_Logic{
             $objSpecialty->fetch(array('id' => $val['specialty_id']));
             if($objSpecialty->status == $status){
                 $count += 1;
+            }
+        }
+        
+        if($type == Destination_Type_Type::SIGHT){
+            $sight = Sight_Api::getSightById($sighId);
+            $listSightSpecialty = new Destination_List_Specialty();
+            $listSightSpecialty->setFilter(array('destination_id' => $sight['city_id'],'destination_type' => Destination_Type_Type::CITY));
+            $listSightSpecialty->setPagesize(PHP_INT_MAX);
+            $arrSightSpecialty  = $listSightSpecialty->toArray();
+            foreach ($arrSightSpecialty['list'] as $val){
+                $objSpecialty = new Specialty_Object_Specialty();
+                $objSpecialty->fetch(array('id' => $val['specialty_id']));
+                if($objSpecialty->status == $status){
+                    $count += 1;
+                }
             }
         }
         /*if($status == Specialty_Type_Status::PUBLISHED){

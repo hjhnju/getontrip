@@ -134,8 +134,15 @@ class Food_Logic_Food extends Base_Logic{
         $arrRet         = array();
         $logicShop      = new Food_Logic_Shop();
         $listDestinationFood = new Destination_List_Food();
-        $listDestinationFood->setFilter(array('destination_id' => $destId,'destination_type' => $type));
+        if($type == Destination_Type_Type::SIGHT){
+            $sight = Sight_Api::getSightById($destId);
+            $filter = "`destination_id` = $destId and `destination_type` = $type or `destination_type` = ".Destination_Type_Type::CITY." and `destination_d` =".$sight['city_id'];
+            $listDestinationFood->setFilterString($filter);
+        }else{
+            $listDestinationFood->setFilter(array('destination_id' => $destId,'destination_type' => $type));
+        }
         $listDestinationFood->setOrder('`weight` asc');
+        $listDestinationFood->setGroup("id"); 
         $listDestinationFood->setPagesize(PHP_INT_MAX);
         $ret = $listDestinationFood->toArray();
         foreach ($ret['list'] as $val){
@@ -227,6 +234,20 @@ class Food_Logic_Food extends Base_Logic{
             $objFood->fetch(array('id' => $val['food_id']));
             if($objFood->status == $status){
                 $count += 1;
+            }
+        }
+        if($type == Destination_Type_Type::SIGHT){
+            $sight = Sight_Api::getSightById($sighId);
+            $listSightFood = new Destination_List_Food();
+            $listSightFood->setFilter(array('destination_id' => $sight['city_id'],'destination_type' => Destination_Type_Type::CITY));
+            $listSightFood->setPagesize(PHP_INT_MAX);
+            $arrSightFood  = $listSightFood->toArray();
+            foreach ($arrSightFood['list'] as $val){
+                $objFood = new Food_Object_Food();
+                $objFood->fetch(array('id' => $val['food_id']));
+                if($objFood->status == $status){
+                    $count += 1;
+                }
             }
         }
         /*if($status == Food_Type_Status::PUBLISHED){

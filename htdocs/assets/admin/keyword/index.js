@@ -302,8 +302,10 @@ $(document).ready(function() {
                     }
                     sight_name = $('#form-sight').val();
                     sight_id = $('#form-sight').attr('data-sight_id'); 
+                    level    =  data.level;
                     var params = {
-                        'sight_id': data.sight_id
+                        'sight_id': data.sight_id,
+                        'level':data.level
                     };
                     //查询当前景点下的所有词条
                     $.ajax({
@@ -340,7 +342,7 @@ $(document).ready(function() {
                                     if (oldIndex < newIndex) {
                                         newNum++;
                                     }
-                                    changeWeight($(li.item).attr('data-id'), oldNum, newNum, sight_id, oldIndex, newIndex);
+                                    changeWeight($(li.item).attr('data-id'), oldNum, newNum, sight_id, level,oldIndex, newIndex);
                                 }
                             });
                             //弹出模态框
@@ -348,13 +350,14 @@ $(document).ready(function() {
                         }
                     });
 
-                    function changeWeight(id, from, to, sight_id, fromIndex, toIndex) {
+                    function changeWeight(id, from, to, sight_id, level,fromIndex, toIndex) {
                         $.ajax({
                             "url": "/admin/Keywordapi/changeWeight",
                             "data": {
                                 id: id,
                                 to: to,
-                                sightId: sight_id
+                                sightId: sight_id,
+                                level:level
                             },
                             "type": "post",
                             "error": function(e) {

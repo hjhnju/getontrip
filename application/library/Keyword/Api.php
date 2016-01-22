@@ -72,9 +72,9 @@ class Keyword_Api{
      * @param integer $to 需要排的位置 
      * @return boolean
      */
-    public static function changeWeight($sightId,$id,$to){
+    public static function changeWeight($sightId,$level,$id,$to){
         $logic = new Keyword_Logic_Keyword();
-        return $logic->changeWeight($sightId,$id,$to);
+        return $logic->changeWeight($sightId,$level,$id,$to);
     }
     
     /**

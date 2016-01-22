@@ -144,8 +144,9 @@ class KeywordapiController extends Base_Controller_Api{
     public function changeWeightAction(){
        $id = isset($_REQUEST['id'])? intval($_REQUEST['id']) : 0; 
        $to = isset($_REQUEST['to'])? intval($_REQUEST['to']) : 0;
-        
-       $dbRet = Keyword_Api::changeWeight($id,$to);
+       $sightId = isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
+       $level = isset($_REQUEST['level'])?intval($_REQUEST['level']):'';
+       $dbRet = Keyword_Api::changeWeight($sightId,$level,$id,$to);
        if ($dbRet) {
             return $this->ajax();
         }

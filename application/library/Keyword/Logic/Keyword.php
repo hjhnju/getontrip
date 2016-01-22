@@ -81,8 +81,8 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $redis->hDel(City_Keys::getCityWikiNumKey(),$arrInfo['sight_id']);
         }
         if($bCheck){
-            if(isset($arrInfo['level'])&&((intval($arrInfo['level'])) !== Keyword_Type_Level::LANDSCAPE)){
-                $obj->weight = 1;
+            if(isset($arrInfo['level'])){
+                $obj->weight = $this->getKeywordWeight($arrInfo['sight_id'],$arrInfo['level']);
             }else{
                 $obj->weight = $this->getKeywordWeight($arrInfo['sight_id']);
             }
@@ -223,10 +223,14 @@ class Keyword_Logic_Keyword extends Base_Logic{
         return $ret['total'];
     }
     
-    public function getKeywordWeight($sightId){
+    public function getKeywordWeight($sightId,$level = ''){
         $maxWeight  = 0;
         $listKeyword = new Keyword_List_Keyword();
-        $listKeyword->setFilter(array('sight_id' => $sightId));
+        if(empty($level)){
+            $listKeyword->setFilter(array('sight_id' => $sightId,'level' => Keyword_Type_Level::LANDSCAPE));
+        }else{
+            $listKeyword->setFilter(array('sight_id' => $sightId,'level' => $level));
+        }
         $listKeyword->setPagesize(PHP_INT_MAX);
         $arrKeyword  = $listKeyword->toArray();
         foreach ($arrKeyword['list'] as $val){
@@ -237,14 +241,14 @@ class Keyword_Logic_Keyword extends Base_Logic{
         return $maxWeight + 1;
     }
     
-    public function changeWeight($sightId,$id,$to){
+    public function changeWeight($sightId,$level,$id,$to){
         $objKeyword = new Keyword_Object_Keyword();
-        $objKeyword->fetch(array('sight_id' => $sightId,'id' => $id));
+        $objKeyword->fetch(array('sight_id' => $sightId,'id' => $id,'level' => $level));
         $from       = $objKeyword->weight;
         $objKeyword->weight = $to;
     
         $listKeyword = new Keyword_List_Keyword();
-        $filter ="`sight_id` =".$sightId." and `weight` >= $to and `weight` != $from";
+        $filter ="`level` =".$level." and `sight_id` =".$sightId." and `weight` >= $to and `weight` != $from";
         $listKeyword->setFilterString($filter);
         $listKeyword->setPagesize(PHP_INT_MAX);
         $arrKeyword = $listKeyword->toArray();

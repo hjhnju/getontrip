@@ -130,10 +130,18 @@ $(document).ready(function() {
                         }
                     }, {
                         "data": function(e) {
-                        	if(e.type == 1){
-                        		return '<button class="btn btn-warning  btn-xs confirm" title="确认url" data-toggle="tooltip"><i class="fa fa-check-square-o"></i></button><a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>'+ '<button type="button" class="btn btn-danger btn-xs alias"  title="设为别名" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-eyedropper"></i></button>'+ '<button type="button" class="btn btn-warning btn-xs type"  title="取消必玩" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-adjust"></i></button>';
+                        	if(e.status == 2){
+                        		if(e.type == 1){
+                            		return '<button class="btn btn-danger  btn-xs cancel" title="取消发布" data-toggle="tooltip"><i class="fa fa-check-square-o"></i></button><a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>'+ '<button type="button" class="btn btn-danger btn-xs alias"  title="设为别名" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-eyedropper"></i></button>'+ '<button type="button" class="btn btn-warning btn-xs type"  title="取消必玩" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-adjust"></i></button>';
+                            	}
+                                return '<button class="btn btn-danger  btn-xs cancel" title="取消发布" data-toggle="tooltip"><i class="fa fa-check-square-o"></i></button><a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>'+ '<button type="button" class="btn btn-danger btn-xs alias"  title="设为别名" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-eyedropper"></i></button>'+ '<button type="button" class="btn btn-warning btn-xs type"  title="设为必玩" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-adjust"></i></button>';
+                        	}else{
+                        		if(e.type == 1){
+                            		return '<button class="btn btn-warning  btn-xs confirm" title="发布" data-toggle="tooltip"><i class="fa fa-check-square-o"></i></button><a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>'+ '<button type="button" class="btn btn-danger btn-xs alias"  title="设为别名" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-eyedropper"></i></button>'+ '<button type="button" class="btn btn-warning btn-xs type"  title="取消必玩" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-adjust"></i></button>';
+                            	}
+                                return '<button class="btn btn-warning  btn-xs confirm" title="发布" data-toggle="tooltip"><i class="fa fa-check-square-o"></i></button><a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>'+ '<button type="button" class="btn btn-danger btn-xs alias"  title="设为别名" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-eyedropper"></i></button>'+ '<button type="button" class="btn btn-warning btn-xs type"  title="设为必玩" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-adjust"></i></button>';
                         	}
-                            return '<button class="btn btn-warning  btn-xs confirm" title="确认url" data-toggle="tooltip"><i class="fa fa-check-square-o"></i></button><a class="btn btn-success btn-xs edit" title="查看" data-toggle="tooltip" href="/admin/keyword/edit?action=view&id=' + e.id + '"><i class="fa fa-eye"></i></a><a class="btn btn-primary btn-xs edit" title="编辑" data-toggle="tooltip" href="/admin/keyword/edit?action=edit&id=' + e.id + '"><i class="fa fa-pencil"></i></a>' + '<button type="button" class="btn btn-danger btn-xs delete"  title="删除" data-toggle="tooltip"><i class="fa fa-trash-o "></i></button>'+ '<button type="button" class="btn btn-danger btn-xs alias"  title="设为别名" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-eyedropper"></i></button>'+ '<button type="button" class="btn btn-warning btn-xs type"  title="设为必玩" data-toggle="tooltip" value="'+ e.id +'"><i class="fa fa-adjust"></i></button>';
+                        	
                         }
                     }
                 ],
@@ -195,6 +203,30 @@ $(document).ready(function() {
                     var params = {
                         id: data.id,
                         status: 2 //确认的状态
+                    }
+                    $.ajax({
+                        "url": "/admin/Keywordapi/save",
+                        "data": params,
+                        "type": "post",
+                        "error": function(e) {
+                            alert("服务器未正常响应，请重试");
+                        },
+                        "success": function(response) {
+                            if (response.status == 0) {
+                                //刷新当前页
+                                oTable.fnRefresh();
+                            }
+                        }
+                    });
+                });
+                
+                $('#editable button.cancel').live('click', function(e) {
+                    e.preventDefault();
+                    var nRow = $(this).parents('tr')[0];
+                    var data = oTable.api().row(nRow).data();
+                    var params = {
+                        id: data.id,
+                        status: 1 //确认的状态
                     }
                     $.ajax({
                         "url": "/admin/Keywordapi/save",

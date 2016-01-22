@@ -62,7 +62,12 @@ class KeywordapiController extends Base_Controller_Api{
                   $tmpList[$i]['sight_name'] = isset($keyword['name'])?$keyword['name']:'';
               } 
               
-              $tmpList[$i]['audio'] = isset($tmpList[$i]['audio'])?$_SERVER['HTTP_HOST'].'/audio/'.$tmpList[$i]['audio']:'';
+              if(!isset($tmpList[$i]['audio'])){
+                  $tmpList[$i]['audio'] = '';
+              }else{
+                  $tmpList[$i]['audio'] = empty($tmpList[$i]['audio'])?'':$_SERVER['HTTP_HOST'].'/audio/'.$tmpList[$i]['audio'];
+              }
+              
 
               //处理状态名称
               $tmpList[$i]['status_name'] = Keyword_Type_Status::getTypeName($tmpList[$i]['status']);

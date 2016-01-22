@@ -81,7 +81,11 @@ class Keyword_Logic_Keyword extends Base_Logic{
             $redis->hDel(City_Keys::getCityWikiNumKey(),$arrInfo['sight_id']);
         }
         if($bCheck){
-            $obj->weight = $this->getKeywordWeight($arrInfo['sight_id']);
+            if(isset($arrInfo['level'])&&((intval($arrInfo['level'])) !== Keyword_Type_Level::LANDSCAPE)){
+                $obj->weight = 1;
+            }else{
+                $obj->weight = $this->getKeywordWeight($arrInfo['sight_id']);
+            }
             $ret = $obj->save();            
             $logicWiki = new Keyword_Logic_Keyword();
             $logicWiki->getKeywordSource($obj->id,$obj->status);

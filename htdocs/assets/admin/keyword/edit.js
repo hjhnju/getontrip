@@ -191,7 +191,6 @@ $(document).ready(function() {
                     if($('#sight_id').val()){
                     	param.sight_id = $('#sight_id').val();
                     } 
-                    
                     var url;
                     if (!$('#id').val()) {
                         url = "/admin/keywordapi/add";
@@ -209,12 +208,13 @@ $(document).ready(function() {
                         "success": function(response) {
                             if (response.status == 0) {
                                 toastr.success('保存成功');
-                                if (url.indexOf('add') >= 0) {
+                                window.location.href='/admin/keyword/edit?action=edit&id='+response.data;
+                                /*if (url.indexOf('add') >= 0) {
                                     $("button[name='reset']").click();
-                                    //window.location.href='/admin/keyword/edit?action=edit&id='+response.data;
+                                    window.location.href='/admin/keyword/edit?action=edit&id='+response.data;
                                 } else {
-                                    window.location.reload();
-                                }
+                                    //window.location.reload();
+                                }*/
                             }
                         }
                     });

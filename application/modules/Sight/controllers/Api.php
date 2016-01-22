@@ -119,8 +119,8 @@ class ApiController extends Base_Controller_Api {
         $page       = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize   = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::PAGESIZE;
         $sightId    = isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):'';
-        $x          = isset($_REQUEST['x'])?intval($_REQUEST['x']):'';
-        $y          = isset($_REQUEST['y'])?intval($_REQUEST['y']):'';
+        $x          = isset($_REQUEST['x'])?doubleval($_REQUEST['x']):'';
+        $y          = isset($_REQUEST['y'])?doubleval($_REQUEST['y']):'';
         if(empty($sightId)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }

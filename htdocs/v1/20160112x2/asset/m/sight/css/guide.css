@@ -187,7 +187,7 @@ to{-webkit-transform:rotate(360deg) translateZ(0)}
 .landscape_list{padding:0 9px;position:relative}
 .landscape_list li:last-child{border-bottom:none}
 .landscape_list .item_link{display:-moz-box;display:-webkit-box;display:-ms-flexbox;display:-webkit-flex;display:flex;cursor:pointer}
-.landscape_list .item{height:108px;padding-top:12px;border-bottom:1px solid #e0e0e0}
+.landscape_list .item{height:108px;padding-top:12px;border-bottom:.5px solid #e0e0e0}
 .landscape_list .item .bg_img{width:100px;height:84px;margin-right:10px;background-position:center center;background-repeat:no-repeat;background-size:cover;-moz-box-flex:1;-webkit-box-flex:1;-webkit-flex:1;-moz-flex:1;-ms-flex:1;flex:1;max-width:100px;min-width:100px}
 .landscape_list .item .headset-box{width:49px;height:49px;max-width:49px;min-width:49px;margin:10px 0 0 8px;-moz-box-flex:1;-webkit-box-flex:1;-webkit-flex:1;-moz-flex:1;-ms-flex:1;flex:1}
 .landscape_list .item .headset-box .time{color:#2a2d2e;text-align:center;font-size:10px}
@@ -195,7 +195,7 @@ to{-webkit-transform:rotate(360deg) translateZ(0)}
 .landscape_list .item .content-box{-moz-box-flex:1;-webkit-box-flex:1;-webkit-flex:1;-moz-flex:1;-ms-flex:1;flex:1}
 .landscape_list .item .content-box .title{display:-moz-box;display:-webkit-box;display:-ms-flexbox;display:-webkit-flex;display:flex}
 .landscape_list .item .content-box .title span{display:block}
-.landscape_list .item .content-box .title .name{font-size:18px;color:#1c1c1c;line-height:24px;display:block}
+.landscape_list .item .content-box .title .name{font-size:18px;color:#1c1c1c;line-height:24px;display:block;font-weight:700}
 .landscape_list .item .content-box .title .location{width:12px;height:23px;margin-left:6px;margin-right:5px;background-image:url(../img/icon_location_orange@3x.png);background-position:center center;background-repeat:no-repeat;background-size:contain}
 .landscape_list .item .content-box .title .dis{line-height:24px;font-size:13px;color:#f0a355}
 .landscape_list .item .content-box .title .dis_unit{line-height:24px;margin-top:1pt;font-size:8px;color:#f0a355}

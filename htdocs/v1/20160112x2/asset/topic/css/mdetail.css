@@ -180,7 +180,7 @@ to{-webkit-transform:rotate(360deg) translateZ(0)}
 .bg-img .title-box .like .collect{display:block;width:11pt;height:10pt;float:left;background:url(../img/icon_star_light@3x.png) left center no-repeat;background-size:11pt 10pt}
 .bg-img .title-box .like .eye{display:block;width:12pt;height:10pt;float:left;background:url(../img/visit_icon@3x.png) left center no-repeat;background-size:12pt 9pt;margin-left:5pt}
 .bg-img .title-box .like .number{line-height:11pt;font-size:10pt;font-style:normal;float:left;margin-left:3pt}
-.bg-img .title-box .tag{height:17pt;padding:0 3pt;width:auto;background-color:#696969;opacity:.8;-webkit-border-radius:3pt;-moz-border-radius:3pt;border-radius:3pt;border:1pt solid #fff;font-size:8pt;text-align:center;position:absolute;left:14pt;line-height:16pt}
+.bg-img .title-box .tag{height:17pt;padding:0 3pt;width:auto;background-color:#696969;opacity:.8;-webkit-border-radius:3pt;-moz-border-radius:3pt;border-radius:3pt;border:.5px solid #fff;font-size:8pt;text-align:center;position:absolute;left:14pt;line-height:16pt}
 .bg-img img{width:100%;height:268px}
 .main-content{width:100%;float:none;line-height:30px;font-weight:lighter}
 .main-content img{width:100%;height:200px;margin-top:12pt}

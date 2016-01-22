@@ -177,7 +177,7 @@ to{-webkit-transform:rotate(360deg) translateZ(0)}
 .food_list{padding:0 9px}
 .food_list li:last-child{border-bottom:none}
 .food_list .item_link{display:-moz-box;display:-webkit-box;display:-ms-flexbox;display:-webkit-flex;display:flex;cursor:pointer}
-.food_list .item{height:108px;padding-top:12px;border-bottom:1px solid #e0e0e0}
+.food_list .item{height:108px;padding-top:12px;border-bottom:.5px solid #e0e0e0}
 .food_list .item .bg_img{width:100px;height:84px;margin-right:10px;background-position:center center;background-repeat:no-repeat;background-size:cover;-moz-box-flex:1;-webkit-box-flex:1;-webkit-flex:1;-moz-flex:1;-ms-flex:1;flex:1;max-width:100px;min-width:100px}
 .food_list .item .headset-box{width:49px;height:49px;max-width:49px;min-width:49px;margin:10px 0 0 2px;-moz-box-flex:1;-webkit-box-flex:1;-webkit-flex:1;-moz-flex:1;-ms-flex:1;flex:1}
 .food_list .item .headset-box .time{color:#2a2d2e;text-align:center;font-size:10px}

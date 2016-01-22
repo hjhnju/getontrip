@@ -177,12 +177,12 @@ to{-webkit-transform:rotate(360deg) translateZ(0)}
 .list{position:relative;min-height:80px;padding:0 9px}
 .list li:last-child{border-bottom:none}
 .list .item_link{display:-moz-box;display:-webkit-box;display:-ms-flexbox;display:-webkit-flex;display:flex;cursor:pointer}
-.list .item{height:108px;padding-top:14px;border-bottom:1px solid rgba(42,45,46,.2)}
+.list .item{height:108px;padding-top:14px;border-bottom:.5px solid rgba(42,45,46,.2)}
 .list .item .bg_img{width:100px;height:80px;margin-right:6px;background-position:center center;background-repeat:no-repeat;background-size:cover;-moz-box-flex:1;-webkit-box-flex:1;-webkit-flex:1;-moz-flex:1;-ms-flex:1;flex:1;max-width:100px;min-width:100px}
 .list .item .content-box{position:relative;height:80px;-moz-box-flex:1;-webkit-box-flex:1;-webkit-flex:1;-moz-flex:1;-ms-flex:1;flex:1}
 .list .item .content-box .title{display:-moz-box;display:-webkit-box;display:-ms-flexbox;display:-webkit-flex;display:flex;margin-bottom:4px;margin-top:-3px}
 .list .item .content-box .title span{display:block}
-.list .item .content-box .title .topic_name{font-size:15px;font-weight:700;color:#282828;line-height:21px;height:42px}
+.list .item .content-box .title .topic_name{font-size:15px;color:#282828;line-height:21px;height:42px}
 .list .item .content-box .title .desc{font-size:12px;color:#282828;line-height:17px}
 .list .item .content-box .content{color:#2a2d2e;font-size:14px;line-height:22px;overflow:hidden;height:44px;text-overflow:ellipsis}
 .list .item .content-box .icon-box{display:-moz-box;display:-webkit-box;display:-ms-flexbox;display:-webkit-flex;display:flex;position:absolute;bottom:-5px;left:0;width:100%}

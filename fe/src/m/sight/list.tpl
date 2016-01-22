@@ -8,7 +8,7 @@
 
 <!-- target: returnSightNearbyList --> 
 <!-- for: ${list} as ${item} -->
-<li class="sight_item" style="background-image: url(${item.image})">
+<li class="sight_item" style="background-image: url(${item.image}@380h)">
   <a class="sight_link" href="/m/sight/guide?id=${item.id}"> 
      <div class="img_mask"></div>
      <div class="title">${item.name}</div>
@@ -37,7 +37,7 @@
 <!-- for: ${list} as ${item} -->
 <li class="item">
   <a href="/m/sight/landscape?id=${item.id}" class="item_link">
-    <div class="bg_img" style="background-image: url(${item.image})"></div> 
+    <div class="bg_img" style="background-image: url(${item.image}@160h_200w)"></div> 
     <div class="content-box">
       <div class="title">
          <span class="name">${item.name}</span>
@@ -66,7 +66,7 @@
 <!-- for: ${list} as ${item} -->
 <li class="item">
   <a href="/m/sight/food?id=${item.id}" class="item_link">
-    <div class="bg_img" style="background-image: url(${item.image})"></div> 
+    <div class="bg_img" style="background-image: url(${item.image}168h_200w)"></div> 
     <div class="content-box">
       <div class="title">
          <span class="name">${item.title}</span> 
@@ -90,7 +90,7 @@
 <!-- for: ${list} as ${item} -->
 <li class="item">
   <a href="/m/sight/specialty?id=${item.id}" class="item_link">
-    <div class="bg_img" style="background-image: url(${item.image})"></div> 
+    <div class="bg_img" style="background-image: url(${item.image}168h_200w)"></div> 
     <div class="content-box">
       <div class="title">
          <span class="name">${item.title}</span> 
@@ -115,7 +115,7 @@
 <!-- target: returnProductList --> 
 <!-- for: ${list} as ${item} --> 
 <li class="item item_link"> 
-    <div class="bg_img" style="background-image: url(${item.image})"></div> 
+    <div class="bg_img" style="background-image: url(${item.image}@160h_200w)"></div> 
     <div class="content-box">
       <div class="title">
          <span class="shop_name">${item.title}</span> 
@@ -134,7 +134,7 @@
 <!-- for: ${list} as ${item} -->
 <li class="item" >
   <a href="${item.url}" class="item_link">
-    <div class="bg_img" style="background-image: url(${item.image})"></div> 
+    <div class="bg_img" style="background-image: url(${item.image}@160h_200w)"></div> 
     <div class="content-box">
       <div class="title">
          <span class="shop_name">${item.title}</span> 
@@ -163,7 +163,7 @@
 <!-- for: ${list} as ${item} -->
 <li class="item">
   <a href="/topic/detail?id=${item.id}" class="item_link">
-    <div class="bg_img" style="background-image: url(${item.image})"></div> 
+    <div class="bg_img" style="background-image: url(${item.image}@160h_200w)"></div> 
     <div class="content-box">
       <!-- if: ${item.desc}!='' -->
       <div class="title"> 

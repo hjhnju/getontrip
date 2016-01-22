@@ -1,0 +1,39 @@
+{%extends file="../../../views/common/page.phtml"%}
+{%block name="link"%} 
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/m/sight/css/foodlist.css" /> 
+ <style type="text/css" media="screen">
+ 
+
+ </style>
+  
+{%/block%} 
+{%block name="content"%}
+<div class="container"> 
+{%include file='../../../views/common/nav.phtml'  selected="specialty" sightId="{%$sight['id']%}"%}
+ 
+</div>
+<div class="container" id="wrapper" sightId="{%$sight.id%}" tagId="{%$tagId%}">
+  <div id="scroller">
+    <div id="pullDown" class="hidden">
+       <span class="pullDownIcon"></span>
+       <span class="pullDownLabel"></span>
+    </div>
+    <ul class="food_list" id="food_list">  
+       <div class="tuzhi-loading">&nbsp;</div>  
+    </ul>
+    <div id="pullUp"  class="hidden">
+        <span class="pullUpIcon"></span><span class="pullUpLabel"></span>
+    </div>
+  </div>
+</div>
+</div>
+
+{%/block%}
+{%block name="script"%}
+<script src="http://webapi.amap.com/maps?v=1.3&key=f102b992de0917e82f23af99e4a69a5e" type="text/javascript" ></script> 
+<script> 
+    require(['m/sight/specialtylist'], function (main) {
+        main.init();
+    }); 
+</script>
+{%/block%}

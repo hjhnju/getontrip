@@ -1,0 +1,85 @@
+{%extends file="../../../views/common/page.phtml"%}
+{%block name="link"%} 
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/m/sight/css/food.css" /> 
+ <style type="text/css" media="screen">
+
+
+ </style>
+  
+{%/block%} 
+{%block name="content"%}
+<div class="container"> 
+   <div class="title-box" style="background-image: url({%$post.image%})"></div>
+   <div class="food_content">{%$post.content%}</div>
+ 
+</div>
+<div class="container" >
+    <div class="tip-box">
+      推荐名品
+      <div class="page-box" type="product" total="{%ceil(($post.productNum)/$pageSize)%}" current="1" postid="{%$post.id%}" pageSize="{%$pageSize%}"> 
+          <span class="previous no-action" action="previous">上一页 </span>
+          
+          <span class="next{%if floor(($post.productNum-1)/$pageSize)==0%} no-action{%/if%}" action="next">下一页</span>
+          
+      </div>  
+    </div>
+    <ul class="list" id="product_list">  
+        {%foreach $post.products as $key=>$item%}  
+        <li class="item item_link"> 
+            <div class="bg_img" style="background-image: url({%$item.image%})"></div> 
+            <div class="content-box">
+              <div class="title">
+                 <span class="shop_name">{%$item.title%}</span> 
+              </div> 
+              <div class="icon-box">
+                 <span class="price">¥{%$item.price%}</span>
+                 <a href="{%$item.url%}" class="buy_link">购买链接</a>
+              </div> 
+            </div>  
+            
+        </li>
+        {%/foreach%}
+    </ul>
+    <div class="tip-box">
+       相关话题
+       <div class="page-box" type="topic" total="{%ceil(($post.topicNum)/$pageSize)%}" current="1" postid="{%$post.id%}" pageSize="{%$pageSize%}"> 
+          <span class="previous no-action">上一页</span>
+          
+          <span class="next{%if floor(($post.topicNum-1)/$pageSize)==0%} no-action{%/if%}"  action="next">下一页</span>
+          
+       </div> 
+    </div>
+    <ul class="list" id="topic_list">  
+       {%foreach $post.topics as $key=>$item%}  
+        <li class="item">
+          <a href="/topic/detail?id={%$item.id%}" class="item_link">
+            <div class="bg_img" style="background-image: url({%$item.image%})"></div> 
+            <div class="content-box"> 
+              <div class="title"> 
+                 <span class="desc">{%$item.desc%}</span> 
+              </div>
+              <div class="title">
+                 <span class="topic_name">{%$item.title%}</span> 
+              </div> 
+              <div class="icon-box">
+                <span class="like"></span><span class="num">{%$item.praise%}</span> 
+                <span class="view"></span><span class="num">{%$item.visit%}</span> 
+
+              </div> 
+            </div>  
+          </a> 
+        </li>
+        {%/foreach%}
+    </ul>
+</div>
+</div>
+
+{%/block%}
+{%block name="script"%}
+  
+<script> 
+    require(['m/sight/specialty'], function (main) {
+        main.init();
+    }); 
+</script>
+{%/block%}

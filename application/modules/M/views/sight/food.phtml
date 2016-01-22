@@ -1,0 +1,100 @@
+{%extends file="../../../views/common/page.phtml"%}
+{%block name="link"%} 
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/m/sight/css/food.css" /> 
+ <style type="text/css" media="screen">
+
+
+ </style>
+  
+{%/block%} 
+{%block name="content"%}
+<header id="header" class="">
+   
+</header>
+
+<div class="container"> 
+   <div class="title-box" style="background-image: url({%$post.image%})"></div>
+   <div class="food_content">{%$post.content%}</div>
+ 
+</div>
+<div class="container" >
+    <div class="tip-box">
+      推荐名店 
+      <div class="page-box" type="shop" total="{%ceil(($post.shopNum)/$pageSize)%}" current="1" postid="{%$post.id%}" pageSize="{%$pageSize%}"> 
+          <span class="previous no-action"  action="previous">上一页</span>
+          
+          <span class="next{%if floor(($post.shopNum-1)/$pageSize)==0%} no-action{%/if%}"  action="next">下一页</span>
+      </div>
+    </div>
+    <ul class="list" id="shop_list"> 
+        {%foreach $post.shops as $key=>$item%}  
+        <li class="item">
+          <a href="{%$item.url%}" class="item_link">
+            <div class="bg_img" style="background-image: url({%$item.image%})"></div> 
+            <div class="content-box">
+              <div class="title">
+                 <span class="shop_name">{%$item.title%}</span> 
+              </div>
+              <div class="title">
+                {%foreach $item.star_all as $index=>$star%}  
+                  <span class="star_all"></span>
+                {%/foreach%}  
+                {%if $item.star_half==1%}
+                  <span class="star_half"></span> 
+                {%/if%}
+                 <span class="score">{%$item.score%}分</span>
+                 <span class="price">人均:&nbsp;{%$item.price%}元</span>
+              </div>
+              <div class="icon-box">
+                 <span class="address">地址:{%$item.title%}</span>
+              </div> 
+            </div>  
+          </a> 
+        </li>
+        {%/foreach%}
+    </ul>
+    <div class="tip-box">
+      相关话题
+      <div class="page-box" type="topic" total="{%ceil(($post.topicNum)/$pageSize)%}" current="1" postid="{%$post.id%}" pageSize="{%$pageSize%}"> 
+          <span class="previous no-action"  action="previous">上一页</span>
+           
+          <span class="next{%if floor(($post.topicNum-1)/$pageSize)==0%} no-action{%/if%}"  action="next">下一页</span> 
+       </div> 
+    </div>
+    <ul class="list" id="topic_list">  
+       {%foreach $post.topics as $key=>$item%}  
+        <li class="item">
+          <a href="/topic/detail?id={%$item.id%}" class="item_link">
+            <div class="bg_img" style="background-image: url({%$item.image%})"></div> 
+            <div class="content-box">
+             {%if empty($item.desc)!=1%}
+             <div class="title"> 
+                 <span class="desc">{%$item.desc%}</span> 
+              </div>
+             {%/if%} 
+              
+              <div class="title">
+                 <span class="topic_name">{%$item.title%}</span> 
+              </div> 
+              <div class="icon-box">
+                <span class="like"></span><span class="num">{%$item.praise%}</span> 
+                <span class="view"></span><span class="num">{%$item.visit%}</span> 
+
+              </div> 
+            </div>  
+          </a> 
+        </li>
+        {%/foreach%}
+    </ul>
+</div>
+</div>
+
+{%/block%}
+{%block name="script"%}
+  
+<script> 
+    require(['m/sight/food'], function (main) {
+        main.init();
+    }); 
+</script>
+{%/block%}

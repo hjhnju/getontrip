@@ -1290,7 +1290,7 @@
             if (isFinite(media.duration)) {
                 this.status.duration = media.duration;
             }
-            ct = media.currentTime; 
+            ct = media.currentTime;
             cpa = this.status.duration > 0 ? 100 * ct / this.status.duration : 0;
             if (typeof media.seekable === 'object' && media.seekable.length > 0) {
                 sp = this.status.duration > 0 ? 100 * media.seekable.end(media.seekable.length - 1) / this.status.duration : 100;
@@ -1299,9 +1299,8 @@
                 cpr = this.status.duration > 0 ? 100 * media.currentTime / this.status.duration : 0;
             } else {
                 sp = 100;
-                cpr = cpa;  
+                cpr = cpa;
             }
-
             if (override) {
                 ct = 0;
                 cpr = 0;
@@ -1546,15 +1545,14 @@
                 this.css.jq.seekBar.width(this.status.seekPercent + '%');
             }
             if (this.css.jq.playBar.length) {
-                if (this.options.smoothPlayBar) { 
+                if (this.options.smoothPlayBar) {
                     this.css.jq.playBar.stop().animate({ width: this.status.currentPercentAbsolute + '%' }, 250, 'linear');
-                    this.css.jq.playBall.stop().animate({ left: this.status.currentPercentAbsolute + '%' }, 250, 'linear');
+                    this.css.jq.playBall.stop().animate({ left: this.status.currentPercentAbsolute < this.css.jq.playBall.width() / 2 ? this.status.currentPercentAbsolute : this.status.currentPercentAbsolute - this.css.jq.playBall.width() / 2 + '%' }, 250, 'linear');
                 } else {
-                   
-                    this.css.jq.playBar.width(this.status.currentPercentRelative + '%'); 
-                    this.css.jq.playBall.css({"left":this.status.currentPercentRelative + '%'});
+                    this.css.jq.playBar.width(this.status.currentPercentRelative + '%');
+                    this.css.jq.playBall.css({ 'left': this.status.currentPercentRelative < this.css.jq.playBall.width() / 2 ? this.status.currentPercentRelative : this.status.currentPercentRelative - this.css.jq.playBall.width() / 2 + '%' });
                 }
-            } $('.content').html(this.status.currentPercentRelative+'<br>'+this.status.currentPercentAbsolute);
+            }
             var currentTimeText = '';
             if (this.css.jq.currentTime.length) {
                 currentTimeText = this._convertTime(this.status.currentTime);

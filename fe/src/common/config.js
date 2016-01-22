@@ -12,7 +12,7 @@ define(function() {
      * @type {string}
      */
     var rootUrl = '' + window.location.protocol + '//' + window.location.host;
-
+    //rootUrl = 'http://123.57.46.229:8321';
     var version = '/api/1.0';
 
     /**
@@ -22,10 +22,18 @@ define(function() {
      */
     var URL = {
         VERSION: version,
-        ROOT: rootUrl,
+        ROOT: rootUrl, 
+        SIGHT_LIST: rootUrl  + '/m/sightapi/nearSight',
+        NAV_LIST: rootUrl + version + '/sight/index',
+        LANDSCAPE_LIST: rootUrl + version + '/sight/landscape',
+        FOOD_LIST: rootUrl + version + '/sight/food',
+        TOPIC_LIST: rootUrl + version + '/sight/topic',
+        SPECIALTY_LIST: rootUrl + version + '/sight/specialty', 
+        FOOD_TOPIC: rootUrl + version + '/food/topic',
+        FOOD_SHOP: rootUrl + version + '/food/shop',
+        SPECIALTY_TOPIC: rootUrl + version + '/specialty/topic',
+        SPECIALTY_PRODUCT: rootUrl + version + '/specialty/product',
 
-        SIGHT_LIST: rootUrl + version + '/search/label',
-        LANDSCAPE_LIST:rootUrl + '/m/sightapi/landscape',
 
 
 

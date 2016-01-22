@@ -7,9 +7,8 @@
 
  define(function(require) {
      var $ = require('jquery');
-     var common = require('common/common');
-     //var config = require('common/config');
-     var moment = require('moment');
+     var common = require('common/mcommon'); 
+    // var moment = require('moment');
      var etpl = require('etpl');
      var tpl = require('./list.tpl');
 
@@ -63,7 +62,7 @@
              //解析定位结果 
              params = {
                  page: currentPage,
-                 order: 8,
+                 pageSize: 15,
                  x: data.position.getLng(),
                  y: data.position.getLat()
              }
@@ -140,13 +139,13 @@
              renderError(data);
          } else {
              var pullUpEl = document.getElementById('pullUp');
-             if (!data.content.length && currentPage == 1) {
+             if (!data.length && currentPage == 1) {
                  htmlContainer.html(etpl.render('Error', {
                      msg: '您当前没有数据哟'
                  }));
                  return;
              }
-             if (!data.content.length && currentPage > 1) {
+             if (!data.length && currentPage > 1) {
                  //下拉没有更多啦
                  pullUpEl.className = '';
                  pullUpEl.querySelector('.pullUpLabel').innerHTML = '全部加载完毕';
@@ -167,20 +166,20 @@
       * @param {*} data 请求返回数据
       */
      var renderHTML = function(tpl, data) {
-         // 格式化时间
-         /*for (var i = 0, l = data.content.length; i < l; i++) {
-             data.list[i].timeInfo = moment.unix(data.list[i].tenderTime).format('YYYY-MM-DD HH:mm');
-             if (data.list[i].endTime) {
-                 data.list[i].endTimeInfo = moment.unix(data.list[i].endTime).format(FORMATER);
-             }
-         }*/
+         // 格式化数据
+         for (var i = 0, l = data.length; i < l; i++) {
+             data[i].contentNum =  data[i].param1.replace(/[^0-9]/ig,"");
+             data[i].comment =  data[i].param2.replace(/[^0-9]/ig,"");
+             data[i].collect =  data[i].param3.replace(/[^0-9]/ig,"");
+         }
+
          if (currentPage == 1) {
              html = etpl.render(tpl, {
-                 list: data.content
+                 list: data
              });
          } else {
              html = html + etpl.render(tpl, {
-                 list: data.content
+                 list: data
              });
          }
          htmlContainer.html(html);

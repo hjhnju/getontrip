@@ -7,40 +7,47 @@
 
 define(function(require) {
     var $ = require('jquery');
-    require('common/extra/jplayer/jquery.jplayer'); 
-     
+    require('common/extra/jplayer/jquery.jplayer');
+    var IScroll = require('common/iscroll');
+    var myScroll;
 
     function init(data) {
-        audio = data; 
+        audio = data;
         bindEvents.init();
+        
     }
     var bindEvents = {
         init: function() { 
-            this.initPlayer();
+                this.initPlayer(); 
             this.limitText();
+            //this.inintScroll();
         },
-        initPlayer: function() { 
+        initPlayer: function() {
+            if (!audio) {
+                $("#jPlayerBox,#jp_container_1").hide();
+                return;
+            } 
             $("#jPlayerBox").jPlayer({
                 ready: function() {
                     $(this).jPlayer("setMedia", {
                         title: "Bubble",
-                        mp3: '/audio/'+audio
-                    });
+                        mp3: '/audio/' + audio
+                    }).jPlayer('play');
                 },
                 cssSelectorAncestor: '#jp_container_1',
-                swfPath: '../common/extra/jplayer', 
-                supplied: "mp3", 
+                swfPath: '../common/extra/jplayer',
+                supplied: "mp3",
                 wmode: "window",
                 useStateClassSkin: true,
                 autoBlur: false,
-                smoothPlayBar: false,
-                keyEnabled: true,
-                remainingDuration: true,
-                toggleDuration: true, 
+                smoothPlayBar: true,
+                keyEnabled: false,
+                remainingDuration: false,
+                toggleDuration: false,
             });
         },
         limitText: function() {
-             //字数限制
+            //字数限制  
             $.fn.limitText = function(opts) {
                 var defaults = {
                     maxNumber: 140, //允许输入的最大字数   
@@ -79,7 +86,7 @@ define(function(require) {
                 },
                 onOver: function() {
                     $('.content').css({
-                        'height': ($('#wrapper').height()-126)+'px',
+                        'height': ($('#wrapper').height() - 126) + 'px',
                         'overflow': 'hidden'
                     });
                     $('.more').show();
@@ -93,7 +100,22 @@ define(function(require) {
                 });
                 $(this).hide();
             });
-        }
+        },
+        inintScroll: function() { 
+             myScroll = new IScroll('#wrapper', {
+                 probeType: 2,
+                 bindToWrapper: true,
+                 scrollY: true,
+                 mouseWheel: true,
+                 click: false
+             }); 
+             setTimeout(function() {
+                 document.getElementById('wrapper').style.left = '0';
+             }, 800);
+             document.addEventListener('touchmove', function(e) {
+                 e.preventDefault();
+             }, false);
+         },
     };
 
     return {

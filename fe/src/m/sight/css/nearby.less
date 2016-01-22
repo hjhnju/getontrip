@@ -1,15 +1,13 @@
 @import "../../../common/css/mcommon.less";
-
-
 #wrapper {
-  position: absolute;
-  z-index: 1;
-  top: 0px;
-  bottom: 0px;
-  left: 0;
-  width: 100%; 
-  overflow: hidden;
-  background-color: #2a2d2e;
+    position: absolute;
+    z-index: 1;
+    top: 0px;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    background-color: #2a2d2e;
 }
 
 .sight_list {
@@ -74,9 +72,9 @@
             padding: 0px 9px;
             width: 100%;
             bottom: 30px;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: bold;
-            line-height: 22px;
+            line-height: 30px;
         }
         .detail {
             position: absolute;
@@ -87,13 +85,13 @@
             bottom: 5px;
             .display(flex);
             .number {
-                font-size: 13px;
-                line-height: 16px;
+                font-size: 15px;
+                line-height: 20px;
                 display: block;
             }
             .text {
                 font-size: 10px;
-                line-height: 16px;
+                line-height: 23px;
                 display: block;
             }
             .distance {
@@ -109,7 +107,7 @@
                     background-image: url(../img/location_search@3x.png);
                     background-repeat: no-repeat;
                     background-position: center center;
-                    background-size: cover;
+                    background-size: contain;
                     .flex(1);
                     max-width: 13px;
                 }
@@ -128,19 +126,25 @@
                     .flex(1);
                     max-width: 15px;
                 }
+                .text {
+                    line-height: 20px;
+                }
+                .number {
+                    line-height: 18px;
+                }
                 .collect {
                     background-image: url(../img/icon_star@3x.png);
                 }
                 .content {
                     background-image: url(../img/content_hotSight@3x.png);
-                    background-size: 12px 13px;
+                    background-size: contain;
                 }
                 .ver {
                     display: block;
                     width: 1px;
                     max-width: 1px;
                     background-color: #fff;
-                    height: 14px;
+                    height: 16px;
                     margin: 0px 10px;
                 }
             }

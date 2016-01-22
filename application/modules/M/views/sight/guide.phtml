@@ -2,32 +2,36 @@
 {%block name="link"%} 
 <link rel="stylesheet" type="text/css" href="{%$feroot%}/m/sight/css/guide.css" /> 
  <style type="text/css" media="screen">
-
-
+ 
+ 
  </style>
+ 
+ 
+ 
  
  
  
 {%/block%} 
 {%block name="content"%}
-<div class="container"> 
-  <nav class="lincoapp-nav  h_tab_head">   
-    <div class="h_nav_inner nav">            
-      <div class="h_tab_scroll scroll">           
-        <div class="h_tab_inner">           
-          <li class="selected" data-id="100000">
-            <a href="javascript:;">导游</a>
-          </li>           
-        </div>       
-      </div>   
-    </div>   
-   </nav>
-   <div class="title-box" style="background-image: url(/pic/{%$sight.image%})">
+ 
+<div class="container">  
+{%include file='../../../views/common/nav.phtml'  selected="guide" sightId="{%$sight['id']%}"%}
+   
+   
+  
+</div>
+<div class="container" id="wrapper" sightId="{%$sight.id%}" tagId="{%$tagId%}">
+  <div id="scroller">
+    <div id="pullDown" class="hidden">
+       <span class="pullDownIcon"></span>
+       <span class="pullDownLabel"></span>
+    </div>
+    <div class="title-box" style="background-image: url(/pic/{%$sight.image%})">
       <div class="img_mask"></div>
       <div class="name-box">
         <span class="sight_name">{%$sight.name%}</span>
-        <i class="icon_map"></i>
-        <a class="tomap">切换地图</a>
+        <!-- <i class="icon_map"></i>
+        <a class="tomap">切换地图</a> -->
       </div>
       <div class="desc-box">
          <div class="describe">{%$sight.describe%}</div>
@@ -37,43 +41,8 @@
 
       </div>
    </div>
-  
-</div>
-<div class="container" id="wrapper" sightId="{%$sight.id%}">
-  <div id="scroller">
-    <div id="pullDown" class="hidden">
-       <span class="pullDownIcon"></span>
-       <span class="pullDownLabel"></span>
-    </div>
     <ul class="landscape_list" id="landscape_list">  
-       <div class="tuzhi-loading">&nbsp;</div> 
-       <!-- <li class="item">
-          <a href="" class="item_link">
-            <div class="bg_img" style="background-image: url(/pic/fbc0f2628d4ce7b9.jpg)">
-               
-            </div>
-            <img src="/pic/fbc0f2628d4ce7b9.jpg" alt="">
-            <div class="content-box">
-              <div class="title">
-                 <span class="name">故宫</span>
-                 <span class="location"></span>
-                 <span class="dis">100</span>
-                 <span class="dis_unit">km</span>
-              </div>
-              <div class="content">
-                中和殿是北京故宫外朝三大殿之一，属于汉族宫殿建筑之精华。位于紫禁城太和殿、保和殿之间。是皇帝去太和殿大典之前休息的地方，并接受执事官员的朝拜的地方。凡遇皇帝亲祭，如祭天坛、地坛，皇帝于前一日在中和殿阅视祝文，祭先农坛举行亲耕仪式前，还要在此查验种子和农具。皇太后上徽号，皇帝在此阅视奏书。玉牒告成，恭进中和殿呈御览，同时要举行隆重的存放仪式
-              </div>
-               
-            </div>
-            <div class="headset-box">
-               <div class="headset"></div>
-               <div class="time">4:36</div>
-            </div>
-            
-          </a>
-       
-       </li> -->
-       
+       <div class="tuzhi-loading">&nbsp;</div>  
     </ul>
     <div id="pullUp"  class="hidden">
         <span class="pullUpIcon"></span><span class="pullUpLabel"></span>

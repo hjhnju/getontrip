@@ -53,9 +53,16 @@ class SightController extends Base_Controller_Page {
         $logic      = new Sight_Logic_Tag();
         $tags   = $logic->getTagsBySight($sight_id);
         //判断是否包含landscape
+        foreach ($tags as $key => $item) {
+            if ($item['type']==1) {
+                $newtagId = $item['id'];
+                break;
+            }
+        }
         if(!in_array($tagId,$tags)){
             //不存在,跳转到第一个话题列表
-            $url = '/m/sight/topiclist?id='.$sight_id.'&tagId='.$tags[0]['id'];  
+            
+            $url = '/m/sight/topiclist?id='.$sight_id.'&tagId='.$newtagId;  
             return $this->redirect($url);
         }
          

@@ -136,13 +136,13 @@ class Food_Logic_Food extends Base_Logic{
         $listDestinationFood = new Destination_List_Food();
         if($type == Destination_Type_Type::SIGHT){
             $sight = Sight_Api::getSightById($destId);
-            $filter = "`destination_id` = $destId and `destination_type` = $type or `destination_type` = ".Destination_Type_Type::CITY." and `destination_d` =".$sight['city_id'];
+            $filter = "`destination_id` = $destId and `destination_type` = $type or `destination_type` = ".Destination_Type_Type::CITY." and `destination_id` =".$sight['city_id'];
             $listDestinationFood->setFilterString($filter);
         }else{
             $listDestinationFood->setFilter(array('destination_id' => $destId,'destination_type' => $type));
         }
         $listDestinationFood->setOrder('`weight` asc');
-        $listDestinationFood->setGroup("id"); 
+        //$listDestinationFood->setGroup("id"); 
         $listDestinationFood->setPagesize(PHP_INT_MAX);
         $ret = $listDestinationFood->toArray();
         foreach ($ret['list'] as $val){

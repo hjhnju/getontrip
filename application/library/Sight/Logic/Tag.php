@@ -140,7 +140,7 @@ class Sight_Logic_Tag extends Base_Logic{
         $food  = Food_Api::getFoodNum($sightId);
         $specialty = Specialty_Api::getSpecialtyNum($sightId);
         if(!empty($wiki)){
-            array_unshift($arrTopTag,array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '导游')); 
+            array_unshift($arrTopTag,array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '景观')); 
             //$arrCommonTag[] = array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '景观');
         }
         if(!empty($specialty)){

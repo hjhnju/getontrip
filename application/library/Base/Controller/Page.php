@@ -19,8 +19,12 @@ class Base_Controller_Page extends Base_Controller_Abstract {
 
         //set csrf token
         $secretKey = Base_Config::getConfig('app')->secret;
-        $token     = hash("sha256",$secretKey.time());
+        $time      = time();
+        $token     = hash("sha256",$secretKey.$time).$time;
         $this->getView()->assign('token', $token);
+        
+        $isMobile = Base_Util_Mobile::isMobile();
+        $this->getView()->assign('isMobile', $isMobile);
     }
 
     protected function isAjax(){

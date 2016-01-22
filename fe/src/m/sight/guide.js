@@ -7,11 +7,13 @@
 
  define(function(require) {
      var $ = require('jquery');
-     var common = require('common/common');
+     var common = require('common/mcommon');
      //var config = require('common/config');
-     var moment = require('moment');
+     //var moment = require('moment');
+     require('common/extra/jquery.dotdotdot');
      var etpl = require('etpl');
      var tpl = require('./list.tpl');
+     var clamp = require('common/extra/clamp');
 
      var Remoter = require('common/Remoter');
 
@@ -25,9 +27,12 @@
      var currentPage = 1;
      var html = '';
      var sightId = $('#wrapper').attr('sightId');
+     var tagId = $('#wrapper').attr('tagId');
+     
 
      function init(acenter, alist) {
          common.init();
+         common.getData.initNavData({ sightId: sightId ,tagId:tagId}); 
          htmlContainer = $('#landscape_list');
          etpl.compile(tpl);
          bindEvents.init();
@@ -38,8 +43,10 @@
       */
      var bindEvents = {
          init: function() {
+             $('.title-box .describe').dotdotdot();
              this.initMap();
              this.inintScroll();
+             getRemoteListSuccess();
          },
          initMap: function() {
              //先读取cookie x y
@@ -81,11 +88,12 @@
              //解析定位结果 
              params = {
                  page: currentPage,
+                 pageSize: 15,
                  sightId: sightId,
                  x: data.position.getLng(),
                  y: data.position.getLat()
              }
-             getRemoteList.getNearByList(params);
+             getRemoteList.getLandscapeList(params);
          },
          onError: function(data) {
              //解析定位错误信息
@@ -114,12 +122,13 @@
              //向上滑动加载列表
              currentPage++;
              params.page = currentPage;
-             getRemoteList.getNearByList(params);
+             getRemoteList.getLandscapeList(params);
              myScroll.refresh(); //刷新滚动框
          },
          pullDownAction: function() {
              //下拉加载最新数据
-             getRemoteList.getNearByList(params);
+             params.page =1;
+             getRemoteList.getLandscapeList(params);
              myScroll.refresh();
          }
 
@@ -132,16 +141,24 @@
       * @return {[type]}      [description]
       */
      var getRemoteList = {
-         getNearByList: function(data) {
+         getLandscapeList: function(data) {
              // 附近景观列表
-             getLandscapeList.remote(data);
-             //成功
-             getLandscapeList.on('success', function(data) {
-                 ajaxCallbackfun(data, "returnGuideNearbyList");
-             });
+             getLandscapeList.remote(data); 
 
          }
      };
+
+      /**
+      * 发送请求 
+      * @param  {[type]} page [页码]
+      * @return {[type]}      [description]
+      */
+     var getRemoteListSuccess = function(){
+         //附近景观列表 成功 
+             getLandscapeList.on('success', function(data) {
+                 ajaxCallbackfun(data, "returnGuideNearbyList");
+             });
+     }
 
 
      /**
@@ -162,6 +179,7 @@
                  return;
              }
              if (!data.length && currentPage > 1) {
+                 currentPage--;
                  //下拉没有更多啦
                  pullUpEl.className = '';
                  pullUpEl.querySelector('.pullUpLabel').innerHTML = '全部加载完毕';
@@ -189,6 +207,7 @@
                  data.list[i].endTimeInfo = moment.unix(data.list[i].endTime).format(FORMATER);
              }
          }*/
+         
          if (currentPage == 1) {
              html = etpl.render(tpl, {
                  list: data
@@ -199,6 +218,7 @@
              });
          }
          htmlContainer.html(html);
+         $('#landscape_list .content-box .content').dotdotdot();
      }
 
      /**

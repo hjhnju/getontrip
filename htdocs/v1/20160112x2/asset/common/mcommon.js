@@ -1,12 +1,21 @@
-define('common/common', [
+define('common/mcommon', [
     'require',
-    './common.tpl',
-    'etpl'
+    'jquery',
+    './mcommon.tpl',
+    'etpl',
+    'common/Remoter',
+    'common/fastclick',
+    'common/iscroll'
 ], function (require) {
-    var tpl = require('./common.tpl');
+    var $ = require('jquery');
+    var tpl = require('./mcommon.tpl');
     var etpl = require('etpl');
+    var Remoter = require('common/Remoter');
+    var fastClick = require('common/fastclick');
+    var IScroll = require('common/iscroll');
     function init() {
         etpl.compile(tpl);
+        fastClick.attach(document.body);
     }
     var myScrollEvents = function (myScroll, pullUpAction, pullDownAction) {
         document.addEventListener('touchmove', function (e) {
@@ -56,6 +65,72 @@ define('common/common', [
             }
         });
     };
+    var bindEvents = {
+            navScroll: function () {
+                var boxWidth = $('#nav').width();
+                var maxNum = Math.floor(boxWidth / 60);
+                var size = $('#nav ul li').size();
+                totalWidth = 0;
+                $('#nav ul li').each(function () {
+                    totalWidth = totalWidth + $(this).width() + 10;
+                    ;
+                });
+                if (totalWidth > boxWidth) {
+                    $('#nav .scroller').width(totalWidth);
+                } else {
+                    $('#nav ul li').width(boxWidth / size - 10);
+                }
+                navScroll = new IScroll('#nav', {
+                    scrollX: true,
+                    scrollY: false,
+                    bindToWrapper: true,
+                    mouseWheel: true
+                });
+                navScroll.scrollToElement(document.querySelector('#nav li.selected'));
+            },
+            hideAddressBar: function () {
+                var win = window;
+                var doc = win.document;
+                if (!win.navigator.standalone && !location.hash && win.addEventListener) {
+                    win.scrollTo(0, 1);
+                    var scrollTop = 1, getScrollTop = function () {
+                            return win.pageYOffset || doc.compatMode === 'CSS1Compat' && doc.documentElement.scrollTop || doc.body.scrollTop || 0;
+                        }, bodycheck = setInterval(function () {
+                            if (doc.body) {
+                                clearInterval(bodycheck);
+                                scrollTop = getScrollTop();
+                                win.scrollTo(0, scrollTop === 1 ? 0 : 1);
+                            }
+                        }, 15);
+                    win.addEventListener('load', function () {
+                        setTimeout(function () {
+                            if (getScrollTop() < 20) {
+                                win.scrollTo(0, scrollTop === 1 ? 0 : 1);
+                            }
+                        }, 0);
+                    }, false);
+                }
+            }
+        };
+    var getData = {
+            initNavData: function (params) {
+                tagId = params.tagId;
+                var getNavList = new Remoter('NAV_LIST');
+                getNavList.remote(params);
+                getNavList.on('success', function (data) {
+                    if (data.bizError) {
+                        renderError(data);
+                    } else {
+                        $('#nav ul').html(etpl.render('returnNavList', {
+                            list: data.tags,
+                            sightId: data.id
+                        }));
+                        $('#nav ul li[data-id="' + tagId + '"]').addClass('selected');
+                        bindEvents.navScroll();
+                    }
+                });
+            }
+        };
     var COOKIES = {
             getCookie: function (name) {
                 var arr, reg = new RegExp('(^| )' + name + '=([^;]*)(;|$)');
@@ -93,6 +168,8 @@ define('common/common', [
     return {
         init: init,
         myScrollEvents: myScrollEvents,
-        COOKIES: COOKIES
+        COOKIES: COOKIES,
+        bindEvents: bindEvents,
+        getData: getData
     };
 });

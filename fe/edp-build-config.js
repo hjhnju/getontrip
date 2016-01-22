@@ -20,7 +20,10 @@ exports.getProcessors = function () {
             'src/m/sight/css/map.less',
             'src/m/sight/css/guide.less',
             'src/m/sight/css/nearby.less',
-            'src/m/sight/css/landscape.less'
+            'src/m/sight/css/landscape.less',
+            'src/m/sight/css/food.less',
+            'src/m/sight/css/foodlist.less',
+            'src/m/sight/css/topiclist.less'
 
         ]
     });
@@ -33,7 +36,10 @@ exports.getProcessors = function () {
             'src/m/sight/css/map.less',
             'src/m/sight/css/guide.less',
             'src/m/sight/css/nearby.less',
-            'src/m/sight/css/landscape.less'
+            'src/m/sight/css/landscape.less',
+            'src/m/sight/css/food.less',
+            'src/m/sight/css/foodlist.less',
+            'src/m/sight/css/topiclist.less'
         ]
     });
     var moduleProcessor = new ModuleCompiler({
@@ -53,7 +59,12 @@ exports.getProcessors = function () {
             'src/m/sight/map.js',
             'src/m/sight/guide.js',
             'src/m/sight/nearby.js',
-            'src/m/sight/landscape.js'
+            'src/m/sight/landscape.js',
+            'src/m/sight/foodlist.js',
+            'src/m/sight/food.js',
+            'src/m/sight/specialtylist.js',
+            'src/m/sight/specialty.js',
+            'src/m/sight/topiclist.js'
         ]
     });
     var html2JsProcessor = new Html2JsCompiler({

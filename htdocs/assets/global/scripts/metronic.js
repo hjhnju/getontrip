@@ -461,47 +461,47 @@ var Metronic = function() {
             var type = this.replace('/pic/', '').split('.')[1];
             return type;
         }
-        String.prototype.getNewUrlByUrl = function(width, height,type,quality) {
-            var url=this.toString();
-            if(!type){
-                type='e';
+        String.prototype.getNewUrlByUrl = function(width, height, type, quality) {
+            var url = this.toString();
+            if (!type) {
+                type = 'e';
             }
-            if(width){
-                url=url+'@'+type+width+'w';
+            if (width) {
+                url = url + '@' + type + width + 'w';
             }
-            if(height){
-                url=url+'_'+type+height+'h';
+            if (height) {
+                url = url + '_' + type + height + 'h';
             }
-            if(quality){
-                url=url+'_'+quality;
+            if (quality) {
+                url = url + '_' + quality;
             }
-            return '/pic/' + url; 
+            return '/pic/' + url;
         }
-        String.prototype.getNewImgByImg = function(width, height,type,quality) {
-            var img=this.toString();
-            if(!type){
-                type='e';
+        String.prototype.getNewImgByImg = function(width, height, type, quality) {
+            var img = this.toString();
+            if (!type) {
+                type = 'e';
             }
-            if(width){
-                img=img+'@'+type+width+'w';
+            if (width) {
+                img = img + '@' + type + width + 'w';
             }
-            if(height){
-                img=img+'_'+type+height+'h';
+            if (height) {
+                img = img + '_' + type + height + 'h';
             }
-            if(quality){
-                img=img+'_'+quality;
+            if (quality) {
+                img = img + '_' + quality;
             }
-            return img; 
+            return img;
         }
         String.prototype.getBytes = function() {
-                var cArr = this.match(/[^\x00-\xff]/ig);
-                return this.length + (cArr == null ? 0 : cArr.length);
+            var cArr = this.match(/[^\x00-\xff]/ig);
+            return this.length + (cArr == null ? 0 : cArr.length);
         }
-        
+
         //字符截取
-        String.prototype.subString = function(length,spiltStr) { 
-              spiltStr=spiltStr?spiltStr:'...';
-              return   this.length > length ? this.substr(0, length) + spiltStr : this; 
+        String.prototype.subString = function(length, spiltStr) {
+            spiltStr = spiltStr ? spiltStr : '...';
+            return this.length > length ? this.substr(0, length) + spiltStr : this;
         }
 
         //表单序列化json
@@ -522,88 +522,89 @@ var Metronic = function() {
         };
         //字数限制
         $.fn.limitTextarea = function(opts) {
-                var defaults = {
-                    maxNumber: 140, //允许输入的最大字数  
-                    position: 'top', //提示文字的位置，top：文本框上方，bottom：文本框下方  
-                    onOk: function() {}, //输入后，字数未超出时调用的函数  
-                    onOver: function() {}, //输入后，字数超出时调用的函数 
-                    theme: 'limit',
-                    infoStr: '',
-                    infoId: 'info'
-                }
-                var option = $.extend(defaults, opts);
-                //处理输入的内容是文字还是字母的函数
-                var getLength = function(str) {
-                    return String(str).replace(/[^\x00-\xff]/g, 'aa').length;
-                };
-                this.each(function() {
-                    var _this = $(this);
-                    var info = '';
-                    switch (option.theme) {
-                        case 'limit':
-                            info = '<div id="' + option.infoId + '" style="text-align:right;">还可以输入<b>' + (option.maxNumber - Math.ceil(getLength(_this.val()) / 2)) + '</b>字</div>';
-                            break;
-                        case 'tips':
-                            info = '<div id="' + option.infoId + '" style="text-align:right;">已经输入<b>' + Math.ceil(getLength(_this.val()) / 2) + '</b>字</div>';
-                            break;
-                    }
-                    var fn = function() {
-                        //Math函数向上取值
-                        var alredyNumber = Math.ceil(getLength(_this.val()) / 2);
-                        var extraNumber = option.maxNumber - alredyNumber;
-                        var $info = $('#' + option.infoId);
-                        if (extraNumber >= 0) {
-                            switch (option.theme) {
-                                case 'limit':
-                                    $info.html(option.infoStr + '还可以输入<b>' + extraNumber + '</b>个字');
-                                    break;
-                                case 'tips':
-                                    $info.html(option.infoStr + '已经输入<b>' + alredyNumber + '</b>个字');
-                                    break;
-                            }
-
-                            option.onOk();
-                        } else {
-                            switch (option.theme) {
-                                case 'limit':
-                                    $info.html('已经超出<b style="color:red;">' + (-extraNumber) + '</b>个字');
-                                    break;
-                                case 'tips':
-                                    $info.html(option.infoStr + '已经输入<b>' + alredyNumber + '</b>个字');
-                                    break;
-                            }
-
-                            option.onOver();
-                        }
-                    };
-                    switch (option.position) {
-                        case 'top':
-                            _this.before(info);
-                            break;
-                        case 'bottom':
-                        default:
-                            _this.after(info);
-                    }
-                    //绑定输入事件监听器  
-                    if (window.addEventListener) { //先执行W3C  
-                        _this.get(0).addEventListener("input", fn, false);
-                    } else {
-                        _this.get(0).attachEvent("onpropertychange", fn);
-                    }
-                    if (window.VBArray && window.addEventListener) { //IE9  
-                        _this.get(0).attachEvent("onkeydown", function() {
-                            var key = window.event.keyCode;
-                            (key == 8 || key == 46) && fn(); //处理回退与删除  
-                        });
-                        _this.get(0).attachEvent("oncut", fn); //处理粘贴  
-                    }
-                    //初始化的时候先执行一遍
-                    fn();
-                });
-
-
+            var defaults = {
+                maxNumber: 140, //允许输入的最大字数  
+                position: 'top', //提示文字的位置，top：文本框上方，bottom：文本框下方  
+                onOk: function() {}, //输入后，字数未超出时调用的函数  
+                onOver: function() {}, //输入后，字数超出时调用的函数 
+                theme: 'limit',
+                infoStr: '',
+                infoId: 'info'
             }
-            //按钮可用
+            var option = $.extend(defaults, opts);
+            //处理输入的内容是文字还是字母的函数
+            var getLength = function(str) {
+                return String(str).replace(/[^\x00-\xff]/g, 'aa').length;
+            };
+            this.each(function() {
+                var _this = $(this);
+                var info = '';
+                switch (option.theme) {
+                    case 'limit':
+                        info = '<div id="' + option.infoId + '" style="text-align:right;">还可以输入<b>' + (option.maxNumber - Math.ceil(getLength(_this.val()) / 2)) + '</b>字</div>';
+                        break;
+                    case 'tips':
+                        info = '<div id="' + option.infoId + '" style="text-align:right;">已经输入<b>' + Math.ceil(getLength(_this.val()) / 2) + '</b>字</div>';
+                        break;
+                }
+                var fn = function() {
+                    //Math函数向上取值
+                    var alredyNumber = Math.ceil(getLength(_this.val()) / 2);
+                    var extraNumber = option.maxNumber - alredyNumber;
+                    var $info = $('#' + option.infoId);
+                    if (extraNumber >= 0) {
+                        switch (option.theme) {
+                            case 'limit':
+                                $info.html(option.infoStr + '还可以输入<b>' + extraNumber + '</b>个字');
+                                break;
+                            case 'tips':
+                                $info.html(option.infoStr + '已经输入<b>' + alredyNumber + '</b>个字');
+                                break;
+                        }
+
+                        option.onOk();
+                    } else {
+                        switch (option.theme) {
+                            case 'limit':
+                                $info.html('已经超出<b style="color:red;">' + (-extraNumber) + '</b>个字');
+                                break;
+                            case 'tips':
+                                $info.html(option.infoStr + '已经输入<b>' + alredyNumber + '</b>个字');
+                                break;
+                        }
+
+                        option.onOver();
+                    }
+                };
+                switch (option.position) {
+                    case 'top':
+                        _this.before(info);
+                        break;
+                    case 'bottom':
+                    default:
+                        _this.after(info);
+                }
+                //绑定输入事件监听器  
+                if (window.addEventListener) { //先执行W3C  
+                    _this.get(0).addEventListener("input", fn, false);
+                } else {
+                    _this.get(0).attachEvent("onpropertychange", fn);
+                }
+                if (window.VBArray && window.addEventListener) { //IE9  
+                    _this.get(0).attachEvent("onkeydown", function() {
+                        var key = window.event.keyCode;
+                        (key == 8 || key == 46) && fn(); //处理回退与删除  
+                    });
+                    _this.get(0).attachEvent("oncut", fn); //处理粘贴  
+                }
+                //初始化的时候先执行一遍
+                fn();
+            });
+
+
+        }
+
+        //按钮可用
         $.fn.btnEnable = function(opts) {
             var defaults = {
                 text_attr: 'data-btn_text', //根据css 查找原有文字 css   
@@ -617,13 +618,13 @@ var Metronic = function() {
         //按钮不可用
         $.fn.btnDisable = function(opts) {
             var defaults = {
-                icon:'<i class="fa fa-spinner fa-pulse"></i>',
+                icon: '<i class="fa fa-spinner fa-pulse"></i>',
                 text: '保存中，请稍后', //允许输入的最大字数    
             }
             var option = $.extend(defaults, opts);
             $.each(this, function() {
                 $(this).attr('disabled', 'disabled');
-                $(this).html(option.icon+option.text);
+                $(this).html(option.icon + option.text);
             });
         };
     }

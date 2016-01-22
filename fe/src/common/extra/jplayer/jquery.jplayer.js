@@ -702,14 +702,14 @@
             playbackRate: 1, // Warning - Now both an option and a status property
             ended: 0
 
-            /*		Persistant status properties created dynamically at _init():
-            			width
-            			height
-            			cssClass
-            			nativeVideoControls
-            			noFullWindow
-            			noVolume
-            			playbackRateEnabled // Warning - Technically, we can have both Flash and HTML, so this might not be correct if the Flash is active. That is a niche case.
+            /*      Persistant status properties created dynamically at _init():
+                        width
+                        height
+                        cssClass
+                        nativeVideoControls
+                        noFullWindow
+                        noVolume
+                        playbackRateEnabled // Warning - Technically, we can have both Flash and HTML, so this might not be correct if the Flash is active. That is a niche case.
             */
         },
 
@@ -1899,15 +1899,15 @@
             if (this.css.jq.playBar.length) {
                 if (this.options.smoothPlayBar) {
                     this.css.jq.playBar.stop().animate({
-                        width: this.status.currentPercentAbsolute + "%"
-                    }, 250, "linear");
+                        width: this.status.currentPercentAbsolute + '%'
+                    }, 250, 'linear');
                     this.css.jq.playBall.stop().animate({
-                        left: this.status.currentPercentAbsolute + "%"
-                    }, 250, "linear");
+                        left: this.status.currentPercentAbsolute < this.css.jq.playBall.width() / 2 ? this.status.currentPercentAbsolute : this.status.currentPercentAbsolute - this.css.jq.playBall.width() / 2 + '%'
+                    }, 250, 'linear');
                 } else {
-                    this.css.jq.playBar.width(this.status.currentPercentRelative + "%");
+                    this.css.jq.playBar.width(this.status.currentPercentRelative + '%');
                     this.css.jq.playBall.css({
-                        "left": this.status.currentPercentRelative + '%'
+                        'left': this.status.currentPercentRelative < this.css.jq.playBall.width() / 2 ? this.status.currentPercentRelative : this.status.currentPercentRelative - this.css.jq.playBall.width() / 2 + '%'
                     });
                 }
             }
@@ -1993,10 +1993,10 @@
         },
         setMedia: function(media) {
 
-            /*	media[format] = String: URL of format. Must contain all of the supplied option's video or audio formats.
-             *	media.poster = String: Video poster URL.
-             *	media.track = Array: Of objects defining the track element: kind, src, srclang, label, def.
-             *	media.stream = Boolean: * NOT IMPLEMENTED * Designating actual media streams. ie., "false/undefined" for files. Plan to refresh the flash every so often.
+            /*  media[format] = String: URL of format. Must contain all of the supplied option's video or audio formats.
+             *  media.poster = String: Video poster URL.
+             *  media.track = Array: Of objects defining the track element: kind, src, srclang, label, def.
+             *  media.stream = Boolean: * NOT IMPLEMENTED * Designating actual media streams. ie., "false/undefined" for files. Plan to refresh the flash every so often.
              */
 
             var self = this,
@@ -2486,6 +2486,7 @@
             }
         },
         seekBar: function(e) { // Handles clicks on the seekBar
+
             if (this.css.jq.seekBar.length) {
                 // Using $(e.currentTarget) to enable multiple seek bars
                 var $bar = $(e.currentTarget),

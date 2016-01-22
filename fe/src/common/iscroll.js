@@ -688,6 +688,14 @@ IScroll.prototype = {
         this.hasHorizontalScroll    = this.options.scrollX && this.maxScrollX < 0;
         this.hasVerticalScroll      = this.options.scrollY && this.maxScrollY < 0;
 
+/*fyy 数据少时不隐藏滑动*/
+        this.hasHorizontalScroll    = this.options.scrollX;
+        this.hasVerticalScroll      = this.options.scrollY;
+        this.maxScrollX = this.maxScrollX>0? 0- this.maxScrollX:this.maxScrollX;
+        this.maxScrollY = this.maxScrollY>0? 0- this.maxScrollY:this.maxScrollY;
+/*fyy 数据少时不隐藏滑动*/
+
+
         if ( !this.hasHorizontalScroll ) {
             this.maxScrollX = 0;
             this.scrollerWidth = this.wrapperWidth;

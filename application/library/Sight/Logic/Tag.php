@@ -66,7 +66,7 @@ class Sight_Logic_Tag extends Base_Logic{
         $this->_modelTopic = new TopicModel();
     }
     
-    public function getTagsBySight($sightId){ 
+    public function getTagsBySight($sightId,$version){ 
         $arrTopTag       = array();
         $arrCommonTag    = array();
         $arrLessTopicTag = array(); 
@@ -143,11 +143,13 @@ class Sight_Logic_Tag extends Base_Logic{
             array_unshift($arrTopTag,array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '景观')); 
             //$arrCommonTag[] = array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '景观');
         }
-        if(!empty($specialty)){
-            array_unshift($arrTopTag,array('id' => strval(self::STR_SPECIALTY),'type' => strval(self::SPECIALTY), 'name' => '特产'));
-        }
-        if(!empty($food)){
-            array_unshift($arrTopTag,array('id' => strval(self::STR_FOOD),'type' => strval(self::FOOD), 'name' => '美食'));
+        if($version !== "1.0"){
+            if(!empty($specialty)){
+                array_unshift($arrTopTag,array('id' => strval(self::STR_SPECIALTY),'type' => strval(self::SPECIALTY), 'name' => '特产'));
+            }
+            if(!empty($food)){
+                array_unshift($arrTopTag,array('id' => strval(self::STR_FOOD),'type' => strval(self::FOOD), 'name' => '美食'));
+            }
         }
         if(!empty($book)){
             $arrCommonTag[] = array('id' => strval(self::STR_BOOK),'type' => strval(self::BOOK), 'name' => '书籍');

@@ -182,6 +182,7 @@ to{-webkit-transform:rotate(360deg) translateZ(0)}
 .food_list .item .headset-box{width:49px;height:49px;max-width:49px;min-width:49px;margin:10px 0 0 2px;-moz-box-flex:1;-webkit-box-flex:1;-webkit-flex:1;-moz-flex:1;-ms-flex:1;flex:1}
 .food_list .item .headset-box .time{color:#2a2d2e;text-align:center;font-size:10px}
 .food_list .item .headset-box .headset{width:49px;height:49px;background-color:#f4fd54;background-image:url(../img/icon_speech.png);background-size:33px 33px;background-position:center center;background-repeat:no-repeat;-webkit-border-radius:24.5px;-moz-border-radius:24.5px;border-radius:24.5px}
+.food_list .item .content-box{-moz-box-flex:1;-webkit-box-flex:1;-webkit-flex:1;-moz-flex:1;-ms-flex:1;flex:1}
 .food_list .item .content-box .title{display:-moz-box;display:-webkit-box;display:-ms-flexbox;display:-webkit-flex;display:flex}
 .food_list .item .content-box .title span{display:block}
 .food_list .item .content-box .title .name{font-size:18px;color:#1c1c1c;line-height:24px;font-weight:700}

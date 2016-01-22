@@ -140,6 +140,7 @@
              }
              if (!data.length && currentPage > 1) {
                  //下拉没有更多啦
+                 currentPage--;
                  pullUpEl.className = '';
                  pullUpEl.querySelector('.pullUpLabel').innerHTML = '全部加载完毕';
 

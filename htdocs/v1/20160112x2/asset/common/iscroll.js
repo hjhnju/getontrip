@@ -501,8 +501,8 @@
             this.hasVerticalScroll = this.options.scrollY && this.maxScrollY < 0;
             this.hasHorizontalScroll = this.options.scrollX;
             this.hasVerticalScroll = this.options.scrollY;
-            this.maxScrollX = this.maxScrollX > 0 ? 0 - this.maxScrollX : this.maxScrollX;
-            this.maxScrollY = this.maxScrollY > 0 ? 0 - this.maxScrollY : this.maxScrollY;
+            this.maxScrollX = this.maxScrollX > 0 ? 0 : this.maxScrollX;
+            this.maxScrollY = this.maxScrollY > 0 ? 0 : this.maxScrollY;
             if (!this.hasHorizontalScroll) {
                 this.maxScrollX = 0;
                 this.scrollerWidth = this.wrapperWidth;

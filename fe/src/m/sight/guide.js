@@ -8,12 +8,10 @@
  define(function(require) {
      var $ = require('jquery');
      var common = require('common/mcommon');
-     //var config = require('common/config');
-     //var moment = require('moment');
+    
      require('common/extra/jquery.dotdotdot');
      var etpl = require('etpl');
-     var tpl = require('./list.tpl');
-     var clamp = require('common/extra/clamp');
+     var tpl = require('./list.tpl'); 
 
      var Remoter = require('common/Remoter');
 

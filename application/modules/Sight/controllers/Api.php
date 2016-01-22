@@ -34,7 +34,7 @@ class ApiController extends Base_Controller_Api {
         $logicCollect     = new Collect_Logic_Collect();
         $ret              = $logicCollect->checkCollect(Collect_Type::SIGHT, $sightId);
         $arrRet['isfav']  = $ret?"1":"0";
-        $arrRet['tags']   = $logic->getTagsBySight($sightId);
+        $arrRet['tags']   = $logic->getTagsBySight($sightId,$this->getVersion());
         $this->ajax($arrRet);
     }
     

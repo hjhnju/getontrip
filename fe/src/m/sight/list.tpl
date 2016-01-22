@@ -66,7 +66,7 @@
 <!-- for: ${list} as ${item} -->
 <li class="item">
   <a href="/m/sight/food?id=${item.id}" class="item_link">
-    <div class="bg_img" style="background-image: url(${item.image}168h_200w)"></div> 
+    <div class="bg_img" style="background-image: url(${item.image}@168h_200w)"></div> 
     <div class="content-box">
       <div class="title">
          <span class="name">${item.title}</span> 
@@ -90,7 +90,7 @@
 <!-- for: ${list} as ${item} -->
 <li class="item">
   <a href="/m/sight/specialty?id=${item.id}" class="item_link">
-    <div class="bg_img" style="background-image: url(${item.image}168h_200w)"></div> 
+    <div class="bg_img" style="background-image: url(${item.image}@168h_200w)"></div> 
     <div class="content-box">
       <div class="title">
          <span class="name">${item.title}</span> 

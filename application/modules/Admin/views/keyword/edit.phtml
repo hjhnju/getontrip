@@ -62,13 +62,17 @@
                           <label for="sight_name" class="control-label col-lg-2" style="padding-top: 0px;">
                              <div class="input-group col-lg-1 pull-right"> 
                                <select name="" id="sight_tag">  
-                                  <option value="sight" {%if isset($post.level) && ($post.level eq 2 || $post.level eq 3)%}selected{%/if%}>景点</option>  
-                                  <option value="city"  {%if isset($post.level) && ($post.level eq 1)%}selected{%/if%}>城市</option> 
+                                  <option value="landscape" {%if isset($post.level) && ($post.level eq 3)%}selected{%/if%}>景观级</option> 
+                                  <option value="sight" {%if isset($post.level) && ($post.level eq 2)%}selected{%/if%}>景点级</option>   
+                                  <option value="city"  {%if isset($post.level) && ($post.level eq 1)%}selected{%/if%}>城市级</option> 
                                </select>
                              </div>     
                           </label>  
-                          <div class="col-lg-3 sight_tag {%if isset($post.level) && ($post.level eq 1 || $post.level eq 4)%}hide{%/if%}" data-type="sight"> 
+                          <div class="col-lg-3 sight_tag {%if isset($post.level) && ($post.level ne 2)%}hide{%/if%}" data-type="sight"> 
                                <input class="form-control" id="sight_name" type="text"  autocomplete="off"  placeholder="输入景点后请在下拉框选择" value="{%if isset($post.sight_name) %}{%$post.sight_name%}{%/if%}"/>
+                          </div>
+                          <div class="col-lg-3 sight_tag {%if !isset($post.level) || ($post.level ne 3)%}hide{%/if%}" data-type="landscape"> 
+                               <input class="form-control" id="landscape_name" type="text"  autocomplete="off"  placeholder="输入景点后请在下拉框选择" value="{%if isset($post.sight_name) %}{%$post.sight_name%}{%/if%}"/>
                           </div>
                            <div class="col-lg-3 sight_tag {%if !isset($post.level) || ($post.level ne 1)%}hide{%/if%}"  data-type="city">
                            	   <input class="form-control" id="city_name" type="text"  autocomplete="off"  placeholder="输入城市后请在下拉框选择"  value="{%if isset($post.sight_name) %}{%$post.sight_name%}{%/if%}"/>

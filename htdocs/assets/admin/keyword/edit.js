@@ -117,6 +117,20 @@ $(document).ready(function() {
                     }
                 });
                 
+              //景点输入框自动完成
+                $('#landscape_name').typeahead({
+                    display: 'name',
+                    val: 'id',
+                    ajax: {
+                        url: '/admin/sightapi/getSightList',
+                        triggerLength: 1
+                    },
+                    itemSelected: function(item, val, text) {
+                        $("#landscape_name").val(text);
+                        $("#sight_id").val(val);
+                    }
+                });
+                
                 $('#city_name').typeahead({
                     display: 'name',
                     val: 'id',
@@ -171,6 +185,8 @@ $(document).ready(function() {
                     	param.level = 2;
                     }else if($('#sight_tag').val() == 'city'){
                     	param.level = 1;
+                    }else if($('#sight_tag').val() == 'landscape'){
+                    	param.level = 3;
                     }
                     if($('#sight_id').val()){
                     	param.sight_id = $('#sight_id').val();

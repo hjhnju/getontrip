@@ -26,13 +26,13 @@ class EditAction extends Yaf_Action_Abstract {
            $level = intval($postInfo['level']);
            if($level== Keyword_Type_Level::SIGHT){
                $sightInfo  = Sight_Api::getSightById($postInfo['sight_id']);
-               $postInfo["sight_name"]=$sightInfo["name"];
+               $postInfo["sight_name"]=isset($sightInfo["name"])?$sightInfo['name']:'';
            }elseif($level == Keyword_Type_Level::CITY){
                $cityInfo   = City_Api::getCityById($postInfo['sight_id']);
-               $postInfo["sight_name"]=$cityInfo["name"];
+               $postInfo["sight_name"]=isset($cityInfo["name"])?$cityInfo['name']:'';
            }elseif($level == Keyword_Type_Level::LANDSCAPE){
                $sightInfo  = Sight_Api::getSightById($postInfo['sight_id']);
-               $postInfo["sight_name"]=$sightInfo["name"];
+               $postInfo["sight_name"]=isset($sightInfo["name"])?$sightInfo['name']:'';
            }else{
                $keywordInfo   = Keyword_Api::queryById($postInfo['sight_id']);
                $postInfo["sight_name"]=isset($keywordInfo["name"])?$keywordInfo["name"]:'';

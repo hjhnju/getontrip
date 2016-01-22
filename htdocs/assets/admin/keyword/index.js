@@ -68,11 +68,13 @@ $(document).ready(function() {
                         }
                     }, {"data": function(e) {
                     	if (e.level == 1) {
-                    		return '城市';
+                    		return '城市级';
                     	}else if (e.level == 2) {
-                    		return '景点';
+                    		return '景点级';
+                    	}else if (e.level == 3){
+                    		return '景观级';
                     	}else{
-                    		return '景观';
+                    		return '二级景观';
                     	}}
                     },{
                         "data": "sight_name"

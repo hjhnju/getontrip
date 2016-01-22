@@ -31,6 +31,9 @@ class EditAction extends Yaf_Action_Abstract {
                $cityInfo   = City_Api::getCityById($postInfo['sight_id']);
                $postInfo["sight_name"]=$cityInfo["name"];
            }elseif($level == Keyword_Type_Level::LANDSCAPE){
+               $sightInfo  = Sight_Api::getSightById($postInfo['sight_id']);
+               $postInfo["sight_name"]=$sightInfo["name"];
+           }else{
                $keywordInfo   = Keyword_Api::queryById($postInfo['sight_id']);
                $postInfo["sight_name"]=isset($keywordInfo["name"])?$keywordInfo["name"]:'';
            }

@@ -172,12 +172,18 @@ class Destination_Logic_Tag extends Base_Logic{
     public function getTagsByCity($cityId){
         $arrCommonTag    = array();
         $arrSightIds     = array();
-        //Sight_Api::getSightByCity($cityId, $page, $pageSize);
-        
+        $logicSight      = new Sight_Logic_Sight();
+        $sight_num       = $logicSight->getSightsNum(array('status' => Sight_Type_Status::PUBLISHED),$cityId);
+        $arrRet = $this->getDestinationTags($cityId, Destination_Type_Type::CITY);
+        foreach ($arrRet as $val){
+            $arrCommonTag[] = array('id' => strval($val['id']),'type' => strval(self::TOPIPC),'name' => $val['name']);
+        }
         //判断有无视频,书籍,而增加相应标签
         $food      = Food_Api::getFoodNum($cityId,Destination_Type_Type::CITY);
         $specialty = Specialty_Api::getSpecialtyNum($cityId,Destination_Type_Type::CITY);
-        array_unshift($arrCommonTag,array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '导游'));
+        if(!empty($sight_num)){
+            array_unshift($arrCommonTag,array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '导游'));
+        }
         if(!empty($specialty)){
             array_unshift($arrCommonTag,array('id' => strval(self::STR_SPECIALTY),'type' => strval(self::SPECIALTY), 'name' => '特产'));
         }

@@ -18,10 +18,16 @@ class Keyword_Type_Level extends Base_Type {
     const SIGHT        = 2;
         
     /**
-     * 3 景观级,二级景观,sight_id为景观id
+     * 3 景观级,sight_id为景观id
      * @var integer
      */
     const LANDSCAPE    = 3;
+    
+    /**
+     * 4 二级景观,sight_id为景观id
+     * @var integer
+     */
+    const SECOND_LANDSCAPE    = 4;
     
     /**
      * 状态名

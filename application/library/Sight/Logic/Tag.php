@@ -20,22 +20,34 @@ class Sight_Logic_Tag extends Base_Logic{
     const TOPIPC   = 1;
     
     /**
-     * 10 景观标签
+     * 2 景观标签
      * @var integer
      */
     const LANDSCAPE = 2;
     
     /**
-     * 11 书籍标签
+     * 3 书籍标签
      * @var integer
      */
     const BOOK      = 3;
     
     /**
-     * 12 视频标签
+     * 4 视频标签
      * @var integer
      */
     const VIDEO     = 4;
+    
+    /**
+     * 5 美食标签
+     * @var integer
+     */
+    const FOOD      = 5;
+    
+    /**
+     * 6 特产标签
+     * @var integer
+     */
+    const SPECIALTY = 6;
         
     
     const STR_LANDSCAPE = 'landscape';
@@ -43,6 +55,10 @@ class Sight_Logic_Tag extends Base_Logic{
     const STR_VIDEO = 'video';
     
     const STR_BOOK = 'book';
+    
+    const STR_FOOD = 'food';
+    
+    const STR_SPECIALTY = 'specialty';
     
     public function __construct(){
         $this->_logicTopic = new Topic_Logic_Topic();
@@ -121,9 +137,17 @@ class Sight_Logic_Tag extends Base_Logic{
         $wiki  = Keyword_Api::getKeywordNum($sightId);
         $book  = Book_Api::getBookNum($sightId);
         $video = Video_Api::getVideoNum($sightId);
+        $food  = Food_Api::getFoodNum($sightId);
+        $specialty = Specialty_Api::getSpecialtyNum($sightId);
         if(!empty($wiki)){
-            //array_unshift($arrTopTag,array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '景观')); 
-            $arrCommonTag[] = array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '景观');
+            array_unshift($arrTopTag,array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '导游')); 
+            //$arrCommonTag[] = array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '景观');
+        }
+        if(!empty($specialty)){
+            array_unshift($arrTopTag,array('id' => strval(self::STR_SPECIALTY),'type' => strval(self::SPECIALTY), 'name' => '特产'));
+        }
+        if(!empty($food)){
+            array_unshift($arrTopTag,array('id' => strval(self::STR_FOOD),'type' => strval(self::FOOD), 'name' => '美食'));
         }
         if(!empty($book)){
             $arrCommonTag[] = array('id' => strval(self::STR_BOOK),'type' => strval(self::BOOK), 'name' => '书籍');

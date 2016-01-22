@@ -83,7 +83,13 @@ class TopicModel extends BaseModel{
      * @param integer $pageSize
      * @return array
      */
-    public function getHotTopicIdsByCity($cityId,$page, $pageSize){
+    public function getHotTopicIdsByCity($cityId,$page, $pageSize,$tag = ''){
+        $from = ($page-1)*$pageSize;
+        if(!empty($tag)){
+            $sql_general = "SELECT distinct(a.id) FROM `topic` a, `topic_tag`  b  WHERE  a.status = ".Topic_Type_Status::PUBLISHED." and a.id = b.topic_id and b.tag_id = $tag limit $from,$pageSize";
+            $data = $this->db->fetchAll($sql_general);
+            return $data;
+        }
         $redis = Base_Redis::getInstance();
         $ret   = $redis->get(City_Keys::getCityTopicKey($cityId, $page, $pageSize));
         $arrTopicIds = array();
@@ -107,7 +113,6 @@ class TopicModel extends BaseModel{
         }
         $arrTopicIds = array_unique($arrTopicIds);
         $strTopicIds = implode(",",$arrTopicIds);
-        $from = ($page-1)*$pageSize;
         $sql = "SELECT id FROM `topic` where `id` in (".$strTopicIds.") ORDER BY hot2 desc, update_time desc limit $from,$pageSize";            
 
         try {

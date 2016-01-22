@@ -72,12 +72,13 @@ class City_Logic_City{
         $logicCollect = new Collect_Logic_Collect();
         $arrRet   = $modelGis->getCityNearSight($cityId, $x, $y, $page, $pageSize);
         foreach($arrRet as $key => $val){
+            $sight         = Sight_Api::getSightById($val['id']);
             $topic_num     = $logicSight->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));
             $wiki_num      = Keyword_Api::getKeywordNum($val['id']);
             $book_num      = Book_Api::getBookNum($val['id']);
             $video_num     = Video_Api::getVideoNum($val['id']);
             $arrRet[$key]['id']          = strval($val['id']);
-            $arrRet[$key]['image']       = Base_Image::getUrlByName($val['image']);
+            $arrRet[$key]['image']       = Base_Image::getUrlByName($sight['image']);
             $arrRet[$key]['contentNum']  = strval($topic_num + $wiki_num + $book_num + $video_num);
             $arrRet[$key]['collectNum']  = strval($logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $val['id']));
             
@@ -399,8 +400,8 @@ class City_Logic_City{
      * @param integer $size
      * @return array
      */
-    public function getHotTopic($cityId,$page = 1,$pageSize = self::DEFAULT_SIZE){
-        $arrRet     = $this->_modelTopic->getHotTopicIdsByCity($cityId,$page,$pageSize);
+    public function getHotTopic($cityId,$page = 1,$pageSize = self::DEFAULT_SIZE,$tag= ''){
+        $arrRet     = $this->_modelTopic->getHotTopicIdsByCity($cityId,$page,$pageSize,$tag);
         $logicTopic = new Topic_Logic_Topic();
         foreach($arrRet as $key => $val){
             $topicDetail = $this->_modelTopic->getTopicDetail($val['id'],$page);

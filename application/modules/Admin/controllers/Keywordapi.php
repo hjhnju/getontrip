@@ -50,15 +50,17 @@ class KeywordapiController extends Base_Controller_Api{
               } */
               if(intval($tmpList[$i]['level']) == Keyword_Type_Level::SIGHT){
                   $sight = Sight_Api::getSightById($tmpList[$i]['sight_id']);
-                  $tmpList[$i]['sight_name'] = isset($sight['name'])?$sight['name']:'';
-                  
+                  $tmpList[$i]['sight_name'] = isset($sight['name'])?$sight['name']:'';                  
               }elseif(intval($tmpList[$i]['level']) == Keyword_Type_Level::CITY){
                   $city = City_Api::getCityById($tmpList[$i]['sight_id']);
                   $tmpList[$i]['sight_name'] = isset($city['name'])?$city['name']:'';
               }elseif(intval($tmpList[$i]['level']) == Keyword_Type_Level::LANDSCAPE){
+                  $sight = Sight_Api::getSightById($tmpList[$i]['sight_id']);
+                  $tmpList[$i]['sight_name'] = isset($sight['name'])?$sight['name']:''; 
+              }elseif(intval($tmpList[$i]['level']) == Keyword_Type_Level::SECOND_LANDSCAPE){
                   $keyword= Keyword_Api::queryById($tmpList[$i]['sight_id']);
                   $tmpList[$i]['sight_name'] = isset($keyword['name'])?$keyword['name']:'';
-              }
+              } 
               
               $tmpList[$i]['audio'] = isset($tmpList[$i]['audio'])?$_SERVER['HTTP_HOST'].'/audio/'.$tmpList[$i]['audio']:'';
 

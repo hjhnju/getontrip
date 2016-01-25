@@ -48,11 +48,30 @@ class SightController extends Base_Controller_Page {
         $sight_id   = isset($_REQUEST['id'])?intval($_REQUEST['id']):0; 
         $tagId   = 'landscape';  
         $sightInfo = Sight_Api::getSightById($sight_id); 
-
+        
+        //当前景点下的所有标签
+        $logic      = new Sight_Logic_Tag();
+        $tags   = $logic->getTagsBySight($sight_id,'1.1');
+        //判断是否包含landscape
+        $isExist = false;
+        foreach ($tags as $key => $item) {
+            if ($item['id']==$tagId) {
+                $isExist = true;
+            }
+            if ($item['type']==1) {
+                $newtagId = $item['id'];
+                break;
+            }
+        } 
+        if(!$isExist){
+            //不存在,跳转到第一个话题列表 
+            $url = '/m/sight/topiclist?id='.$sight_id.'&tagId='.$newtagId;  
+            return $this->redirect($url);
+        }
          
         $this->getView()->assign('title', $sightInfo['name']); 
         $this->getView()->assign('sight', $sightInfo);   
-        $this->getView()->assign('tagId', $tagId);  
+        $this->getView()->assign('tagId', $tagId);   
     }
 
     /**
@@ -91,9 +110,10 @@ class SightController extends Base_Controller_Page {
     public function topiclistAction() {   
         
         $sight_id   = isset($_REQUEST['id'])?intval($_REQUEST['id']):0;
-        $tagId   = !empty($_REQUEST['tagId'])?$_REQUEST['tagId']:0;  
-        $sightInfo = Sight_Api::getSightById($sight_id); 
+        $tagId   = !empty($_REQUEST['tagId'])?$_REQUEST['tagId']:0; 
 
+        $sightInfo = Sight_Api::getSightById($sight_id); 
+ 
          
         $this->getView()->assign('title', $sightInfo['name']); 
         $this->getView()->assign('sight', $sightInfo); 

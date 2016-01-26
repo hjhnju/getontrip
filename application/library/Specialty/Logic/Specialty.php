@@ -549,10 +549,10 @@ class Specialty_Logic_Specialty extends Base_Logic{
         $ret       = $redis->get(Specialty_Keys::getSpecialtyRecommend($specialtyId));
         if(!empty($ret)){
             $arrTmp =  explode(",",$ret);
-            return count($arrTmp);
+            return floor(0.05*count($arrTmp));
         }
         $specialty = $this->getSpecialtyByInfo($specialtyId);
-        return Base_Search::getRecommendNum($specialty['title'].$specialty['content']);
+        return floor(0.05*Base_Search::getRecommendNum($specialty['title'].$specialty['content']));
     }
     
     public function getRecommendTopicIds($specialtyId,$page,$pageSize){
@@ -560,8 +560,8 @@ class Specialty_Logic_Specialty extends Base_Logic{
         $arrResult = array();
         $ret       = $redis->get(Specialty_Keys::getSpecialtyRecommend($specialtyId));
         if(!empty($ret)){
-            //$arrTmp =  explode(",",$ret);
-            //return array_slice($arrTmp,($page-1)*$pageSize,$pageSize);
+            $arrTmp =  explode(",",$ret);
+            return array_slice($arrTmp,($page-1)*$pageSize,$pageSize);
         }
         $specialty =  $this->getSpecialtyByInfo($specialtyId);
         $arrRet = Base_Search::RecommendTopic($specialty['title'].$specialty['content'],1,PHP_INT_MAX);

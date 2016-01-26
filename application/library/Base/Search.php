@@ -198,6 +198,6 @@ class Base_Search {
         if(!isset($arrRet['response']['numFound'])){
             return 0;
         }
-        return floor(0.05*$arrRet['response']['numFound']);
+        return $arrRet['response']['numFound'];
     }
 }

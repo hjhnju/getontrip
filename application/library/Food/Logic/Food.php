@@ -565,10 +565,10 @@ class Food_Logic_Food extends Base_Logic{
         $ret       = $redis->get(Food_Keys::getFoodRecommend($foodId));
         if(!empty($ret)){
             $arrTmp =  explode(",",$ret);
-            return count($arrTmp);
+            return floor(0.05*count($arrTmp));
         }
         $food = $this->getFoodByInfo($foodId);
-        return Base_Search::getRecommendNum($food['title'].$food['content']);
+        return floor(0.05*Base_Search::getRecommendNum($food['title'].$food['content']));
     }
     
     /**

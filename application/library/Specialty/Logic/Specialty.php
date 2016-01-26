@@ -549,7 +549,13 @@ class Specialty_Logic_Specialty extends Base_Logic{
     }
     
     public function getRecommendTopicIds($specialtyId,$page,$pageSize){
+        $arrResult = array();
         $specialty =  $this->getSpecialtyByInfo($specialtyId);
+        $count     = $this->getRecommendTopicNum($specialtyId);
+        $pageSize  = $count - ($page-1)*$pageSize;
+        if($pageSize < 0){
+            $pageSize = 0;
+        }
         $arrRet = Base_Search::RecommendTopic($specialty['title'].$specialty['content'],$page,$pageSize);
         foreach ($arrRet as $val){
             $arrResult[] = $val['id'];

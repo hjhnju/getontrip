@@ -198,6 +198,6 @@ class Base_Search {
         if(!isset($arrRet['response']['numFound'])){
             return 0;
         }
-        return floor($arrRet['response']['maxScore']*$arrRet['response']['numFound']);
+        return floor($arrRet['response']['maxScore']*$arrRet['response']['numFound']/50);
     }
 }

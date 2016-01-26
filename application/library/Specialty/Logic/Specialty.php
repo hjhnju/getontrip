@@ -552,11 +552,13 @@ class Specialty_Logic_Specialty extends Base_Logic{
         $arrResult = array();
         $specialty =  $this->getSpecialtyByInfo($specialtyId);
         $count     = $this->getRecommendTopicNum($specialtyId);
-        $pageSize  = $count - ($page-1)*$pageSize;
-        if($pageSize < 0){
-            $pageSize = 0;
+        $count    -= ($page-1)*$pageSize;
+        if($count < 0){
+            $count = 0;
+        }elseif($count > $pageSize){
+            $count = $pageSize;
         }
-        $arrRet = Base_Search::RecommendTopic($specialty['title'].$specialty['content'],$page,$pageSize);
+        $arrRet = Base_Search::RecommendTopic($specialty['title'].$specialty['content'],$page,$count);
         foreach ($arrRet as $val){
             $arrResult[] = $val['id'];
         }

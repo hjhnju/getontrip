@@ -546,11 +546,13 @@ class Food_Logic_Food extends Base_Logic{
         $arrResult= array();
         $food     =  $this->getFoodByInfo($foodId);
         $count    = $this->getRecommendTopicNum($foodId);
-        $pageSize = $count - ($page-1)*$pageSize;
-        if($pageSize < 0){
-            $pageSize = 0;
+        $count   -= ($page-1)*$pageSize;
+        if($count < 0){
+            $count = 0;
+        }elseif($count > $pageSize){
+            $count = $pageSize;
         }
-        $arrRet = Base_Search::RecommendTopic($food['title'].$food['content'],$page,$pageSize);
+        $arrRet = Base_Search::RecommendTopic($food['title'].$food['content'],$page,$count);
         foreach ($arrRet as $val){
             $arrResult[] = $val['id'];
         }

@@ -66,7 +66,7 @@ class Sight_Logic_Tag extends Base_Logic{
         $this->_modelTopic = new TopicModel();
     }
     
-    public function getTagsBySight($sightId,$version){ 
+    public function getTagsBySight($sightId,$version="1.1"){ 
         $arrTopTag       = array();
         $arrCommonTag    = array();
         $arrLessTopicTag = array(); 

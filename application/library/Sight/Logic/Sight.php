@@ -190,7 +190,7 @@ class Sight_Logic_Sight extends Base_Logic{
             $arrTopicIds   = explode(",",$strTopicIds);
             //类别数
             $logic  = new Sight_Logic_Tag();
-            $count  = count($logic->getTagsBySight($val['id']),"1.1");
+            $count  = count($logic->getTagsBySight($val['id'],"1.1"));
             
             //话题数
             $topic_num     = $this->getTopicNum($val['id'],array('status' => Topic_Type_Status::PUBLISHED));

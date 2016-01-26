@@ -175,6 +175,7 @@ class Base_Search {
             'title',
             'content',
         );
+        
         foreach ($arrParams as $val){
             $query .= $val.":$word  or ";
         }
@@ -197,6 +198,6 @@ class Base_Search {
         if(!isset($arrRet['response']['numFound'])){
             return 0;
         }
-        return $arrRet['response']['numFound'];
+        return floor(0.05*$arrRet['response']['numFound']);
     }
 }

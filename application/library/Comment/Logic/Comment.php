@@ -281,7 +281,7 @@ class Comment_Logic_Comment  extends Base_Logic{
         
         $objComment = new Comment_Object_Comment();
         $objComment->fetch(array('up_id' => $id));
-        if(empty($objComment->id)){
+        if(!empty($objComment->id)){
             $objComment->status = Comment_Type_Status::DELETED;
             $objComment->save();
         }

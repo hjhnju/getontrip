@@ -182,7 +182,7 @@ class Base_Search {
         $query  = substr($query,0,-3);
         $query  = urlencode($query);
         
-        $url    = '/solr/topic/select?q='.$query.'&wt=json';
+        $url    = '/solr/topic/select?q='.$query.'&wt=json&fl=*,score';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, Base_Solr::getInstance().$url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -198,6 +198,6 @@ class Base_Search {
         if(!isset($arrRet['response']['numFound'])){
             return 0;
         }
-        return $arrRet['response']['numFound'];
+        return floor($arrRet['response']['maxScore']*$arrRet['response']['numFound']);
     }
 }

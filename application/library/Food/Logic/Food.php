@@ -543,32 +543,17 @@ class Food_Logic_Food extends Base_Logic{
     }
     
     public function getRecommendTopicIds($foodId,$page,$pageSize){
-        $redis     = Base_Redis::getInstance();
-        $arrResult = array();
-        $ret       = $redis->get(Food_Keys::getFoodRecommend($foodId));
-        if(!empty($ret)){
-            $arrTmp =  explode(",",$ret);
-            return array_slice($arrTmp,($page-1)*$pageSize,$pageSize);
-        }
         $food =  $this->getFoodByInfo($foodId);
-        $arrRet = Base_Search::RecommendTopic($food['title'].$food['content'],1,PHP_INT_MAX);
+        $arrRet = Base_Search::RecommendTopic($food['title'].$food['content'],$page,$pageSize);
         foreach ($arrRet as $val){
             $arrResult[] = $val['id'];
         }
-        $redis->setex(Food_Keys::getFoodRecommend($foodId),self::REDIS_RECOMMEND_TIME,implode(",",$arrResult));
-        return array_slice($arrResult,($page-1)*$pageSize,$pageSize);;
+        return $arrResult;
     }
     
     public function getRecommendTopicNum($foodId){
-        $redis     = Base_Redis::getInstance();
-        $arrResult = array();
-        $ret       = $redis->get(Food_Keys::getFoodRecommend($foodId));
-        if(!empty($ret)){
-            $arrTmp =  explode(",",$ret);
-            return floor(0.05*count($arrTmp));
-        }
         $food = $this->getFoodByInfo($foodId);
-        return floor(0.05*Base_Search::getRecommendNum($food['title'].$food['content']));
+        return Base_Search::getRecommendNum($food['title'].$food['content']);
     }
     
     /**

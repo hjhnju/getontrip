@@ -544,32 +544,17 @@ class Specialty_Logic_Specialty extends Base_Logic{
     }
     
     public function getRecommendTopicNum($specialtyId){
-        $redis     = Base_Redis::getInstance();
-        $arrResult = array();
-        $ret       = $redis->get(Specialty_Keys::getSpecialtyRecommend($specialtyId));
-        if(!empty($ret)){
-            $arrTmp =  explode(",",$ret);
-            return floor(0.05*count($arrTmp));
-        }
         $specialty = $this->getSpecialtyByInfo($specialtyId);
-        return floor(0.05*Base_Search::getRecommendNum($specialty['title'].$specialty['content']));
+        return Base_Search::getRecommendNum($specialty['title'].$specialty['content']);
     }
     
     public function getRecommendTopicIds($specialtyId,$page,$pageSize){
-        $redis     = Base_Redis::getInstance();
-        $arrResult = array();
-        $ret       = $redis->get(Specialty_Keys::getSpecialtyRecommend($specialtyId));
-        if(!empty($ret)){
-            $arrTmp =  explode(",",$ret);
-            return array_slice($arrTmp,($page-1)*$pageSize,$pageSize);
-        }
         $specialty =  $this->getSpecialtyByInfo($specialtyId);
-        $arrRet = Base_Search::RecommendTopic($specialty['title'].$specialty['content'],1,PHP_INT_MAX);
+        $arrRet = Base_Search::RecommendTopic($specialty['title'].$specialty['content'],$page,$pageSize);
         foreach ($arrRet as $val){
             $arrResult[] = $val['id'];
         }
-        $redis->setex(Specialty_Keys::getSpecialtyRecommend($specialtyId),self::REDIS_RECOMMEND_TIME,implode(",",$arrResult));
-        return array_slice($arrResult,($page-1)*$pageSize,$pageSize);;
+        return $arrResult;
     }
     
     /**

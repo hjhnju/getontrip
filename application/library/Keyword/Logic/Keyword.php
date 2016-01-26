@@ -134,8 +134,8 @@ class Keyword_Logic_Keyword extends Base_Logic{
                 $model = new GisModel();
                 $model->insertLandscape($id);
                 
-                $logicWiki = new Keyword_Logic_Keyword();
-                $logicWiki->getKeywordSource($id,Keyword_Type_Status::PUBLISHED);
+                //$logicWiki = new Keyword_Logic_Keyword();
+                //$logicWiki->getKeywordSource($id,Keyword_Type_Status::PUBLISHED);
             }elseif(isset($arrInfo['status']) && (intval($arrInfo['status']) == Keyword_Type_Status::NOTPUBLISHED)){
                 $model = new GisModel();
                 $model->delLandscape($id);

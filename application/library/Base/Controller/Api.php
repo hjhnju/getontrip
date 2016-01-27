@@ -18,8 +18,13 @@ class Base_Controller_Api extends Base_Controller_Abstract {
         }
         //统一验证token      
         $token     = isset($_REQUEST['token']) ? trim($_REQUEST['token']) : '';
-        $bCheck    = $this->checkToken($token);
-        //$bCheck    = true;
+        $type      = isset($_REQUEST['token_type'])?intval($_REQUEST['token_type']):'';
+        if(!empty($type)){
+            $csrftoken = Yaf_Session::getInstance()->get(Base_Keys::getCsrfTokenKey());
+            $bCheck    = ($csrftoken == $token)?true:false;
+        }else{
+            $bCheck    = $this->checkToken($token);
+        }
         if(!$bCheck){
             Base_Log::warn(array(
                 'msg'        => 'Csrf token invalid', 
@@ -28,7 +33,7 @@ class Base_Controller_Api extends Base_Controller_Abstract {
             @header("Content-Type: application/json; charset=UTF-8");
             $arrRtInfo = array();
             $arrRtInfo['status'] = Base_RetCode::TOKEN_INVALID;
-            $arrRtInfo['statusInfo'] = Base_RetCode::getMsg(Base_RetCode::TOKEN_INVALID);
+            //$arrRtInfo['statusInfo'] = Base_RetCode::getMsg(Base_RetCode::TOKEN_INVALID);
             $arrRtInfo['data'] = array();
             $output = json_encode($arrRtInfo);
             echo $output;

@@ -111,7 +111,7 @@ class Food_Logic_Food extends Base_Logic{
 
             $temp  = array();
             $arrFood['list'][$key]['shop'] = array();
-            $arrFoodShop = Food_Api::getShopList($page, $pageSize, array('food_id' =>$val));
+            $arrFoodShop = Food_Api::getShopList(1, PHP_INT_MAX, array('food_id' =>$val));
             foreach ($arrFoodShop['list'] as $data){
                 $temp['name']   = $data['title'];
                 if(!empty($temp)){

@@ -111,7 +111,7 @@ class Specialty_Logic_Specialty extends Base_Logic{
             
             $temp  = array();
             $arrSpecialty['list'][$key]['product'] = array();
-            $arrSpecialtyProduct = Specialty_Api::getProductList($page, $pageSize, array('specialty_id' =>$val));
+            $arrSpecialtyProduct = Specialty_Api::getProductList(1, PHP_INT_MAX, array('specialty_id' =>$val));
             foreach ($arrSpecialtyProduct['list'] as $data){
                 $temp['name']   = $data['title'];
                 if(!empty($temp)){

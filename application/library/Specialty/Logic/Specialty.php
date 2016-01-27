@@ -544,24 +544,44 @@ class Specialty_Logic_Specialty extends Base_Logic{
     }
     
     public function getRecommendTopicNum($specialtyId){
+        $redis     = Base_Redis::getInstance();
+        $ret       = $redis->hGet(Specialty_Keys::getSpecialtyTopicNum(),$specialtyId);
+        if(!empty($ret)){
+            return $ret;
+        }
         $specialty = $this->getSpecialtyByInfo($specialtyId);
-        return Base_Search::getRecommendNum($specialty['title'].$specialty['content']);
+        $ret = Base_Search::getRecommendNum($specialty['title'].$specialty['content']);
+        $redis->hSet(Specialty_Keys::getSpecialtyTopicNum(),$specialtyId,$ret);
+        $redis->expire(Specialty_Keys::getSpecialtyTopicNum(),self::REDIS_RECOMMEND_TIME);
+        return $ret;
     }
     
     public function getRecommendTopicIds($specialtyId,$page,$pageSize){
         $arrResult = array();
-        $specialty =  $this->getSpecialtyByInfo($specialtyId);
-        $count     = $this->getRecommendTopicNum($specialtyId);
-        $count    -= ($page-1)*$pageSize;
-        if($count < 0){
-            $count = 0;
-        }elseif($count > $pageSize){
-            $count = $pageSize;
-        }
-        $arrRet = Base_Search::RecommendTopic($specialty['title'].$specialty['content'],$page,$count);
-        foreach ($arrRet as $val){
-            $arrResult[] = $val['id'];
-        }
+        $redis     = Base_Redis::getInstance();
+        $ret       = $redis->hGet(Specialty_Keys::getSpecialtyTopicIds($specialtyId),$page);
+        if(!empty($ret)){
+            $tmp = explode(",",$ret);
+            foreach ($tmp as $val){
+                $arrResult[] = $val;
+            }
+        }else{
+            $specialty =  $this->getSpecialtyByInfo($specialtyId);
+            $count     = $this->getRecommendTopicNum($specialtyId);
+            $count    -= ($page-1)*$pageSize;
+            if($count < 0){
+                $count = 0;
+            }elseif($count > $pageSize){
+                $count = $pageSize;
+            }
+            $arrRet = Base_Search::RecommendTopic($specialty['title'].$specialty['content'],$page,$count);
+            foreach ($arrRet as $val){
+                $arrResult[] = $val['id'];
+            }
+            $tmp    = implode(",",$arrResult);
+            $redis->hSet(Specialty_Keys::getSpecialtyTopicIds($specialtyId),$page,$tmp);
+            $redis->expire(Specialty_Keys::getSpecialtyTopicIds($specialtyId),self::REDIS_RECOMMEND_TIME);
+        }        
         return $arrResult;
     }
     

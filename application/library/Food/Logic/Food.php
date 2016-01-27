@@ -543,25 +543,45 @@ class Food_Logic_Food extends Base_Logic{
     }
     
     public function getRecommendTopicIds($foodId,$page,$pageSize){
-        $arrResult= array();
-        $food     =  $this->getFoodByInfo($foodId);
-        $count    = $this->getRecommendTopicNum($foodId);
-        $count   -= ($page-1)*$pageSize;
-        if($count < 0){
-            $count = 0;
-        }elseif($count > $pageSize){
-            $count = $pageSize;
-        }
-        $arrRet = Base_Search::RecommendTopic($food['title'].$food['content'],$page,$count);
-        foreach ($arrRet as $val){
-            $arrResult[] = $val['id'];
-        }
+        $arrResult = array();
+        $redis     = Base_Redis::getInstance();
+        $ret       = $redis->hGet(Food_Keys::getFoodTopicIds($foodId),$page);
+        if(!empty($ret)){
+            $tmp = explode(",",$ret);
+            foreach ($tmp as $val){
+                $arrResult[] = $val;
+            }
+        }else{
+            $food     =  $this->getFoodByInfo($foodId);
+            $count    = $this->getRecommendTopicNum($foodId);
+            $count   -= ($page-1)*$pageSize;
+            if($count < 0){
+                $count = 0;
+            }elseif($count > $pageSize){
+                $count = $pageSize;
+            }
+            $arrRet = Base_Search::RecommendTopic($food['title'].$food['content'],$page,$count);
+            foreach ($arrRet as $val){
+                $arrResult[] = $val['id'];
+            }
+            $tmp    = implode(",",$arrResult);
+            $redis->hSet(Food_Keys::getFoodTopicIds($foodId),$page,$tmp);
+            $redis->setTimeout(Food_Keys::getFoodTopicIds($foodId),self::REDIS_RECOMMEND_TIME);
+        }        
         return $arrResult;
     }
     
     public function getRecommendTopicNum($foodId){
-        $food = $this->getFoodByInfo($foodId);
-        return Base_Search::getRecommendNum($food['title'].$food['content']);
+        $food  = $this->getFoodByInfo($foodId);
+        $redis = Base_Redis::getInstance();
+        $ret   = $redis->hGet(Food_Keys::getFoodTopicNum(),$foodId);
+        if(!empty($ret)){
+            return $ret;
+        }
+        $ret = Base_Search::getRecommendNum($food['title'].$food['content']);
+        $redis->hSet(Food_Keys::getFoodTopicNum(),$foodId,$ret);
+        $redis->setTimeout(Food_Keys::getFoodTopicNum(),self::REDIS_RECOMMEND_TIME);
+        return $ret;
     }
     
     /**

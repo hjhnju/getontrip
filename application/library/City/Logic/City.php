@@ -67,6 +67,7 @@ class City_Logic_City{
     }
     
     public function getCityLandscape($cityId,$x, $y, $page,$pageSize){
+        $arrInfo    = array();
         $modelGis   = new GisModel();
         $logicSight = new Sight_Logic_Sight();
         $logicCollect = new Collect_Logic_Collect();
@@ -78,10 +79,10 @@ class City_Logic_City{
             $book_num      = Book_Api::getBookNum($val['id']);
             $video_num     = Video_Api::getVideoNum($val['id']);
             $arrRet[$key]['id']          = strval($val['id']);
+            $arrRet[$key]['name']        = strval($sight['name']);
             $arrRet[$key]['image']       = Base_Image::getUrlByName($sight['image']);
             $arrRet[$key]['contentNum']  = strval($topic_num + $wiki_num + $book_num + $video_num);
             $arrRet[$key]['collectNum']  = strval($logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $val['id']));
-            
             if(!empty($x) && !empty($y)){
                 if($val['dis'] < 1000){
                     $arrRet[$key]['dis']      = strval(ceil($val['dis']));
@@ -91,13 +92,35 @@ class City_Logic_City{
                     $arrRet[$key]['dis_unit'] = "km";
                 }
             }else{
-                $arrRet[$key]['dis']   = '';
-                $arrRet[$key]['dis_unit'] = '';
+                $arrRet[$key]['dis']          = '';
+                $arrRet[$key]['dis_unit']     = '';
             }
-            $arrRet[$key]['audio'] = '';
-            $arrRet[$key]['audio_len'] = '';
+            $arrRet[$key]['content']          = '';
+            $arrRet[$key]['audio']            = '';
+            $arrRet[$key]['audio_len']        = '';
+            $objKeyword   = new Keyword_Object_Keyword();
+            $objKeyword->fetch(array('sight_id' => $val['id'],'level' => Keyword_Type_Level::SIGHT));
+            if(!empty($objKeyword->id)){
+                $arrRet[$key]['content']      = $objKeyword->content;
+                $arrRet[$key]['audio']        = $objKeyword->audio;
+                $arrRet[$key]['audio_len']    = strval($objKeyword->audioLen);
+            }
         }
-        return $arrRet;
+        $city                        = City_Api::getCityById($cityId);
+        $arrInfo['id']               = strval($cityId);
+        $arrInfo['image']            = isset($city['image'])?Base_Image::getUrlByName($city['image']):'';
+        $arrInfo['des']              = '';
+        $arrInfo['audio']            = '';
+        $arrInfo['audio_len']        = '';
+        $objKeyword   = new Keyword_Object_Keyword();
+        $objKeyword->fetch(array('sight_id' => $cityId,'level' => Keyword_Type_Level::CITY));
+        if(!empty($objKeyword->id)){
+            $arrInfo['des']          = $objKeyword->content;
+            $arrInfo['audio']        = $objKeyword->audio;
+            $arrInfo['audio_len']    = strval($objKeyword->audioLen);
+        }
+        $arrInfo['sight'] = $arrRet;
+        return $arrInfo;
     }
     
     /**

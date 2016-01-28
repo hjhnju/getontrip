@@ -317,7 +317,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
             return $objKeyword->id;
         }
         $listKeyword = new Keyword_List_Keyword();
-        $listKeyword->setFilter(array('sight_id' => $sightId,'status' => Keyword_Type_Status::PUBLISHED));
+        $listKeyword->setFilter(array('sight_id' => $sightId,'status' => Keyword_Type_Status::PUBLISHED,'level' => Keyword_Type_Level::LANDSCAPE));
         $listKeyword->setOrder("`weight` asc");
         $arrKeyword  = $listKeyword->toArray();
         if(isset($arrKeyword['list'][0])){

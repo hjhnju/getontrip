@@ -182,7 +182,7 @@ class Destination_Logic_Tag extends Base_Logic{
         $food      = Food_Api::getFoodNum($cityId,Destination_Type_Type::CITY);
         $specialty = Specialty_Api::getSpecialtyNum($cityId,Destination_Type_Type::CITY);
         if(!empty($sight_num)){
-            array_unshift($arrCommonTag,array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '导游'));
+            array_unshift($arrCommonTag,array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '景点'));
         }
         if(!empty($specialty)){
             array_unshift($arrCommonTag,array('id' => strval(self::STR_SPECIALTY),'type' => strval(self::SPECIALTY), 'name' => '特产'));

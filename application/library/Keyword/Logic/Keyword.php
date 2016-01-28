@@ -311,9 +311,8 @@ class Keyword_Logic_Keyword extends Base_Logic{
     }
     
     public function getSpecialKeywordId($sightId){
-        $sight = Sight_Api::getSightById($sightId);
         $objKeyword = new Keyword_Object_Keyword();
-        $objKeyword->fetch(array('name' => $sight['name'],'status' => Keyword_Type_Status::PUBLISHED));
+        $objKeyword->fetch(array('sight_id' => $sightId,'level'=>Keyword_Type_Level::SIGHT,'status' => Keyword_Type_Status::PUBLISHED));
         if(!empty($objKeyword->id)){
             return $objKeyword->id;
         }
@@ -340,7 +339,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
         $arrResult    = array();
         if(empty($x) || empty($y)){
             $listKeyword  = new Keyword_List_Keyword();
-            $listKeyword->setFilter(array('sight_id' => $sightId,'status' => Keyword_Type_Status::PUBLISHED));
+            $listKeyword->setFilterString("sight_id = $sightId and status =". Keyword_Type_Status::PUBLISHED." and level!=".Keyword_Type_Level::CITY);
             $listKeyword->setOrder("`weight` asc");
             $listKeyword->setPage($page);
             $listKeyword->setPagesize($pageSize);

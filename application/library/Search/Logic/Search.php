@@ -372,6 +372,9 @@ class Search_Logic_Search{
             $temp['id']    = strval($sightId);
             $temp['type']  = strval(Search_Type_Label::SIGHT);
             $temp['name']  = $arrSight['name'];
+            $city          = City_Api::getCityById($arrSight['city_id']);
+            $temp['cityid']   = strval($city['id']);
+            $temp['cityname'] = $city['name'];
             $temp['image'] = isset($arrSight['image'])?Base_Image::getUrlByName($arrSight['image']):'';
             if(!empty($x) && !empty($y)){
                 $temp['dis']   = $val['dis'];//Base_Util_Number::getEarthDist($x, $y, $arrSight['x'], $arrSight['y']);

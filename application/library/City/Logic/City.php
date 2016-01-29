@@ -118,6 +118,7 @@ class City_Logic_City{
         $objKeyword   = new Keyword_Object_Keyword();
         $objKeyword->fetch(array('sight_id' => $cityId,'level' => Keyword_Type_Level::CITY,'status' => Keyword_Type_Status::PUBLISHED));
         if(!empty($objKeyword->id)){
+            $arrInfo['landscape_id'] = strval($objKeyword->id);
             $arrInfo['des']          = $objKeyword->content;
             $arrInfo['audio']        = $objKeyword->audio;
             $arrInfo['audio_len']    = strval($objKeyword->audioLen);

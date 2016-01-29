@@ -91,13 +91,13 @@ class ApiController extends Base_Controller_Api {
      */
     public function topicAction(){
         $city      = isset($_REQUEST['city'])?trim($_REQUEST['city']):self::DEFAULT_CITY_NUM;
-        $tag       = isset($_REQUEST['tag'])?intval($_REQUEST['tag']):'';
+        $tags      = isset($_REQUEST['tags'])?intval($_REQUEST['tags']):'';
         $page      = isset($_REQUEST['page'])?intval($_REQUEST['page']):1;
         $pageSize  = isset($_REQUEST['pageSize'])?intval($_REQUEST['pageSize']):self::INDEX_TOPIC_NUM;
         if(empty($city)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
         }
-        $ret       = $this->_logicCity->getHotTopic($city,$page,$pageSize,$tag);
+        $ret       = $this->_logicCity->getHotTopic($city,$page,$pageSize,$tags);
         return $this->ajax($ret);
     }
     

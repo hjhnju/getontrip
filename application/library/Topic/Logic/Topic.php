@@ -93,6 +93,8 @@ class Topic_Logic_Topic extends Base_Logic{
             
             $arrRet[$key]['image']     = Base_Image::getUrlByName($topicDetail['image']);
             
+            $arrRet[$key]['tagid']     = strval($strTags);
+            
             $arrRet[$key]['url']       = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topicDetail['id']);
                                 
         }
@@ -134,6 +136,8 @@ class Topic_Logic_Topic extends Base_Logic{
             //$arrRet[$key]['from']    = $logicSource->getSourceName($topicDetail['from']);
             
             $arrRet[$key]['image']   = Base_Image::getUrlByName($topicDetail['image']);
+            
+            $arrRet[$key]['tagid']     = strval($strTags);
             
             $arrRet[$key]['url']       = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topicDetail['id']);
         }        

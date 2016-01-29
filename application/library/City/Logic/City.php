@@ -448,6 +448,8 @@ class City_Logic_City{
     
             $arrRet[$key]['image']  = Base_Image::getUrlByName($topicDetail['image']);
             
+            $arrRet[$key]['url']    = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topicDetail['id']);
+            
             $logicSight             = new Sight_Logic_Sight();
             $sightIds = $logicSight->getSightByTopic($val['id']);
             if(isset($sightIds['list'][0])){

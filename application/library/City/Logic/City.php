@@ -111,6 +111,7 @@ class City_Logic_City{
         }
         $city                        = City_Api::getCityById($cityId);
         $arrInfo['id']               = strval($cityId);
+        $arrInfo['name']             = strval($city['name']);
         $arrInfo['image']            = isset($city['image'])?Base_Image::getUrlByName($city['image']):'';
         $arrInfo['des']              = '';
         $arrInfo['audio']            = '';

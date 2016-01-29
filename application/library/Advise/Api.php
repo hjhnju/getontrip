@@ -31,15 +31,15 @@ class Advise_Api{
     }
     
     /**
-     * 接口3：Advise_Api::addAnswer($adviseId, $strContent)
+     * 接口3：Advise_Api::addAnswer($adviseId, $strContent,$status)
      * 对某个反馈进行处理
      * @param integer $adviseId
      * @param string  $strContent
      * @return boolean
      */
-    public static function addAnswer($adviseId, $strContent){
+    public static function addAnswer($adviseId, $strContent,$status){
         $logicAdvise = new Advise_Logic_Advise();
-        return $logicAdvise->addAnswer($adviseId, $strContent);
+        return $logicAdvise->addAnswer($adviseId, $strContent,$status);
     }
     
     /**
@@ -49,5 +49,10 @@ class Advise_Api{
      */
     public static function getAutoAnswer(){
         $logicAdvise = new Advise_Logic_Advise();
+    }
+    
+    public static function getAdviseNum($status = ''){
+        $logicAdvise = new Advise_Logic_Advise();
+        return $logicAdvise->getAdviseNum($status);
     }
 }

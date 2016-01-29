@@ -172,7 +172,7 @@ class Advise_Logic_Advise{
     /**
      * 对反馈内容进行回复
      */
-    public function addAnswer($adviseId,$strContent){
+    public function addAnswer($adviseId,$strContent,$status){
         $objAdvise = new Advise_Object_Advise();
         $objAdvise->userid  = $adviseId;
         $objAdvise->content = $strContent;
@@ -180,7 +180,7 @@ class Advise_Logic_Advise{
         $ret1 =  $objAdvise->save();
         
         $objAdvise->fetch(array('id' => $adviseId));
-        $objAdvise->status     = Advise_Type_Status::SETTLED;
+        $objAdvise->status     = $status;
         $objAdvise->updateTime = time();
         $ret2 = $objAdvise->save();
         return $ret1&&$ret2;
@@ -188,5 +188,15 @@ class Advise_Logic_Advise{
     
     public function getAutoAnswer(){
         return $this->_feedmsg;
+    }
+    
+    public function getAdviseNum($status = ''){
+        $listAdvise          = new Advise_List_Advise();
+        if(!empty($status)){
+            $listAdvise->setFilter(array('type' => Advise_Type_Type::ADVISE,'status' => $status));
+        }else{
+            $listAdvise->setFilterString("status !=". Advise_Type_Status::SETTLED." and type = ".Advise_Type_Type::ADVISE);
+        }
+        return $listAdvise->getTotal();
     }
 }

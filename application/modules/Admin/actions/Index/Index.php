@@ -34,6 +34,11 @@ class IndexAction extends Yaf_Action_Abstract {
           //查询用户总数
           $userNum = User_Api::getUsersNum(array());
           $this->getView()->assign('userNum', $userNum); 
+          
+
+          //查询用户总数
+          $adviseNum = Advise_Api::getAdviseNum();
+          $this->getView()->assign('adviseNum', $adviseNum);          
 
    }
 }

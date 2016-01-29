@@ -64,11 +64,12 @@ class AdviseapiController extends Base_Controller_Api{
         //判断是否有ID
         $id=isset($_POST['id'])?intval($_POST['id']) :0; 
         $content=isset($_POST['content'])?$_POST['content']:''; 
+        $status = isset($_POST['status'])?intval($_POST['status']):'';
         if(empty($id)){
            return $this->ajaxError(Base_RetCode::PARAM_ERROR); 
         } 
          
-        $bRet = Advise_Api::addAnswer($id, $content); 
+        $bRet = Advise_Api::addAnswer($id, $content,$status); 
 
         if($bRet){
             return $this->ajax();

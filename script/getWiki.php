@@ -1,22 +1,12 @@
 <?php
 require_once("env.inc.php");
 ini_set('memory_limit','512M');
-
-$arrItems  = array();
-$arrRet    = array();
-$arrTemp   = array();
-$hash      = '';
 require_once(APP_PATH."/application/library/Base/HtmlDom.php");
-
-$listSightMeta = new Sight_List_Meta();
-$listSightMeta->setFilter(array('city_id' =>2));
-$listSightMeta->setPagesize(PHP_INT_MAX);
-$arrSightMeta  = $listSightMeta->toArray();
-foreach ($arrSightMeta['list'] as $val){
-    if(empty($val['status'])){
-        continue;
-    }
-    $html        = @file_get_html("http://baike.baidu.com/item/".$val['name']);
+$listKeyword  = new Keyword_List_Keyword();
+$listKeyword->setPagesize(PHP_INT_MAX);
+$arrKeyword   = $listKeyword->toArray();
+foreach ($arrKeyword['list'] as $val){
+    $html        = @file_get_html($val['url']);
     if(empty($html)){
         continue;
     }
@@ -33,11 +23,11 @@ foreach ($arrSightMeta['list'] as $val){
     }else{
         $content  = strip_tags($content->innertext);
     }
-    $content = str_replace("&nbsp;", "", $content);
     if(!empty($content)){
-        $objSightMeta = new Sight_Object_Meta();
-        $objSightMeta->fetch(array('id' => $val['id']));
-        $objSightMeta->wiki = $content;
-        $objSightMeta->save();
+        $content    = Base_Util_String::delStartEmpty($content);
+        $objKeyword = new Keyword_Object_Keyword();
+        $objKeyword->fetch(array('id' => $val['id']));
+        $objKeyword->content = trim($content);
+        $objKeyword->save();
     }
 }

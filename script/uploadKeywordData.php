@@ -97,10 +97,10 @@ foreach ($match[1] as $key => $id){
         $name  = '';
         $x     = '';
         $y     = '';
-        $level = 2;
+        $level = 3;
         $audio = '';
         if(intval($data) == intval($id)){
-            $level = 1;
+            $level = 3;
         }
         if(!file_exists($directory."/$data.properties")){
             continue;
@@ -109,7 +109,7 @@ foreach ($match[1] as $key => $id){
         foreach ($arrProperty as $property){
             $tmp = explode("=",$property);
             if(strstr($property,"scenicName")){
-                $name = $tmp[1];
+                $name = trim($tmp[1]);
             }elseif(strstr($property,"lng")){
                 $x    = $tmp[1];
             }elseif(strstr($property,"lat")){
@@ -127,14 +127,11 @@ foreach ($match[1] as $key => $id){
         $objKeyword = new Keyword_Object_Keyword();
         $objKeyword->fetch(array('sight_id' =>$arrInfo['sight_id'],'name' => $name));
         if(!empty($objKeyword->id)){
-            if(file_exists($directory."/$data.mp3")){
-                if(strstr($objKeyword->audio,"mp3") == false){
-                    $logicKeyword->delPic($objKeyword->audio);
+                if(empty($objKeyword->audio)){
                     $objKeyword->audio    = $logicKeyword->upAudioData($directory."/$data.mp3");
                     $objKeyword->audioLen = Base_Audio::getInstance()->getLen($directory."/$data.mp3");
                     $objKeyword->save();
-                }               
-            }
+                } 
             continue;
         }
         if(file_exists($directory."/$data.mp3")){

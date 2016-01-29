@@ -103,6 +103,23 @@ $(document).ready(function() {
          * 绑定事件
          *  
          */
+        
+        
+        function fnFormatDetails(oTable, nTr) {
+            var aData = oTable.fnGetData(nTr).answer;
+            var sOut = '<table cellpadding="5" cellspacing="0" border="0" width="100%">';
+            sOut += '<tr><th></th><th>ID</th><th>回复内容</th><th>处理人ID</th><th>处理时间</th></tr>';
+            for (var i = 0; i < aData.length; i++) {
+                sOut += '<tr><td style="width:29px;"></td>';
+                sOut += '<td  style="width:50px;">' + aData[i].id + '</td>';
+                sOut += '<td>' + aData[i].content + '</td>';
+                sOut += '<td style="width:70px;"><a href="#?id=' + aData[i].create_user + '" title="' + aData[i].create_user + '">' + aData[i].create_user.toString().subString(10) + '</a>';
+                sOut += '<td style="width:70px;">' + moment.unix(aData[i].create_time).format(FORMATER) + '</td>';
+                sOut += '</tr>';
+            };
+            sOut += '</table>';
+            return sOut;
+        }
 
         var bindEvents = {
             init: function() {
@@ -114,6 +131,8 @@ $(document).ready(function() {
 
                 //状态下拉列表 
                 $('#form-status').selectpicker();
+                
+                $('#form-status-add').selectpicker();
 
                 //类型下拉列表 
                 $('#form-type').selectpicker();
@@ -130,7 +149,7 @@ $(document).ready(function() {
                     } else {
                         /* Open this row */
                         img.attr('class', 'fa fa-minus');
-                        oTable.fnOpen(nTr, this.fnFormatDetails(oTable, nTr), 'details answer-details');
+                        oTable.fnOpen(nTr, fnFormatDetails(oTable, nTr), 'details answer-details');
                         //工具提示框
                         $('[data-toggle="tooltip"]').tooltip();
                     }
@@ -156,7 +175,8 @@ $(document).ready(function() {
                     var addAnswer = new Remoter('/admin/Adviseapi/addAnswer');
                     addAnswer.remote({
                         id: $('#user-id').val(),
-                        content: $.trim($('#content').val())
+                        content: $.trim($('#content').val()),
+                        status: $('#form-status-add').val(),
                     });
                     addAnswer.on('success', function(data) {
                         //刷新当前页
@@ -165,21 +185,6 @@ $(document).ready(function() {
                         $('#myModal').modal('hide');
                     });
                 });
-            },
-            fnFormatDetails: function(oTable, nTr) {
-                var aData = oTable.fnGetData(nTr).answer;
-                var sOut = '<table cellpadding="5" cellspacing="0" border="0" width="100%">';
-                sOut += '<tr><th></th><th>ID</th><th>回复内容</th><th>处理人ID</th><th>处理时间</th></tr>';
-                for (var i = 0; i < aData.length; i++) {
-                    sOut += '<tr><td style="width:29px;"></td>';
-                    sOut += '<td  style="width:50px;">' + aData[i].id + '</td>';
-                    sOut += '<td>' + aData[i].content + '</td>';
-                    sOut += '<td style="width:70px;"><a href="#?id=' + aData[i].create_user + '" title="' + aData[i].create_user + '">' + aData[i].create_user.toString().subString(10) + '</a>';
-                    sOut += '<td style="width:70px;">' + moment.unix(aData[i].create_time).format(FORMATER) + '</td>';
-                    sOut += '</tr>';
-                };
-                sOut += '</table>';
-                return sOut;
             }
         }
 

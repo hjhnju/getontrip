@@ -103,9 +103,9 @@ class City_Logic_City{
             $objKeyword->fetch(array('sight_id' => $val['id'],'level' => Keyword_Type_Level::SIGHT));
             //$objKeyword->fetch(array('sight_id' => $val['id'],'name' => $sight['name']));
             if(!empty($objKeyword->id)){
-                $arrRet[$key]['landscape_id']  = strval($objKeyword->id);
+                $arrRet[$key]['landscape_id'] = strval($objKeyword->id);
                 $arrRet[$key]['content']      = strval($objKeyword->content);
-                $arrRet[$key]['audio']        = strval($objKeyword->audio);
+                $arrRet[$key]['audio']        = empty($objKeyword->audio)?'':"/audio/".trim($objKeyword->audio);
                 $arrRet[$key]['audio_len']    = strval($objKeyword->audioLen);
             }
         }
@@ -121,7 +121,7 @@ class City_Logic_City{
         if(!empty($objKeyword->id)){
             $arrInfo['landscape_id'] = strval($objKeyword->id);
             $arrInfo['des']          = strval($objKeyword->content);
-            $arrInfo['audio']        = strval($objKeyword->audio);
+            $arrInfo['audio']        = empty($objKeyword->audio)?'':"/audio/".trim($objKeyword->audio);
             $arrInfo['audio_len']    = strval($objKeyword->audioLen);
         }
         $arrInfo['sight'] = $arrRet;

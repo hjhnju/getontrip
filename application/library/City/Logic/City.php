@@ -442,6 +442,10 @@ class City_Logic_City{
             //$arrRet[$key]['desc']      = trim($topicDetail['desc']);
             //话题访问人数
             $arrRet[$key]['visit']     = strval($logicTopic->getTotalTopicVistUv($val['id']));
+            
+            //话题点赞数
+            $logicPraise               = new Praise_Logic_Praise();
+            $arrRet[$key]['praise']    = $logicPraise->getPraiseNum($val['id']);
     
             //话题收藏数
             //$logicCollect            = new Collect_Logic_Collect();

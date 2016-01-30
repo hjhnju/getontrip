@@ -119,6 +119,7 @@ class City_Logic_City{
         $arrInfo['audio']            = '';
         $arrInfo['audio_len']        = '';
         $arrInfo['url']              = '';
+        $arrInfo['isfav']            = strval($logicCollect->checkCollect(Collect_Type::CITY, $cityId));
         $objKeyword   = new Keyword_Object_Keyword();
         $objKeyword->fetch(array('sight_id' => $cityId,'level' => Keyword_Type_Level::CITY,'status' => Keyword_Type_Status::PUBLISHED));
         if(!empty($objKeyword->id)){

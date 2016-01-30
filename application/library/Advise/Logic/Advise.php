@@ -195,7 +195,7 @@ class Advise_Logic_Advise{
         if(!empty($status)){
             $listAdvise->setFilter(array('type' => Advise_Type_Type::ADVISE,'status' => $status));
         }else{
-            $listAdvise->setFilterString("status !=". Advise_Type_Status::SETTLED." and type = ".Advise_Type_Type::ADVISE);
+            $listAdvise->setFilterString("status !=". Advise_Type_Status::SETTLED." and status !=".Advise_Type_Status::DROP." and type = ".Advise_Type_Type::ADVISE);
         }
         return $listAdvise->getTotal();
     }

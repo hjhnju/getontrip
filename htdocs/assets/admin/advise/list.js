@@ -168,10 +168,10 @@ $(document).ready(function() {
 
                 //对某个反馈进行处理
                 $('#answerForm #addAnswer').click(function(event) {
-                    if (!$('#content').val()) {
+                    /*if (!$('#content').val()) {
                         toastr.warning('回复内容不能为空！');
                         return;
-                    }
+                    }*/
                     var addAnswer = new Remoter('/admin/Adviseapi/addAnswer');
                     addAnswer.remote({
                         id: $('#user-id').val(),

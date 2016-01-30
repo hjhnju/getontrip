@@ -16,12 +16,25 @@ class DetailController extends Base_Controller_Page {
      *  详情
      */
     public function indexAction() {    
-        $request = $this->getRequest();
-        $param   = $request->getParams();
+       $request = $this->getRequest();
+       $param   = $request->getParams();
        $postid   = isset($param['id'])? trim($param['id']) : intval($_REQUEST['id']);
        $deviceId   = isset($_REQUEST['deviceId'])?trim($_REQUEST['deviceId']):'';
        $sightId   = isset($_REQUEST['sightId'])?trim($_REQUEST['sightId']):''; 
        
+       $tagId   = isset($_REQUEST['tagId'])?trim($_REQUEST['tagId']):'';  
+       $sd   = isset($_REQUEST['sd'])?trim($_REQUEST['sd']):''; 
+       $cd   = isset($_REQUEST['cd'])?trim($_REQUEST['cd']):'';  
+       //根据标签id获取标签名称 
+       if (!empty($tagId)&&(!empty($sd)||!empty($cd))) {
+          $tag = Tag_Api::getTagById($tagId);
+          $href = empty($sd)?'/m/city?id='.$cd:'/m/sight?id='.$sd;
+          $this->getView()->assign('tagName', $tag['name']); 
+          $this->getView()->assign('href',  $href.'&tagId='.$tagId);
+       }
+      
+
+
        if(empty($postid)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
        }
@@ -68,7 +81,8 @@ class DetailController extends Base_Controller_Page {
                $postInfo['content'] = $spider->getContentToDis();
            }
 
-           $this->getView()->assign('post', $postInfo); 
+           $this->getView()->assign('post', $postInfo);
+           $this->getView()->assign('title', $postInfo['title']);  
        } 
        
        //判断是否来自移动端
@@ -77,6 +91,7 @@ class DetailController extends Base_Controller_Page {
        $isapp = isset($_REQUEST['isapp'])?$_REQUEST['isapp'] : 0; 
        $this->getView()->assign('isMobile', $isMobile); 
        $this->getView()->assign('isapp', $isapp); 
+
        //$this->getView()->assign('isfromApp', $isapp); 
 
        

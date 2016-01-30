@@ -21,6 +21,16 @@ class DetailController extends Base_Controller_Page {
        if(empty($postid)){
             return $this->ajaxError(Base_RetCode::PARAM_ERROR,Base_RetCode::getMsg(Base_RetCode::PARAM_ERROR));
        }
+
+       $tagId   = isset($_REQUEST['tagId'])?trim($_REQUEST['tagId']):'';  
+       $sd   = isset($_REQUEST['sd'])?trim($_REQUEST['sd']):''; 
+       $cd   = isset($_REQUEST['cd'])?trim($_REQUEST['cd']):''; 
+        
+       //根据标签id获取标签名称 
+       if (!empty($tagId)&&(!empty($sd)||!empty($cd))) { 
+          $href = empty($sd)?'/m/city?id='.$cd:'/m/sight?id='.$sd; 
+          $this->getView()->assign('href',  $href.'&tagId=book');
+       }
          
         
        $logic    = new Book_Logic_Book();

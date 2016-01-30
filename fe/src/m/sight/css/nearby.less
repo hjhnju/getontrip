@@ -29,6 +29,22 @@
         background-repeat: no-repeat;
         background-position: center center;
         position: relative;
+        .city {
+            display: block;
+            position: absolute;
+            top: 10px;
+            right: 0px;
+            padding: 10px 0px 20px 20px;
+            z-index: 3;
+            span {
+                display: block;
+                background-color: #2a2d2e;
+                color: #f3fd54;
+                padding: 0px 8px;
+                line-height: 21px;
+                font-size: 12px;
+            }
+        }
         .error-text {
             color: #333;
             text-align: center;
@@ -46,8 +62,12 @@
             background-repeat: no-repeat;
         }
         .sight_link {
-            width: 100%;
-            height: 100%;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 2;
             display: block;
             cursor: pointer;
             color: #fff;
@@ -85,7 +105,7 @@
             bottom: 5px;
             .display(flex);
             .number {
-                font-size: 15px;
+                font-size: 13px;
                 line-height: 20px;
                 display: block;
             }
@@ -110,6 +130,9 @@
                     background-size: contain;
                     .flex(1);
                     max-width: 13px;
+                }
+                .text {
+                    margin-left: 2px;
                 }
             }
             .like {

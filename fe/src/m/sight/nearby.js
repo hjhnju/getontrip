@@ -7,8 +7,8 @@
 
  define(function(require) {
      var $ = require('jquery');
-     var common = require('common/mcommon'); 
-    // var moment = require('moment');
+     var common = require('common/mcommon');
+     // var moment = require('moment');
      var etpl = require('etpl');
      var tpl = require('./list.tpl');
 
@@ -38,6 +38,7 @@
          init: function() {
              this.initMap();
              this.inintScroll();
+             this.initClick();
          },
          initMap: function() {
              //加载地图，调用浏览器定位服务
@@ -61,14 +62,14 @@
          onComplete: function(data) {
              //解析定位结果 
              params = {
-                 page: currentPage,
-                 pageSize: 15,
-                 x: data.position.getLng(),
-                 y: data.position.getLat()
-             }
-             //保存cookies
-           /*  common.COOKIES.setCookie("x", params.x, "d1");
-             common.COOKIES.setCookie("y", params.y, "d1");*/
+                     page: currentPage,
+                     pageSize: 15,
+                     x: data.position.getLng(),
+                     y: data.position.getLat()
+                 }
+                 //保存cookies
+                 /*  common.COOKIES.setCookie("x", params.x, "d1");
+                   common.COOKIES.setCookie("y", params.y, "d1");*/
              getRemoteList.getNearByList(params);
          },
          onError: function(data) {
@@ -105,6 +106,9 @@
              //下拉加载最新数据
              getRemoteList.getNearByList(params);
              myScroll.refresh();
+         },
+         initClick: function() {
+             
          }
 
 
@@ -168,9 +172,9 @@
      var renderHTML = function(tpl, data) {
          // 格式化数据
          for (var i = 0, l = data.length; i < l; i++) {
-             data[i].contentNum =  data[i].param1.replace(/[^0-9]/ig,"");
-             data[i].comment =  data[i].param2.replace(/[^0-9]/ig,"");
-             data[i].collect =  data[i].param3.replace(/[^0-9]/ig,"");
+             data[i].contentNum = data[i].param1.replace(/[^0-9]/ig, "");
+             data[i].comment = data[i].param2.replace(/[^0-9]/ig, "");
+             data[i].collect = data[i].param3.replace(/[^0-9]/ig, "");
          }
 
          if (currentPage == 1) {

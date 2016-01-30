@@ -1,0 +1,65 @@
+{%extends file="../../../views/common/page.phtml"%}
+{%block name="link"%} 
+<link rel="stylesheet" type="text/css" href="{%$feroot%}/m/sight/css/index.css" /> 
+ <style type="text/css" media="screen">
+#pullDown .pullDownIcon{
+    display:block;
+}
+#pullDown .pullDownLabel{
+    display:none;
+}
+ </style>
+
+  
+{%/block%} 
+{%block name="content"%}
+<!-- <div class="container"> </div> -->
+ <div id="nav">
+  <div class="scroller">
+    <ul>
+
+   {%foreach $tags as $key=>$item%}
+     <li data-id="{%$item.id%}" data-type="{%$item.type%}" class="{%if $tagId == $item.id%}selected{%/if%}">
+      {%$item.name%}
+    </li> 
+   {%/foreach%}
+       
+    </ul>
+  </div>
+</div> 
+
+
+<div class="container" id="wrapper" cityId="{%$city.id%}" tagId="{%$tagId%}">
+  <div id="scroller" class="scroller">
+    <div class="hidden" id="pullDown">
+       <span class="pullDownIcon"></span>
+       <span class="pullDownLabel"></span>
+    </div>
+    <div id="list_box" class="clearfix"> 
+      {%foreach $tags as $key=>$item%}
+      <ul class="list clearfix list_{%$item.id%}" id="list_{%$item.id%}" currentPage="1" tagId="{%$item.id%}">  
+         <!-- <div class="tuzhi-loading">&nbsp;</div>  --> 
+      </ul>
+      {%/foreach%} 
+    </div>
+     
+    <div class="color_hide" id="pullUp">
+        <span class="pullUpIcon"></span><span class="pullUpLabel"></span>
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+{%/block%}
+{%block name="script"%}
+<script src="http://webapi.amap.com/maps?v=1.3&key=f102b992de0917e82f23af99e4a69a5e" type="text/javascript" ></script> 
+<script>
+ 
+    require(['m/city/index'], function (main) {
+        main.init();
+    }); 
+</script>
+{%/block%}

@@ -72,9 +72,11 @@
 
                  switch (type) {
                      case 'topic':
+                         params.version = '1.1';
                          getTopicList.remote(param);
                          break;
                      case 'product':
+                         params.version = '1.1';
                          getProductList.remote(param);
                          break;
                  }

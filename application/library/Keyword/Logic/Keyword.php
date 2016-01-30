@@ -361,7 +361,7 @@ class Keyword_Logic_Keyword extends Base_Logic{
                 //$arrRet = array_slice($arrRet,0,$pageSize);
             } 
         }
-
+        $sight = Sight_Api::getSightById($sightId);
         foreach ($arrRet as $key => $val){
             $keyword    = $this->getKeywordByInfo($val['id']);
             $tmpKeyword = array();
@@ -386,7 +386,15 @@ class Keyword_Logic_Keyword extends Base_Logic{
                 $tmpKeyword['dis']          = '';
                 $tmpKeyword['dis_unit']     = '';
             }     
-            $tmpKeyword['image']   = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
+            if($key == 0){
+                if(!empty($sight['image'])){
+                    $tmpKeyword['image']   = Base_Image::getUrlByName($sight['image']);
+                }else{
+                    $tmpKeyword['image']   = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
+                }
+            }else{
+                $tmpKeyword['image']   = isset($keyword['image'])?Base_Image::getUrlByName($keyword['image']):'';
+            }
             $arrResult[]           = $tmpKeyword;
         }
         return $arrResult;

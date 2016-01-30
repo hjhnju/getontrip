@@ -29,8 +29,11 @@ define(function(require) {
             e.preventDefault();
         }, false);
         var pullDownEl = document.getElementById('pullDown');
+        //var pullDownEl = element.find('pullDown')[0];
         var pullDownOffset = pullDownEl.offsetHeight;
-        var pullUpEl = document.getElementById('pullUp');
+       var pullUpEl = document.getElementById('pullUp');
+        //var pullUpEl = element.find('pullUp')[0];
+
         var pullUpOffset = pullUpEl.offsetHeight;
         myScroll.on('scroll', function() {
             if (this.y > 5 && !pullDownEl.className.match('flip')) {
@@ -43,7 +46,7 @@ define(function(require) {
                 this.minScrollY = -pullDownOffset;
             } else if (this.y < (this.maxScrollY - 5) && !pullUpEl.className.match('flip')) {
                 pullUpEl.className = 'flip';
-                pullUpEl.querySelector('.pullUpLabel').innerHTML = '释放后加载最新';
+                pullUpEl.querySelector('.pullUpLabel').innerHTML = '释放后加载更多';
                 this.maxScrollY = this.maxScrollY;
             } else if (this.y > (this.maxScrollY + 5) && pullUpEl.className.match('flip')) {
                 pullUpEl.className = '';
@@ -67,8 +70,8 @@ define(function(require) {
                 pullDownEl.className = 'hidden';
                 pullDownEl.querySelector('.pullDownLabel').innerHTML = "下拉加载更多";
             } else if (pullUpEl.className.match('loading')) {
-                pullUpEl.className = 'hidden';
-                pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多';
+                pullUpEl.className = 'color_hide';
+                pullUpEl.querySelector('.pullUpLabel').innerHTML = '';
             }
         });
     }
@@ -94,13 +97,16 @@ define(function(require) {
                 $('#nav ul li').width(boxWidth/size-10);
                 //$('#nav ul').addClass('display_flex');
             }
+             $('#scroller').width(boxWidth*size);
             navScroll = new IScroll('#nav', {
                 scrollX: true,
                 scrollY: false,
                 bindToWrapper: true,
                 mouseWheel: true
-            });
-            navScroll.scrollToElement(document.querySelector('#nav li.selected'));
+            }); 
+            navScroll.scrollToElement(document.querySelector('#nav li.selected'),'auto',true,false);
+
+            return navScroll;
         },
         hideAddressBar: function() {
             var win = window;
@@ -199,8 +205,7 @@ define(function(require) {
             document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
         },
 
-        getsec: function(str) {
-            alert(str);
+        getsec: function(str) { 
             var str1 = str.substring(1, str.length) * 1;
             var str2 = str.substring(0, 1);
             if (str2 == "s") {

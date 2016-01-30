@@ -13,11 +13,22 @@
 </header>
 
 <div class="container"> 
-   <div class="title-box" style="background-image: url({%$post.image%})"></div>
+   <div class="title-box" style="background-image: url({%$post.image%})">
+     {%if empty($href) eq 0 and $isMobile%} 
+         <div class="back_mask"></div>
+         <div class="back clearfix {%if $isMobile%}ismobile{%/if%}"> 
+            <a href="{%$href%}" class="link">
+              <span class="icon"></span>
+                <span class="text">美食</span>
+            </a> 
+         </div>
+       {%/if%} 
+   </div>
    <div class="food_content">{%$post.content%}</div>
  
 </div>
 <div class="container" >
+   {%if empty($post.shops)==0%}
     <div class="tip-box">
       推荐名店 
       <div class="page-box" type="shop" total="{%ceil(($post.shopNum)/$pageSize)%}" current="1" postid="{%$post.id%}" pageSize="{%$pageSize%}"> 
@@ -46,13 +57,15 @@
                  <span class="price">人均:&nbsp;{%$item.price%}元</span>
               </div>
               <div class="icon-box">
-                 <span class="address">地址:{%$item.title%}</span>
+                 <span class="address">地址:{%$item.addr%}</span>
               </div> 
             </div>  
           </a> 
         </li>
         {%/foreach%}
     </ul>
+    {%/if%}
+    {%if empty($post.topics)==0%}
     <div class="tip-box">
       相关话题
       <div class="page-box" type="topic" total="{%ceil(($post.topicNum)/$pageSize)%}" current="1" postid="{%$post.id%}" pageSize="{%$pageSize%}"> 
@@ -86,6 +99,7 @@
         </li>
         {%/foreach%}
     </ul>
+    {%/if%}
 </div>
 </div>
 

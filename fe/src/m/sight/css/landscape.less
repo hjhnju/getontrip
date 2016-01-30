@@ -49,27 +49,30 @@
 .jp-current-time {
     line-height: 40px;
     font-size: 12px;
-    .flex(1); 
+    .flex(1);
     max-width: 40px;
     min-width: 40px;
     float: none;
+    text-align: left;
 }
 
 .jp-duration {
     line-height: 40px;
-    font-size: 12px; 
+    font-size: 12px;
 }
 
 .jp-duration-time {
     line-height: 40px;
     font-size: 12px;
-    color: #1c1c1c; 
+    color: #1c1c1c;
     max-width: 40px;
     min-width: 40px;
     float: none;
+    text-align: right;
     .flex(1);
 }
-.jp-progress{
+
+.jp-progress {
     .flex(1);
 }
 
@@ -98,12 +101,29 @@
     background-color: #ffffff;
 }
 
-.img_bg {
+.img_box {
     height: 100%;
     width: 100%;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
+     
+    .img_bg {
+        .blur(18px);
+        position: absolute;
+        background-color: rgba(81, 81, 81, 0.9);
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+        left: 0;
+        right: 0;
+        opacity: .7;
+        z-index: 1;
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+    }
     .img_mask {
         background-color: rgba(81, 81, 81, 0.9);
         position: absolute;
@@ -124,7 +144,7 @@
         line-height: 28px;
         letter-spacing: 1.28px;
         text-align: justify;
-        padding: 28px 26px 66px; 
+        padding: 45px 26px 66px;
         height: 560px;
         overflow: hidden;
     }

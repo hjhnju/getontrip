@@ -1,0 +1,86 @@
+@import "../../../common/css/mcommon.less";
+.height100 {
+    height: 100%;
+}
+
+.width100 {
+    width: 100%;
+}
+
+#main-wraper {
+    padding-bottom: 100pt;
+}
+
+.mapBox {
+    width: 100%;
+    height: 100%;
+    .icon {
+        background: url(http://lbs.amap.com/console/public/show/marker.png) no-repeat;
+    }
+    .icon-cir {
+        height: 31px;
+        width: 28px;
+        .flex(1);
+        max-width: 28px;
+    }
+    .icon-cir-red {
+        background-position: -11px -5px;
+    }
+    .icon-name {
+        font-size: 16px;
+        padding: 2px 5px;
+        background-color: #fff;
+        border-radius: 5px;
+        .flex(1);
+        white-space: nowrap;
+    }
+    .voice {
+        position: absolute;
+        background-color: blue;
+        width: 20pt;
+        height: 20pt;
+        right: -20pt;
+    }
+}
+
+.amap-marker-content {
+    .display(flex);
+}
+
+#jPlayerBox {
+    height: 100pt;
+    width: 100%;
+    position: fixed;
+    bottom: 0pt;
+}
+
+#jp_container_1 {
+    height: 140pt;
+    width: 100%;
+    position: fixed;
+    bottom: 0pt;
+    z-index: 9000;
+}
+ #jp_container_1 {
+    height: 140pt;
+
+    z-index: 9000;
+  }
+  .jp-progress-box{
+    display: flex;
+  }
+  .jp-controls {
+    display: flex;
+    width: 100%;
+  }
+  .jp-type-playlist .jp-previous{
+    flex: 1;
+    max-width: 23pt;
+  }
+  .jp-type-playlist .jp-next{
+    flex: 1;
+    max-width: 23pt;
+  }
+  .jp-type-playlist .jp-play{
+    flex: 1;
+  }

@@ -12,7 +12,19 @@ define(function (require) {
     var $ = require('jquery');
     var global = require('common/global');
     var XEmitter = require('./XEmitter');
-
+    
+    /**
+     * 获取url
+     * @param  {[type]} optUrl [description]
+     * @return {[type]}        [description]
+     */
+    function getUrl(optUrl,version) {
+        if (!version) {
+            return config.URL['ROOT']+config.URL[optUrl];
+        }
+        return config.URL['ROOT']+'/api/'+version+config.URL[optUrl];
+        
+    }
     /**
      * Remoter构造器
      * @param {string} urlName 请求地址
@@ -32,7 +44,8 @@ define(function (require) {
      * @type {Object}
      */
     Remoter.hooks = {
-        token: global.get('token')
+        token: global.get('token'),
+        token_type:1
     };
 
     /**
@@ -60,7 +73,8 @@ define(function (require) {
             data = $.extend({}, Remoter.hooks, data);
 
             return $.ajax({
-                url: config.URL[me.opt.url],
+                //url: config.URL[me.opt.url],
+                url:getUrl(me.opt.url,data.version),
                 type: method || 'post',
                 async: true,
                 data: method === 'get' ? $.param(data) : data,

@@ -69,9 +69,11 @@ class SightController extends Base_Controller_Page {
     /**
      *  语音导游列表页面
     */
-    public function guideAction() {   
+    public function guideAction() {  
         
         $sight_id   = isset($_REQUEST['id'])?intval($_REQUEST['id']):0; 
+
+        $this->redirect('/m/sight?id='.$sight_id);die;
         $tagId   = 'landscape';  
         $sightInfo = Sight_Api::getSightById($sight_id); 
         

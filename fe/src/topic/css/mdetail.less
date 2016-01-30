@@ -78,7 +78,7 @@
             padding: 0pt 3pt;
             width: auto;
             background-color: #696969;
-            opacity: 0.8; 
+            opacity: 0.8;
             .border-radius(3pt);
             border: 0.5px solid #fff;
             font-size: 8pt;
@@ -98,7 +98,9 @@
     width: 100%;
     float: none;
     line-height: 30px;
+    padding-bottom: 62px;
     font-weight: lighter;
+    word-break: break-word;
     img {
         width: 100%;
         height: 200px;
@@ -210,12 +212,87 @@
     }
 }
 
+.img-mask_book {
+    position: absolute;
+    -webkit-backface-visibility: hidden;
+    -webkit-filter: blur(12px);
+    -moz-filter: blur(12px);
+    -ms-filter: blur(12px);
+    filter: blur(12px);
+    filter: "progid:DXImageTransform.Microsoft.Blur(PixelRadius=12, MakeShadow=false)";
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.img_book {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.main-content_book {
+    z-index: 3;
+    background-color: #fff;
+    position: absolute;
+    .title-box {
+        margin: 14pt 13pt 0;
+        border-bottom: 1px solid rgba(151, 151, 151, 0.3);
+        padding-bottom: 10pt;
+        .title {
+            font-size: 24px;
+            color: #1c1c1c;
+            font-weight: normal;
+            text-align: left;
+            line-height: 33px;
+        }
+        .title-detail {
+            display: block;
+            font-size: 12px;
+            color: #1c1c1c;
+            line-height: 17px;
+            word-break: break-all;
+            margin-top: 5px;
+        }
+    }
+}
+
 //header
 .header-for-mobile {
     height: 62px;
     overflow: hidden;
     line-height: 1;
     background: #fff;
+}
+
+.fixed {
+    position: fixed;
+    bottom: 0;
+    z-index: 1000;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-top: 0.5px solid #d2d2d2;
+    z-index: 300;
+}
+
+.fixed_blur {
+    height: 62px;
+    overflow: hidden;
+    background: #fff;
+    -webkit-filter: blur(10px);
+    -moz-filter: blur(10px);
+    -ms-filter: blur(10px);
+    filter: blur(10px);
+    filter: "progid:DXImageTransform.Microsoft.Blur(PixelRadius=10, MakeShadow=false)";
+    z-index: 200;
 }
 
 .header-for-mobile-btn {

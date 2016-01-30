@@ -9,6 +9,7 @@ class SightController extends Base_Controller_Page {
    
     public function init() {
         $this->setNeedLogin(false);
+
         parent::init();
     }
     
@@ -18,6 +19,31 @@ class SightController extends Base_Controller_Page {
     public function nearbyAction(){
  
       $this->getView()->assign('title', '附近景点'); 
+    }
+
+   /**
+     *  景点详情页面
+    */
+    public function indexAction() {   
+        
+        $sight_id   = isset($_REQUEST['id'])?intval($_REQUEST['id']):0;
+
+        $sightInfo = Sight_Api::getSightById($sight_id); 
+
+        //当前景点下的所有标签
+        $logic      = new Sight_Logic_Tag();
+        $tags   = $logic->getTagsBySight($sight_id,'1.1');
+        $tagId   = !empty($_REQUEST['tagId'])?$_REQUEST['tagId']:$tags[0]['id'];
+        //$tagId = empty($_COOKIE['tagId'])?$tagId:$_COOKIE['tagId']; 
+         
+        
+        //$tagId   = 'landscape';
+       // $tagId   = $tags[0]['id']; 
+         
+        $this->getView()->assign('title', $sightInfo['name']); 
+        $this->getView()->assign('sight', $sightInfo); 
+        $this->getView()->assign('tagId', $tagId);   
+        $this->getView()->assign('tags', $tags);    
     }
     
      /**
@@ -126,12 +152,28 @@ class SightController extends Base_Controller_Page {
     */
     public function landscapeAction() {   
 
-        $id   = isset($_REQUEST['id'])?intval($_REQUEST['id']):0; 
-        $landscape = Keyword_Api::queryById($id); 
-       
-         
-        $this->getView()->assign('landscape', $landscape); 
-        $this->getView()->assign('title', $landscape['name']); 
+        $id   = isset($_REQUEST['id'])?intval($_REQUEST['id']):'';
+        $sightId   = isset($_REQUEST['sightId'])?intval($_REQUEST['sightId']):''; 
+        if (!empty($id)) {
+             $post = Keyword_Api::queryById($id);  
+        }elseif(!empty($sightId)){
+             $post = Sight_Api::getSightById($sightId); 
+             $post['content'] = $post['describe'];
+        }
+
+        $tagId   = isset($_REQUEST['tagId'])?trim($_REQUEST['tagId']):'';  
+        $sd   = isset($_REQUEST['sd'])?trim($_REQUEST['sd']):''; 
+        $cd   = isset($_REQUEST['cd'])?trim($_REQUEST['cd']):'';   
+        //根据标签id获取标签名称 
+        if (!empty($tagId)&&(!empty($sd)||!empty($cd))) { 
+          $href = empty($sd)?'/m/city?id='.$cd:'/m/sight?id='.$sd;
+          $tagName = empty($sd)?'景点':'景观';
+          $this->getView()->assign('tagName', $tagName); 
+          $this->getView()->assign('href',  $href.'&tagId='.$tagId);
+        }  
+ 
+        $this->getView()->assign('post', $post); 
+        $this->getView()->assign('title', $post['name']); 
     }
 
     /**
@@ -145,6 +187,16 @@ class SightController extends Base_Controller_Page {
         $pageSize = 4;
         $logicFood    = new Food_Logic_Food();
         $food         = $logicFood->getFoodInfo($id, 1, $pageSize);
+
+
+        $tagId   = isset($_REQUEST['tagId'])?trim($_REQUEST['tagId']):'';  
+        $sd   = isset($_REQUEST['sd'])?trim($_REQUEST['sd']):''; 
+        $cd   = isset($_REQUEST['cd'])?trim($_REQUEST['cd']):'';   
+        //根据标签id获取标签名称 
+        if (!empty($tagId)&&(!empty($sd)||!empty($cd))) { 
+          $href = empty($sd)?'/m/city?id='.$cd:'/m/sight?id='.$sd; 
+          $this->getView()->assign('href',  $href.'&tagId='.$tagId);
+        } 
 
         //遍历
         for ($i=0; $i < count($food['shops']) ; $i++) { 
@@ -180,6 +232,16 @@ class SightController extends Base_Controller_Page {
         $pageSize = 4;
         $logicSpecialty    = new Specialty_Logic_Specialty();
         $specialty          = $logicSpecialty->getSpecialtyInfo($id, 1, $pageSize); 
+        
+        //返回功能
+        $tagId   = isset($_REQUEST['tagId'])?trim($_REQUEST['tagId']):'';  
+        $sd   = isset($_REQUEST['sd'])?trim($_REQUEST['sd']):''; 
+        $cd   = isset($_REQUEST['cd'])?trim($_REQUEST['cd']):'';   
+        //根据标签id获取标签名称 
+        if (!empty($tagId)&&(!empty($sd)||!empty($cd))) { 
+          $href = empty($sd)?'/m/city?id='.$cd:'/m/sight?id='.$sd; 
+          $this->getView()->assign('href',  $href.'&tagId='.$tagId);
+        } 
         
         $this->getView()->assign('title', $specialty['title']); 
         $this->getView()->assign('post', $specialty); 

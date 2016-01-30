@@ -1,0 +1,154 @@
+@import "../../common/css/mcommon.less";
+.container {
+    min-width: 320px;
+}
+
+.h_tab_scroll {
+    overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    -webkit-transform: translateZ(0);
+    li {
+        display: inline-block;
+        padding: 0pt 10pt;
+    }
+}
+
+.h_tab_scroll::-webkit-scrollbar {
+    display: none;
+    opacity: 0;
+}
+
+.lincoapp-nav {
+    height: auto;
+    display: block;
+    padding: 0;
+    position: relative;
+    overflow: visible;
+    .nav {
+        width: 100%;
+        display: block;
+        overflow: hidden;
+        height: 28pt;
+        line-height: 28pt;
+        padding-left: .6rem;
+        -webkit-box-pack: initial;
+        position: relative;
+        z-index: 100;
+        background: #292d2e;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .scroll {
+        height: 28pt;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    ul {
+        display: -webkit-box;
+    }
+    ul::-webkit-scrollbar {
+        display: none;
+        opacity: 0;
+    }
+    li {
+        a {
+            display: inherit;
+            color: #fff;
+            font-size: 14px;
+            line-height: 28pt;
+        }
+        &:not(:first-child) {
+            padding-left: 1.3rem;
+        }
+        &:last-child {
+            padding-right: 1.3rem;
+        }
+        &.selected {
+            border-bottom: 1.5pt solid #f3fd54;
+            position: relative;
+            height: 27pt;
+            a {
+                color: #fff;
+                font-size: 14px;
+                line-height: 28pt;
+            }
+        }
+    }
+}
+
+.title-box {
+    height: 169pt;
+    background-size: cover;
+    background-position: center center;
+    position: relative;
+    color: #fff;
+    .img_mask {
+        background-color: rgba(104, 104, 104, 0.7);
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        bottom: 0;
+        height: 169pt;
+        left: 0;
+        right: 0;
+        opacity: 0.7;
+        z-index: 1;
+    }
+    .name-box {
+        top: 20pt;
+        position: absolute;
+        left: 0;
+        right: 0;
+        padding: 0pt 9pt;
+        color: #fff;
+        z-index: 2;
+        height: 25pt;
+        .display(flex);
+        .sight_name {
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 25pt;
+            display: block;
+        }
+        .icon_map {
+            display: block;
+            width: 12pt;
+            height: 25pt;
+            margin-left: 8pt;
+            margin-right: 4pt;
+            background-image: url(../img/icon_map@3x.png);
+            background-size: contain;
+            background-position: center center;
+            background-repeat: no-repeat;
+        }
+        .tomap {
+            display: block;
+            font-size: 8px;
+            line-height: 25pt;
+            color: #fff;
+        }
+    }
+    .desc-box {
+        position: absolute;
+        bottom: 5pt;
+        z-index: 2;
+        .display(flex);
+        padding: 0pt 9pt;
+        .describe {
+            font-size: 14px;
+            line-height: 20pt;
+            text-align: justify;
+        }
+        .radio {
+            width: 49pt;
+            height: 49pt;
+            max-width: 49pt;
+            min-width: 49pt;
+            margin-right: 9pt;
+            margin-left: 26pt;
+            background-color: antiquewhite;
+        }
+    }
+}

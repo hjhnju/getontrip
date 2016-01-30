@@ -7,7 +7,9 @@
 
  define(function(require) {
      var $ = require('jquery');
+     require('common/extra/jquery.dotdotdot');
      var common = require('common/mcommon');
+
      var etpl = require('etpl');
      var tpl = require('./list.tpl');
 
@@ -32,6 +34,7 @@
      var bindEvents = {
          init: function() {
              this.initPage();
+             $('.list .item .address,.list .item .topic_name').dotdotdot();
          },
          initPage: function() {
              $('.page-box .next,.page-box .previous').click(function(event) {
@@ -73,9 +76,11 @@
 
                  switch (type) {
                      case 'topic':
+                         params.version = '1.1';
                          getTopicList.remote(param);
                          break;
                      case 'shop':
+                         params.version = '1.1';
                          getShopList.remote(param);
                          break;
                  }
@@ -149,6 +154,7 @@
                  return;
              }
              renderHTML(htmlContainer, tpl, data);
+             $('.list .item .address,.list .item .topic_name').dotdotdot();
          }
      }
 

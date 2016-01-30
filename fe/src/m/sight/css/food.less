@@ -40,21 +40,23 @@
     line-height: 29px;
     font-weight: lighter;
     .display(flex);
-    .next{
-        display:block;
+    .next {
+        display: block;
         padding-left: 15px;
     }
-    .previous{
-        display:block;
+    .previous {
+        display: block;
         padding-left: 15px;
     }
-    .hidden{
-        display:none;
+    .hidden {
+        display: none;
     }
 }
+
 #topic_list .icon-box {
     bottom: -5px;
 }
+
 .list {
     position: relative;
     min-height: 80px;
@@ -98,6 +100,10 @@
                     font-weight: bold;
                     color: #282828;
                     line-height: 21px;
+                    height: 21px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
                 .topic_name {
                     font-size: 15px;
@@ -179,13 +185,13 @@
                     font-size: 10px;
                     color: rgba(40, 40, 40, 0.5);
                     line-height: 20px;
-                    text-align: center; 
+                    text-align: center;
                 }
                 .price {
                     font-size: 10px;
                     color: rgba(40, 40, 40, 0.5);
                     line-height: 20px;
-                    text-align: center; 
+                    text-align: center;
                     .flex(1);
                 }
                 .desc {
@@ -233,7 +239,7 @@
                     background-size: contain;
                 }
                 .num {
-                    font-size: 12px; 
+                    font-size: 12px;
                     color: rgba(42, 45, 46, 0.5);
                     line-height: 18px;
                 }
@@ -241,6 +247,7 @@
                     font-size: 12px;
                     color: #282828;
                     line-height: 17px;
+                    height: 34px;
                 }
                 .price {
                     font-size: 14px;

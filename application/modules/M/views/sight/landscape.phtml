@@ -3,17 +3,29 @@
 <link rel="stylesheet" type="text/css" href="{%$feroot%}/common/extra/jplayer/jquery.jplayer.css" /> 
 <link rel="stylesheet" type="text/css" href="{%$feroot%}/m/sight/css/landscape.css" /> 
  <style type="text/css" media="screen">
-  
+ 
  </style> 
+ 
  
 {%/block%} 
 {%block name="content"%} 
 <div class="container" id="wrapper">
-   <div class="img_bg"  style="background-image: url(/pic/{%$landscape.image%})">
+   <div class="img_box ">
+       <div class="img_bg blur" style="background-image: url(/pic/{%$post.image%})"></div>
        <div class="img_mask"></div>
-       <!-- <div class="name">{%$landscape.name%}</div> -->
-       <div class="content">{%$landscape.content%}</div>
+       <!-- <div class="name">{%$post.name%}</div> -->
+       {%if empty($tagName) eq 0 and $isMobile%}
+        <div class="back_mask"></div>
+         <div class="back clearfix {%if $isMobile%}ismobile{%/if%}"> 
+            <a href="{%$href%}" class="link">
+              <span class="icon"></span>
+              <span class="text">{%$tagName%}</span>
+            </a> 
+         </div>
+       {%/if%} 
+       <div class="content">{%$post.content%}</div>
        <div class="more">查看更多</div>
+       {%if empty($post.audio_len)==0%}  
        <div id="jPlayerBox"></div>
        <div id="jp_container_1" class="jp-audio" role="application" aria-label="media player"> 
           <div class="jp-type-single">
@@ -30,7 +42,7 @@
                     </div>
                     <div class="jp-play-ball"></div> 
                   </div>
-                  <div class="jp-duration-time" role="timer" aria-label="duration">{%$landscape.audio_len%}</div>
+                  <div class="jp-duration-time" role="timer" aria-label="duration">{%$post.audio_len%}</div>
                   
                 </div>
                
@@ -43,6 +55,7 @@
             </div>
           </div>
        </div>
+       {%/if%} 
    </div> 
 </div> 
 
@@ -51,7 +64,7 @@
 {%block name="script"%} 
 <script> 
     require(['m/sight/landscape'], function (main) {
-        main.init('{%if not empty($landscape.audio) eq 1%}{%$landscape.audio%}{%/if%}');
+        main.init('{%if not empty($post.audio) eq 1%}{%$post.audio%}{%/if%}');
  
     }); 
 </script>

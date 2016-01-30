@@ -80,6 +80,8 @@ class City_Logic_City{
             $video_num     = Video_Api::getVideoNum($val['id']);
             $arrRet[$key]['id']          = strval($val['id']);
             $arrRet[$key]['name']        = strval($sight['name']);
+            $arrRet[$key]['x']           = strval($sight['x']);
+            $arrRet[$key]['y']           = strval($sight['y']);
             $arrRet[$key]['image']       = Base_Image::getUrlByName($sight['image']);
             $arrRet[$key]['contentNum']  = strval($topic_num + $wiki_num + $book_num + $video_num);
             $arrRet[$key]['collectNum']  = strval($logicCollect->getTotalCollectNum(Collect_Type::SIGHT, $val['id']));

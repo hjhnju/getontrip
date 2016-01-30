@@ -181,14 +181,14 @@ class Destination_Logic_Tag extends Base_Logic{
         //判断有无视频,书籍,而增加相应标签
         $food      = Food_Api::getFoodNum($cityId,Destination_Type_Type::CITY);
         $specialty = Specialty_Api::getSpecialtyNum($cityId,Destination_Type_Type::CITY);
-        if(!empty($sight_num)){
-            array_unshift($arrCommonTag,array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '景点'));
-        }
         if(!empty($specialty)){
             array_unshift($arrCommonTag,array('id' => strval(self::STR_SPECIALTY),'type' => strval(self::SPECIALTY), 'name' => '特产'));
         }
         if(!empty($food)){
             array_unshift($arrCommonTag,array('id' => strval(self::STR_FOOD),'type' => strval(self::FOOD), 'name' => '美食'));
+        }
+        if(!empty($sight_num)){
+            array_unshift($arrCommonTag,array('id' => strval(self::STR_LANDSCAPE),'type' => strval(self::LANDSCAPE), 'name' => '景点'));
         }
         foreach ($arrCommonTag as $key => $val){
             if(!isset($val['type'])){

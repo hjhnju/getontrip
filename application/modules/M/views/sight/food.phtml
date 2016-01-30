@@ -77,7 +77,7 @@
     <ul class="list" id="topic_list">  
        {%foreach $post.topics as $key=>$item%}  
         <li class="item">
-          <a href="/topic/detail?id={%$item.id%}" class="item_link">
+          <a href="{%$item.url%}" class="item_link">
             <div class="bg_img" style="background-image: url({%$item.image%})"></div> 
             <div class="content-box">
              {%if empty($item.desc)!=1%}

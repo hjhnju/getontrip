@@ -101,7 +101,7 @@ class City_Logic_City{
             $arrRet[$key]['content']          = '';
             $arrRet[$key]['audio']            = '';
             $arrRet[$key]['audio_len']        = '';
-            $objKeyword   = new Keyword_Object_Keyword();
+            $objKeyword = new Keyword_Object_Keyword();
             $objKeyword->fetch(array('sight_id' => $val['id'],'level' => Keyword_Type_Level::SIGHT));
             //$objKeyword->fetch(array('sight_id' => $val['id'],'name' => $sight['name']));
             if(!empty($objKeyword->id)){
@@ -118,6 +118,7 @@ class City_Logic_City{
         $arrInfo['des']              = '';
         $arrInfo['audio']            = '';
         $arrInfo['audio_len']        = '';
+        $arrInfo['url']              = '';
         $objKeyword   = new Keyword_Object_Keyword();
         $objKeyword->fetch(array('sight_id' => $cityId,'level' => Keyword_Type_Level::CITY,'status' => Keyword_Type_Status::PUBLISHED));
         if(!empty($objKeyword->id)){
@@ -125,6 +126,7 @@ class City_Logic_City{
             $arrInfo['des']          = strval($objKeyword->content);
             $arrInfo['audio']        = empty($objKeyword->audio)?'':"/audio/".trim($objKeyword->audio);
             $arrInfo['audio_len']    = strval($objKeyword->audioLen);
+            $arrInfo['url']          = strval($objKeyword->url);
         }
         $arrInfo['sight'] = $arrRet;
         return $arrInfo;

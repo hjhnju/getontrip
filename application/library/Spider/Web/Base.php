@@ -73,7 +73,7 @@ abstract class Spider_Web_Base{
      * @param string $content
      * @return string
      */
-    protected function preProcess($url,$content,$imageName='src') {
+    public function preProcess($url,$content,$imageName='src') {
         $obj   = new Base_Extract($url,$content);
         $data  = $obj->preProcess();  
         return $obj->dataClean($data,$imageName); 

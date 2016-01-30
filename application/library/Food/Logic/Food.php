@@ -644,7 +644,7 @@ class Food_Logic_Food extends Base_Logic{
             $arrRet[$key]['id']      = strval($topic['id']);
             $arrRet[$key]['title']   = trim($topic['title']);
             $arrRet[$key]['desc']    = trim($topic['subtitle']);
-            //$arrRet[$key]['url']     = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topic['id']);
+            $arrRet[$key]['url']     = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topic['id']);
             $arrRet[$key]['image']   = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
             $arrRet[$key]['visit']   = $logicTopic->getTotalTopicVistPv($val);
             $arrRet[$key]['praise']  = strval($logicPraise->getPraiseNum($val));

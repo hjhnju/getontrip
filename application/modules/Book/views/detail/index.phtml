@@ -11,7 +11,8 @@
 {%/block%} 
 {%block name="content"%}
  
-<div class="container main-wrap content-wrap{%if $isapp eq 1%} isapp{%/if%} {%if $isMobile%} ismobile{%/if%}"> 
+ 
+<div class="container main-wrap {%if $isapp eq 1%} isapp{%/if%} {%if $isMobile%} ismobile{%/if%}">
  {%if isset($post.id)%}  
     {%if $isapp eq 0%}  
       <div class="bg-img" id="bg-img1" style="background-image:url('{%$post.image%}'); " data-webroot="{%$webroot%}" data-stroot="{%$stroot%}" data-image="{%$post.image%}"> 
@@ -32,6 +33,7 @@
     
    {%/if%}   
   <div class="main-content main-content_book">
+     {%if $isapp eq 0%}  
     <div class="title-box">
           <div class="title">
             {%if empty($post.title)==0%}{%$post.title%}{%/if%} 
@@ -39,7 +41,8 @@
           <span class="title-detail">
               {%$post.author%}&nbsp;/&nbsp;{%$post.press%}&nbsp;/&nbsp;&nbsp;{%$post.publish_time%}&nbsp;/&nbsp;&nbsp;ISBN:{%$post.isbn%} 
           </span> 
-    </div> 
+    </div>
+    {%/if%}  
     <div class="main-content-inner book-rich-text{%if $isapp eq 1%} isapp{%/if%} {%if $isMobile%} ismobile{%/if%}"> 
        {%if empty($post.content_desc)==0%}{%$post.content_desc%}{%/if%}
     </div>
@@ -50,7 +53,7 @@
             <a href="{%$post.url%}" target="_blank">内容来自{%$post.from%}，查看原网页</a>
        {%/if%} 
     </div> -->
-  </div>
+  </div> 
  {%/if%}  
 </div>
 

@@ -217,6 +217,7 @@ to{-webkit-transform:rotate(360deg) translateZ(0)}
 .main-content_book .title-box .title-detail{display:block;font-size:12px;color:#1c1c1c;line-height:17px;word-break:break-all;margin-top:5px}
 .header-for-mobile{height:62px;overflow:hidden;line-height:1;background:#fff}
 .fixed{position:fixed;bottom:0;z-index:1000;width:100%;background-color:rgba(255,255,255,.8);border-top:.5px solid #d2d2d2;z-index:300;left: 0;right: 0;}
+
 .fixed_blur{height:62px;overflow:hidden;background:#fff;-webkit-filter:blur(10px);-moz-filter:blur(10px);-ms-filter:blur(10px);filter:blur(10px);filter:"progid:DXImageTransform.Microsoft.Blur(PixelRadius=10, MakeShadow=false)";z-index:200}
 .header-for-mobile-btn{float:right;margin-top:17px;border-radius:3px;background-color:#57c200;padding:8px 9px;color:#fff;font-size:12px}
 .header-for-mobile-logo-img{float:left;margin-top:7px;width:48px;height:48px}

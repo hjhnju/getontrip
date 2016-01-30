@@ -31,6 +31,7 @@
    {%if empty($post.shops)==0%}
     <div class="tip-box">
       推荐名店 
+      
       <div class="page-box" type="shop" total="{%ceil(($post.shopNum)/$pageSize)%}" current="1" postid="{%$post.id%}" pageSize="{%$pageSize%}"> 
           <span class="previous no-action"  action="previous">上一页</span>
           

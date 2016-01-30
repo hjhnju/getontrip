@@ -26,7 +26,7 @@
 <div class="container" >
    {%if empty($post.products)==0%}
     <div class="tip-box">
-      推荐名品
+      推荐名品    
       <div class="page-box" type="product" total="{%ceil(($post.productNum)/$pageSize)%}" current="1" postid="{%$post.id%}" pageSize="{%$pageSize%}"> 
           <span class="previous no-action" action="previous">上一页 </span>
           

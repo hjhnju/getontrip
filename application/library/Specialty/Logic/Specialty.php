@@ -625,7 +625,7 @@ class Specialty_Logic_Specialty extends Base_Logic{
             $arrSpecialty['topics'][$key]['id']      = strval($topic['id']);
             $arrSpecialty['topics'][$key]['title']   = trim($topic['title']);
             $arrSpecialty['topics'][$key]['desc']    = trim($topic['subtitle']);
-            //$arrSpecialty['topics'][$key]['url']     = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topic['id']);
+            $arrSpecialty['topics'][$key]['url']     = Base_Config::getConfig('web')->root.'/topic/detail/'.Base_Util_Secure::encryptForUuap(Base_Util_Secure::PASSWD_KEY,$topic['id']);
             $arrSpecialty['topics'][$key]['image']   = isset($topic['image'])?Base_Image::getUrlByName($topic['image']):'';
             $arrSpecialty['topics'][$key]['visit']   = $logicTopic->getTotalTopicVistPv($val);
             $arrSpecialty['topics'][$key]['praise']  = strval($logicPraise->getPraiseNum($val));

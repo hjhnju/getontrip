@@ -26,7 +26,7 @@
 <div class="container" >
    {%if empty($post.products)==0%}
     <div class="tip-box">
-      推荐名品
+      推荐名品    
       <div class="page-box" type="product" total="{%ceil(($post.productNum)/$pageSize)%}" current="1" postid="{%$post.id%}" pageSize="{%$pageSize%}"> 
           <span class="previous no-action" action="previous">上一页 </span>
           
@@ -65,7 +65,7 @@
     <ul class="list" id="topic_list">  
        {%foreach $post.topics as $key=>$item%}  
         <li class="item">
-          <a href="/topic/detail?id={%$item.id%}" class="item_link">
+          <a href="{%$item.url%}" class="item_link">
             <div class="bg_img" style="background-image: url({%$item.image%})"></div> 
             <div class="content-box"> 
               <div class="title"> 
